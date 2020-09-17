@@ -1,0 +1,8 @@
+﻿@model List<String>
+
+<ul class="list-group">
+    @foreach (string error in Model)
+    {
+        <li class="list-group-item list-group-item-danger">@error</li>
+    }
+</ul>
