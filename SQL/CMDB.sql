@@ -122,8 +122,8 @@ CREATE TABLE IF NOT EXISTS configuration (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /* Initial Data */
 INSERT INTO configuration (CODE,SUB_CODE,TEXT,Description) values
-('General','DateFormat','d-m-Y','This is the data format used in the application'),
-('General','LogDateFormat','d-m-Y h:i:s','This is the data format used in the application');
+('General','DateFormat','dd/MM/yyyy','This is the data format used in the application'),
+('General','LogDateFormat','dd/MM/yyyy HH:mm:ss','This is the data format used in the application');
 -- --------------------------------------------------------
 --
 -- Tabelstructuur voor tabel Level

@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using MySql.Data.MySqlClient;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Net.NetworkInformation;
 
@@ -12,5 +14,6 @@ namespace CMDB.Models
         public AccountType Type { get; set; }
         public Application Application { get; set; }
 
+        
     }
 }

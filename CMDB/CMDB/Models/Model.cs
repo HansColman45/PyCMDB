@@ -78,7 +78,7 @@ namespace CMDB.Models
             {
                 this.Logs.Add(new Log()
                 {
-                    LogDate = reader["Log_Date"].ToString(),
+                    LogDate = DateTime.Parse(reader["Log_Date"].ToString()),
                     LogText = reader["Log_Text"].ToString()
                 });
             }
@@ -105,7 +105,7 @@ namespace CMDB.Models
             {
                 Logs.Add(new Log()
                 {
-                    LogDate = reader["Log_Date"].ToString(),
+                    LogDate = DateTime.Parse(reader["Log_Date"].ToString()),
                     LogText = reader["Log_Text"].ToString()
                 });
             }

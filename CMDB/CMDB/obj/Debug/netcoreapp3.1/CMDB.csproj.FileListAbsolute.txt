@@ -63,3 +63,11 @@ C:\Software\PyCMDB\CMDB\CMDB\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreap
 C:\Software\PyCMDB\CMDB\CMDB\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
 C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\CMDB.csproj.CoreCompileInputs.cache
 C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\CMDB.MvcApplicationPartsAssemblyInfo.cache
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Identity\Edit.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_footer.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Identity\Delete.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_deleteForm.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_header.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_AddNew.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Icons.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Identity\AssignAccount.cshtml.g.cs

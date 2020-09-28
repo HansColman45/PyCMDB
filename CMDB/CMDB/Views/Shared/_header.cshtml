@@ -1,0 +1,45 @@
+﻿<header>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light" id="main_navbar">
+        <a class="navbar-brand" href="#">CMDB</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                </li>
+                @foreach (var item in ViewBag.Menu as List<Menu>)
+                {
+                    <!-- 1 -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="@item.Label" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@item.Label</a>
+                        <ul class="dropdown-menu" aria-labelledby="@item.Label">
+                            @foreach (var m2 in item.Children)
+                            {
+                                <!--2-->
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="@m2.Label@m2.MenuId" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">@m2.Label</a>
+                                    @foreach (var m3 in m2.Children)
+                                    {
+                                        <ul class="dropdown-menu" aria-labelledby="@m2.Label@m2.MenuId">
+                                            <!--3-->
+                                            <li>
+                                                <a class="dropdown-item" asp-area="" asp-controller="@m2.Label" asp-action="Index">@m3.Label</a>
+                                            </li>
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+            <form class="form-inline my-2 my-lg-0" action="/Home/Logout">
+                <button class="btn btn-danger">Log out</button>
+            </form>
+        </div>
+    </nav>
+</header>

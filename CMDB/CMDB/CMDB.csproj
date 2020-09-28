@@ -10,11 +10,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Views\Accounts\" />
-    <Folder Include="Views\Asset\" />
+    <Folder Include="Views\Laptop\" />
     <Folder Include="Views\AssetCategory\" />
     <Folder Include="Views\IdenityType\" />
-    <Folder Include="Views\AccountTypes\" />
+    <Folder Include="Views\AccountType\" />
+    <Folder Include="Views\Desktop\" />
+    <Folder Include="Views\Docking\" />
+    <Folder Include="Views\Admin\" />
+    <Folder Include="Views\AssetType\" />
+    <Folder Include="Views\Screen\" />
   </ItemGroup>
 
   <ItemGroup>

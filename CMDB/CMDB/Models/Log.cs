@@ -4,7 +4,7 @@ namespace CMDB.Models
 {
     public class Log
     {
-        public string LogDate { get; set; }
+        public DateTime LogDate { get; set; }
         public string LogText { get; set; }
     }
 }
