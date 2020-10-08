@@ -3,8 +3,14 @@
     Layout = "_Layout";
 }
 <h2>@ViewData["Title"]</h2>
-<div class="col-md-6 text-left">
-    <a class="btn icon-btn btn-success" asp-action="Create"><span class="fas fa-plus"></span> Add</a>
+<div class="row">
+    @if ((bool)ViewData["AddAccess"])
+    {
+        <div class="col-md-6 text-left">
+            <a class="btn icon-btn btn-success" asp-action="Create"><span class="fas fa-plus"></span> Add</a>
+        </div>
+    }
+    <partial name="_Search" />
 </div>
 <table class="table table-striped table-bordered">
     <thead class="thead-light">

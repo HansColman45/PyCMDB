@@ -1,0 +1,43 @@
+﻿@{
+    Layout = "_Layout";
+}
+<h2>@ViewData["Title"]</h2>
+@if ((bool)ViewData["AddAccess"])
+{
+    <form class="form-horizontal" action="/Account/Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">UserID <span style="color:red;">*</span></label>
+            <input name="UserID" type="text" class="form-control" placeholder="UserID" value="@ViewData["UserID"]">
+            <span class="text-danger field-validation-valid" data-valmsg-for="Account.UserID" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Type <span style="color:red;">*</span></label>
+            <select name="type" class="form-control" asp-items="@ViewBag.Types">
+                <option value=""></option>
+            </select>
+            <span class="text-danger field-validation-valid" data-valmsg-for="Account.Type" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Application <span style="color:red;">*</span></label>
+            <select name="Application" class="form-control" asp-items="@ViewBag.Applications">
+                <option value=""></option>
+            </select>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Create</button>
+            <a class="btn" asp-area="" asp-controller="Account" asp-action="Index"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+}
+else
+{
+    <p>You do not access to this page</p>
+}

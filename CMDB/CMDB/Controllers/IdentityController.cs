@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -64,6 +65,7 @@ namespace CMDB.Controllers
             ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
             ViewData["AssignAccountAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
             ViewData["AssignDeviceAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
+            ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
         public IActionResult Details(int? id)
@@ -99,45 +101,31 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identity";
-            List<string> errors = new List<string>();
-            List<IdentityType> identityTypes = _context.ListActiveIdentityTypes();
-            var listItems = new List<SelectListItem>();
-            foreach (IdentityType type in identityTypes)
-            {
-                listItems.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeID.ToString()));
-            }
-            ViewBag.Types = listItems;
+            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+            BuildMenu();
+            ViewBag.Types = _context.ListActiveIdentityTypes();
+            ViewBag.Languages = _context.ListAllActiveLanguages();
+            Identity identity = new Identity();
             string FormSubmit = values["form-submitted"];
             try
             {
                 if (!String.IsNullOrEmpty(FormSubmit))
                 {
                     string FirstName = values["FirstName"];
-                    @ViewData["FirstName"] = FirstName;
+                    identity.FirstName = FirstName;
                     string LastName = values["LastName"];
-                    @ViewData["LastName"] = LastName;
+                    identity.LastName = LastName;
                     string UserID = values["UserID"];
-                    @ViewData["UserID"] = UserID;
+                    identity.UserID = UserID;
                     string Company = values["Company"];
-                    ViewData["Company"] = Company;
+                    identity.Company = Company;
                     string Type = values["Type"];
-                    ViewData["Type"] = Type;
                     string EMail = values["EMail"];
-                    ViewData["EMail"] = EMail;
+                    identity.EMail = EMail;
                     string Language = values["Language"];
-                    ViewData["Language"] = Language;
-                    try
-                    {
-                        ValidateRequiredParams(FirstName, LastName, UserID, Company, Type, Language,EMail);
-                    }
-                    catch (ValidationError e)
-                    {
-                        errors = e.Errors;
-                        return View(errors);
-                    }
                     if (ModelState.IsValid)
                     {
-                        _context.CreateNewIdentity(FirstName,LastName,Convert.ToInt32(Type),UserID,Company,EMail,Language,_context.Admin,table);
+                        _context.CreateNewIdentity(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
                         _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
                     }
@@ -149,42 +137,23 @@ namespace CMDB.Controllers
                 ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                     "see your system administrator.");
             }
-            BuildMenu();
-            return View(errors);
+            return View(identity);
         }
         public IActionResult Edit(IFormCollection values, int? id)
         {
             _logger.LogDebug("Using Edit in {0}", table);
             ViewData["Title"] = "Edit Identity";
+            BuildMenu();
+            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
             if (id == null)
             {
                 return NotFound();
             }
-            List<string> errors = new List<string>();
-            List<IdentityType> identityTypes = _context.ListActiveIdentityTypes();
-            var listItems = new List<SelectListItem>();
-            foreach (IdentityType type in identityTypes)
-            {
-                listItems.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeID.ToString()));
-            }
-            ViewBag.Types = listItems;
+            ViewBag.Types = _context.ListActiveIdentityTypes();
+            ViewBag.Languages = _context.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
             var list = _context.GetIdentityByID((int)id);
             Identity identity = list.ElementAt<Identity>(0);
-            if (identity.IdenID == 1)
-            {
-                ViewData["FirstName"] = identity.Name;
-                ViewData["LastName"] = "";
-            }
-            else
-            {
-                ViewData["FirstName"] = identity.Name.Split(",")[0];
-                ViewData["LastName"] = identity.Name.Split(",")[1];
-            }
-            ViewData["UserID"] = identity.UserID;
-            ViewData["Company"] = identity.Company;
-            ViewData["EMail"] = identity.EMail;
-            ViewData["Language"] = identity.Language;
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string NewFirstName = values["FirstName"];
@@ -196,43 +165,81 @@ namespace CMDB.Controllers
                 string NewEMail = values["EMail"];
                 try
                 {
-                    ValidateRequiredParams(NewFirstName, NewLastName, NewUserID, NewCompany, NewType, NewLanguage, NewEMail);
+                    if (ModelState.IsValid)
+                    {
+                        _context.EditIdentity(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, table);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
-                catch (ValidationError e)
+                catch (MySqlException /* ex */)
                 {
-                    errors = e.Errors;
-                    return View(errors);
-                }
-                if (ModelState.IsValid)
-                {
-                    _context.EditIdentity(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, _context.Admin, table);
-                    _context.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
+                    //Log the error (uncomment ex variable name and write a log.
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
                 }
             }
-            BuildMenu();
-            return View(errors);
+            return View(identity);
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", table);
+            _logger.LogDebug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Identity";
+            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            BuildMenu();
             if (id == null)
             {
                 return NotFound();
             }
             string FormSubmit = values["form-submitted"];
             var list = _context.GetIdentityByID((int)id);
+            Identity identity = list.ElementAt<Identity>(0);
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 ViewData["reason"] = values["reason"];
+                try
+                {
+                    _context.DeactivateIdenity(identity, ViewData["reason"].ToString(), table);
+                    _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (MySqlException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
             }
-            BuildMenu();
             return View(list);
+        }
+        public IActionResult Activate(int? id)
+        {
+            _logger.LogDebug("Using Activate in {0}", table);
+            ViewData["Title"] = "Activate Identity";
+            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            BuildMenu();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var list = _context.GetIdentityByID((int)id);
+            Identity identity = list.ElementAt<Identity>(0);
+            if(_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            {
+                _context.ActivateIdentity(identity, table);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                RedirectToAction(nameof(Index));
+            }
+            return View();
         }
         public IActionResult AssignAccount(IFormCollection values, int? id)
         {
+            _logger.LogDebug("Using Assign Account in {0}", table);
             ViewData["Title"] = "Assign Account";
             ViewData["AssignAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
             BuildMenu();
@@ -242,90 +249,75 @@ namespace CMDB.Controllers
             }
             string FormSubmit = values["form-submitted"];
             var list = _context.GetIdentityByID((int)id);
-            var listItems = new List<SelectListItem>();
-            List<Account> accounts = _context.ListAllFreeAccounts();
-            foreach (Account account in accounts)
-            {
-                listItems.Add(new SelectListItem(account.UserID + " "+account.Application.Name,account.AccID.ToString()));
-            }
-            ViewBag.Accounts = listItems;
+            Identity identity = list.ElementAt<Identity>(0);
+            ViewBag.Identity = identity;
+            ViewBag.Accounts = _context.ListAllFreeAccounts();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-
+                int AccId = Convert.ToInt32(values["Account"]);
+                DateTime from = DateTime.Parse(values["ValidFrom"]);
+                DateTime until = DateTime.Parse(values["ValidUntil"]);
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        _context.AssignAccount2Idenity(identity, AccId, from, until, table);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (MySqlException /* ex */)
+                {
+                    //Log the error (uncomment ex variable name and write a log.
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
             }
             if (list == null)
             {
                 return NotFound();
             }
-            return View(list);
+            return View();
         }
-        private void ValidateRequiredParams(string firstName, string lastName, string UserID, string Company, string Type, string Language, string EMail)
+        public IActionResult ReleaseAccount(IFormCollection values,int id)
         {
-            List<string> errors = new List<string>();
-            if (String.IsNullOrEmpty(firstName))
+            if (id == 0)
             {
-                ModelState.AddModelError("","First name is required");
-                errors.Add("Firstname is required please fill in the Firstname");
-                _logger.LogError("Validation error: First name is required");
+                return NotFound();
             }
-            if (String.IsNullOrEmpty(lastName))
+            ViewData["Title"] = "Release Account";
+            var idenAccount = _context.GetIdenAccountByID(id);
+            ViewBag.Identity = idenAccount.ElementAt<IdenAccount>(0).Identity;
+            ViewBag.Account = idenAccount.ElementAt<IdenAccount>(0).Account;
+            ViewData["ReleaseAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseAccount");
+            BuildMenu();
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "ReleaseAccount";
+            ViewData["Name"] = idenAccount.ElementAt<IdenAccount>(0).Identity.Name;
+            ViewData["AdminName"] = _context.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
             {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Lastname is required please fill in the LastName");
-                _logger.LogError("Validation error: Last name is required");
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid)
+                {
+                    _context.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id,table);
+                    idenAccount = _context.GetIdenAccountByID(id);
+                    PDFGenerator PDFGenerator = new PDFGenerator
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = idenAccount.ElementAt<IdenAccount>(0).Identity.UserID,
+                        Language = idenAccount.ElementAt<IdenAccount>(0).Identity.Language.Code,
+                        Receiver = idenAccount.ElementAt<IdenAccount>(0).Identity.Name,
+                        Type = "Release"
+                    };
+                    PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
+                    PDFGenerator.GeneratePDF();
+                }
             }
-            if (String.IsNullOrEmpty(UserID))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("UserID is required please fill in the UserID");
-                _logger.LogError("Validation error: UserID is required");
-            }
-            if (String.IsNullOrEmpty(Company))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Company is required please fill in the Company");
-                _logger.LogError("Validation error: Company is required");
-            }
-            if (String.IsNullOrEmpty(Type))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Type is required please select the Type");
-                _logger.LogError("Validation error: Type is required");
-            }
-            if (String.IsNullOrEmpty(Language))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Language is required please select the Language");
-                _logger.LogError("Validation error: Language is required");
-            }
-            if (String.IsNullOrEmpty(EMail))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Email is required please enter a Email address");
-                _logger.LogError("Validation error: EMail is required");
-            }
-            else if (ValidateEmail(EMail))
-            {
-                ModelState.AddModelError("", "First name is required");
-                errors.Add("Email address is incorrect");
-                _logger.LogError("Validation error: EMail is not correct");
-            }
-            if(errors.Count >0)
-            {
-                throw new ValidationError(errors);
-            }
-        }
-        private bool ValidateEmail(string email)
-        {
-            try
-            {
-                MailAddress m = new MailAddress(email);
-                return true;
-            }
-            catch (FormatException)
-            {
-                return false;
-            }
+            return View();
         }
     }
 }

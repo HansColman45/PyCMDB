@@ -50,6 +50,7 @@ namespace CMDB.Controllers
         public IActionResult Index()
         {
             BuildMenu();
+            ViewData["Company"]= _context.Company;
             return View();
         }
         public IActionResult LogOut()

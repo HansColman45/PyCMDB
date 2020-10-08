@@ -57,6 +57,9 @@ namespace CMDB
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseAccount",
+                    pattern: "{controller}/ReleaseAccount/{id}/{accountId}");
             });
         }
     }

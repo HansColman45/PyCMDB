@@ -1,4 +1,16 @@
 --  Database = CMDB;
+
+CREATE TABLE IF NOT EXISTS Language (
+	CODE varchar(2) COLLATE utf8_bin NOT NULL,
+	Description varchar(255) COLLATE utf8_bin NOT NULL,
+	Active INTEGER(1) NOT NULL DEFAULT '1',
+	Deactivate_reason varchar(255) COLLATE utf8_bin DEFAULT NULL,
+	PRIMARY KEY (CODE)
+) 	ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+insert into Language (CODE, Description) values
+('NL', 'Dutch'),
+('FR', 'French'),
+('EN', 'English');
 -- --------------------------------------------------------
 --
 -- Tabelstructuur voor tabel application
@@ -123,7 +135,8 @@ CREATE TABLE IF NOT EXISTS configuration (
 /* Initial Data */
 INSERT INTO configuration (CODE,SUB_CODE,TEXT,Description) values
 ('General','DateFormat','dd/MM/yyyy','This is the data format used in the application'),
-('General','LogDateFormat','dd/MM/yyyy HH:mm:ss','This is the data format used in the application');
+('General','LogDateFormat','dd/MM/yyyy HH:mm:ss','This is the data format used in the application'),
+('General','Company','Brightest','This is the company for who the Website is build for');
 -- --------------------------------------------------------
 --
 -- Tabelstructuur voor tabel Level

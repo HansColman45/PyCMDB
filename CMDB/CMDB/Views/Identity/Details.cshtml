@@ -41,10 +41,10 @@
         {
             <a class="btn icon-btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenID" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="fa fa-user-plus"></span></a>
         }
-        if ((bool)ViewData["AccountOverview"])
+        @if ((bool)ViewData["AccountOverview"])
         {
             <H3>Account overview</H3>
-            if (item.Accounts.Count > 0)
+            @if (item.Accounts.Count > 0)
             {
                 <table class="table table-striped table-bordered">
                     <thead class="thead-light">
@@ -62,31 +62,30 @@
                     <tbody>
                         @foreach (IdenAccount idenAccount in item.Accounts)
                         {
-                            <tr>
-                                <td class="small">@idenAccount.Account.UserID</td>
-                                <td class="small">@idenAccount.Account.Application.Name</td>
-                                <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
-                                <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
-                                @if ((bool)ViewData["ReleaseAccount"] && item.IdenID > 1)
+                        <tr>
+                            <td class="small">@idenAccount.Account.UserID</td>
+                            <td class="small">@idenAccount.Account.Application.Name</td>
+                            <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
+                            <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
+                            @if ((bool)ViewData["ReleaseAccount"] && item.IdenID > 1)
+                            {
+                                @if (idenAccount.ValidUntil >= new DateTime())
                                 {
-                                    @if (idenAccount.ValidUntil >= new DateTime())
-                                    {
-                                        <td class="small"><a class="btn btn-danger" href="/Identity/ReleaseAccount&id=@item.IdenID&accountId=@idenAccount.Account.UserID" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Deactivate"></a></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="small"></td>
-                                    }
-
+                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseAccount" asp-route-id="@idenAccount.ID" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="fa fa-user-minus"></span></a></td>
                                 }
-                            </tr>
+                                else
+                                {
+                                    <td class="small"></td>
+                                }
+                            }
+                        </tr>
                         }
                     </tbody>
                 </table>
             }
             else
             {
-                <p>No Account assigned to this Identity</p>
+                <p>No Accounts assigned to this Identity</p>
             }
         }
         @if ((bool)ViewData["DeviceOverview"])
@@ -130,7 +129,7 @@
             }
         }
         <H3>Log overview</H3>
-        if (item.Logs.Count > 0)
+        @if (item.Logs.Count > 0)
         {
             <table class="table table-striped table-bordered">
                 <thead class="thead-light">

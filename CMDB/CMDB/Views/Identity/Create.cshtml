@@ -1,77 +1,62 @@
-﻿@{
+﻿@model CMDB.Models.Identity
+@{
     Layout = "_Layout";
-    var Language = ViewData["Language"];
 }
 <h2>@ViewData["Title"]</h2>
-<partial name="_ValidationError" />
-<form class="form-horizontal" action="/Identity/Create" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-    <div class="form-group">
-        <label class="control-label">First Name <span style="color:red;">*</span></label>
-        <input name="FirstName" type="text" class="form-control" placeholder="FirstName" value="@ViewData["FirstName"]">
-    </div>
-    <div class="form-group">
-        <label class="control-label">Last Name <span style="color:red;">*</span></label>
-        <input name="LastName" type="text" class="form-control" placeholder="LastName" value="@ViewData["LastName"]">
-    </div>
-    <div class="form-group">
-        <label class="control-label">UserID <span style="color:red;">*</span></label>
-        <input name="UserID" type="text" class="form-control" placeholder="UserID" value="@ViewData["UserID"]">
-    </div>
-    <div class="form-group">
-        <label class="control-label">Company <span style="color:red;">*</span></label>
-        <input name="Company" type="text" class="form-control" placeholder="Company" value="@ViewData["Company"]">
-    </div>
-    <div class="form-group">
-        <label class="control-label">E-Mail Address <span style="color:red;">*</span></label>
-        <input name="EMail" type="text" class="form-control" placeholder="E-Mail Address" value="@ViewData["EMail"]">
-    </div>
-    <div class="form-group">
-        <label class="control-label">Language <span style="color:red;">*</span></label>
-        <select name="Language" class="form-control">
-            @{
-                switch (Language)
-                {
-                    case "NL":
-                        <option value=""></option>
-                        <option value="NL" selected>Dutch</option>
-                        <option value="FR">French</option>
-                        <option value="EN">English</option>
-                        break;
-                    case "FR":
-                        <option value=""></option>
-                        <option value="NL">Dutch</option>
-                        <option value="FR" selected>French</option>
-                        <option value="EN">English</option>
-                        break;
-                    case "EN":
-                        <option value=""></option>
-                        <option value="NL">Dutch</option>
-                        <option value="FR">French</option>
-                        <option value="EN" selected>English</option>
-                        break;
-                    default:
-                        <option value=""></option>
-                        <option value="NL">Dutch</option>
-                        <option value="FR">French</option>
-                        <option value="EN">English</option>
-                        break;
-                }
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label class="control-label">Type <span style="color:red;">*</span></label>
-        <select name="type" class="form-control" asp-items="@ViewBag.Types">
-            <option value=""></option>
-        </select>
-    </div>
-    <input type="hidden" name="form-submitted" value="1" /><br>
-    <div class="form-actions">
-        <button type="submit" class="btn btn-success">Create</button>
-        <a class="btn" asp-area="" asp-controller="Identity" asp-action="Index"><i class="fa fa-arrow-left"></i> Back</a>
-    </div>
-    <div class="form-group">
-        <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
-    </div>
-</form>
+@if ((bool)ViewData["AddAccess"])
+{
+    <form class="form-horizontal" action="/Identity/Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label" asp-for="FirstName">First Name <span style="color:red;">*</span></label>
+            <input name="FirstName" type="text" class="form-control" placeholder="FirstName" asp-for="FirstName">
+            <span asp-validation-for="FirstName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="LastName">Last Name <span style="color:red;">*</span></label>
+            <input name="LastName" type="text" class="form-control" placeholder="LastName" asp-for="LastName">
+            <span asp-validation-for="LastName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="UserID">UserID <span style="color:red;">*</span></label>
+            <input name="UserID" type="text" class="form-control" placeholder="UserID" asp-for="UserID">
+            <span asp-validation-for="UserID" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Company">Company <span style="color:red;">*</span></label>
+            <input name="Company" type="text" class="form-control" placeholder="Company" asp-for="Company">
+            <span asp-validation-for="Company" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="EMail">E-Mail Address <span style="color:red;">*</span></label>
+            <input name="EMail" type="text" class="form-control" placeholder="E-Mail Address" asp-for="EMail">
+            <span asp-validation-for="EMail" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Language <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Language, (IEnumerable<SelectListItem>)ViewBag.Languages, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Language" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Type <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Type, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Language" data-valmsg-replace="true"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Create</button>
+            <a class="btn" asp-area="" asp-controller="Identity" asp-action="Index"><i class="fa fa-arrow-left"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+
+    @section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }
+}
+else
+{
+    <p>You do not access to this page</p>
+}

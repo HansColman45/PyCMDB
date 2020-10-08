@@ -1,0 +1,18 @@
+﻿<form class="form-horizontal" asp-action="@ViewData["Action"]" method="post">
+    <div class="form-group">
+        <label class="control-label" for="Employee"><span style="color:red;">*</span>Employee that will sign</label>
+        <input name="Employee" type="text" id="Employee" class="form-control" placeholder="Please insert name of person" value="@ViewData["Name"]" required>
+    </div>
+    <div class="form-group">        
+        <label class="control-label" for="ITEmp"><span style="color:red;">*</span>IT Employee that will sign</label>
+        <input name="ITEmp" type="text" id="ITEmp" class="form-control" placeholder="Please insert reason" value="@ViewData["AdminName"]" required>
+    </div>
+    <input type="hidden" name="form-submitted" value="1" /><br>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-success">Create PDF</button>
+        <a class="btn" asp-area="" asp-controller="@ViewData["backUrl"]" asp-action="Index"><i class="fa fa-arrow-left"></i> Back</a>
+    </div>
+    <div class="form-group">
+        <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+    </div>
+</form>
