@@ -1,0 +1,47 @@
+﻿@{
+    Layout = "_Layout";
+    Identity identity = (Identity)ViewBag.Identity;
+    Account account = (Account)ViewBag.Account;
+}
+@if ((bool)ViewData["ReleaseIdentity"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>UserID</th>
+                <th>Type</th>
+                <th>Application</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@account.UserID</td>
+                <td>@account.Type.Type</td>
+                <td>@account.Application.Name</td>
+            </tr>
+        </tbody>
+    </table>
+    <H3>Identity information that will be released</H3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Name</th>
+                <th>UserID</th>
+                <th>E Mail</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@identity.Name</td>
+                <td>@identity.UserID</td>
+                <td>@identity.EMail</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_SignForm" />
+}
+else
+{
+    <p>You do not access to this page</p>
+}

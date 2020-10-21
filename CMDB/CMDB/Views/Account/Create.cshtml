@@ -1,4 +1,5 @@
-﻿@{
+﻿@model CMDB.Models.Account
+@{
     Layout = "_Layout";
 }
 <h2>@ViewData["Title"]</h2>
@@ -7,22 +8,19 @@
     <form class="form-horizontal" action="/Account/Create" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label class="control-label">UserID <span style="color:red;">*</span></label>
-            <input name="UserID" type="text" class="form-control" placeholder="UserID" value="@ViewData["UserID"]">
-            <span class="text-danger field-validation-valid" data-valmsg-for="Account.UserID" data-valmsg-replace="true"></span>
+            <label asp-for="UserID" class="control-label">UserID <span style="color:red;">*</span></label>
+            <input asp-for="UserID" class="form-control" placeholder="UserID">
+            <span class="text-danger field-validation-valid" asp-validation-for="UserID" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label class="control-label">Type <span style="color:red;">*</span></label>
-            <select name="type" class="form-control" asp-items="@ViewBag.Types">
-                <option value=""></option>
-            </select>
-            <span class="text-danger field-validation-valid" data-valmsg-for="Account.Type" data-valmsg-replace="true"></span>
+            @Html.DropDownListFor(Model => Model.Type, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Type" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label class="control-label">Application <span style="color:red;">*</span></label>
-            <select name="Application" class="form-control" asp-items="@ViewBag.Applications">
-                <option value=""></option>
-            </select>
+            @Html.DropDownListFor(Model => Model.Application, (IEnumerable<SelectListItem>)ViewBag.Applications, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Application" data-valmsg-replace="true"></span>
         </div>
         <input type="hidden" name="form-submitted" value="1" /><br>
         <div class="form-actions">
@@ -33,9 +31,6 @@
             <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
         </div>
     </form>
-    @section Scripts {
-        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
 }
 else
 {

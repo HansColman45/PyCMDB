@@ -9,18 +9,15 @@ using CMDB.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using CMDB.DbContekst;
 
 namespace CMDB.Controllers
 {
     public class LoginController : Controller
     {
-        private IConfiguration Configuration { get; }
         private readonly CMDBContext _context;
-
-        private readonly Admin admin = new Admin();
-        public LoginController(IConfiguration config, CMDBContext context)
+        public LoginController(CMDBContext context)
         {
-            Configuration = config;
             _context = context;
         }
         public IActionResult Index()
@@ -29,30 +26,29 @@ namespace CMDB.Controllers
         }
         public IActionResult Login(IFormCollection values)
         {
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
-            MySqlConnection Connection = new MySqlConnection(connectionString);
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
             Admin admin;
             try
             {
-                admin= this.admin.Login(UserID, Pwd, Connection);
+                admin= _context.Login(UserID, Pwd);
                 if(admin.Account == null)
                 {
-                    ModelState.AddModelError("", "PWD is incorrect");
+                    ModelState.AddModelError("", "User or password is incorrect");
                 }
-            }catch(MySqlException e)
+                if (ModelState.IsValid)
+                {
+                    _context.Admin = admin;
+                    string stringFullUrl = @"\Home";
+                    return Redirect(stringFullUrl);
+                }
+            }
+            catch(MySqlException e)
             {
                 ModelState.AddModelError("DBA", e.ToString());
                 throw e;
             }
-            if (ModelState.IsValid)
-            {
-                _context.Admin = admin;
-                string stringFullUrl = @"\Home";
-                return Redirect(stringFullUrl);
-            }
-            return Redirect(nameof(Index));
+            return View();
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

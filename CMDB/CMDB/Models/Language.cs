@@ -6,6 +6,7 @@ namespace CMDB.Models
     {
         [Key]
         public string Code { get; set; }
+        [Required]
         public string Description { get; set; }
     }
 }

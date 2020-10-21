@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using ceTe.DynamicPDF;
-using ceTe.DynamicPDF.PageElements;
-using ceTe.DynamicPDF.PageElements.Html;
+using Aspose.Html;
+using Aspose.Html.Saving;
 using CMDB.Models;
 using Microsoft.AspNetCore.Hosting;
 
@@ -14,8 +15,8 @@ namespace CMDB.Util
     {
         private string HTML;
         private string _type;
-        private List<Device> devices = new List<Device>();
-        private List<IdenAccount> accounts = new List<IdenAccount>();
+        private readonly List<Device> devices = new List<Device>();
+        private readonly List<IdenAccount> accounts = new List<IdenAccount>();
         public string Type { 
             set 
             {
@@ -38,7 +39,10 @@ namespace CMDB.Util
         public PDFGenerator()
         {
             this.HTML = "<HTML>";
-            this.HTML += "<head></head>";
+            this.HTML += "<head>";
+            this.HTML += "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\" crossorigin=\"anonymous\" />";
+            this.HTML += "<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\"></script>";
+            this.HTML += "</head>";
             this.HTML += "<body>";
         }
         public void SetAssetInfo(Device device)
@@ -49,12 +53,13 @@ namespace CMDB.Util
         {
             accounts.Add(idenaccount);
         }
-        public void GeneratePDF()
+        public void GeneratePDF(IWebHostEnvironment _env)
         {
-            string path = "";
-            if (String.IsNullOrEmpty(this.Type))
+            string path;
+            DateTime date = DateTime.Now;
+            if (!String.IsNullOrEmpty(this.Type))
             {
-                path = "release.pdf";
+                path = _env.WebRootPath +@"\PDF-Files\release_" +this.UserID+"_"+date.ToString("dd-MM-yyyy-HH-mm-ss")+".pdf";
                 switch (this.Language)
                 {
                     case "NL":
@@ -70,7 +75,7 @@ namespace CMDB.Util
             }
             else
             {
-                path = "Assign.pdf";
+                path = _env.WebRootPath + @"\PDF-Files\Assign_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
             }
             if(accounts.Count > 0)
             {
@@ -199,12 +204,10 @@ namespace CMDB.Util
             this.HTML += "</div>";
             this.HTML += "</body>";
             this.HTML += "</html>";
-            Document document = new Document();
-            HtmlArea htmlArea = new HtmlArea(this.HTML, 0, 0, 500, 650);
-            Page page = new Page(PageSize.A4);
-            page.Elements.Add(htmlArea);
-            document.Pages.Add(page);
-            document.Draw(path);
+            //MemoryStream stringInMemoryStream =
+            //   new MemoryStream(ASCIIEncoding.Default.GetBytes(HTML));
+            var document = new Aspose.Html.HTMLDocument(HTML, ".");
+            Aspose.Html.Converters.Converter.ConvertHTML(document, new PdfSaveOptions(), path);
         }
     }
 }

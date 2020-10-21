@@ -14,7 +14,7 @@ namespace CMDB.Models
         public int IdenID { get; set; }
         [Required]
         public string Name { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a Lastname")]
         public string LastName
         {
             get
@@ -26,7 +26,7 @@ namespace CMDB.Models
             }
             set => Name = FirstName + ", " + value;
         }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a firstname")]
         public string FirstName
         {
             get
@@ -38,17 +38,17 @@ namespace CMDB.Models
             }
             set => Name = value + ", " + LastName;
         }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a E-Mail address")]
         [Column("E_Mail")]
         [EmailAddress]
         public string EMail { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a UserID")]
         public string UserID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a Company")]
         public string Company { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select a Language")]
         public Language Language { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select a Type")]
         public IdentityType Type { get; set; }
 
         public ICollection<Device> Devices { get; set; }

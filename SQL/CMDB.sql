@@ -274,8 +274,8 @@ CREATE TABLE IF NOT EXISTS IdenAccount (
 	FOREIGN KEY(Account) REFERENCES account(Acc_ID)
 )ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;
 -- Initial data
-insert into IdenAccount (Identity,Account,ValidFrom) values
-(1,1,'2012-01-01 00:00:00');
+insert into IdenAccount (Identity,Account,ValidFrom,ValidEnd) values
+(1,1,'2012-01-01 00:00:00','9999-12-31 23:59:00');
 -- --------------------------------------------------------
 --
 -- Tabelstructuur voor tabel AccountRole
@@ -442,59 +442,59 @@ CREATE TABLE IF NOT EXISTS menu (
 -- Initial Data
 insert into menu (Menu_id, label) VALUES (1,'Identity');
 insert into menu (Menu_id, label,parent_id) VALUES (2,'Identity',1);
-insert into menu (Menu_id, label,link_url,parent_id) VALUES (3,'Overview','Identity.php',2);
+insert into menu (Menu_id, label,link_url,parent_id) VALUES (3,'Overview','Identity',2);
 insert into menu (Menu_id, label) VALUES (4,'Account');
 insert into menu (Menu_id, label,parent_id) VALUES (5,'Account',4);
-insert into menu (Menu_id, label,link_url,parent_id) VALUES (6,'Overview','Account.php',5);
+insert into menu (Menu_id, label,link_url,parent_id) VALUES (6,'Overview','Account',5);
 insert into menu (Menu_id, label) VALUES (7,'Role');
 insert into menu (Menu_id, label,parent_id) VALUES (8,'Role',7);
-insert into menu (Menu_id, label,link_url,parent_id) VALUES (9,'Overview','Role.php',8);
+insert into menu (Menu_id, label,link_url,parent_id) VALUES (9,'Overview','Role',8);
 -- Devices
 INSERT INTO menu (Menu_id, label, link_url, parent_id) VALUES
 (10, 'Devices', '#', null),
 (11, 'Laptop', '#', 10),
-(12, 'Overview', 'Devices.php?Category=Laptop', 11),
+(12, 'Overview', 'Laptop', 11),
 (13, 'Desktop', '#', 10),
-(14, 'Overview', 'Devices.php?Category=Desktop', 13),
+(14, 'Overview', 'Desktop', 13),
 (15, 'Monitor', '#', 10),
-(16, 'Overview', 'Devices.php?Category=Monitor', 15),
+(16, 'Overview', 'Monitor', 15),
 (17,'Docking station','#',10),
-(18,'Overview','Devices.php?Category=Docking%20station',17),
+(18,'Overview','Docking',17),
 (19, 'Token', '#', 10),
-(20, 'Overview', 'Token.php', 19),
+(20, 'Overview', 'Token', 19),
 (21, 'Kensington', '#', 10),
-(22, 'Overview', 'Kensington.php', 21),
+(22, 'Overview', 'Kensington', 21),
 (23, 'Mobile', '#', 10),
-(24, 'Overview', 'Mobile.php', 23),
+(24, 'Overview', 'Mobile', 23),
 (25, 'Subscription', '#', 10),
-(26, 'Overview', 'Subscription.php', 25);
+(26, 'Overview', 'Subscription', 25);
 -- Types
 INSERT INTO menu (Menu_id, label, link_url, parent_id) VALUES
 (27, 'Types', '#', null),
 (28, 'Asset Type', '#',27),
-(29, 'Overview', 'AssetType.php',28),
+(29, 'Overview', 'AssetType',28),
 (30, 'Asset Category', '#',29),
-(31, 'Overview', 'Category.php',30),
+(31, 'Overview', 'Category',30),
 (32, 'Identity Type', '#',27),
-(33, 'Overview', 'IdentityType.php',32),
+(33, 'Overview', 'IdentityType',32),
 (34, 'Account Type', '#',27),
-(35, 'Overview', 'AccountType.php',34),
+(35, 'Overview', 'AccountType',34),
 (36, 'Role Type', '#',27),
-(37, 'Overview', 'RoleType.php',36),
+(37, 'Overview', 'RoleType',36),
 (38, 'Subscription Type', '#', 27),
-(39, 'Overview', 'SubscriptionType.php', 38);
+(39, 'Overview', 'SubscriptionType', 38);
 INSERT INTO menu (Menu_id, label, link_url, parent_id) VALUES
 (40, 'System','#',null),
 (41, 'System','#',40),
-(42, 'Overview','Sytem.php',41),
+(42, 'Overview','Sytem',41),
 (43, 'Application','#',NULL),
 (44, 'Application','#',43),
-(45, 'Overview','Application.php',44),
+(45, 'Overview','Application',44),
 (46, 'Admin','#',null),
 (47, 'Admin','#',46),
-(48, 'Overview','Admin.php',47),
+(48, 'Overview','Admin',47),
 (49, 'Permissions','#',46),
-(50, 'Overview','Permission.php',49);
+(50, 'Overview','Permission',49);
 -- --------------------------------------------------------
 --
 -- Tabelstructuur voor tabel Permissions

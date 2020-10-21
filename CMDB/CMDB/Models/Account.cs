@@ -11,8 +11,11 @@ namespace CMDB.Models
     {
         [Key]
         public int AccID { get; set; }
+        [Required(ErrorMessage = "Please fill in a UserID")]
         public string UserID { get; set; }
+        [Required(ErrorMessage = "Please select a type")]
         public AccountType Type { get; set; }
+        [Required(ErrorMessage = "Please select an application")]
         public Application Application { get; set; }
 
         public ICollection<IdenAccount> Identities { get; set; }

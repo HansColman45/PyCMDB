@@ -8,9 +8,9 @@
     <form asp-action="Edit">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <label asp-for="UserID" class="control-label"></label>
+            <label asp-for="UserID" class="control-label">UserID <span style="color:red;">*</span></label>
             <input asp-for="UserID" class="form-control" />
-            <span asp-validation-for="UserID" class="text-danger"></span>
+            <span asp-validation-for="UserID" class="text-danger field-validation-valid"></span>
         </div>
         <div class="form-group">
             <label class="control-label">Type <span style="color:red;">*</span></label>

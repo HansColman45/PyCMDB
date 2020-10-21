@@ -28,7 +28,7 @@ namespace CMDB.Models
         [Required]
         public string RAM { get; set; }
     }
-    public class Screen : Device
+    public class Monitor : Device
     {
         
     }

@@ -41,6 +41,14 @@
       "frameworks": {
         "netcoreapp3.1": {
           "dependencies": {
+            "Aspose.HTML": {
+              "target": "Package",
+              "version": "[20.9.0, )"
+            },
+            "Aspose.PDF": {
+              "target": "Package",
+              "version": "[20.10.0, )"
+            },
             "Bootstrap.Datepicker": {
               "target": "Package",
               "version": "[1.8.0.1, )"
@@ -60,10 +68,6 @@
             "bootstrap": {
               "target": "Package",
               "version": "[4.5.2, )"
-            },
-            "ceTe.DynamicPDF.CoreSuite.NET": {
-              "target": "Package",
-              "version": "[10.35.0, )"
             },
             "jQuery": {
               "target": "Package",
@@ -92,7 +96,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.403\\RuntimeIdentifierGraph.json"
         }
       }
     }

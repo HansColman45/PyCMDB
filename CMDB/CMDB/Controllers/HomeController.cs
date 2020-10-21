@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using CMDB.Models;
 using MySql.Data.MySqlClient;
 using Microsoft.Extensions.Configuration;
+using CMDB.DbContekst;
 
 namespace CMDB.Controllers
 {

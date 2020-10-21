@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using CMDB.Models;
+using CMDB.DbContekst;
 namespace CMDB
 {
     public class Startup
@@ -29,7 +29,7 @@ namespace CMDB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.Add(new ServiceDescriptor(typeof(CMDBContext), new CMDBContext(Configuration.GetConnectionString("DefaultConnection")))); 
+            services.Add(new ServiceDescriptor(typeof(CMDBContext), new CMDBContext(Configuration.GetConnectionString("DefaultConnection"))));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,9 +57,6 @@ namespace CMDB
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
-                endpoints.MapControllerRoute(
-                    name: "ReleaseAccount",
-                    pattern: "{controller}/ReleaseAccount/{id}/{accountId}");
             });
         }
     }

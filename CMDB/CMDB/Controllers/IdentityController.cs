@@ -11,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
 using CMDB.Util;
+using CMDB.DbContekst;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
@@ -18,6 +20,7 @@ namespace CMDB.Controllers
     {
         private readonly CMDBContext _context;
         private readonly ILogger<IdentityController> _logger;
+        private readonly IWebHostEnvironment env;
         private readonly static string table = "identity";
         private readonly static string sitePart = "Identity";
         private void BuildMenu()
@@ -47,10 +50,11 @@ namespace CMDB.Controllers
             }
             ViewBag.Menu = menul1;
         }
-        public IdentityController(CMDBContext context, ILogger<IdentityController> logger)
+        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env)
         {
             _context = context;
             _logger = logger;
+            this.env = env;
         }
         public IActionResult Index()
         {
@@ -172,8 +176,9 @@ namespace CMDB.Controllers
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException /* ex */)
+                catch (MySqlException ex)
                 {
+                    _logger.LogCritical("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -204,8 +209,9 @@ namespace CMDB.Controllers
                     _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
-                catch (MySqlException /* ex */)
+                catch (MySqlException ex)
                 {
+                    _logger.LogCritical("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -259,15 +265,18 @@ namespace CMDB.Controllers
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 try
                 {
+                    if (_context.IsPeriodOverlapping(id, null, from, until))
+                        ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
                         _context.AssignAccount2Idenity(identity, AccId, from, until, table);
                         _context.SaveChangesAsync();
-                        return RedirectToAction(nameof(Index));
+                        return RedirectToAction("AssignFrom","Identity",new {id});
                     }
                 }
-                catch (MySqlException /* ex */)
+                catch (MySqlException ex)
                 {
+                    _logger.LogCritical("DB error: {0}",ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -314,10 +323,58 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
-                    PDFGenerator.GeneratePDF();
+                    PDFGenerator.GeneratePDF(env);
+                    _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
             }
             return View();
+        }
+        public IActionResult AssignFrom(IFormCollection values, int? id)
+        {
+            if(id == null)
+            {
+                return NotFound();
+            }
+            _logger.LogDebug("Using Assign Form in {0}", table);
+            ViewData["Title"] = "Assign gosods";
+            ViewData["AssignDevice"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
+            ViewData["AssignAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
+            var list = _context.GetIdentityByID((int)id);
+            _context.GetAssingedDevicesForIdentity(list.ElementAt<Identity>(0));
+            _context.GetAssignedAccountsForIdentity(list.ElementAt<Identity>(0));
+            BuildMenu();
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "AssignFrom";
+            ViewData["Name"] = list.ElementAt<Identity>(0).Name;
+            ViewData["AdminName"] = _context.Admin.Account.UserID;
+            ViewData["LogDateFormat"] = _context.LogDateFormat;
+            ViewData["DateFormat"] = _context.DateFormat;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new PDFGenerator
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = list.ElementAt<Identity>(0).UserID,
+                    Language = list.ElementAt<Identity>(0).Language.Code,
+                    Receiver = list.ElementAt<Identity>(0).Name
+                };
+                if (list.ElementAt<Identity>(0).Accounts.Count >0)
+                    PDFGenerator.SetAccontInfo(list.ElementAt<Identity>(0).Accounts.ElementAt<IdenAccount>(0));
+                else if(list.ElementAt<Identity>(0).Devices.Count > 0)
+                {
+                    foreach (Device d in list.ElementAt<Identity>(0).Devices)
+                        PDFGenerator.SetAssetInfo(d);
+                }
+                PDFGenerator.GeneratePDF(env);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(list);
         }
     }
 }

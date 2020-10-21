@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using MySql.Data.MySqlClient;
+using CMDB.Util;
+using CMDB.DbContekst;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
@@ -16,17 +19,19 @@ namespace CMDB.Controllers
         private readonly ILogger<AccountController> _logger;
         private readonly static string sitePart = "Account";
         private readonly static string table = "account";
-        public AccountController(ILogger<AccountController> logger, CMDBContext context)
+        private readonly IWebHostEnvironment env;
+        public AccountController(ILogger<AccountController> logger, CMDBContext context, IWebHostEnvironment env)
         {
             _logger = logger;
             _context = context;
+            this.env = env;
         }
         public IActionResult Index()
         {
             _logger.LogDebug("Using list all for {0}",sitePart);
             BuildMenu();
             var accounts = _context.ListAllAccounts();
-            ViewData["Title"] = "Identity overview";
+            ViewData["Title"] = "Account overview";
             ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
@@ -224,14 +229,95 @@ namespace CMDB.Controllers
                 int IdenID = Convert.ToInt32(values["Identity"]);
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
+                _context.IsPeriodOverlapping(null,id,from,until);
                 if (ModelState.IsValid)
                 {
                     _context.AssignIdentity2Account(account, IdenID, from, until, table);
+                    _context.SaveChangesAsync();
+                    return RedirectToAction("AssignFrom", "Account", new { id });
+                }
+            }
+            return View();
+        }
+        public IActionResult ReleaseIdentity(IFormCollection values, int? id)
+        {
+            _logger.LogDebug("Using Assign Identity in {0}", table);
+            ViewData["Title"] = "Release Identity";
+            ViewData["AssignIdentity"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+            BuildMenu();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var idenAccount = _context.GetIdenAccountByID((int)id);
+            ViewData["backUrl"] = "Account";
+            ViewData["Action"] = "ReleaseIdentity";
+            ViewBag.Identity = idenAccount.ElementAt<IdenAccount>(0).Identity;
+            ViewBag.Account = idenAccount.ElementAt<IdenAccount>(0).Account;
+            ViewData["Name"] = idenAccount.ElementAt<IdenAccount>(0).Identity.Name;
+            ViewData["AdminName"] = _context.Admin.Account.UserID;
+            ViewData["ReleaseIdentity"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseIdentity");
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid)
+                {
+                    _context.ReleaseIdentity4Acount(idenAccount.ElementAt<IdenAccount>(0).Account, idenAccount.ElementAt<IdenAccount>(0).Identity, (int)id,table);
+                    idenAccount = _context.GetIdenAccountByID((int)id);
+                    PDFGenerator PDFGenerator = new PDFGenerator
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = idenAccount.ElementAt<IdenAccount>(0).Identity.UserID,
+                        Language = idenAccount.ElementAt<IdenAccount>(0).Identity.Language.Code,
+                        Receiver = idenAccount.ElementAt<IdenAccount>(0).Identity.Name,
+                        Type = "Release"
+                    };
+                    PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
+                    PDFGenerator.GeneratePDF(env);
                     _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
             return View();
+        }
+        public IActionResult AssignFrom(IFormCollection values, int? id)
+        {
+            _logger.LogDebug("Using Assign Form in {0}", table);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ViewData["Title"] = "Assign Identity";
+            BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            var accounts = _context.GetAccountByID((int)id);
+            _context.GetLogs(table, (int)id, accounts.ElementAt<Account>(0));
+            _context.GetAssignedIdentitiesForAccount(accounts.ElementAt<Account>(0));
+            ViewData["LogDateFormat"] = _context.LogDateFormat;
+            ViewData["DateFormat"] = _context.DateFormat;
+            ViewData["backUrl"] = "Account";
+            ViewData["Action"] = "AssignFrom";
+            ViewData["Name"] = accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0).Identity.Name;
+            ViewData["AdminName"] = _context.Admin.Account.UserID;
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new PDFGenerator
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = accounts.ElementAt<Account>(0).UserID,
+                    Language = accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0).Identity.Language.Code,
+                    Receiver = accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0).Identity.Name
+                };
+                PDFGenerator.SetAccontInfo(accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0));
+                PDFGenerator.GeneratePDF(env);
+            }
+            return View(accounts);
         }
         private void BuildMenu()
         {

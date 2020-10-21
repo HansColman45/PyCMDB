@@ -8,6 +8,7 @@ namespace CMDB.Models
         [Column("App_ID")]
         [Key]
         public int AppID { get; set; }
+        [Required]
         public string Name { get; set; }
     }
 }

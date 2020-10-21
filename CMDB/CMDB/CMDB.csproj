@@ -5,9 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Aspose.HTML" Version="20.9.0" />
+    <PackageReference Include="Aspose.PDF" Version="20.10.0" />
     <PackageReference Include="bootstrap" Version="4.5.2" />
     <PackageReference Include="Bootstrap.Datepicker" Version="1.8.0.1" />
-    <PackageReference Include="ceTe.DynamicPDF.CoreSuite.NET" Version="10.35.0" />
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="jQuery" Version="3.5.1" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
@@ -16,15 +17,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\PDF-Files\" />
     <Folder Include="Views\Laptop\" />
     <Folder Include="Views\AssetCategory\" />
     <Folder Include="Views\IdenityType\" />
-    <Folder Include="Views\AccountType\" />
     <Folder Include="Views\Desktop\" />
     <Folder Include="Views\Docking\" />
     <Folder Include="Views\Admin\" />
     <Folder Include="Views\AssetType\" />
-    <Folder Include="Views\Screen\" />
+    <Folder Include="Views\Monitor\" />
   </ItemGroup>
 
   <ItemGroup>

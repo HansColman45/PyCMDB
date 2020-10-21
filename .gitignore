@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+# Generated PDF Files
+/CMDB/CMDB/wwwroot/PDF-Files/*.pdf
