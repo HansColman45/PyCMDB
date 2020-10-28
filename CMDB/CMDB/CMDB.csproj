@@ -12,18 +12,22 @@
     <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="jQuery" Version="3.5.1" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.12.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.9" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="MySql.Data" Version="8.0.21" />
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Mobile\" />
+    <Folder Include="Views\SubscriptionType\" />
+    <Folder Include="Views\Subscription\" />
+    <Folder Include="Views\Token\" />
+    <Folder Include="Views\Permission\" />
     <Folder Include="wwwroot\PDF-Files\" />
     <Folder Include="Views\Laptop\" />
     <Folder Include="Views\AssetCategory\" />
-    <Folder Include="Views\IdenityType\" />
     <Folder Include="Views\Desktop\" />
     <Folder Include="Views\Docking\" />
-    <Folder Include="Views\Admin\" />
     <Folder Include="Views\AssetType\" />
     <Folder Include="Views\Monitor\" />
   </ItemGroup>

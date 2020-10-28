@@ -72,6 +72,30 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
+        public IActionResult Search(string search)
+        {
+            _logger.LogDebug("Using search in {0}", table);
+            if (!String.IsNullOrEmpty(search))
+            {
+                ViewData["search"] = search;
+                var list = _context.ListAllIdenties();
+                ViewData["Title"] = "Identity overview";
+                BuildMenu();
+                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+                ViewData["AssignAccountAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
+                ViewData["AssignDeviceAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
+                ViewData["actionUrl"] = @"\Identity\Search";
+                return View(list);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
         public IActionResult Details(int? id)
         {
             _logger.LogDebug("Using details in {0}", table);

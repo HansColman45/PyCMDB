@@ -30,6 +30,7 @@ namespace CMDB
         {
             services.AddMvc();
             services.Add(new ServiceDescriptor(typeof(CMDBContext), new CMDBContext(Configuration.GetConnectionString("DefaultConnection"))));
+            services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

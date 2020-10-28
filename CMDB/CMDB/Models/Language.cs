@@ -6,7 +6,7 @@ namespace CMDB.Models
     {
         [Key]
         public string Code { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill a description")]
         public string Description { get; set; }
     }
 }

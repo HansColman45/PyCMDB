@@ -14,7 +14,7 @@ namespace CMDB.Models
         [Key]
         public int MenuId { get; set; }
         [Column("label")]
-        [Required]
+        [Required(ErrorMessage = "Please fill in a label")]
         public string Label { get; set; }
         [Column("link_url")]
         public string URL { get; set; }

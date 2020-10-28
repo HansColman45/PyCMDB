@@ -8,24 +8,24 @@ namespace CMDB.Models
     {
         [Key]
         public string AssetTag { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a Serial number")]
         public string SerialNumber { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select an type")]
         public AssetType Type { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select an category")]
         public AssetCategory Category { get; set; }
         public Identity Identity { get; set; }
     }
     public class Laptop : Device
     {
         public string MAC { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select the amount of RAM")]
         public string RAM { get; set; }
     }
     public class Desktop : Device
     {
         public string MAC { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select the amount of RAM")]
         public string RAM { get; set; }
     }
     public class Monitor : Device
@@ -33,6 +33,10 @@ namespace CMDB.Models
         
     }
     public class Docking : Device
+    {
+
+    }
+    public class Token: Device
     {
 
     }

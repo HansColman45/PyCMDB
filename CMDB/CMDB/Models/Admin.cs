@@ -8,16 +8,15 @@ using MySql.Data.MySqlClient;
 
 namespace CMDB.Models
 {
-    public class Admin
+    public class Admin:Model
     {
         [Column("Admin_id")]
         [Key]
         public int Adminid { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select an account")]
         public Account Account { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please select an level")]
         public int Level { get; set; }
-        [Required]
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
     }

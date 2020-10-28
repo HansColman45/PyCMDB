@@ -8,7 +8,7 @@ namespace CMDB.Models
         [Column("App_ID")]
         [Key]
         public int AppID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a name")]
         public string Name { get; set; }
     }
 }

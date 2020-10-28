@@ -9,9 +9,9 @@ namespace CMDB.Models
         [Column("Type_ID")]
         [Key]
         public int TypeID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a vendor")]
         public string Vendor { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a Type")]
         public string Type { get; set; }
         [Required]
         public AssetCategory Cateory { get; set; }

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CMDB.Models.IdentityType>
+@{
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["DeleteAccess"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Active)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Active)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <partial name="_deleteForm" />
+}
+else
+{
+    <p>You do not access to this page</p>
+}

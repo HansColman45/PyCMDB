@@ -27,7 +27,7 @@ namespace CMDB.Controllers
             _logger.LogDebug("Using list all for {0}", sitePart);
             BuildMenu();
             var types = _context.ListAllAccountTypes();
-            ViewData["Title"] = "AccountType overview";
+            ViewData["Title"] = "Accounttype overview";
             ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
@@ -36,11 +36,33 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\AccountType\Search";
             return View(types);
         }
+        public IActionResult Search(string search)
+        {
+            _logger.LogDebug("Using search for {0}", sitePart);
+            BuildMenu();
+            if (!String.IsNullOrEmpty(search))
+            {
+                ViewData["search"] = search;
+                var types = _context.ListAllAccountTypes(search);
+                ViewData["Title"] = "Accounttype overview";
+                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+                ViewData["actionUrl"] = @"\AccountType\Search";
+                return View(types);
+            }
+            else
+            {
+                return RedirectToAction(nameof(Index));
+            }
+        }
         public IActionResult Create(IFormCollection values)
         {
             _logger.LogDebug("Using Create in {0}", sitePart);
             AccountType accountType= new AccountType();
-            ViewData["Title"] = "Create AccountType";
+            ViewData["Title"] = "Create Accounttype";
             ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
             BuildMenu(); 
             string FormSubmit = values["form-submitted"];
@@ -73,7 +95,7 @@ namespace CMDB.Controllers
             {
                 return NotFound();
             }
-            ViewData["Title"] = "Edit AccountType";
+            ViewData["Title"] = "Edit Accounttype";
             ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
             var accountType = _context.GetAccountTypeByID((int)id);
             BuildMenu();
@@ -107,7 +129,7 @@ namespace CMDB.Controllers
             {
                 return NotFound();
             }
-            ViewData["Title"] = "Edit AccountType";
+            ViewData["Title"] = "Delete Accounttype";
             ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "AccountType";
             var accountType = _context.GetAccountTypeByID((int)id);
@@ -137,7 +159,7 @@ namespace CMDB.Controllers
         public IActionResult Activate(int? id)
         {
             _logger.LogDebug("Using Activate in {0}", table);
-            ViewData["Title"] = "Activate AccountType";
+            ViewData["Title"] = "Activate Accounttype";
             ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
             BuildMenu();
             if (id == null)
@@ -160,7 +182,7 @@ namespace CMDB.Controllers
         public IActionResult Details(int? id)
         {
             _logger.LogDebug("Using details in {0}", table);
-            ViewData["Title"] = "AccountType Details";
+            ViewData["Title"] = "Accounttype details";
             BuildMenu();
             ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
             ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");

@@ -8,7 +8,7 @@ namespace CMDB.Models
     {
         [Key]
         public int ID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please fill in a category")]
         public string Category { get; set; }
         public string Prefix { get; set; }
     }

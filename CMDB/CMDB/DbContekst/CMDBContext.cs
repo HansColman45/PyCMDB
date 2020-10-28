@@ -15,7 +15,6 @@ namespace CMDB.DbContekst
     public class CMDBContext : DbContext
     {
         private string LogText;
-        private readonly DateTime LogDate = DateTime.Now;
         private readonly string ConnectionString;
         public Admin Admin { get; set; }
         public string LogDateFormat {
@@ -124,6 +123,42 @@ namespace CMDB.DbContekst
             conn.Close();
             return list;
         }
+        public ICollection<Identity> ListAllIdenties(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<Identity> list = new List<Identity>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Iden_Id, Name, UserID, E_Mail, L.code, L.Description, it.Type, if(i.active=1,\"Active\",\"Inactive\") as Active, " +
+                "i.Deactivate_reason from Identity i join identitytype it on i.type = it.type_id " +
+                "join Language l on i.Language = l.code where Name like @searchString or UserID like @searchString or E_Mail like @searchString or L.Description like @searchString or it.Type like like @searchString", conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Identity()
+                {
+                    IdenID = Convert.ToInt32(reader["Iden_Id"]),
+                    Name = reader["Name"].ToString(),
+                    EMail = reader["E_Mail"].ToString(),
+                    Language = new Language()
+                    {
+                        Code = reader["code"].ToString(),
+                        Description = reader["Description"].ToString()
+                    },
+                    Active = reader["Active"].ToString(),
+                    DeactivateReason = reader["Deactivate_reason"].ToString(),
+                    UserID = reader["UserID"].ToString(),
+                    Type = new IdentityType()
+                    {
+                        Description = reader["Type"].ToString()
+                    }
+                });
+            }
+            conn.Close();
+            return list;
+        }
         public ICollection<Identity> GetIdentityByID(int id)
         {
             List<Identity> list = new List<Identity>();
@@ -191,69 +226,6 @@ namespace CMDB.DbContekst
                 langs.Add(new SelectListItem(reader["Description"].ToString(), reader["Code"].ToString()));
             }
             return langs;
-        }
-        public List<IdenAccount> GetIdenAccountByID(int id)
-        {
-            List<IdenAccount> idenAccounts = new List<IdenAccount>();
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            using MySqlConnection conn = Connection;
-            conn.Open();
-            string SQL = "select ia.ID ,a.Acc_ID, a.UserID accUserID, app.App_ID, app.Name Application, ia.ValidFrom, ia.ValidEnd, " 
-                + "i.Name, i.Iden_Id, i.UserID idenUserID, E_Mail, L.code, L.Description, it.type_id, it.Type, at.Type AccountType, at.Type_id AccountTypeID "
-                + "from account a "
-                + "join application app on a.Application = app.App_ID "
-                + "join accounttype at on a.Type = at.Type_id "
-                + "join idenaccount ia on ia.Account= a.Acc_ID " 
-                + "join identity i on ia.Identity = i.Iden_ID "
-                + "join identitytype it on i.type = it.type_id "
-                + "join Language l on i.Language = l.code "
-                + "where ia.ID = @uuid";
-            MySqlCommand cmd = new MySqlCommand(SQL, conn);
-            cmd.Parameters.AddWithValue("@uuid", id);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                idenAccounts.Add(new IdenAccount()
-                {
-                    ID = Convert.ToInt32(reader["ID"]),
-                    Account = new Account()
-                    {
-                        AccID = Convert.ToInt32(reader["Acc_ID"]),
-                        UserID = reader["accUserID"].ToString(),
-                        Application = new Application()
-                        {
-                            AppID = Convert.ToInt32(reader["App_ID"]),
-                            Name = reader["Application"].ToString()
-                        },
-                        Type = new AccountType()
-                        {
-                            TypeID = Convert.ToInt32(reader["AccountTypeID"]),
-                            Type = reader["AccountType"].ToString()
-                        }
-                    },
-                    Identity = new Identity() 
-                    { 
-                        IdenID = Convert.ToInt32(reader["Iden_Id"]),
-                        Name = reader["Name"].ToString(),
-                        EMail = reader["E_Mail"].ToString(),
-                        UserID = reader["idenUserID"].ToString(),
-                        Language = new Language()
-                        {
-                            Code = reader["code"].ToString(),
-                            Description = reader["Description"].ToString()
-                        },
-                        Type = new IdentityType()
-                        {
-                            TypeID = Convert.ToInt32(reader["Type_Id"]),
-                            Type = reader["Type"].ToString()
-                        }
-                    },
-                    ValidFrom = DateTime.Parse(reader["ValidFrom"].ToString()),
-                    ValidUntil = DateTime.Parse(reader["ValidEnd"].ToString())
-                });
-            }
-            conn.Close();
-            return idenAccounts;
         }
         public void GetAssingedDevicesForIdentity(Identity identity)
         {
@@ -620,6 +592,45 @@ namespace CMDB.DbContekst
             conn.Close();
             return accounts;
         }
+        public List<Account> ListAllAccounts(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<Account> accounts = new List<Account>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select a.Acc_ID,a.UserID,app.App_ID, app.Name Application, at.Type_ID, at.Type, at.Description, if(a.active=1,\"Active\",\"Inactive\") as Active, a.Deactivate_reason " +
+                "from account a " +
+                "join application app on a.Application = app.App_ID " +
+                "join accounttype at on a.Type = at.Type_id " +
+                "where UserID like @searchString or app.Name like @searchString or at.Type like @searchString or at.Description like @searchstring";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                accounts.Add(new Account()
+                {
+                    AccID = Convert.ToInt32(reader["Acc_ID"]),
+                    UserID = reader["UserID"].ToString(),
+                    Application = new Application()
+                    {
+                        AppID = Convert.ToInt32(reader["App_ID"]),
+                        Name = reader["Application"].ToString()
+                    },
+                    Type = new AccountType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_ID"]),
+                        Type = reader["Type"].ToString(),
+                        Description = reader["Description"].ToString()
+                    },
+                    Active = reader["Active"].ToString(),
+                    DeactivateReason = reader["Deactivate_reason"].ToString()
+                });
+            }
+            conn.Close();
+            return accounts;
+        }
         public void AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
             var Identity = GetIdentityByID(IdenID);
@@ -825,6 +836,7 @@ namespace CMDB.DbContekst
             return accounts;
         }
         #endregion
+        #region IdenAccount
         public bool IsPeriodOverlapping(int? IdenID, int? AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
@@ -855,6 +867,70 @@ namespace CMDB.DbContekst
             }
             return result;
         }
+        public List<IdenAccount> GetIdenAccountByID(int id)
+        {
+            List<IdenAccount> idenAccounts = new List<IdenAccount>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select ia.ID ,a.Acc_ID, a.UserID accUserID, app.App_ID, app.Name Application, ia.ValidFrom, ia.ValidEnd, "
+                + "i.Name, i.Iden_Id, i.UserID idenUserID, E_Mail, L.code, L.Description, it.type_id, it.Type, at.Type AccountType, at.Type_id AccountTypeID "
+                + "from account a "
+                + "join application app on a.Application = app.App_ID "
+                + "join accounttype at on a.Type = at.Type_id "
+                + "join idenaccount ia on ia.Account= a.Acc_ID "
+                + "join identity i on ia.Identity = i.Iden_ID "
+                + "join identitytype it on i.type = it.type_id "
+                + "join Language l on i.Language = l.code "
+                + "where ia.ID = @uuid";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@uuid", id);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                idenAccounts.Add(new IdenAccount()
+                {
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Account = new Account()
+                    {
+                        AccID = Convert.ToInt32(reader["Acc_ID"]),
+                        UserID = reader["accUserID"].ToString(),
+                        Application = new Application()
+                        {
+                            AppID = Convert.ToInt32(reader["App_ID"]),
+                            Name = reader["Application"].ToString()
+                        },
+                        Type = new AccountType()
+                        {
+                            TypeID = Convert.ToInt32(reader["AccountTypeID"]),
+                            Type = reader["AccountType"].ToString()
+                        }
+                    },
+                    Identity = new Identity()
+                    {
+                        IdenID = Convert.ToInt32(reader["Iden_Id"]),
+                        Name = reader["Name"].ToString(),
+                        EMail = reader["E_Mail"].ToString(),
+                        UserID = reader["idenUserID"].ToString(),
+                        Language = new Language()
+                        {
+                            Code = reader["code"].ToString(),
+                            Description = reader["Description"].ToString()
+                        },
+                        Type = new IdentityType()
+                        {
+                            TypeID = Convert.ToInt32(reader["Type_Id"]),
+                            Type = reader["Type"].ToString()
+                        }
+                    },
+                    ValidFrom = DateTime.Parse(reader["ValidFrom"].ToString()),
+                    ValidUntil = DateTime.Parse(reader["ValidEnd"].ToString())
+                });
+            }
+            conn.Close();
+            return idenAccounts;
+        }
+        #endregion
         #region IdenityType
         public ICollection<IdentityType> ListAllIdentyTypes()
         {
@@ -867,6 +943,31 @@ namespace CMDB.DbContekst
             while (reader.Read())
             {
                 list.Add(new IdentityType() 
+                {
+                    TypeID = Convert.ToInt32(reader["Type_ID"]),
+                    Description = reader["Description"].ToString(),
+                    Type = reader["Type"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    DeactivateReason = reader["Deactivate_reason"].ToString()
+                });
+            }
+            conn.Close();
+            return list;
+        }
+        public ICollection<IdentityType> ListAllIdentyTypes(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<IdentityType> list = new List<IdentityType>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Type_ID, Type, Description, if(active=1,\"Active\",\"Inactive\") as Active, Deactivate_reason from identitytype" +
+                "where Type like @searchString or Description like @searchString", conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new IdentityType()
                 {
                     TypeID = Convert.ToInt32(reader["Type_ID"]),
                     Description = reader["Description"].ToString(),
@@ -895,11 +996,99 @@ namespace CMDB.DbContekst
                     Description = reader["Description"].ToString(),
                     Type = reader["Type"].ToString(),
                     Active = reader["Active"].ToString(),
-                    DeactivateReason = reader["Deactivate_reason"].ToString()
+                    DeactivateReason = reader["Deactivate_reason"].ToString(),
+                    Logs = new List<Log>()
                 });
             }
             conn.Close();
             return list;
+        }
+        public void CreateNewIdentityType(IdentityType identityType, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("INSERT INTO IdentityType (Type,Description) values(@Type, @Description)", conn);
+            cmd.Parameters.AddWithValue("@Type", identityType.Type);
+            cmd.Parameters.AddWithValue("@Description", identityType.Description);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
+            conn.Open();
+            cmd = new MySqlCommand("Select Type_ID from IdentityType order by Type_ID desc limit 1", conn);
+            int ID = 0;
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ID = Convert.ToInt32(reader["Type_ID"]);
+            }
+            conn.Close();
+            LogCreate(Table, ID, Value, Admin.Account.UserID);
+        }
+        public void UpdateIdenityType(IdentityType identityType, string Type, string Description, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (String.Compare(identityType.Type, Type) != 0)
+            {
+                LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type, Admin.Account.UserID);
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update IdentityType set Type = @type where Type_ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", identityType.TypeID);
+                cmd.Parameters.AddWithValue("@type", Type);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+            }
+            if (String.Compare(identityType.Description, Description) != 0)
+            {
+                LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description, Admin.Account.UserID);
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update IdentityType set Description = @Description where Type_ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", identityType.TypeID);
+                cmd.Parameters.AddWithValue("@Description", Description);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+            }
+        }
+        public void DeactivateIdenityType(IdentityType identityType, string reason, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update IdentityType set Deactivate_reason = @Reason, Active=0 where Type_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", identityType.TypeID);
+            cmd.Parameters.AddWithValue("@Reason", reason);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
+            LogDeactivate(Table, identityType.TypeID, Value, reason);
+        }
+        public void ActivateIdentityType(IdentityType identityType, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update IdentityType set Deactivate_reason = Null, Active=1 where Type_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", identityType.TypeID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
+            LogActivate(table, identityType.TypeID, Value);
         }
         #endregion
         #region AccountType
@@ -1034,6 +1223,29 @@ namespace CMDB.DbContekst
             conn.Close();
             return accountTypes;
         }
+        public ICollection<AccountType> ListAllAccountTypes(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<AccountType> accountTypes = new List<AccountType>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Type_ID, Type, Description, if(active=1,\"Active\",\"Inactive\") as Active from accounttype it where Type like @searchString or Description like @searchString", conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                accountTypes.Add(new AccountType()
+                {
+                    TypeID = Convert.ToInt32(reader["Type_ID"]),
+                    Type = reader["Type"].ToString(),
+                    Description = reader["Description"].ToString(),
+                    Active = reader["Active"].ToString()
+                });
+            }
+            conn.Close();
+            return accountTypes;
+        }
         public List<SelectListItem> ListActiveAccountTypes()
         {
             List<SelectListItem> accounts = new List<SelectListItem>();
@@ -1087,6 +1299,170 @@ namespace CMDB.DbContekst
             }
             conn.Close();
             return accounts;
+        }
+        #endregion
+        #region Admin
+        public List<Admin> ListAllAdmins()
+        {
+            List<Admin> list = new List<Admin>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Admin_id, a.Acc_ID,app.App_ID, app.Name Application,a.UserID Account, Level, if(admin.active=1,\"Active\",\"Inactive\") as Active " +
+                 "from admin join Account a on Account = a.Acc_ID " +
+                 "join application app on a.Application = app.App_ID ", conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Admin() 
+                {
+                    Adminid = Convert.ToInt32(reader["Admin_id"]),
+                    Level = Convert.ToInt32(reader["Level"]),
+                    Active = reader["Active"].ToString(),
+                    Account = new Account()
+                    {
+                        AccID = Convert.ToInt32(reader["Acc_ID"]),
+                        UserID = reader["Account"].ToString(),
+                        Application = new Application()
+                        {
+                            AppID = Convert.ToInt32(reader["App_ID"]),
+                            Name = reader["Application"].ToString(),
+                        }   
+                    }
+                });
+            }
+            return list;
+        }
+        public List<Admin> ListAllAdmins(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<Admin> list = new List<Admin>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Admin_id, a.Acc_ID,app.App_ID, app.Name Application,a.UserID Account, Level, if(admin.active=1,\"Active\",\"Inactive\") as Active " +
+                 "from admin join Account a on Account = a.Acc_ID " +
+                 "join application app on a.Application = app.App_ID " +
+                 "where app.name like @searchString or a.UserID like @searchString or level like @searchString", conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Admin()
+                {
+                    Adminid = Convert.ToInt32(reader["Admin_id"]),
+                    Level = Convert.ToInt32(reader["Level"]),
+                    Active = reader["Active"].ToString(),
+                    Account = new Account()
+                    {
+                        AccID = Convert.ToInt32(reader["Acc_ID"]),
+                        UserID = reader["Account"].ToString(),
+                        Application = new Application()
+                        {
+                            AppID = Convert.ToInt32(reader["App_ID"]),
+                            Name = reader["Application"].ToString(),
+                        }
+                    }
+                });
+            }
+            return list;
+        }
+        public List<Admin> GetAdminByID(int id)
+        {
+            List<Admin> list = new List<Admin>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Select Admin_id, a.Acc_ID,app.App_ID, app.Name Application,a.UserID Account, Level, if(admin.active=1,\"Active\",\"Inactive\") as Active " +
+                 "from admin join Account a on Account = a.Acc_ID " +
+                 "join application app on a.Application = app.App_ID where Admin_id = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", id);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                list.Add(new Admin()
+                {
+                    Adminid = Convert.ToInt32(reader["Admin_id"]),
+                    Level = Convert.ToInt32(reader["Level"]),
+                    Active = reader["Active"].ToString(),
+                    Account = new Account()
+                    {
+                        AccID = Convert.ToInt32(reader["Acc_ID"]),
+                        UserID = reader["Account"].ToString(),
+                        Application = new Application()
+                        {
+                            AppID = Convert.ToInt32(reader["App_ID"]),
+                            Name = reader["Application"].ToString(),
+                        }
+                    },
+                    Logs = new List<Log>()
+                });
+            }
+            return list;
+        }
+        public List<SelectListItem> ListAllLevels()
+        {
+            List<SelectListItem> Levels = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select Level from level";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Levels.Add(new SelectListItem(reader["Level"].ToString(), reader["Level"].ToString()));
+            }
+            conn.Close();
+            return Levels;
+        }
+        public List<SelectListItem> ListActiveCMDBAccounts()
+        {
+            List<SelectListItem> Levels = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select a.Acc_ID,a.UserID from account a " +
+                "join application app on a.Application = app.App_ID " +
+                "where a.Active = 1 and app.Name = 'CMDB' " +
+                "and a.Acc_ID not in (select Account from idenaccount ia where now() between ia.ValidFrom and IFNULL(ia.ValidEnd,now()+1)) ";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Levels.Add(new SelectListItem(reader["UserID"].ToString(), reader["Acc_ID"].ToString()));
+            }
+            conn.Close();
+            return Levels;
+        }
+        public void CreateNewAdmin(Admin admin, string Table)
+        {
+            DateTime LogDate = DateTime.Now;
+            string pwd = MD5Hash("cmdb");
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("insert into Admin (Account,Level,PassWord,DateSet) values (@AccountID,@Level,@pwd,@DateSet)", conn);
+            cmd.Parameters.AddWithValue("@AccountID", admin.Account.AccID);
+            cmd.Parameters.AddWithValue("@Level", admin.Level);
+            cmd.Parameters.AddWithValue("@pwd", pwd);
+            cmd.Parameters.AddWithValue("@DateSet", LogDate.ToString("yyyy-MM-dd H:mm:ss"));
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            conn.Open();
+            cmd = new MySqlCommand("Select Admin_id from Admin order by Admin_id desc limit 1", conn);
+            int ID = 0;
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ID = Convert.ToInt32(reader["Admin_id"]);
+            }
+            conn.Close();
+            string Value = "Admin with UserID: " + Admin.Account.UserID + " and level: " + Admin.Level.ToString();
+            LogCreate(Table, ID, Value, this.Admin.Account.UserID);
         }
         #endregion
         #region Menu
@@ -1395,6 +1771,7 @@ namespace CMDB.DbContekst
         }
         private void DoLog(string table, int ID)
         {
+            DateTime LogDate = DateTime.Now;
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
             using MySqlConnection conn = Connection;
             string Sql = "";
@@ -1453,7 +1830,7 @@ namespace CMDB.DbContekst
             MySqlCommand cmd = new MySqlCommand(Sql, conn);
             cmd.Parameters.AddWithValue("@UUID", ID);
             cmd.Parameters.AddWithValue("@log_text", this.LogText);
-            cmd.Parameters.AddWithValue("@log_date", this.LogDate.ToString("yyyy-MM-dd H:mm:ss"));
+            cmd.Parameters.AddWithValue("@log_date", LogDate.ToString("yyyy-MM-dd H:mm:ss"));
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
@@ -1462,6 +1839,7 @@ namespace CMDB.DbContekst
         }
         private void DoLog(string table, string AssetTag)
         {
+            DateTime LogDate = DateTime.Now;
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
             using MySqlConnection conn = Connection;
             string Sql = "";
@@ -1478,7 +1856,7 @@ namespace CMDB.DbContekst
             MySqlCommand cmd = new MySqlCommand(Sql, conn);
             cmd.Parameters.AddWithValue("@UUID", AssetTag);
             cmd.Parameters.AddWithValue("@log_text", this.LogText);
-            cmd.Parameters.AddWithValue("@log_date", this.LogDate.ToString("yyyy-MM-dd H:mm:ss"));
+            cmd.Parameters.AddWithValue("@log_date", LogDate.ToString("yyyy-MM-dd H:mm:ss"));
             var reader = cmd.ExecuteReader();
             while (reader.Read())
             {
