@@ -9,19 +9,22 @@ using CMDB.DbContekst;
 using CMDB.Models;
 using Microsoft.AspNetCore.Http;
 using System.Security.Cryptography.Pkcs;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
-    public class IdentityTypeController : Controller
+    public class IdentityTypeController : CMDBController
     {
         private readonly CMDBContext _context;
         private readonly ILogger<IdentityTypeController> _logger;
+        private readonly IWebHostEnvironment _env;
         private readonly static string table = "identitytype";
         private readonly static string sitePart = "Identity Type";
-        public IdentityTypeController(CMDBContext context, ILogger<IdentityTypeController> logger)
+        public IdentityTypeController(CMDBContext context, ILogger<IdentityTypeController> logger, IWebHostEnvironment env):base(context,logger,env)
         {
             _context = context;
-            this._logger = logger;
+            _logger = logger;
+            _env = env;
         }
         public IActionResult Index()
         {
@@ -197,33 +200,6 @@ namespace CMDB.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
-        }
-        private void BuildMenu()
-        {
-            List<Menu> menul1 = (List<Menu>)_context.ListFirstMenuLevel();
-            foreach (Menu m in menul1)
-            {
-                if (m.Children is null)
-                    m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)_context.ListSecondMenuLevel(m.MenuId);
-                foreach (Menu m1 in mL2)
-                {
-                    if (m1.Children is null)
-                        m1.Children = new List<Menu>();
-                    var mL3 = _context.ListPersonalMenu(_context.Admin.Level, m1.MenuId);
-                    foreach (Menu menu in mL3)
-                    {
-                        m1.Children.Add(new Menu()
-                        {
-                            MenuId = menu.MenuId,
-                            Label = menu.Label,
-                            URL = menu.URL
-                        });
-                    }
-                    m.Children.Add(m1);
-                }
-            }
-            ViewBag.Menu = menul1;
-        }
+        }        
     }
 }

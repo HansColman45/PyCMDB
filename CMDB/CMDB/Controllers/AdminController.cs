@@ -8,20 +8,23 @@ using CMDB.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Http;
 using MySql.Data.MySqlClient;
+using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : CMDBController
     {
         private readonly CMDBContext _context;
         private readonly ILogger<AdminController> _logger;
         private readonly static string table = "admin";
         private readonly static string sitePart = "Admin";
-        public AdminController(CMDBContext context, ILogger<AdminController> logger)
+
+        public AdminController(CMDBContext context, ILogger<AdminController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _context = context;
             _logger = logger;
         }
+
         public IActionResult Index()
         {
             _logger.LogDebug("Using List all in {0}", table);
@@ -85,35 +88,25 @@ namespace CMDB.Controllers
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
-        }
+            }
             return View(admin);
         }
-        private void BuildMenu()
+        public IActionResult Details(int? id)
         {
-            List<Menu> menul1 = (List<Menu>)_context.ListFirstMenuLevel();
-            foreach (Menu m in menul1)
+            _logger.LogDebug("Using details in {0}", table);
+            ViewData["Title"] = "Admin details";
+            BuildMenu();
+            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
+            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+            ViewData["LogDateFormat"] = _context.LogDateFormat;
+            ViewData["DateFormat"] = _context.DateFormat;
+            if (id == null)
             {
-                if (m.Children is null)
-                    m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)_context.ListSecondMenuLevel(m.MenuId);
-                foreach (Menu m1 in mL2)
-                {
-                    if (m1.Children is null)
-                        m1.Children = new List<Menu>();
-                    var mL3 = _context.ListPersonalMenu(_context.Admin.Level, m1.MenuId);
-                    foreach (Menu menu in mL3)
-                    {
-                        m1.Children.Add(new Menu()
-                        {
-                            MenuId = menu.MenuId,
-                            Label = menu.Label,
-                            URL = menu.URL
-                        });
-                    }
-                    m.Children.Add(m1);
-                }
+                return NotFound();
             }
-            ViewBag.Menu = menul1;
+            var Admins = _context.GetAdminByID((int)id);
+            _context.GetLogs(table, (int)id, Admins.ElementAt<Admin>(0));
+            return View(Admins);
         }
     }
 }

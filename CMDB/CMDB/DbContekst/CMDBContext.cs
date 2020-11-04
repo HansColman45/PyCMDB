@@ -1464,6 +1464,144 @@ namespace CMDB.DbContekst
             string Value = "Admin with UserID: " + Admin.Account.UserID + " and level: " + Admin.Level.ToString();
             LogCreate(Table, ID, Value, this.Admin.Account.UserID);
         }
+        public void UpdateAdmin(Admin admin, int level, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (admin.Level != level) 
+            {
+                LogUpdate(Table, admin.Adminid, "Level", admin.Level.ToString(), level.ToString(), this.Admin.Account.UserID);
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Admin set level = @level where Admin_ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", admin.Adminid);
+                cmd.Parameters.AddWithValue("@level", level);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+            }
+        }
+        #endregion
+        #region Devices
+        public List<Device> ListAllDevices(string category)
+        {
+            List<Device> devices = new List<Device>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where c.Category = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", category);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new Device() 
+                { 
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Type = new AssetType()
+                    {
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = string.IsNullOrEmpty(reader["name"].ToString())? "Not in use" : reader["name"].ToString()
+                    }
+                });
+            }
+            return devices;
+        }
+        public List<Device> ListAllDevices(string category, string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<Device> devices = new List<Device>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where c.Category = @category and (AssetTag like @searchString or SerialNumber like @searchString or at.Vendor like @searchString " +
+                "or at.Type like @searchString or i.name like @searchString)";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", category);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new Device()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Type = new AssetType()
+                    {
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = string.IsNullOrEmpty(reader["name"].ToString()) ? "Not in use" : reader["name"].ToString()
+                    }
+                });
+            }
+            return devices;
+        }
+        public List<Device> ListDeviceByID(string assetTag)
+        {
+            List<Device> devices = new List<Device>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new Device()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Type = new AssetType()
+                    {
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = string.IsNullOrEmpty(reader["name"].ToString()) ? "Not in use" : reader["name"].ToString()
+                    }
+                });
+            }
+            return devices;
+        }
+
         #endregion
         #region Menu
         public ICollection<Menu> ListFirstMenuLevel()

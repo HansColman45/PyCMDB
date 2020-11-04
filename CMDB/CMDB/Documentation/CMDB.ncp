@@ -1,0 +1,62 @@
+<Project>
+  <Name>CMDB</Name>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>Controller</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>AdminController</Name>
+        <Access>Public</Access>
+        <Location left="22" top="464" />
+        <Size width="567" height="277" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private CMDBContext _context</Member>
+        <Member type="Field">ILogger&lt;AdminController&gt; _logger</Member>
+        <Member type="Field">private IWebHostEnvironement _env</Member>
+        <Member type="Method">public IActionResult Index()</Member>
+        <Member type="Method">public IActionResult Details(int? id, IFormCollection values)</Member>
+        <Member type="Method">public IActionResult Edit(it? id)</Member>
+        <Member type="Method">public IActionResult Search(string search)</Member>
+        <Member type="Method">public IActionResult Create(IFormCollection values)</Member>
+        <Member type="Method">public IActionResult Delete(int? id, IFormCollection values)</Member>
+        <Member type="Method">public IActionResult Activate(int? id)</Member>
+        <Member type="Constructor">public AdminController(CMDBContext context, ILogger&lt;AdminController&gt; logger, IWebHostEnvironment env)</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+      <Entity type="Class">
+        <Name>CMDBController</Name>
+        <Access>Public</Access>
+        <Location left="406" top="28" />
+        <Size width="543" height="216" />
+        <Collapsed>False</Collapsed>
+        <Member type="Field">private CMDBContext _context</Member>
+        <Member type="Field">private ILogger&lt;Controller&gt; _logger</Member>
+        <Member type="Field">private IWebHostEnvironment _env</Member>
+        <Member type="Constructor">public CMDBController(CMDBContext context, ILogger&lt;Controller&gt; logger, IWebHostEnvironment env)</Member>
+        <Member type="Method">protected void BuildMenu()</Member>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships>
+      <Relationship type="Generalization" first="0" second="1">
+        <StartOrientation>Vertical</StartOrientation>
+        <EndOrientation>Vertical</EndOrientation>
+      </Relationship>
+    </Relationships>
+  </ProjectItem>
+  <ProjectItem type="NClass.DiagramEditor.ClassDiagram.Diagram" assembly="NClass.DiagramEditor, Version=2.4.1823.0, Culture=neutral, PublicKeyToken=null">
+    <Name>View</Name>
+    <Language>CSharp</Language>
+    <Entities>
+      <Entity type="Class">
+        <Name>Admin</Name>
+        <Access>Public</Access>
+        <Location left="130" top="93" />
+        <Size width="162" height="216" />
+        <Collapsed>False</Collapsed>
+        <Modifier>None</Modifier>
+      </Entity>
+    </Entities>
+    <Relationships />
+  </ProjectItem>
+</Project>

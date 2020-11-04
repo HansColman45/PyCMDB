@@ -13,14 +13,14 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
-    public class AccountController : Controller
+    public class AccountController : CMDBController
     {
         private readonly CMDBContext _context;
         private readonly ILogger<AccountController> _logger;
         private readonly static string sitePart = "Account";
         private readonly static string table = "account";
         private readonly IWebHostEnvironment env;
-        public AccountController(ILogger<AccountController> logger, CMDBContext context, IWebHostEnvironment env)
+        public AccountController(ILogger<AccountController> logger, CMDBContext context, IWebHostEnvironment env) : base(context,logger,env)
         {
             _logger = logger;
             _context = context;
@@ -104,13 +104,13 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit Account";
             ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
             BuildMenu();
-            ViewBag.Types = _context.ListActiveAccountTypes();
-            ViewBag.Applications = _context.ListActiveApplications();
-            string FormSubmit = values["form-submitted"];
             if (id == null)
             {
                 return NotFound();
             }
+            ViewBag.Types = _context.ListActiveAccountTypes();
+            ViewBag.Applications = _context.ListActiveApplications();
+            string FormSubmit = values["form-submitted"];
             var accounts = _context.GetAccountByID((int)id);
             Account account = accounts.ElementAt<Account>(0);
             ViewData["UserID"] = account.UserID;
@@ -341,33 +341,6 @@ namespace CMDB.Controllers
                 PDFGenerator.GeneratePDF(env);
             }
             return View(accounts);
-        }
-        private void BuildMenu()
-        {
-            List<Menu> menul1 = (List<Menu>)_context.ListFirstMenuLevel();
-            foreach (Menu m in menul1)
-            {
-                if (m.Children is null)
-                    m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)_context.ListSecondMenuLevel(m.MenuId);
-                foreach (Menu m1 in mL2)
-                {
-                    if (m1.Children is null)
-                        m1.Children = new List<Menu>();
-                    var mL3 = _context.ListPersonalMenu(_context.Admin.Level, m1.MenuId);
-                    foreach (Menu menu in mL3)
-                    {
-                        m1.Children.Add(new Menu()
-                        {
-                            MenuId = menu.MenuId,
-                            Label = menu.Label,
-                            URL = menu.URL
-                        });
-                    }
-                    m.Children.Add(m1);
-                }
-            }
-            ViewBag.Menu = menul1;
         }
     }
 }

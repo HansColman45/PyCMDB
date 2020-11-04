@@ -18,18 +18,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Documentation\" />
     <Folder Include="Views\Mobile\" />
     <Folder Include="Views\SubscriptionType\" />
     <Folder Include="Views\Subscription\" />
-    <Folder Include="Views\Token\" />
     <Folder Include="Views\Permission\" />
     <Folder Include="wwwroot\PDF-Files\" />
-    <Folder Include="Views\Laptop\" />
     <Folder Include="Views\AssetCategory\" />
-    <Folder Include="Views\Desktop\" />
-    <Folder Include="Views\Docking\" />
     <Folder Include="Views\AssetType\" />
-    <Folder Include="Views\Monitor\" />
   </ItemGroup>
 
   <ItemGroup>

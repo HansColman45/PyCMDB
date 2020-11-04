@@ -5,20 +5,26 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using CMDB.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
+using CMDB.Models;
+using CMDB.Util;
 using CMDB.DbContekst;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 
 namespace CMDB.Controllers
 {
-    public class LoginController : Controller
+    public class LoginController : CMDBController
     {
         private readonly CMDBContext _context;
-        public LoginController(CMDBContext context)
+        private readonly ILogger<LoginController> _logger;
+        private readonly IWebHostEnvironment _env;
+
+        public LoginController(CMDBContext context, ILogger<LoginController> logger, IWebHostEnvironment env):base(context,logger,env)
         {
             _context = context;
+            _logger = logger;
+            _env = env; 
         }
         public IActionResult Index()
         {

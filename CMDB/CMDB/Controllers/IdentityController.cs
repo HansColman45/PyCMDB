@@ -16,41 +16,14 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
-    public class IdentityController : Controller
+    public class IdentityController : CMDBController
     {
         private readonly CMDBContext _context;
         private readonly ILogger<IdentityController> _logger;
         private readonly IWebHostEnvironment env;
         private readonly static string table = "identity";
         private readonly static string sitePart = "Identity";
-        private void BuildMenu()
-        {
-            List<Menu> menul1 = (List<Menu>)_context.ListFirstMenuLevel();
-            foreach (Menu m in menul1)
-            {
-                if (m.Children is null)
-                    m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)_context.ListSecondMenuLevel(m.MenuId);
-                foreach (Menu m1 in mL2)
-                {
-                    if (m1.Children is null)
-                        m1.Children = new List<Menu>();
-                    var mL3 = _context.ListPersonalMenu(_context.Admin.Level, m1.MenuId);
-                    foreach (Menu menu in mL3)
-                    {
-                        m1.Children.Add(new Menu()
-                        {
-                            MenuId = menu.MenuId,
-                            Label = menu.Label,
-                            URL = menu.URL
-                        });
-                    }
-                    m.Children.Add(m1);
-                }
-            }
-            ViewBag.Menu = menul1;
-        }
-        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env)
+        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env):base(context,logger,env)
         {
             _context = context;
             _logger = logger;

@@ -11,14 +11,15 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace CMDB.Controllers
 {
-    public class SubscriptionTypeController : CMDBController
+    public class MobileController : CMDBController
     {
         private readonly CMDBContext _context;
-        private readonly ILogger<SubscriptionTypeController> _logger;
-        private readonly static string sitePart = "Subscription Type";
-        private readonly static string table = "subscriptiontype";
+        private readonly ILogger<MobileController> _logger;
+        private readonly static string sitePart = "Mobile";
+        private readonly static string table = "mobile";
         private readonly IWebHostEnvironment _env;
-        public SubscriptionTypeController(CMDBContext context, ILogger<SubscriptionTypeController> logger, IWebHostEnvironment env):base(context,logger,env)
+
+        public MobileController(CMDBContext context, ILogger<MobileController> logger, IWebHostEnvironment env):base(context,logger,env)
         {
             _context = context;
             _logger = logger;

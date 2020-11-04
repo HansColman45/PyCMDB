@@ -4,7 +4,7 @@
 }
 @if ((bool)ViewData["InfoAccess"])
 {
-    <h2>@ViewData["Title"] <a class="btn btn-default float-right" asp-area="" asp-controller="Identity" asp-action="Index"><i class="fa fa-arrow-left"></i> Back</a></h2>
+    <h2>@ViewData["Title"] <a class="btn btn-default float-right" asp-area="" asp-controller="Identity" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a></h2>
     <table class="table table-striped table-bordered">
         <thead class="thead-light">
             <tr>
@@ -35,11 +35,11 @@
     {
         @if ((bool)ViewData["AssignDevice"] && item.IdenID > 1)
         {
-            <a class="btn icon-btn btn-success" asp-action="AssignDevice" asp-route-id="@item.IdenID" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="fa fa-laptop"></span></a>
+            <a class="btn icon-btn btn-success" asp-action="AssignDevice" asp-route-id="@item.IdenID" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="@ViewBag.AddDeviceIcon"></span></a>
         }
         @if ((bool)ViewData["AssignAccount"])
         {
-            <a class="btn icon-btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenID" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="fa fa-user-plus"></span></a>
+            <a class="btn icon-btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenID" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="@ViewBag.AddIdentityIcon"></span></a>
         }
         @if ((bool)ViewData["AccountOverview"])
         {
@@ -71,7 +71,7 @@
                             {
                                 @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now-idenAccount.ValidFrom).TotalDays >=1)
                                 {
-                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseAccount" asp-route-id="@idenAccount.ID" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="fa fa-user-minus"></span></a></td>
+                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseAccount" asp-route-id="@idenAccount.ID" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                                 }
                                 else
                                 {
