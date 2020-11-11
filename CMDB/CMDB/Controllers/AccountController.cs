@@ -119,8 +119,8 @@ namespace CMDB.Controllers
                 try
                 {
                     string NewUserID = values["UserID"];
-                    string Type =values["type"];
-                    string Application = values["Application"];
+                    string Type =values["Type.TypeID"];
+                    string Application = values["Application.AppID"];
                     if (ModelState.IsValid)
                     {
                         _context.EditAccount(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);

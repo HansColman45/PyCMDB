@@ -32,6 +32,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Login(IFormCollection values)
         {
+            _logger.LogDebug("Using Login in {0}", "Login");
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
             Admin admin;

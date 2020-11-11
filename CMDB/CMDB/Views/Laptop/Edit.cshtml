@@ -1,0 +1,48 @@
+﻿@model CMDB.Models.Laptop;
+@{
+    Layout = "_Layout";
+}
+<h2>@ViewData["Title"]</h2>
+@if ((bool)ViewData["UpdateAccess"])
+{
+    <form class="form-horizontal" asp-action="Edit" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="AssetTag" class="control-label">AssetTag <span style="color:red;">*</span></label>
+            <input asp-for="AssetTag" class="form-control" placeholder="DST0001" disabled>
+            <span class="text-danger field-validation-valid" asp-validation-for="AssetTag" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SerialNumber" class="control-label">Serial number <span style="color:red;">*</span></label>
+            <input asp-for="SerialNumber" class="form-control" placeholder="Serialnumber">
+            <span class="text-danger field-validation-valid" asp-validation-for="AssetTag" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Type <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Type.TypeID, (IEnumerable<SelectListItem>)ViewBag.AssetTypes, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Type" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">RAM <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.RAM, (IEnumerable<SelectListItem>)ViewBag.Rams, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="RAM" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="MAC" class="control-label">MAC address</label>
+            <input asp-for="MAC" class="form-control" placeholder="00:00:00:00:00">
+            <span class="text-danger field-validation-valid" asp-validation-for="MAC" data-valmsg-replace="true"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Edit</button>
+            <a class="btn" asp-area="" asp-controller="Laptop" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+}
+else
+{
+    <p>You do not access to this page</p>
+}

@@ -7,12 +7,12 @@ namespace CMDB.Models
     public class Device: Model
     {
         [Key]
+        [Required(ErrorMessage = "Please enter a Assettag")]
         public string AssetTag { get; set; }
         [Required(ErrorMessage = "Please fill in a Serial number")]
         public string SerialNumber { get; set; }
         [Required(ErrorMessage = "Please select an type")]
         public AssetType Type { get; set; }
-        [Required(ErrorMessage = "Please select an category")]
         public AssetCategory Category { get; set; }
         public Identity Identity { get; set; }
     }

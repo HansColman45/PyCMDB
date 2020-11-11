@@ -15,5 +15,10 @@ namespace CMDB.Models
         public string Type { get; set; }
         [Required]
         public AssetCategory Cateory { get; set; }
+
+        public override string ToString()
+        {
+            return Vendor + " " + Type;
+        }
     }
 }

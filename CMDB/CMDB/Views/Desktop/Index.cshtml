@@ -22,7 +22,7 @@
                 <tr>
                     <td>@Html.DisplayFor(modelItem => item.AssetTag)</td>
                     <td>@Html.DisplayFor(modelItem => item.SerialNumber)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Type.Type)+" "+@Html.DisplayFor(modelItem => item.Type.Vendor)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Type.Vendor) @Html.DisplayFor(modelItem => item.Type.Type)</td>
                     <td>@Html.DisplayFor(modelItem => item.Identity.Name)</td>
                     <td>
                         @if ((bool)ViewData["UpdateAccess"])

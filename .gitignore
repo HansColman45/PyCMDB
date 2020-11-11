@@ -128,8 +128,9 @@ dmypy.json
 # Pyre type checker
 .pyre/
 # Generated PDF Files
-\CMDB\CMDB\wwwroot\PDF-Files\*.pdf
-\CMDB\CMDB\bin\Debug\*
+CMDB/CMDB/wwwroot/PDF-Files/*.pdf
+CMDB/CMDB/bin/Debug/
+CMDB/.vs/
 # files to ignore
 *_i.c
 *_p.c

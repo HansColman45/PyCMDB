@@ -1601,7 +1601,585 @@ namespace CMDB.DbContekst
             }
             return devices;
         }
-
+        public List<SelectListItem> ListAssetTypes(string category)
+        {
+            List<SelectListItem> assettypes = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select at.Type_ID, at.Vendor, at.Type from assettype at where at.Category in (select id from category where category = @category)";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", category);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                assettypes.Add(new SelectListItem(reader["Vendor"].ToString() + " " + reader["Type"].ToString(), reader["Type_ID"].ToString()));
+            }
+            conn.Close();
+            return assettypes;
+        }
+        public List<SelectListItem> ListRams()
+        {
+            List<SelectListItem> assettypes = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select Ram, Text from RAM";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                assettypes.Add(new SelectListItem(reader["Text"].ToString(), reader["Ram"].ToString()));
+            }
+            conn.Close();
+            return assettypes;
+        }
+        public void CreateNewDesktop(Desktop desktop, string table)
+        {
+            string SQL = "Insert into Asset (AssetTag, SerialNumber, MAC, RAM, Type, Category) values (@AssetTag,@SerialNumber,@MAC, @RAM,@Type,@Category)";
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@AssetTag", desktop.AssetTag);
+            cmd.Parameters.AddWithValue("@SerialNumber", desktop.SerialNumber);
+            cmd.Parameters.AddWithValue("@MAC", desktop.MAC);
+            cmd.Parameters.AddWithValue("@RAM", desktop.RAM);
+            cmd.Parameters.AddWithValue("@Type", desktop.Type.TypeID);
+            cmd.Parameters.AddWithValue("@Category", desktop.Category.ID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = String.Format("{0} with type {1}",desktop.Category.Category,desktop.Type.Vendor+" "+desktop.Type.Type);
+            LogCreate(table, desktop.AssetTag,Value,Admin.Account.UserID);
+        }
+        public void CreateNewLaptop(Laptop laptop, string table)
+        {
+            string SQL = "Insert into Asset (AssetTag, SerialNumber, MAC, RAM, Type, Category) values (@AssetTag,@SerialNumber,@MAC, @RAM,@Type,@Category)";
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@AssetTag", laptop.AssetTag);
+            cmd.Parameters.AddWithValue("@SerialNumber", laptop.SerialNumber);
+            cmd.Parameters.AddWithValue("@MAC", laptop.MAC);
+            cmd.Parameters.AddWithValue("@RAM", laptop.RAM);
+            cmd.Parameters.AddWithValue("@Type", laptop.Type.TypeID);
+            cmd.Parameters.AddWithValue("@Category", laptop.Category.ID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
+            LogCreate(table, laptop.AssetTag, Value, Admin.Account.UserID);
+        }
+        public void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (String.Compare(desktop.RAM,newRam) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set RAM = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", desktop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newRam);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, desktop.AssetTag, "RAM", desktop.RAM, newRam, Admin.Account.UserID);
+            }
+            if (String.Compare(desktop.MAC, newMAC) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set MAC = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", desktop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newMAC);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, desktop.AssetTag, "MAC", desktop.MAC, newMAC, Admin.Account.UserID);
+            }
+            if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set SerialNumber = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", desktop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newSerialNumber);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, desktop.AssetTag, "SerialNumber", desktop.SerialNumber, newSerialNumber, Admin.Account.UserID);
+            }
+            if (desktop.Type.TypeID != newAssetType.TypeID)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set Type = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", desktop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newAssetType.TypeID);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, desktop.AssetTag, "Type", desktop.Type.Vendor+" "+desktop.Type, newAssetType.Vendor+" "+newAssetType.Type, Admin.Account.UserID);
+            }
+        }
+        public void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (String.Compare(laptop.RAM, newRam) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set RAM = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", laptop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newRam);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, laptop.AssetTag, "RAM", laptop.RAM, newRam, Admin.Account.UserID);
+            }
+            if (String.Compare(laptop.MAC, newMAC) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set MAC = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", laptop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newMAC);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, laptop.AssetTag, "MAC", laptop.MAC, newMAC, Admin.Account.UserID);
+            }
+            if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set SerialNumber = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", laptop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newSerialNumber);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, laptop.AssetTag, "SerialNumber", laptop.SerialNumber, newSerialNumber, Admin.Account.UserID);
+            }
+            if (laptop.Type.TypeID != newAssetType.TypeID)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update Asset set Type = @type where AssetTag = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", laptop.AssetTag);
+                cmd.Parameters.AddWithValue("@type", newAssetType.TypeID);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, laptop.AssetTag, "Type", laptop.Type.Vendor + " " + laptop.Type, newAssetType.Vendor + " " + newAssetType.Type, Admin.Account.UserID);
+            }
+        }
+        public List<Desktop> ListDekstopByID(string assetTag)
+        {
+            List<Desktop> devices = new List<Desktop>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, MAC, RAM,at.Vendor, at.Type_id, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, i.Iden_ID, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new Desktop()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    MAC = reader["MAC"].ToString(),
+                    RAM = reader["RAM"].ToString(),
+                    Logs = new List<Log>(),
+                    Type = new AssetType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_id"]),
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = reader["name"].ToString(),
+                        IdenID = Convert.ToInt32(reader["Iden_ID"])
+                    }
+                });
+            }
+            return devices;
+        }
+        public List<Laptop> ListLaptopByID(string assetTag)
+        {
+            List<Laptop> devices = new List<Laptop>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, MAC, RAM,at.Vendor,at.Type_id, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, i.Iden_ID, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new Laptop()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    MAC = reader["MAC"].ToString(),
+                    RAM = reader["RAM"].ToString(),
+                    Logs = new List<Log>(),
+                    Type = new AssetType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_id"]),
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = reader["name"].ToString(),
+                        IdenID = Convert.ToInt32(reader["Iden_ID"])
+                    }
+                });
+            }
+            return devices;
+        }
+        public bool IsDeviceExisting(Device device) 
+        {
+            bool result = false;
+            string SQL = "Select * from Asset where AssetTag=@assettag";
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@assettag", device.AssetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
+        }
+        #endregion
+        #region AssetTypes
+        public List<AssetType> ListAllAssetTypes()
+        {
+            List<AssetType> devices = new List<AssetType>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select at.Type_ID, at.Vendor, at.Type, if(at.active=1,\"Active\",\"Inactive\") Active, C.id, c.Category " +
+                "from assettype at " +
+                "join category c on at.Category = c.ID";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new AssetType()
+                {
+                    TypeID = Convert.ToInt32(reader["Type_ID"]),
+                    Type = reader["Type"].ToString(),
+                    Vendor = reader["Vendor"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Cateory = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["ID"]),
+                        Category = reader["Category"].ToString()
+                    }
+                });
+            }
+            return devices;
+        }
+        public List<AssetType> ListAllAssetTypes(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<AssetType> devices = new List<AssetType>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select at.Type_ID, at.Vendor, at.Type, if(at.active=1,\"Active\",\"Inactive\") Active, C.id, c.Category " +
+                "from assettype at " +
+                "join category c on at.Category = c.ID where Vendor like @searchString or type like @searchString or c.Category like @searchString";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new AssetType()
+                {
+                    TypeID = Convert.ToInt32(reader["Type_ID"]),
+                    Type = reader["Type"].ToString(),
+                    Vendor = reader["Vendor"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Cateory = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["ID"]),
+                        Category = reader["Category"].ToString()
+                    }
+                });
+            }
+            return devices;
+        }
+        public List<AssetType> ListAssetTypeById(int id)
+        {
+            List<AssetType> devices = new List<AssetType>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select at.Type_ID, at.Vendor, at.Type, if(at.active=1,\"Active\",\"Inactive\") Active, C.id, c.Category " +
+                "from assettype at " +
+                "join category c on at.Category = c.ID where at.Type_ID = @id";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                devices.Add(new AssetType()
+                {
+                    TypeID = Convert.ToInt32(reader["Type_ID"]),
+                    Type = reader["Type"].ToString(),
+                    Vendor = reader["Vendor"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Cateory = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["ID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Logs = new List<Log>()
+                });
+            }
+            return devices;
+        }
+        public List<SelectListItem> ListActiveCategories()
+        {
+            List<SelectListItem> assettypes = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select ID, Category from category where active = 1";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                assettypes.Add(new SelectListItem(reader["Category"].ToString(), reader["ID"].ToString()));
+            }
+            conn.Close();
+            return assettypes;
+        }
+        public void CreateNewAssetType(AssetType assetType, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Insert into AssetType (Category, Vendor, Type) values (@cat,@vendor,@type)";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@cat", assetType.Cateory.ID);
+            cmd.Parameters.AddWithValue("@vendor", assetType.Vendor);
+            cmd.Parameters.AddWithValue("@type", assetType.Type);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read()){ }
+            conn.Close();
+            conn.Open();
+            SQL = "Select Type_ID from AssetType order by Type_ID desc limit 1";
+            cmd = new MySqlCommand(SQL, conn);
+            int ID = 0;
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ID = Convert.ToInt32(reader["Type_ID"]);
+            }
+            conn.Close();
+            string Value = assetType.Cateory.Category + " type Vendor: "+assetType.Vendor+" and type "+assetType.Type;
+            LogCreate(Table, ID, Value, Admin.Account.UserID);
+        }
+        public void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (String.Compare(assetType.Vendor, Vendor) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update AssetType set Vendor = @type where Type_ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", assetType.TypeID);
+                cmd.Parameters.AddWithValue("@type", Vendor);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, assetType.TypeID, "Vendor", assetType.Vendor, Vendor, Admin.Account.UserID);
+            }
+            if(String.Compare(assetType.Type, Type) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update AssetType set Type = @type where Type_ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", assetType.TypeID);
+                cmd.Parameters.AddWithValue("@type", Type);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, assetType.TypeID, "Type", assetType.Type, Type, Admin.Account.UserID);
+            }
+        }
+        public void DeactivateAssetType(AssetType assetType, string reason, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update AssetType set Deactivate_reason = @reason, Active=0 where Type_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", assetType.TypeID);
+            cmd.Parameters.AddWithValue("@reason", reason);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = assetType.Cateory.Category + " type Vendor: " + assetType.Vendor + " and type " + assetType.Type;
+            LogDeactivate(Table, assetType.TypeID, Value, reason);
+        }
+        public void ActivateAssetType(AssetType assetType, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update AssetType set Deactivate_reason = null, Active=1 where Type_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", assetType.TypeID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            string Value = assetType.Cateory.Category + " type Vendor: " + assetType.Vendor + " and type " + assetType.Type;
+            LogActivate(Table, assetType.TypeID, Value);
+        }
+        public bool IsAssetTypeExisting(AssetType assetType, string Vendor ="", string type ="")
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from AssetType where Type=@Type and Vendor=@vendor and Category=@cat";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@cat", assetType.Cateory.ID);
+            if(String.Compare(assetType.Type, type) !=0)
+                cmd.Parameters.AddWithValue("@Type", type);
+            else
+                cmd.Parameters.AddWithValue("@Type", assetType.Type);
+            if(String.Compare(assetType.Vendor, Vendor) != 0)
+                cmd.Parameters.AddWithValue("@vendor", Vendor);
+            else
+                cmd.Parameters.AddWithValue("@vendor", assetType.Vendor);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read()) 
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
+        }
+        #endregion
+        #region AssetCategory
+        public List<AssetCategory> ListAllAssetCategories()
+        {
+            List<AssetCategory> categories = new List<AssetCategory>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                categories.Add(new AssetCategory()
+                {
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Category = reader["Category"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>()
+                });
+            }
+            return categories;
+        }
+        public List<AssetCategory> ListAllAssetCategories(string searchString)
+        {
+            string searhterm = "%" + searchString + "%";
+            List<AssetCategory> categories = new List<AssetCategory>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category where Category like @searchString";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@searchString", searhterm);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                categories.Add(new AssetCategory()
+                {
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Category = reader["Category"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>()
+                });
+            }
+            return categories;
+        }
+        public List<AssetCategory> ListAssetCategoryByID(int id)
+        {
+            List<AssetCategory> categories = new List<AssetCategory>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category where ID = @id";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@id", id);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                categories.Add(new AssetCategory()
+                {
+                    ID = Convert.ToInt32(reader["ID"]),
+                    Category = reader["Category"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>()
+                });
+            }
+            return categories;
+        }
         #endregion
         #region Menu
         public ICollection<Menu> ListFirstMenuLevel()
@@ -1882,10 +2460,20 @@ namespace CMDB.DbContekst
             LogText = "The "+value+" in table "+table+" is deleted due to "+reason+" by "+Admin.Account.UserID;
             DoLog(table, ID);
         }
+        protected void LogDeactivated(string table, string AssetTag, string value, string reason)
+        {
+            LogText = "The " + value + " in table " + table + " is deleted due to " + reason + " by " + Admin.Account.UserID;
+            DoLog(table, AssetTag);
+        }
         protected void LogActivate(string table, int ID, string value)
         {
             LogText = "The " + value + " in table " + table + " is activated by " + Admin.Account.UserID;
             DoLog(table, ID);
+        }
+        protected void LogActivate(string table, string AssetTag, string value)
+        {
+            LogText = "The " + value + " in table " + table + " is activated by " + Admin.Account.UserID;
+            DoLog(table, AssetTag);
         }
         protected void LogAssignIden2Account(string table, int ID, Identity identity, Account account)
         {

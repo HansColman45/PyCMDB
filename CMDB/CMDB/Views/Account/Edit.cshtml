@@ -5,7 +5,7 @@
 @if ((bool)ViewData["UpdateAccess"])
 {
     <h2>@ViewData["Title"]</h2>
-    <form asp-action="Edit">
+    <form asp-action="Edit" class="form-horizontal">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="UserID" class="control-label">UserID <span style="color:red;">*</span></label>
@@ -14,12 +14,12 @@
         </div>
         <div class="form-group">
             <label class="control-label">Type <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Type, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
+            @Html.DropDownListFor(Model => Model.Type.TypeID, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
             <span class="text-danger field-validation-valid" asp-validation-for="Type" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label class="control-label">Application <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Application, (IEnumerable<SelectListItem>)ViewBag.Applications, "Please select", new { @class = "form-control" })
+            @Html.DropDownListFor(Model => Model.Application.AppID, (IEnumerable<SelectListItem>)ViewBag.Applications, "Please select", new { @class = "form-control" })
             <span class="text-danger field-validation-valid" asp-validation-for="Application" data-valmsg-replace="true"></span>
         </div>
         <input type="hidden" name="form-submitted" value="1" /><br>
