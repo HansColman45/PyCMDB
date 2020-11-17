@@ -41,12 +41,5 @@ namespace CMDB.Controllers
             BuildMenu();
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            _logger.LogWarning(Activity.Current?.Id, HttpContext.TraceIdentifier);
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
     }
 }

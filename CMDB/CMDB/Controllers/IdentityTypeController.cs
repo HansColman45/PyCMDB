@@ -96,6 +96,8 @@ namespace CMDB.Controllers
                 {
                     idenType.Type = values["Type"];
                     idenType.Description = values["Description"];
+                    if (_context.IsIdentityTypeExisting(idenType))
+                        ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
                         _context.CreateNewIdentityType(idenType, table);
@@ -130,6 +132,8 @@ namespace CMDB.Controllers
                 {
                     string newTpe = values["Type"];
                     string newDescription = values["Description"];
+                    if (_context.IsIdentityTypeExisting(idenType.ElementAt<IdentityType>(0), newTpe,newDescription))
+                        ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
                         _context.UpdateIdenityType(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);

@@ -515,6 +515,28 @@ namespace CMDB.DbContekst
             conn.Close();
             return accounts;
         }
+        public bool IsIdentityExisting(Identity identity, string UserID = "")
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from Idenity where UserID=@userid";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            if(String.IsNullOrEmpty(UserID))
+                cmd.Parameters.AddWithValue("@cat", identity.UserID);
+            else if (String.Compare(identity.UserID, UserID) != 0)
+                cmd.Parameters.AddWithValue("@userid", UserID);
+            else
+                cmd.Parameters.AddWithValue("@cat", identity.UserID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
+        }
         #endregion
         #region Account
         public ICollection<Account> ListAllAccounts()
@@ -835,6 +857,34 @@ namespace CMDB.DbContekst
             conn.Close();
             return accounts;
         }
+        public bool IsAccountExisting(Account account, string UserID = "", int application =0)
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from Account where UserID=@userid and Application=@application";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            if(String.IsNullOrEmpty(UserID))
+                cmd.Parameters.AddWithValue("@userid", account.UserID);
+            else if (String.Compare(account.UserID, UserID) !=0)
+                cmd.Parameters.AddWithValue("@userid", UserID);
+            else
+                cmd.Parameters.AddWithValue("@userid", account.UserID);
+            if(application == 0)
+                cmd.Parameters.AddWithValue("@application", account.Application.AppID);
+            else if (account.Application.AppID != application)
+                cmd.Parameters.AddWithValue("@application", application);
+            else
+                cmd.Parameters.AddWithValue("@application", account.Application.AppID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
+        }
         #endregion
         #region IdenAccount
         public bool IsPeriodOverlapping(int? IdenID, int? AccID, DateTime ValidFrom, DateTime ValidUntil)
@@ -1090,6 +1140,34 @@ namespace CMDB.DbContekst
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
             LogActivate(table, identityType.TypeID, Value);
         }
+        public bool IsIdentityTypeExisting(IdentityType identityType, string Type="", string Description = "")
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from IdenityType where Type=@type and description=@description";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            if (String.IsNullOrEmpty(Type))
+                cmd.Parameters.AddWithValue("@type", identityType.Type);
+            else if (String.Compare(identityType.Type, Type) != 0)
+                cmd.Parameters.AddWithValue("@type", Type);
+            else
+                cmd.Parameters.AddWithValue("@type", identityType.Type);
+            if (String.IsNullOrEmpty(Description))
+                cmd.Parameters.AddWithValue("@description", identityType.Description);
+            else if (String.Compare(identityType.Description, Description) != 0)
+                cmd.Parameters.AddWithValue("@description", Description);
+            else
+                cmd.Parameters.AddWithValue("@description", identityType.Description);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
+        }
         #endregion
         #region AccountType
         public List<AccountType> GetAccountTypeByID(int ID)
@@ -1260,6 +1338,34 @@ namespace CMDB.DbContekst
             }
             conn.Close();
             return accounts;
+        }
+        public bool IsAccountTypeExisting(AccountType accountType, string Type = "", string Description = "")
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from AccountType where Type=@type and description=@description";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            if(String.IsNullOrEmpty(Type))
+                cmd.Parameters.AddWithValue("@type", accountType.Type);
+            else if (String.Compare(accountType.Type, Type) != 0)
+                cmd.Parameters.AddWithValue("@type", Type);
+            else
+                cmd.Parameters.AddWithValue("@type", accountType.Type);
+            if(String.IsNullOrEmpty(Description))
+                cmd.Parameters.AddWithValue("@description", accountType.Description);
+            else if (String.Compare(accountType.Description, Description) != 0)
+                cmd.Parameters.AddWithValue("@description", Description);
+            else
+                cmd.Parameters.AddWithValue("@description", accountType.Description);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
         }
         #endregion
         #region Application
@@ -1461,7 +1567,7 @@ namespace CMDB.DbContekst
                 ID = Convert.ToInt32(reader["Admin_id"]);
             }
             conn.Close();
-            string Value = "Admin with UserID: " + Admin.Account.UserID + " and level: " + Admin.Level.ToString();
+            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogCreate(Table, ID, Value, this.Admin.Account.UserID);
         }
         public void UpdateAdmin(Admin admin, int level, string Table)
@@ -1481,6 +1587,52 @@ namespace CMDB.DbContekst
                 }
                 conn.Close();
             }
+        }
+        public void DeactivateAdmin(Admin admin, string reason, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update Admin set Deactivate_reason = @reason, Active=0 where Admin_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", admin.Adminid);
+            cmd.Parameters.AddWithValue("@reason", reason);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
+            LogDeactivate(table, admin.Adminid, Value, reason);
+        }
+        public void ActivateAdmin(Admin admin, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update Admin set Deactivate_reason = null, Active=1 where Admin_ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", admin.Adminid);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
+            LogActivate(table, admin.Adminid, Value);
+        }
+        public bool IsAdminExisting(Admin admin)
+        {
+            bool result = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from Admin where Account=@accid";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@accid", admin.Account.AccID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            conn.Close();
+            return result;
         }
         #endregion
         #region Devices
@@ -1983,22 +2135,6 @@ namespace CMDB.DbContekst
             }
             return devices;
         }
-        public List<SelectListItem> ListActiveCategories()
-        {
-            List<SelectListItem> assettypes = new List<SelectListItem>();
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            using MySqlConnection conn = Connection;
-            conn.Open();
-            string SQL = "select ID, Category from category where active = 1";
-            MySqlCommand cmd = new MySqlCommand(SQL, conn);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                assettypes.Add(new SelectListItem(reader["Category"].ToString(), reader["ID"].ToString()));
-            }
-            conn.Close();
-            return assettypes;
-        }
         public void CreateNewAssetType(AssetType assetType, string Table)
         {
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
@@ -2096,11 +2232,17 @@ namespace CMDB.DbContekst
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(SQL, conn);
             cmd.Parameters.AddWithValue("@cat", assetType.Cateory.ID);
-            if(String.Compare(assetType.Type, type) !=0)
+            //Check Type param
+            if (String.IsNullOrEmpty(type))
+                cmd.Parameters.AddWithValue("@Type", assetType.Type);
+            else if (String.Compare(assetType.Type, type) !=0)
                 cmd.Parameters.AddWithValue("@Type", type);
             else
                 cmd.Parameters.AddWithValue("@Type", assetType.Type);
-            if(String.Compare(assetType.Vendor, Vendor) != 0)
+            // Check Vendor param
+            if (String.IsNullOrEmpty(Vendor))
+                cmd.Parameters.AddWithValue("@vendor", assetType.Vendor);
+            else if (String.Compare(assetType.Vendor, Vendor) != 0)
                 cmd.Parameters.AddWithValue("@vendor", Vendor);
             else
                 cmd.Parameters.AddWithValue("@vendor", assetType.Vendor);
@@ -2118,7 +2260,7 @@ namespace CMDB.DbContekst
         {
             List<AssetCategory> categories = new List<AssetCategory>();
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category";
+            string SQL = "select ID, Category, Prefix,if(active=1,\"Active\",\"Inactive\") Active from category";
             using MySqlConnection conn = Connection;
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(SQL, conn);
@@ -2129,6 +2271,7 @@ namespace CMDB.DbContekst
                 {
                     ID = Convert.ToInt32(reader["ID"]),
                     Category = reader["Category"].ToString(),
+                    Prefix = reader["Prefix"].ToString(),
                     Active = reader["Active"].ToString(),
                     Logs = new List<Log>()
                 });
@@ -2140,7 +2283,7 @@ namespace CMDB.DbContekst
             string searhterm = "%" + searchString + "%";
             List<AssetCategory> categories = new List<AssetCategory>();
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category where Category like @searchString";
+            string SQL = "select ID, Category, Prefix, if(active=1,\"Active\",\"Inactive\") Active from category where Category like @searchString or Prefix like @searchString";
             using MySqlConnection conn = Connection;
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(SQL, conn);
@@ -2152,6 +2295,7 @@ namespace CMDB.DbContekst
                 {
                     ID = Convert.ToInt32(reader["ID"]),
                     Category = reader["Category"].ToString(),
+                    Prefix = reader["Prefix"].ToString(),
                     Active = reader["Active"].ToString(),
                     Logs = new List<Log>()
                 });
@@ -2162,7 +2306,7 @@ namespace CMDB.DbContekst
         {
             List<AssetCategory> categories = new List<AssetCategory>();
             MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            string SQL = "select ID, Category, if(active=1,\"Active\",\"Inactive\") Active from category where ID = @id";
+            string SQL = "select ID, Category,Prefix, if(active=1,\"Active\",\"Inactive\") Active from category where ID = @id";
             using MySqlConnection conn = Connection;
             conn.Open();
             MySqlCommand cmd = new MySqlCommand(SQL, conn);
@@ -2174,11 +2318,147 @@ namespace CMDB.DbContekst
                 {
                     ID = Convert.ToInt32(reader["ID"]),
                     Category = reader["Category"].ToString(),
+                    Prefix = reader["Prefix"].ToString(),
                     Active = reader["Active"].ToString(),
                     Logs = new List<Log>()
                 });
             }
             return categories;
+        }
+        public List<SelectListItem> ListActiveCategories()
+        {
+            List<SelectListItem> assettypes = new List<SelectListItem>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            string SQL = "select ID, Category from category where active = 1";
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                assettypes.Add(new SelectListItem(reader["Category"].ToString(), reader["ID"].ToString()));
+            }
+            conn.Close();
+            return assettypes;
+        }
+        public void CreateAssetCategory(AssetCategory category, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "insert into category (Category, Prefix) values (@category,@prefix)";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", category.Category);
+            cmd.Parameters.AddWithValue("@prefix", category.Prefix);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            conn.Close();
+            conn.Open();
+            SQL = "Select ID from category order by ID desc limit 1";
+            cmd = new MySqlCommand(SQL, conn);
+            int ID = 0;
+            reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                ID = Convert.ToInt32(reader["ID"]);
+            }
+            conn.Close();
+            string Value = String.Format("Assetcategory {0} with prefix {1}",category.Category,category.Prefix) ;
+            LogCreate(table, ID, Value, Admin.Account.UserID);
+        }
+        public void UpdateAssetCategory(AssetCategory category, string Category, string prefix, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            if (String.Compare(category.Category, Category) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update category set Category = @Category where ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", category.ID);
+                cmd.Parameters.AddWithValue("@Category", category);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                LogUpdate(Table, category.ID, "Category", category.Category, Category, Admin.Account.UserID);
+            }
+            if (String.Compare(category.Prefix, prefix) != 0)
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("Update category set Prefix = @Prefix where ID = @uuid", conn);
+                cmd.Parameters.AddWithValue("@uuid", category.ID);
+                cmd.Parameters.AddWithValue("@Prefix", prefix);
+                var reader = cmd.ExecuteReader();
+                while (reader.Read())
+                {
+                }
+                conn.Close();
+                if (String.IsNullOrEmpty(category.Prefix))
+                    category.Prefix = "Empty";
+                if (String.IsNullOrEmpty(prefix))
+                    prefix = "Empty";
+                LogUpdate(Table, category.ID, "Prefix", category.Prefix, prefix, Admin.Account.UserID);
+            }
+        }
+        public void DeactivateAssetCategory(AssetCategory category, string Reason, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update category set Deactivate_reason = @reason, Active=0 where ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", category.ID);
+            cmd.Parameters.AddWithValue("@reason", Reason);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
+            LogDeactivate(Table, category.ID, Value, Reason);
+        }
+        public void ActivateAssetCategory(AssetCategory category, string Table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update category set Deactivate_reason = NULL, Active=1 where ID = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", category.ID);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
+            LogActivate(Table, category.ID, Value);
+        }
+        public bool IsAssetCategoryExisting(AssetCategory category, string Category = "")
+        {
+            bool result = false;
+            bool changed = false;
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select * from category where Category=@type";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            if(String.IsNullOrEmpty(Category))
+                cmd.Parameters.AddWithValue("@type", category.Category);
+            else if (String.Compare(category.Category,Category) != 0)
+            {
+                cmd.Parameters.AddWithValue("@type", Category);
+                changed = true;
+            }                
+            else
+                cmd.Parameters.AddWithValue("@type", category.Category);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                result = true;
+            }
+            if (!changed)
+                result = false;
+            conn.Close();
+            return result;
         }
         #endregion
         #region Menu
@@ -2311,6 +2591,11 @@ namespace CMDB.DbContekst
                 case "subscription":
                     Sql = "select Log_Text, Log_Date from LOG where Subscription=@uuid order by Log_date desc";
                     break;
+                case "assetcategory":
+                    Sql = "select Log_Text, Log_Date from LOG where Category=@uuid order by Log_date desc";
+                    break;
+                default:
+                    throw new Exception("No log insert statement created for table: " + table);
             }
             MySqlCommand cmd = new MySqlCommand(Sql, conn);
             cmd.Parameters.AddWithValue("@uuid", ID);
@@ -2552,6 +2837,11 @@ namespace CMDB.DbContekst
                 case "subscription":
                     Sql = "INSERT INTO LOG (Subscription,Log_Text,Log_Date) values(@uuid, @log_text, @log_date)";
                     break;
+                case "assetcategory":
+                    Sql = "INSERT INTO LOG (Category,Log_Text,Log_Date) values (@uuid, @log_text, @log_date)";
+                    break;
+                default:
+                    throw new Exception("No log insert statement created for table: " + table);
             }
             MySqlCommand cmd = new MySqlCommand(Sql, conn);
             cmd.Parameters.AddWithValue("@UUID", ID);

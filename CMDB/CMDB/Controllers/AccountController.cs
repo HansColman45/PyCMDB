@@ -70,6 +70,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Create Account";
             ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
             BuildMenu();
+            Account account = new Account();
             ViewBag.Types = _context.ListActiveAccountTypes();
             ViewBag.Applications = _context.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
@@ -81,6 +82,13 @@ namespace CMDB.Controllers
                     ViewData["UserID"] = UserID;
                     string Type = values["type"];
                     string Application = values["Application"];
+                    AccountType accountType = _context.GetAccountTypeByID(Convert.ToInt32(Type)).ElementAt<AccountType>(0);
+                    Application application = _context.GetApplicationByID(Convert.ToInt32(Application)).ElementAt<Application>(0);
+                    account.UserID = UserID;
+                    account.Application = application;
+                    account.Type = accountType;
+                    if (_context.IsAccountExisting(account))
+                        ModelState.AddModelError("","Account alreaday exist");
                     if (ModelState.IsValid)
                     {
                         _context.CreateNewAccount(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);
@@ -121,6 +129,8 @@ namespace CMDB.Controllers
                     string NewUserID = values["UserID"];
                     string Type =values["Type.TypeID"];
                     string Application = values["Application.AppID"];
+                    if (_context.IsAccountExisting(account, NewUserID, Convert.ToInt32(Type)))
+                        ModelState.AddModelError("", "Account alreaday exist");
                     if (ModelState.IsValid)
                     {
                         _context.EditAccount(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);

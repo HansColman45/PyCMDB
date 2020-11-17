@@ -484,3 +484,12 @@ C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetType\Edit.
 C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\scopedcss\bundle\CMDB.styles.css
 C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetType\Details.cshtml.g.cs
 C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetType\Delete.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Admin\Edit.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\Admin\Delete.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Index.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Search.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetType\Search.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Create.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Edit.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Details.cshtml.g.cs
+C:\Software\PyCMDB\CMDB\CMDB\obj\Debug\netcoreapp3.1\Razor\Views\AssetCategory\Delete.cshtml.g.cs

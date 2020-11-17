@@ -42,6 +42,26 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\AssetType\Search";
             return View(accounts);
         }
+        public IActionResult Search(string search)
+        {
+            _logger.LogDebug("Using search for {0}", sitePart);
+            BuildMenu();
+            if (!String.IsNullOrEmpty(search))
+            {
+                ViewData["search"] = search;
+                var accounts = _context.ListAllAssetTypes(search);
+                ViewData["Title"] = "Assettype overview";
+                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+                ViewData["actionUrl"] = @"\AssetType\Search";
+                return View(accounts);
+            }
+            else
+                return RedirectToAction(nameof(Index));
+        }
         public IActionResult Create(IFormCollection values)
         {
             _logger.LogDebug("Using Create in {0}", sitePart);

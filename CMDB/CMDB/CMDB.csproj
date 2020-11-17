@@ -24,7 +24,6 @@
     <Folder Include="Views\Subscription\" />
     <Folder Include="Views\Permission\" />
     <Folder Include="wwwroot\PDF-Files\" />
-    <Folder Include="Views\AssetCategory\" />
   </ItemGroup>
 
   <ItemGroup>

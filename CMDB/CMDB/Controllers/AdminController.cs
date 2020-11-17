@@ -35,6 +35,7 @@ namespace CMDB.Controllers
             ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
             ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
             ViewData["actionUrl"] = @"\Admin\Search";
             return View(list);
         }
@@ -50,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
                 ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
                 ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
                 ViewData["actionUrl"] = @"\Admin\Search";
                 return View(list);
             }
@@ -74,9 +76,47 @@ namespace CMDB.Controllers
                 {
                     admin.Account = _context.GetAccountByID(Convert.ToInt32(values["Account"])).ElementAt<Account>(0);
                     admin.Level = Convert.ToInt32(values["Level"]);
+                    if (_context.IsAdminExisting(admin))
+                        ModelState.AddModelError("", "Admin is already existing");
                     if (ModelState.IsValid)
                     {
                         _context.CreateNewAdmin(admin, table);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    //Log the error (uncomment ex variable name and write a log.
+                    _logger.LogError("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(admin);
+        }
+        public IActionResult Edit(IFormCollection values, int? id)
+        {
+            _logger.LogDebug("Using Edit in {0}", sitePart);
+            ViewData["Title"] = "Edit Admin";
+            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewBag.Accounts = _context.ListActiveCMDBAccounts();
+            ViewBag.Levels = _context.ListAllLevels();
+            BuildMenu();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            string FormSubmit = values["form-submitted"];
+            Admin admin = _context.GetAdminByID((int)id).ElementAt<Admin>(0);
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    int Level = Convert.ToInt32(values["Level"]);
+                    if (ModelState.IsValid)
+                    {
+                        _context.UpdateAdmin(admin, Level,table);
                         _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
                     }
@@ -107,6 +147,64 @@ namespace CMDB.Controllers
             var Admins = _context.GetAdminByID((int)id);
             _context.GetLogs(table, (int)id, Admins.ElementAt<Admin>(0));
             return View(Admins);
+        }
+        public IActionResult Delete(IFormCollection values, int? id)
+        {
+            _logger.LogDebug("Using Delete in {0}", sitePart);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            ViewData["Title"] = "Delete admin";
+            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["backUrl"] = "Admin";
+            BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            Admin admin = _context.GetAdminByID((int)id).ElementAt<Admin>(0);
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    ViewData["reason"] = values["reason"];
+                    if (ModelState.IsValid)
+                    {
+                        _context.DeactivateAdmin(admin, values["reason"].ToString(), table);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    //Log the error (uncomment ex variable name and write a log.
+                    _logger.LogError("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(admin);
+        }
+        public IActionResult Activate(int? id)
+        {
+            _logger.LogDebug("Using Activate in {0}", table);
+            ViewData["Title"] = "Activate Admin";
+            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            BuildMenu();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            Admin admin = _context.GetAdminByID((int)id).ElementAt<Admin>(0);
+            if (_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            {
+                _context.ActivateAdmin(admin, table);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                RedirectToAction(nameof(Index));
+            }
+            return View();
         }
     }
 }

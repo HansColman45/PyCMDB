@@ -73,6 +73,8 @@ namespace CMDB.Controllers
                 {
                     accountType.Type = values["Type"];
                     accountType.Description = values["Description"];
+                    if (_context.IsAccountTypeExisting(accountType))
+                        ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
                         _context.CreateNewAccountType(accountType, table);
@@ -105,11 +107,13 @@ namespace CMDB.Controllers
             {
                 try
                 {
-                    string newTpe = values["Type"];
+                    string newType = values["Type"];
                     string newDescription = values["Description"];
+                    if (_context.IsAccountTypeExisting(accountType.ElementAt<AccountType>(0), newType, newDescription))
+                        ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        _context.UpdateAccountType(accountType.ElementAt<AccountType>(0), newTpe, newDescription, table);
+                        _context.UpdateAccountType(accountType.ElementAt<AccountType>(0), newType, newDescription, table);
                         _context.SaveChangesAsync();
                         return RedirectToAction(nameof(Index));
                     }

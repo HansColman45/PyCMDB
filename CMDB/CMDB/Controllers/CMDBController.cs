@@ -7,6 +7,7 @@ using CMDB.Models;
 using CMDB.DbContekst;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
+using System.Diagnostics;
 
 namespace CMDB.Controllers
 {
@@ -59,6 +60,12 @@ namespace CMDB.Controllers
             ViewBag.MobileIcon = "fas fa-mobile-alt";
             ViewBag.SubscriptionIcon = "fas fa-file-invoice-dollar";
             ViewBag.SearchIcon = "fas fa-search";
+        }
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            _logger.LogWarning(Activity.Current?.Id, HttpContext.TraceIdentifier);
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

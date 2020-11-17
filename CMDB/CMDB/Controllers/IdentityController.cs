@@ -124,6 +124,8 @@ namespace CMDB.Controllers
                     string EMail = values["EMail"];
                     identity.EMail = EMail;
                     string Language = values["Language"];
+                    if (_context.IsIdentityExisting(identity))
+                        ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
                         _context.CreateNewIdentity(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
@@ -164,6 +166,8 @@ namespace CMDB.Controllers
                 string NewType = values["Type"];
                 string NewLanguage = values["Language"];
                 string NewEMail = values["EMail"];
+                if (_context.IsIdentityExisting(identity, NewUserID))
+                    ModelState.AddModelError("", "Idenity alreday existing");
                 try
                 {
                     if (ModelState.IsValid)
