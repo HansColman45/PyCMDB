@@ -39,6 +39,7 @@ namespace CMDB.Controllers
             ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
             ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
             ViewData["AssignIdentityAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
             ViewData["actionUrl"] = @"\Laptop\Search";
             return View(Desktops);
         }
@@ -57,6 +58,7 @@ namespace CMDB.Controllers
                 ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
                 ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
                 ViewData["AssignIdentityAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
                 ViewData["actionUrl"] = @"\Laptop\Search";
                 return View(Desktops);
             }
@@ -169,6 +171,64 @@ namespace CMDB.Controllers
             _context.GetLogs(table, laptop.AssetTag, laptop);
             ViewBag.Identity = _context.GetIdentityByID(laptop.Identity.IdenID).ElementAt<Identity>(0);
             return View(laptop);
+        }
+        public IActionResult Delete(IFormCollection values, string id)
+        {
+            _logger.LogDebug("Using Delete in {0}", sitePart);
+            if (String.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+            ViewData["Title"] = "Delete Laptop";
+            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["backUrl"] = "Admin";
+            BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            Laptop laptop = _context.ListLaptopByID(id).ElementAt<Laptop>(0);
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    ViewData["reason"] = values["reason"];
+                    if (ModelState.IsValid)
+                    {
+                        _context.DeactivateDevice(laptop, values["reason"], table);
+                        _context.SaveChangesAsync();
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (MySqlException ex)
+                {
+                    //Log the error (uncomment ex variable name and write a log.
+                    _logger.LogError("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(laptop);
+        }
+        public IActionResult Activate(string id)
+        {
+            _logger.LogDebug("Using Activate in {0}", table);
+            ViewData["Title"] = "Activate Laptop";
+            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            BuildMenu();
+            if (String.IsNullOrEmpty(id))
+            {
+                return NotFound();
+            }
+            Laptop laptop = _context.ListLaptopByID(id).ElementAt<Laptop>(0);
+            if (_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            {
+                _context.ActivateDevice(laptop, table);
+                _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                RedirectToAction(nameof(Index));
+            }
+            return View();
         }
     }
 }

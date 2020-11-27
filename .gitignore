@@ -38,3 +38,6 @@ CMDB/.vs/CMDB/
 *.scc
 *.dll
 *.pdb
+CMDB/.vs
+CMDB/CMDB/bin/Debug
+CMDB/CMDB/obj/Debug

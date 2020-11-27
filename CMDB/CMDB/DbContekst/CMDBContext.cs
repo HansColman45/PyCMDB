@@ -1715,44 +1715,6 @@ namespace CMDB.DbContekst
             }
             return devices;
         }
-        public List<Device> ListDeviceByID(string assetTag)
-        {
-            List<Device> devices = new List<Device>();
-            MySqlConnection Connection = new MySqlConnection(ConnectionString);
-            string SQL = "Select AssetTag, SerialNumber, at.Vendor, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, c.ID catID, c.Category " +
-                "from Asset a join assettype at on a.Type = at.Type_id " +
-                "join category c on a.Category = c.ID " +
-                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
-            using MySqlConnection conn = Connection;
-            conn.Open();
-            MySqlCommand cmd = new MySqlCommand(SQL, conn);
-            cmd.Parameters.AddWithValue("@category", assetTag);
-            var reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                devices.Add(new Device()
-                {
-                    AssetTag = reader["AssetTag"].ToString(),
-                    SerialNumber = reader["SerialNumber"].ToString(),
-                    Active = reader["Active"].ToString(),
-                    Type = new AssetType()
-                    {
-                        Type = reader["Type"].ToString(),
-                        Vendor = reader["Vendor"].ToString()
-                    },
-                    Category = new AssetCategory()
-                    {
-                        ID = Convert.ToInt32(reader["catID"]),
-                        Category = reader["Category"].ToString()
-                    },
-                    Identity = new Identity()
-                    {
-                        Name = string.IsNullOrEmpty(reader["name"].ToString()) ? "Not in use" : reader["name"].ToString()
-                    }
-                });
-            }
-            return devices;
-        }
         public List<SelectListItem> ListAssetTypes(string category)
         {
             List<SelectListItem> assettypes = new List<SelectListItem>();
@@ -1942,6 +1904,35 @@ namespace CMDB.DbContekst
                 LogUpdate(Table, laptop.AssetTag, "Type", laptop.Type.Vendor + " " + laptop.Type, newAssetType.Vendor + " " + newAssetType.Type, Admin.Account.UserID);
             }
         }
+        public void DeactivateDevice(Device device, string Reason, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update Asset set Deactivate_reason = @reason, Active=0 where AssetTag = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", device.AssetTag);
+            cmd.Parameters.AddWithValue("@reason", Reason);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
+            LogDeactivated(table, device.AssetTag, Value, Reason);
+        }
+        public void ActivateDevice(Device device, string table)
+        {
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand("Update Asset set Deactivate_reason = null, Active=0 where AssetTag = @uuid", conn);
+            cmd.Parameters.AddWithValue("@uuid", device.AssetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+            }
+            string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
+            LogActivate(table, device.AssetTag, Value);
+        }
         public List<Desktop> ListDekstopByID(string assetTag)
         {
             List<Desktop> devices = new List<Desktop>();
@@ -1965,6 +1956,7 @@ namespace CMDB.DbContekst
                     MAC = reader["MAC"].ToString(),
                     RAM = reader["RAM"].ToString(),
                     Logs = new List<Log>(),
+                    Keys = new List<Kensington>(),
                     Type = new AssetType()
                     {
                         TypeID = Convert.ToInt32(reader["Type_id"]),
@@ -2008,6 +2000,7 @@ namespace CMDB.DbContekst
                     MAC = reader["MAC"].ToString(),
                     RAM = reader["RAM"].ToString(),
                     Logs = new List<Log>(),
+                    Keys = new List<Kensington>(),
                     Type = new AssetType()
                     {
                         TypeID = Convert.ToInt32(reader["Type_id"]),
@@ -2027,6 +2020,131 @@ namespace CMDB.DbContekst
                 });
             }
             return devices;
+        }
+        public List<Docking> ListDockingByID(string assetTag)
+        {
+            List<Docking> dockings = new List<Docking>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor,at.Type_id, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, i.Iden_ID, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dockings.Add(new Docking()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>(),
+                    Keys = new List<Kensington>(),
+                    Type = new AssetType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_id"]),
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = reader["name"].ToString(),
+                        IdenID = Convert.ToInt32(reader["Iden_ID"])
+                    }
+                });
+            }
+            return dockings;
+        }
+        public List<Monitor> ListMonitorByID(string assetTag)
+        {
+            List<Monitor> dockings = new List<Monitor>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor,at.Type_id, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, i.Iden_ID, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dockings.Add(new Monitor()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>(),
+                    Keys = new List<Kensington>(),
+                    Type = new AssetType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_id"]),
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = reader["name"].ToString(),
+                        IdenID = Convert.ToInt32(reader["Iden_ID"])
+                    }
+                });
+            }
+            return dockings;
+        }
+        public List<Token> ListTokenByID(string assetTag)
+        {
+            List<Token> dockings = new List<Token>();
+            MySqlConnection Connection = new MySqlConnection(ConnectionString);
+            string SQL = "Select AssetTag, SerialNumber, at.Vendor,at.Type_id, at.Type, if(a.active=1,\"Active\",\"Inactive\") Active, i.name, i.Iden_ID, c.ID catID, c.Category " +
+                "from Asset a join assettype at on a.Type = at.Type_id " +
+                "join category c on a.Category = c.ID " +
+                "left join identity i on a.Identity = i.Iden_ID where AssetTag = @category";
+            using MySqlConnection conn = Connection;
+            conn.Open();
+            MySqlCommand cmd = new MySqlCommand(SQL, conn);
+            cmd.Parameters.AddWithValue("@category", assetTag);
+            var reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                dockings.Add(new Token()
+                {
+                    AssetTag = reader["AssetTag"].ToString(),
+                    SerialNumber = reader["SerialNumber"].ToString(),
+                    Active = reader["Active"].ToString(),
+                    Logs = new List<Log>(),
+                    Type = new AssetType()
+                    {
+                        TypeID = Convert.ToInt32(reader["Type_id"]),
+                        Type = reader["Type"].ToString(),
+                        Vendor = reader["Vendor"].ToString()
+                    },
+                    Category = new AssetCategory()
+                    {
+                        ID = Convert.ToInt32(reader["catID"]),
+                        Category = reader["Category"].ToString()
+                    },
+                    Identity = new Identity()
+                    {
+                        Name = reader["name"].ToString(),
+                        IdenID = Convert.ToInt32(reader["Iden_ID"])
+                    }
+                });
+            }
+            return dockings;
         }
         public bool IsDeviceExisting(Device device) 
         {
@@ -2654,7 +2772,6 @@ namespace CMDB.DbContekst
             cmd.Parameters.AddWithValue("@part", site);
             cmd.Parameters.AddWithValue("@action", action);
             var reader = cmd.ExecuteReader();
-            DataTable dt = new DataTable();
             int i = 0;
             while (reader.Read())
             {

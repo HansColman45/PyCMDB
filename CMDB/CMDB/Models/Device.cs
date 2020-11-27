@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CMDB.Models
@@ -21,20 +22,22 @@ namespace CMDB.Models
         public string MAC { get; set; }
         [Required(ErrorMessage = "Please select the amount of RAM")]
         public string RAM { get; set; }
+        public List<Kensington> Keys { get; set; }
     }
     public class Desktop : Device
     {
         public string MAC { get; set; }
         [Required(ErrorMessage = "Please select the amount of RAM")]
         public string RAM { get; set; }
+        public List<Kensington> Keys { get; set; }
     }
     public class Monitor : Device
     {
-        
+        public List<Kensington> Keys { get; set; }
     }
     public class Docking : Device
     {
-
+        public List<Kensington> Keys { get; set; }
     }
     public class Token: Device
     {

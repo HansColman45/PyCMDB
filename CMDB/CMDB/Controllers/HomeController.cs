@@ -26,12 +26,14 @@ namespace CMDB.Controllers
         }
         public IActionResult Index()
         {
+            _logger.LogDebug("Using list all for {0}", "Home");
             BuildMenu();
             ViewData["Company"]= _context.Company;
             return View();
         }
         public IActionResult LogOut()
         {
+            _logger.LogDebug("Using Logout {0}", "Home");
             _context.Admin = null;
             string stringFullUrl = @"\Login";
             return Redirect(stringFullUrl);
