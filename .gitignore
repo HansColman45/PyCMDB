@@ -41,3 +41,7 @@ CMDB/.vs/CMDB/
 CMDB/.vs
 CMDB/CMDB/bin/Debug
 CMDB/CMDB/obj/Debug
+
+# SpecFlow
+*.feature.cs
+*.feature.xlsx.*

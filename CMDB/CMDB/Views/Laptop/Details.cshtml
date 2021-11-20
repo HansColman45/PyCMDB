@@ -1,6 +1,6 @@
-﻿@model CMDB.Models.Laptop;
+﻿@model CMDB.Domain.Entities.Laptop;
 @{
-    Identity identity = (Identity)ViewBag.Identity;
+    CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
     Layout = "_Layout";
 }
 @if ((bool)ViewData["InfoAccess"])
@@ -35,7 +35,7 @@
                 <tr>
                     <td>Name</td>
                     <td>UserID</td>
-                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenID > 1)
+                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenId > 1)
                     {
                         <th>Action</th>
                     }
@@ -45,9 +45,9 @@
                 <tr>
                     <td class="small">@identity.Name</td>
                     <td class="small">@identity.UserID</td>
-                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenID > 1)
+                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenId > 1)
                     {
-                        <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.AssetTag" asp-route-idenid="@identity.IdenID" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                        <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.AssetTag" asp-route-idenid="@identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                     }
                 </tr>
             </tbody>
@@ -64,7 +64,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (Log log in Model.Logs)
+                @foreach (CMDB.Domain.Entities.Log log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

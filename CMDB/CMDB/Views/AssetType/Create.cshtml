@@ -1,4 +1,4 @@
-﻿@model CMDB.Models.AssetType
+﻿@model CMDB.Domain.Entities.AssetType
 @{
     Layout = "_Layout";
 }
@@ -9,8 +9,8 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label">Category <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Cateory, (IEnumerable<SelectListItem>)ViewBag.Catgories, "Please select", new { @class = "form-control" })
-            <span class="text-danger field-validation-valid" asp-validation-for="Cateory" data-valmsg-replace="true"></span>
+            @Html.DropDownListFor(Model => Model.Category, (IEnumerable<SelectListItem>)ViewBag.Catgories, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Category" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label asp-for="Vendor" class="control-label">Vendor <span style="color:red;">*</span></label>

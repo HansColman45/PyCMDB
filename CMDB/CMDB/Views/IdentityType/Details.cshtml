@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Models.IdentityType>
+﻿@model IEnumerable<CMDB.Domain.Entities.IdentityType>
 @{
     Layout = "_Layout";
 }
@@ -38,7 +38,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Log log in item.Logs)
+                    @foreach (CMDB.Domain.Entities.Log log in item.Logs)
                     {
                         <tr>
                             <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

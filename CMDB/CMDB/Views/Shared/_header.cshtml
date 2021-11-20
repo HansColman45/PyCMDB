@@ -10,7 +10,7 @@
                 <li class="nav-item active">
                     <a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                 </li>
-                @foreach (var item in ViewBag.Menu as List<Menu>)
+                @foreach (var item in ViewBag.Menu as List<CMDB.Domain.Entities.Menu>)
                 {
                     <!-- 1 -->
                     <li class="nav-item dropdown">

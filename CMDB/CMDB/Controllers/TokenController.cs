@@ -1,42 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
-using CMDB.Util;
-using CMDB.DbContekst;
+using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Models;
+using CMDB.Domain.Entities;
+using CMDB.Services;
 
 namespace CMDB.Controllers
 {
     public class TokenController : CMDBController
     {
-        private readonly CMDBContext _context;
         private readonly ILogger<TokenController> _logger;
         private readonly static string sitePart = "Token";
         private readonly static string table = "token";
         private readonly IWebHostEnvironment _env;
-        public TokenController(CMDBContext context, ILogger<TokenController> logger, IWebHostEnvironment env):base(context,logger,env)
+        private DevicesService service;
+        public TokenController(CMDBContext context, ILogger<TokenController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
-            _context = context;
             _logger = logger;
             _env = env;
+            service = new(context);
         }
         public IActionResult Index()
         {
             _logger.LogDebug("Using List all in {0}", table);
             ViewData["Title"] = "Token overview";
             BuildMenu();
-            var Desktops = _context.ListAllDevices("Token");
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+            var Desktops = service.ListAll("Token");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
             return View(Desktops);
         }
@@ -49,12 +46,12 @@ namespace CMDB.Controllers
                 _logger.LogDebug("Using List all in {0}", table);
                 ViewData["Title"] = "Token overview";
                 BuildMenu();
-                var Desktops = _context.ListAllDevices(sitePart, search);
-                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+                var Desktops = service.ListAll(sitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
                 return View(Desktops);
             }
@@ -71,11 +68,11 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             ViewData["Title"] = "Delete Token";
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Token token = _context.ListTokenByID(id).ElementAt<Token>(0);
+            Token token = service.ListTokenByID(id).ElementAt<Token>(0);
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -83,12 +80,11 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _context.DeactivateDevice(token, values["reason"], table);
-                        _context.SaveChangesAsync();
+                        service.Deactivate(token, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
                     _logger.LogError("Database exception {0}", ex.ToString());
@@ -102,17 +98,16 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Token";
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-            Token token = _context.ListTokenByID(id).ElementAt<Token>(0);
-            if (_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            Token token = service.ListTokenByID(id).ElementAt<Token>(0);
+            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _context.ActivateDevice(token, table);
-                _context.SaveChangesAsync();
+                service.Activate(token, table);
                 return RedirectToAction(nameof(Index));
             }
             else

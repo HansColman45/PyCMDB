@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_Layout";
-    Identity identity = (Identity)ViewBag.Identity;
-    Account account = (Account)ViewBag.Account;
+    CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
+    CMDB.Domain.Entities.Account account = (CMDB.Domain.Entities.Account)ViewBag.Account;
 }
 @if ((bool)ViewData["ReleaseIdentity"])
 {

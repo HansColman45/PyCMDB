@@ -1,58 +1,56 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
-using CMDB.DbContekst;
-using CMDB.Models;
+using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Http;
-using System.Security.Cryptography.Pkcs;
 using Microsoft.AspNetCore.Hosting;
+using CMDB.Domain.Entities;
+using CMDB.Services;
 
 namespace CMDB.Controllers
 {
     public class IdentityTypeController : CMDBController
     {
-        private readonly CMDBContext _context;
         private readonly ILogger<IdentityTypeController> _logger;
         private readonly IWebHostEnvironment _env;
         private readonly static string table = "identitytype";
         private readonly static string sitePart = "Identity Type";
-        public IdentityTypeController(CMDBContext context, ILogger<IdentityTypeController> logger, IWebHostEnvironment env):base(context,logger,env)
+        private IdentityTypeService service;
+        public IdentityTypeController(CMDBContext context, ILogger<IdentityTypeController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
-            _context = context;
             _logger = logger;
             _env = env;
+            service = new(context);
         }
         public IActionResult Index()
         {
             _logger.LogDebug("Using List all in {0}", table);
-            var list = _context.ListAllIdentyTypes();
+            var list = service.ListAll();
             ViewData["Title"] = "Identitytype overview";
             BuildMenu();
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             ViewData["actionUrl"] = @"\IdentityType\Search";
             return View(list);
         }
         public IActionResult Search(string search)
         {
             _logger.LogDebug("Using List all in {0}", table);
-            if (!String.IsNullOrEmpty(search)) {
+            if (!String.IsNullOrEmpty(search))
+            {
                 ViewData["search"] = search;
-                var list = _context.ListAllIdentyTypes(search);
+                var list = service.ListAll(search);
                 ViewData["Title"] = "Identitytype overview";
                 BuildMenu();
-                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
-                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
                 ViewData["actionUrl"] = @"\IdentityType\Search";
                 return View(list);
             }
@@ -66,16 +64,16 @@ namespace CMDB.Controllers
             _logger.LogDebug("Using details in {0}", table);
             ViewData["Title"] = "Identitytype Details";
             BuildMenu();
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["LogDateFormat"] = _context.LogDateFormat;
-            ViewData["DateFormat"] = _context.DateFormat;
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
             {
                 return NotFound();
             }
-            var idenType = _context.GetIdenityTypeByID((int)id);
-            _context.GetLogs(table, (int)id, idenType.ElementAt<IdentityType>(0));
+            var idenType = service.GetByID((int)id);
+            service.GetLogs(table, (int)id, idenType.ElementAt<IdentityType>(0));
             if (idenType == null)
             {
                 return NotFound();
@@ -86,9 +84,9 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identitytype";
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             BuildMenu();
-            IdentityType idenType = new IdentityType();
+            IdentityType idenType = new();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -96,16 +94,15 @@ namespace CMDB.Controllers
                 {
                     idenType.Type = values["Type"];
                     idenType.Description = values["Description"];
-                    if (_context.IsIdentityTypeExisting(idenType))
+                    if (service.IsExisting(idenType))
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        _context.CreateNewIdentityType(idenType, table);
-                        _context.SaveChangesAsync();
+                        service.Create(idenType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     _logger.LogError("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
@@ -122,9 +119,9 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             ViewData["Title"] = "Edit Identitytype";
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             BuildMenu();
-            var idenType = _context.GetIdenityTypeByID((int)id);
+            var idenType = service.GetByID((int)id);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -132,16 +129,15 @@ namespace CMDB.Controllers
                 {
                     string newTpe = values["Type"];
                     string newDescription = values["Description"];
-                    if (_context.IsIdentityTypeExisting(idenType.ElementAt<IdentityType>(0), newTpe,newDescription))
+                    if (service.IsExisting(idenType.ElementAt<IdentityType>(0), newTpe, newDescription))
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        _context.UpdateIdenityType(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);
-                        _context.SaveChangesAsync();
+                        service.Update(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     _logger.LogError("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
@@ -158,9 +154,9 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             ViewData["Title"] = "Delete Identitytype";
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "IdentityType";
-            var idenType = _context.GetIdenityTypeByID((int)id);
+            var idenType = service.GetByID((int)id);
             BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -170,12 +166,11 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _context.DeactivateIdenityType(idenType.ElementAt<IdentityType>(0), values["reason"], table);
-                        _context.SaveChangesAsync();
+                        service.Deactivate(idenType.ElementAt<IdentityType>(0), values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     _logger.LogError("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
@@ -188,22 +183,22 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Identitytype";
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
             if (id == null)
             {
                 return NotFound();
             }
-            var idenType = _context.GetIdenityTypeByID((int)id);
-            if (_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            var idenType = service.GetByID((int)id);
+            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _context.ActivateIdentityType(idenType.ElementAt<IdentityType>(0), table);
+                service.Activate(idenType.ElementAt<IdentityType>(0), table);
                 return RedirectToAction(nameof(Index));
             }
             else
             {
                 return RedirectToAction(nameof(Index));
             }
-        }        
+        }
     }
 }

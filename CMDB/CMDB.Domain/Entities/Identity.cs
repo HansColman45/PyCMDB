@@ -1,0 +1,75 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CMDB.Domain.Entities
+{
+    [Table("identity")]
+    public class Identity : Model
+    {
+        public Identity()
+        {
+            Laptops = new List<Laptop>();
+            Desktops = new List<Desktop>();
+            Mobiles = new List<Mobile>();
+            Screens = new List<Screen>();
+            Dockings = new List<Docking>();
+            Accounts = new List<IdenAccount>();
+            Tokens = new List<Token>();
+            Subscriptions = new List<Subscription>();
+        }
+
+        [Key]
+        public int IdenId { get; set; }
+        [Required]
+        public string Name { get; set; }
+        [NotMapped]
+        [Required(ErrorMessage = "Please fill in a Lastname")]
+        public string LastName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Name))
+                    return "";
+                else
+                    return Name.Split(',')[1].Trim();
+            }
+            set => Name = FirstName + ", " + value;
+        }
+        [NotMapped]
+        [Required(ErrorMessage = "Please fill in a firstname")]
+        public string FirstName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Name))
+                    return "";
+                else
+                    return Name.Split(',')[0];
+            }
+            set => Name = value + ", " + LastName;
+        }
+        [Required(ErrorMessage = "Please fill in a E-Mail address")]
+        [EmailAddress]
+        public string EMail { get; set; }
+        [Required(ErrorMessage = "Please fill in a UserID")]
+        public string UserID { get; set; }
+        [Required(ErrorMessage = "Please fill in a Company")]
+        public string Company { get; set; }
+        [Required(ErrorMessage = "Please select a Language")]
+        public Language Language { get; set; }
+        [Required(ErrorMessage = "Please select a Type")]
+        public IdentityType Type { get; set; }
+
+        public int? TypeId { get; set; }
+        public ICollection<Laptop> Laptops { get; set; }
+        public ICollection<Desktop> Desktops { get; set; }
+        public ICollection<Docking> Dockings { get; set; }
+        public ICollection<Screen> Screens { get; set; }
+        public ICollection<Mobile> Mobiles { get; set; }
+        public ICollection<Token> Tokens { get; set; }
+        public virtual ICollection<IdenAccount> Accounts { get; set; }
+        public virtual ICollection<Subscription> Subscriptions { get; set; }
+    }
+}

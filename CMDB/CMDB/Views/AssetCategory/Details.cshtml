@@ -1,4 +1,4 @@
-﻿@model CMDB.Models.AssetCategory;
+﻿@model CMDB.Domain.Entities.AssetCategory;
 @{
     Layout = "_Layout";
 }
@@ -33,7 +33,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (Log log in Model.Logs)
+                @foreach (CMDB.Domain.Entities.Log log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

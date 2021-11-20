@@ -1,0 +1,174 @@
+2021-11-13 09:54:27.2555|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 09:54:27.8963|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Natalie70
+2021-11-13 09:54:29.0794|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 09:54:30.2602|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 09:54:46.1530|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 09:54:46.2421|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 09:54:47.1580|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 09:54:47.9936|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 09:54:49.7222|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 09:54:49.7714|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 09:54:50.9727|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 09:54:52.3544|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 09:54:53.7480|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 09:54:53.7996|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 09:54:53.8397|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 09:54:53.8779|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 09:54:53.9141|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 09:54:53.9489|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 09:55:11.4624|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDBtje556353053
+2021-11-13 09:55:12.8918|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 10:00:15.2282|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 10:00:15.6150|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Wade35
+2021-11-13 10:00:16.7386|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 10:00:17.8549|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:00:46.0406|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 10:00:46.1099|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 10:07:57.6164|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 10:07:58.0528|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Lori_Cummings1
+2021-11-13 10:07:59.2003|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 10:08:00.3292|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:08:22.5591|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 10:08:22.5931|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 10:08:23.4166|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 10:08:24.2210|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 10:08:33.4939|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 10:08:40.3176|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 10:08:41.4443|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:08:56.4975|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 10:14:34.5217|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 10:14:34.8817|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Tracey.Bode62
+2021-11-13 10:14:36.0219|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 10:14:37.1701|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:14:38.1939|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 10:14:38.2360|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 10:14:39.0603|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 10:14:39.8761|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 10:14:41.2012|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 10:14:41.2300|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 10:14:42.3459|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:14:43.3822|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 10:14:44.4774|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 10:14:44.5049|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 10:14:44.5322|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 10:14:44.5562|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 10:14:44.5763|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 10:14:44.5948|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 10:14:44.6142|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDBtje1750907293
+2021-11-13 10:14:45.7655|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 10:14:47.3042|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], CMDBtje1750907293
+2021-11-13 10:14:48.4358|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 10:14:49.4422|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-13 10:14:58.9338|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //td[contains(text(),'identity')]
+2021-11-13 10:17:07.9513|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 10:17:09.0607|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 16:57:35.5483|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 16:57:36.0133|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Dianna_Bernier
+2021-11-13 16:57:37.1606|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 16:57:38.3006|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 16:58:07.4116|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 16:58:07.4841|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:07:17.9200|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 17:07:18.3890|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Lance.Willms54
+2021-11-13 17:07:19.5218|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 17:07:20.6579|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:07:21.7628|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 17:07:21.8120|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:07:22.6574|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 17:07:23.4740|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 17:07:24.6390|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 17:07:24.6706|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 17:07:25.7869|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:07:26.8644|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 17:07:28.0562|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 17:07:28.0792|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 17:07:28.1153|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 17:07:28.1457|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 17:07:28.1747|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 17:07:28.1976|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 17:07:28.2265|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDBtje255556788
+2021-11-13 17:07:29.3885|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 17:07:31.0726|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], CMDBtje255556788
+2021-11-13 17:07:32.1864|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:07:33.1918|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-13 17:07:42.6830|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //td[contains(text(),'identity')]
+2021-11-13 17:07:49.6196|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity stoped
+2021-11-13 17:07:49.6265|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 17:07:49.7402|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Lance.Willms54
+2021-11-13 17:07:50.8566|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 17:07:51.9658|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:07:52.9470|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 17:07:52.9742|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:07:53.7950|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 17:07:54.6075|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 17:07:55.6685|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 17:07:55.6988|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 17:07:56.8127|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:07:57.8438|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 17:07:58.8497|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 17:07:58.8743|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 17:07:58.8978|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 17:07:58.9231|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 17:07:58.9474|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 17:07:58.9697|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 17:07:58.9900|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='Company'], Veepee
+2021-11-13 17:08:00.1118|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 17:08:01.3145|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test2133405665
+2021-11-13 17:08:02.4423|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:08:03.4439|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-13 17:08:09.6334|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //td[contains(text(),'identity')]
+2021-11-13 17:10:12.6389|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 17:10:13.2652|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Maggie.Cassin
+2021-11-13 17:10:14.4245|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 17:10:15.5588|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:10:16.6131|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 17:10:16.6472|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:10:17.4714|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 17:10:18.2906|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 17:10:19.3495|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 17:10:19.3907|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 17:10:20.5047|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:10:21.5240|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 17:10:22.5366|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 17:10:22.5602|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 17:10:22.5872|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 17:10:22.6119|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 17:10:22.6376|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 17:10:22.6620|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 17:10:22.6826|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDBtje1286664695
+2021-11-13 17:10:23.8351|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 17:10:25.0603|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], CMDBtje1286664695
+2021-11-13 17:10:26.1756|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:10:27.1802|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-13 17:10:46.4384|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //td[contains(text(),'identity')]
+2021-11-13 17:10:46.4742|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity stoped
+2021-11-13 17:10:46.4826|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 17:10:46.5871|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Maggie.Cassin
+2021-11-13 17:10:47.7066|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 17:10:48.8245|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:10:49.8225|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 17:10:49.8645|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:10:50.6937|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 17:10:51.5035|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 17:10:52.5448|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-13 17:10:52.5696|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test
+2021-11-13 17:10:53.6881|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:10:54.7207|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Edit']
+2021-11-13 17:10:55.7265|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //input[@name='FirstName']
+2021-11-13 17:10:55.7531|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='FirstName']
+2021-11-13 17:10:55.7741|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='LastName']
+2021-11-13 17:10:55.7961|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='Company']
+2021-11-13 17:10:55.8155|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='UserID']
+2021-11-13 17:10:55.8344|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //input[@name='EMail']
+2021-11-13 17:10:55.8525|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='Company'], Veepee
+2021-11-13 17:10:56.9713|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Update']
+2021-11-13 17:10:58.1570|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-13 17:17:39.3568|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario 2 I want to update an existing Identity started
+2021-11-13 17:17:40.7645|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Elmer57
+2021-11-13 17:17:41.9011|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-13 17:17:43.0245|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-13 17:18:03.3359|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-13 17:18:03.4450|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-13 17:18:41.2842|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-13 17:18:42.1025|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-13 17:18:48.5183|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']

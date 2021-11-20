@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Models.Account>
+﻿@model IEnumerable<CMDB.Domain.Entities.Account>
 @{
     Layout = "_Layout";
 }
@@ -51,28 +51,28 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach(IdenAccount idenAccount in item.Identities)
+                        @foreach (CMDB.Domain.Entities.IdenAccount idenAccount in item.Identities)
                         {
-                        <tr>
-                            <td class="small">@idenAccount.Identity.Name</td>
-                            <td class="small">@idenAccount.Identity.UserID</td>
-                            <td class="small">@idenAccount.Identity.EMail</td>
-                            <td class="small">@idenAccount.Identity.Language.Description</td>
-                            <td class="small">@idenAccount.Identity.Type.Type</td>
-                            <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
-                            <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
-                            @if ((bool)ViewData["ReleaseIdentity"] && item.AccID > 1)
-                            {
-                                @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
+                            <tr>
+                                <td class="small">@idenAccount.Identity.Name</td>
+                                <td class="small">@idenAccount.Identity.UserID</td>
+                                <td class="small">@idenAccount.Identity.EMail</td>
+                                <td class="small">@idenAccount.Identity.Language.Description</td>
+                                <td class="small">@idenAccount.Identity.Type.Type</td>
+                                <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
+                                <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
+                                @if ((bool)ViewData["ReleaseIdentity"] && item.AccID > 1)
                                 {
-                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@idenAccount.ID" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                    @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
+                                    {
+                                        <td class="small"><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@idenAccount.ID" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="small"></td>
+                                    }
                                 }
-                                else
-                                {
-                                    <td class="small"></td>
-                                }
-                            }
-                        </tr>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -93,7 +93,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (Log log in item.Logs)
+                    @foreach (CMDB.Domain.Entities.Log log in item.Logs)
                     {
                         <tr>
                             <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

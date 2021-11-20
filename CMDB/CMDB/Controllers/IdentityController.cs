@@ -1,47 +1,43 @@
 ﻿using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Net.Mail;
-using System.Threading.Tasks;
-using CMDB.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
 using CMDB.Util;
-using CMDB.DbContekst;
+using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
+using CMDB.Domain.Entities;
+using CMDB.Services;
 
 namespace CMDB.Controllers
 {
     public class IdentityController : CMDBController
     {
-        private readonly CMDBContext _context;
         private readonly ILogger<IdentityController> _logger;
         private readonly IWebHostEnvironment env;
         private readonly static string table = "identity";
         private readonly static string sitePart = "Identity";
-        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env):base(context,logger,env)
+        private new IdentityServices service;
+        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
-            _context = context;
             _logger = logger;
             this.env = env;
+            service = new(context);
         }
         public IActionResult Index()
         {
             _logger.LogDebug("Using List all in {0}", table);
-            var list = _context.ListAllIdenties();
+            var list = service.ListAll();
             ViewData["Title"] = "Identity overview";
             BuildMenu();
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-            ViewData["AssignAccountAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
-            ViewData["AssignDeviceAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["AssignAccountAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
+            ViewData["AssignDeviceAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
             ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
@@ -51,16 +47,16 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
-                var list = _context.ListAllIdenties();
+                var list = service.ListAll(search);
                 ViewData["Title"] = "Identity overview";
                 BuildMenu();
-                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-                ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
-                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-                ViewData["AssignAccountAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
-                ViewData["AssignDeviceAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+                ViewData["AssignAccountAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
+                ViewData["AssignDeviceAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
                 ViewData["actionUrl"] = @"\Identity\Search";
                 return View(list);
             }
@@ -74,24 +70,24 @@ namespace CMDB.Controllers
             _logger.LogDebug("Using details in {0}", table);
             ViewData["Title"] = "Identity Details";
             BuildMenu();
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["AccountOverview"] = _context.HasAdminAccess(_context.Admin, sitePart, "AccountOverview");
-            ViewData["DeviceOverview"] = _context.HasAdminAccess(_context.Admin, sitePart, "DeviceOverview");
-            ViewData["AssignDevice"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
-            ViewData["AssignAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
-            ViewData["ReleaseAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseAccount");
-            ViewData["ReleaseDevice"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseDevice");
-            ViewData["LogDateFormat"] = _context.LogDateFormat;
-            ViewData["DateFormat"] = _context.DateFormat;
-            if (id ==null)
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["AccountOverview"] = service.HasAdminAccess(service.Admin, sitePart, "AccountOverview");
+            ViewData["DeviceOverview"] = service.HasAdminAccess(service.Admin, sitePart, "DeviceOverview");
+            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
+            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
+            ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseAccount");
+            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseDevice");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            if (id == null)
             {
                 return NotFound();
             }
-            var list = _context.GetIdentityByID((int)id);
-            _context.GetAssingedDevicesForIdentity(list.ElementAt<Identity>(0));
-            _context.GetAssignedAccountsForIdentity(list.ElementAt<Identity>(0));
-            _context.GetLogs(table, (int)id, list.ElementAt<Identity>(0));
+            var list = service.GetByID((int)id);
+            service.GetAssingedDevices(list.ElementAt<Identity>(0));
+            service.GetAssignedAccounts(list.ElementAt<Identity>(0));
+            service.GetLogs(table, (int)id, list.ElementAt<Identity>(0));
             if (list == null)
             {
                 return NotFound();
@@ -102,11 +98,11 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identity";
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             BuildMenu();
-            ViewBag.Types = _context.ListActiveIdentityTypes();
-            ViewBag.Languages = _context.ListAllActiveLanguages();
-            Identity identity = new Identity();
+            ViewBag.Types = service.ListActiveIdentityTypes();
+            ViewBag.Languages = service.ListAllActiveLanguages();
+            Identity identity = new();
             string FormSubmit = values["form-submitted"];
             try
             {
@@ -124,17 +120,16 @@ namespace CMDB.Controllers
                     string EMail = values["EMail"];
                     identity.EMail = EMail;
                     string Language = values["Language"];
-                    if (_context.IsIdentityExisting(identity))
+                    if (service.IsExisting(identity))
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
-                        _context.CreateNewIdentity(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
-                        _context.SaveChangesAsync();
+                        service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
             }
-            catch (MySqlException /* ex */)
+            catch (Exception /* ex */)
             {
                 //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
@@ -147,15 +142,15 @@ namespace CMDB.Controllers
             _logger.LogDebug("Using Edit in {0}", table);
             ViewData["Title"] = "Edit Identity";
             BuildMenu();
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             if (id == null)
             {
                 return NotFound();
             }
-            ViewBag.Types = _context.ListActiveIdentityTypes();
-            ViewBag.Languages = _context.ListAllActiveLanguages();
+            ViewBag.Types = service.ListActiveIdentityTypes();
+            ViewBag.Languages = service.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
-            var list = _context.GetIdentityByID((int)id);
+            var list = service.GetByID((int)id);
             Identity identity = list.ElementAt<Identity>(0);
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -163,21 +158,20 @@ namespace CMDB.Controllers
                 string NewLastName = values["LastName"];
                 string NewUserID = values["UserID"];
                 string NewCompany = values["Company"];
-                string NewType = values["Type"];
-                string NewLanguage = values["Language"];
+                string NewType = values["Type.TypeID"];
+                string NewLanguage = values["Language.Code"];
                 string NewEMail = values["EMail"];
-                if (_context.IsIdentityExisting(identity, NewUserID))
+                if (service.IsExisting(identity, NewUserID))
                     ModelState.AddModelError("", "Idenity alreday existing");
                 try
                 {
                     if (ModelState.IsValid)
                     {
-                        _context.EditIdentity(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, table);
-                        _context.SaveChangesAsync();
+                        service.Edit(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     _logger.LogCritical("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
@@ -191,14 +185,14 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Identity";
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             BuildMenu();
             if (id == null)
             {
                 return NotFound();
             }
             string FormSubmit = values["form-submitted"];
-            var list = _context.GetIdentityByID((int)id);
+            var list = service.GetByID((int)id);
             Identity identity = list.ElementAt<Identity>(0);
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -206,11 +200,10 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    _context.DeactivateIdenity(identity, ViewData["reason"].ToString(), table);
-                    _context.SaveChangesAsync();
+                    service.Deactivate(identity, ViewData["reason"].ToString(), table);
                     return RedirectToAction(nameof(Index));
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     _logger.LogCritical("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
@@ -224,18 +217,17 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Identity";
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
             if (id == null)
             {
                 return NotFound();
             }
-            var list = _context.GetIdentityByID((int)id);
+            var list = service.GetByID((int)id);
             Identity identity = list.ElementAt<Identity>(0);
-            if(_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _context.ActivateIdentity(identity, table);
-                _context.SaveChangesAsync();
+                service.Activate(identity, table);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -248,17 +240,17 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Assign Account in {0}", table);
             ViewData["Title"] = "Assign Account";
-            ViewData["AssignAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
+            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
             BuildMenu();
             if (id == null)
             {
                 return NotFound();
             }
             string FormSubmit = values["form-submitted"];
-            var list = _context.GetIdentityByID((int)id);
+            var list = service.GetByID((int)id);
             Identity identity = list.ElementAt<Identity>(0);
             ViewBag.Identity = identity;
-            ViewBag.Accounts = _context.ListAllFreeAccounts();
+            ViewBag.Accounts = service.ListAllFreeAccounts();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 int AccId = Convert.ToInt32(values["Account"]);
@@ -266,18 +258,17 @@ namespace CMDB.Controllers
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 try
                 {
-                    if (_context.IsPeriodOverlapping(id, null, from, until))
+                    if (service.IsPeriodOverlapping(id, null, from, until))
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
-                        _context.AssignAccount2Idenity(identity, AccId, from, until, table);
-                        _context.SaveChangesAsync();
-                        return RedirectToAction("AssignFrom","Identity",new {id});
+                        service.AssignAccount2Idenity(identity, AccId, from, until, table);
+                        return RedirectToAction("AssignFrom", "Identity", new { id });
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
-                    _logger.LogCritical("DB error: {0}",ex.ToString());
+                    _logger.LogCritical("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -289,22 +280,22 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public IActionResult ReleaseAccount(IFormCollection values,int id)
+        public IActionResult ReleaseAccount(IFormCollection values, int id)
         {
             if (id == 0)
             {
                 return NotFound();
             }
             ViewData["Title"] = "Release Account";
-            var idenAccount = _context.GetIdenAccountByID(id);
+            var idenAccount = service.GetIdenAccountByID(id);
             ViewBag.Identity = idenAccount.ElementAt<IdenAccount>(0).Identity;
             ViewBag.Account = idenAccount.ElementAt<IdenAccount>(0).Account;
-            ViewData["ReleaseAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseAccount");
+            ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseAccount");
             BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseAccount";
             ViewData["Name"] = idenAccount.ElementAt<IdenAccount>(0).Identity.Name;
-            ViewData["AdminName"] = _context.Admin.Account.UserID;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -312,9 +303,9 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    _context.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id,table);
-                    idenAccount = _context.GetIdenAccountByID(id);
-                    PDFGenerator PDFGenerator = new PDFGenerator
+                    service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, table);
+                    idenAccount = service.GetIdenAccountByID(id);
+                    PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -325,7 +316,6 @@ namespace CMDB.Controllers
                     };
                     PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
                     PDFGenerator.GeneratePDF(env);
-                    _context.SaveChangesAsync();
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -333,30 +323,30 @@ namespace CMDB.Controllers
         }
         public IActionResult AssignFrom(IFormCollection values, int? id)
         {
-            if(id == null)
+            if (id == null)
             {
                 return NotFound();
             }
             _logger.LogDebug("Using Assign Form in {0}", table);
             ViewData["Title"] = "Assign gosods";
-            ViewData["AssignDevice"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignDevice");
-            ViewData["AssignAccount"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignAccount");
-            var list = _context.GetIdentityByID((int)id);
-            _context.GetAssingedDevicesForIdentity(list.ElementAt<Identity>(0));
-            _context.GetAssignedAccountsForIdentity(list.ElementAt<Identity>(0));
+            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
+            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
+            var list = service.GetByID((int)id);
+            service.GetAssingedDevices(list.ElementAt<Identity>(0));
+            service.GetAssignedAccounts(list.ElementAt<Identity>(0));
             BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "AssignFrom";
             ViewData["Name"] = list.ElementAt<Identity>(0).Name;
-            ViewData["AdminName"] = _context.Admin.Account.UserID;
-            ViewData["LogDateFormat"] = _context.LogDateFormat;
-            ViewData["DateFormat"] = _context.DateFormat;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new PDFGenerator
+                PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -364,15 +354,34 @@ namespace CMDB.Controllers
                     Language = list.ElementAt<Identity>(0).Language.Code,
                     Receiver = list.ElementAt<Identity>(0).Name
                 };
-                if (list.ElementAt<Identity>(0).Accounts.Count >0)
+                if (list.ElementAt<Identity>(0).Accounts.Count > 0)
                     PDFGenerator.SetAccontInfo(list.ElementAt<Identity>(0).Accounts.ElementAt<IdenAccount>(0));
-                else if(list.ElementAt<Identity>(0).Devices.Count > 0)
+                else if (list.ElementAt<Identity>(0).Laptops.Count > 0)
                 {
-                    foreach (Device d in list.ElementAt<Identity>(0).Devices)
+                    foreach (Device d in list.ElementAt<Identity>(0).Laptops)
+                        PDFGenerator.SetAssetInfo(d);
+                }
+                else if (list.ElementAt<Identity>(0).Desktops.Count > 0)
+                {
+                    foreach (Device d in list.ElementAt<Identity>(0).Desktops)
+                        PDFGenerator.SetAssetInfo(d);
+                }
+                else if (list.ElementAt<Identity>(0).Dockings.Count > 0)
+                {
+                    foreach (Device d in list.ElementAt<Identity>(0).Dockings)
+                        PDFGenerator.SetAssetInfo(d);
+                }
+                else if (list.ElementAt<Identity>(0).Screens.Count > 0)
+                {
+                    foreach (Device d in list.ElementAt<Identity>(0).Screens)
+                        PDFGenerator.SetAssetInfo(d);
+                }
+                else if (list.ElementAt<Identity>(0).Tokens.Count > 0)
+                {
+                    foreach (Device d in list.ElementAt<Identity>(0).Tokens)
                         PDFGenerator.SetAssetInfo(d);
                 }
                 PDFGenerator.GeneratePDF(env);
-                _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             return View(list);

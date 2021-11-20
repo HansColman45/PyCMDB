@@ -1,43 +1,39 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using CMDB.DbContekst;
+using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
-using CMDB.Models;
-using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using CMDB.Domain.Entities;
+using CMDB.Services;
 
 namespace CMDB.Controllers
 {
     public class DesktopController : CMDBController
     {
-        private readonly CMDBContext _context;
         private readonly ILogger<DesktopController> _logger;
         private readonly static string sitePart = "Desktop";
-        private readonly static string table = "devices";
+        private readonly static string table = "desktop";
         private readonly IWebHostEnvironment _env;
-
+        private DevicesService service;
         public DesktopController(CMDBContext context, ILogger<DesktopController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
-            _context = context;
             _logger = logger;
             _env = env;
+            service = new(context);
         }
         public IActionResult Index()
         {
             _logger.LogDebug("Using List all in {0}", table);
             ViewData["Title"] = "Desktop overview";
             BuildMenu();
-            var Desktops = _context.ListAllDevices(sitePart);
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] =  _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+            var Desktops = service.ListAll(sitePart);
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Desktop\Search";
             return View(Desktops);
         }
@@ -50,12 +46,12 @@ namespace CMDB.Controllers
                 _logger.LogDebug("Using List all in {0}", table);
                 ViewData["Title"] = "Desktop overview";
                 BuildMenu();
-                var Desktops = _context.ListAllDevices(sitePart, search);
-                ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
+                var Desktops = service.ListAll(sitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Desktop\Search";
                 return View(Desktops);
             }
@@ -68,11 +64,11 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create Desktop";
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             BuildMenu();
-            Desktop desktop = new Desktop();
-            ViewBag.Types = _context.ListAssetTypes(sitePart);
-            ViewBag.Rams = _context.ListRams();
+            Desktop desktop = new();
+            ViewBag.Types = service.ListAssetTypes(sitePart);
+            ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -82,22 +78,21 @@ namespace CMDB.Controllers
                     desktop.SerialNumber = values["SerialNumber"];
                     desktop.RAM = values["RAM"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = _context.ListAssetTypeById(Type);
+                    var AssetType = service.ListAssetTypeById(Type);
                     desktop.Type = AssetType.ElementAt<AssetType>(0);
-                    desktop.Category = AssetType.ElementAt<AssetType>(0).Cateory;
+                    desktop.Category = AssetType.ElementAt<AssetType>(0).Category;
                     desktop.MAC = values["MAC"];
-                    if (_context.IsDeviceExisting(desktop))
+                    if (service.IsDesktopExisting(desktop))
                     {
                         ModelState.AddModelError("", "Asset already exist");
                     }
                     if (ModelState.IsValid)
                     {
-                        _context.CreateNewDesktop(desktop, table);
-                        _context.SaveChangesAsync();
+                        service.CreateNewDesktop(desktop, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
                     _logger.LogError("Database exception {0}", ex.ToString());
@@ -111,15 +106,15 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Desktop";
-            ViewData["UpdateAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             BuildMenu();
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-            Desktop desktop = _context.ListDekstopByID(id).ElementAt<Desktop>(0);
-            ViewBag.AssetTypes = _context.ListAssetTypes(sitePart);
-            ViewBag.Rams = _context.ListRams();
+            Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
+            ViewBag.AssetTypes = service.ListAssetTypes(sitePart);
+            ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -128,16 +123,15 @@ namespace CMDB.Controllers
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = _context.ListAssetTypeById(Type).ElementAt<AssetType>(0);
+                    var newAssetType = service.ListAssetTypeById(Type).ElementAt<AssetType>(0);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        _context.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber,table) ; 
-                        _context.SaveChangesAsync();
+                        service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
                     _logger.LogError("Database exception {0}", ex.ToString());
@@ -153,20 +147,20 @@ namespace CMDB.Controllers
             _logger.LogDebug("Using details in {0}", table);
             ViewData["Title"] = "Desktop details";
             BuildMenu();
-            ViewData["InfoAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Add");
-            ViewData["IdentityOverview"] = _context.HasAdminAccess(_context.Admin, sitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = _context.HasAdminAccess(_context.Admin, sitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = _context.HasAdminAccess(_context.Admin, sitePart, "ReleaseIdentity");
-            ViewData["LogDateFormat"] = _context.LogDateFormat;
-            ViewData["DateFormat"] = _context.DateFormat;
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, sitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseIdentity");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-            Desktop desktop = _context.ListDekstopByID(id).ElementAt<Desktop>(0);
-            _context.GetLogs(table, desktop.AssetTag, desktop);
-            ViewBag.Identity = _context.GetIdentityByID(desktop.Identity.IdenID).ElementAt<Identity>(0);
+            Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
+            service.GetLogs(table, desktop.AssetTag, desktop);
+            ViewBag.Identity = service.GetIdentityByID(desktop.Identity.IdenId).ElementAt<Identity>(0);
             return View(desktop);
         }
         public IActionResult Delete(IFormCollection values, string id)
@@ -177,11 +171,11 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             ViewData["Title"] = "Delete Desktop";
-            ViewData["DeleteAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Desktop desktop = _context.ListDekstopByID(id).ElementAt<Desktop>(0);
+            Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -189,12 +183,11 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _context.DeactivateDevice(desktop, values["reason"], table);
-                        _context.SaveChangesAsync();
+                        service.Deactivate(desktop, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
-                catch (MySqlException ex)
+                catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
                     _logger.LogError("Database exception {0}", ex.ToString());
@@ -208,17 +201,16 @@ namespace CMDB.Controllers
         {
             _logger.LogDebug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = _context.HasAdminAccess(_context.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-            Desktop desktop = _context.ListDekstopByID(id).ElementAt<Desktop>(0);
-            if (_context.HasAdminAccess(_context.Admin, sitePart, "Activate"))
+            Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
+            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _context.ActivateDevice(desktop, table);
-                _context.SaveChangesAsync();
+                service.Activate(desktop, table);
                 return RedirectToAction(nameof(Index));
             }
             else

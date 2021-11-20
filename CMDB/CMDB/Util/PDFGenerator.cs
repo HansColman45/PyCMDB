@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Aspose.Html;
 using Aspose.Html.Saving;
+using CMDB.Domain.Entities;
 using CMDB.Models;
 using Microsoft.AspNetCore.Hosting;
 
@@ -15,10 +16,11 @@ namespace CMDB.Util
     {
         private string HTML;
         private string _type;
-        private readonly List<Device> devices = new List<Device>();
-        private readonly List<IdenAccount> accounts = new List<IdenAccount>();
-        public string Type { 
-            set 
+        private readonly List<Device> devices = new();
+        private readonly List<IdenAccount> accounts = new();
+        public string Type
+        {
+            set
             {
                 if (!String.IsNullOrEmpty(value))
                 {
@@ -59,7 +61,7 @@ namespace CMDB.Util
             DateTime date = DateTime.Now;
             if (!String.IsNullOrEmpty(this.Type))
             {
-                path = _env.WebRootPath +@"\PDF-Files\release_" +this.UserID+"_"+date.ToString("dd-MM-yyyy-HH-mm-ss")+".pdf";
+                path = _env.WebRootPath + @"\PDF-Files\release_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
                 switch (this.Language)
                 {
                     case "NL":
@@ -77,7 +79,7 @@ namespace CMDB.Util
             {
                 path = _env.WebRootPath + @"\PDF-Files\Assign_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
             }
-            if(accounts.Count > 0)
+            if (accounts.Count > 0)
             {
                 switch (this.Language)
                 {
@@ -104,16 +106,16 @@ namespace CMDB.Util
                 foreach (IdenAccount a in accounts)
                 {
                     this.HTML += "<tr>";
-                    this.HTML += "<td>"+a.Account.UserID+"</td>";
-                    this.HTML += "<td>"+ a.Account.Application.Name+"</td>";
-                    this.HTML += "<td>"+a.ValidFrom.ToString("dd/MM/yyyy") +"</td>";
-                    this.HTML += "<td>"+a.ValidUntil.ToString("dd/MM/yyyy") +"</td>";
+                    this.HTML += "<td>" + a.Account.UserID + "</td>";
+                    this.HTML += "<td>" + a.Account.Application.Name + "</td>";
+                    this.HTML += "<td>" + a.ValidFrom.ToString("dd/MM/yyyy") + "</td>";
+                    this.HTML += "<td>" + a.ValidUntil.ToString("dd/MM/yyyy") + "</td>";
                     this.HTML += "</tr>";
                 }
                 this.HTML += "</tbody>";
                 this.HTML += "</table>";
             }
-            if(devices.Count > 0)
+            if (devices.Count > 0)
             {
                 if (!String.IsNullOrEmpty(this.Type))
                 {
@@ -155,19 +157,19 @@ namespace CMDB.Util
                 this.HTML += "</tr>";
                 this.HTML += "</thead>";
                 this.HTML += "<tbody>";
-                foreach(Device d in devices)
+                foreach (Device d in devices)
                 {
                     this.HTML += "<tr>";
-                    this.HTML += "<td>"+d.Category.Category+"</td>";
-                    this.HTML += "<td>"+d.Type.Vendor + " "+d.Type.Type +"</td>";
-                    this.HTML += "<td>"+d.AssetTag+"</td>";
-                    this.HTML += "<td>"+d.SerialNumber+"</td>";
+                    this.HTML += "<td>" + d.Category.Category + "</td>";
+                    this.HTML += "<td>" + d.Type.Vendor + " " + d.Type.Type + "</td>";
+                    this.HTML += "<td>" + d.AssetTag + "</td>";
+                    this.HTML += "<td>" + d.SerialNumber + "</td>";
                     this.HTML += "</tr>";
                 }
                 this.HTML += "</tbody>";
                 this.HTML += "</table>";
             }
-            if(!String.IsNullOrEmpty(this.Singer) && !String.IsNullOrEmpty(this.ITEmployee))
+            if (!String.IsNullOrEmpty(this.Singer) && !String.IsNullOrEmpty(this.ITEmployee))
             {
                 switch (this.Language)
                 {
@@ -191,8 +193,8 @@ namespace CMDB.Util
                 this.HTML += "</thead>";
                 this.HTML += "<tbody>";
                 this.HTML += "<tr>";
-                this.HTML += "<td>"+ this.Singer + "</td>";
-                this.HTML += "<td>"+ this.ITEmployee + "</td>";
+                this.HTML += "<td>" + this.Singer + "</td>";
+                this.HTML += "<td>" + this.ITEmployee + "</td>";
                 this.HTML += "</tr>";
                 this.HTML += "<tr>";
                 this.HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
@@ -206,7 +208,7 @@ namespace CMDB.Util
             this.HTML += "</html>";
             //MemoryStream stringInMemoryStream =
             //   new MemoryStream(ASCIIEncoding.Default.GetBytes(HTML));
-            var document = new Aspose.Html.HTMLDocument(HTML, ".");
+            var document = new HTMLDocument(HTML, ".");
             Aspose.Html.Converters.Converter.ConvertHTML(document, new PdfSaveOptions(), path);
         }
     }

@@ -1,30 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using MySql.Data.MySqlClient;
-using CMDB.Models;
-using CMDB.Util;
-using CMDB.DbContekst;
+using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using CMDB.Domain.Entities;
+using System;
+using CMDB.Services;
+using Microsoft.AspNetCore.Identity;
 
 namespace CMDB.Controllers
 {
     public class LoginController : CMDBController
     {
-        private readonly CMDBContext _context;
         private readonly ILogger<LoginController> _logger;
         private readonly IWebHostEnvironment _env;
-
-        public LoginController(CMDBContext context, ILogger<LoginController> logger, IWebHostEnvironment env):base(context,logger,env)
+        public LoginController(CMDBContext context, ILogger<LoginController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
-            _context = context;
             _logger = logger;
-            _env = env; 
+            _env = env;
         }
         public IActionResult Index()
         {
@@ -36,25 +29,18 @@ namespace CMDB.Controllers
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
             Admin admin;
-            try
+            admin = service.Login(UserID, Pwd);
+            if (admin == null)
             {
-                admin= _context.Login(UserID, Pwd);
-                if(admin.Account == null)
-                {
-                    ModelState.AddModelError("", "User or password is incorrect");
-                }
-                if (ModelState.IsValid)
-                {
-                    _context.Admin = admin;
-                    string stringFullUrl = @"\Home";
-                    return Redirect(stringFullUrl);
-                }
+                ModelState.AddModelError("", "User or password is incorrect");
             }
-            catch(MySqlException e)
+            if (ModelState.IsValid)
             {
-                ModelState.AddModelError("DBA", e.ToString());
-                throw e;
+                _context.Admin = admin;
+                string stringFullUrl = @"\Home";
+                return Redirect(stringFullUrl);
             }
+
             return View();
         }
     }

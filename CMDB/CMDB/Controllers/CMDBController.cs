@@ -1,50 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using CMDB.Models;
-using CMDB.DbContekst;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
+using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
+using CMDB.Services;
+using System.Linq;
 
 namespace CMDB.Controllers
 {
     public class CMDBController : Controller
     {
-        private readonly CMDBContext _context;
+        protected CMDBServices service;
+        protected CMDBContext _context;
         private readonly ILogger<Controller> _logger;
         private readonly IWebHostEnvironment _env;
-        public CMDBController(CMDBContext context, ILogger<Controller> logger,IWebHostEnvironment env)
+
+        public CMDBController(CMDBContext context, ILogger<Controller> logger, IWebHostEnvironment env)
         {
             _context = context;
             _logger = logger;
             _env = env;
+            service = new(context);
         }
         protected void BuildMenu()
         {
-            List<Menu> menul1 = (List<Menu>)_context.ListFirstMenuLevel();
+            List<Menu> menul1 = (List<Menu>)service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {
                 if (m.Children is null)
                     m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)_context.ListSecondMenuLevel(m.MenuId);
+                List<Menu> mL2 = (List<Menu>)service.ListSecondMenuLevel(m.MenuId);
                 foreach (Menu m1 in mL2)
                 {
                     if (m1.Children is null)
                         m1.Children = new List<Menu>();
-                    var mL3 = _context.ListPersonalMenu(_context.Admin.Level, m1.MenuId);
-                    foreach (Menu menu in mL3)
-                    {
-                        m1.Children.Add(new Menu()
-                        {
-                            MenuId = menu.MenuId,
-                            Label = menu.Label,
-                            URL = menu.URL
-                        });
-                    }
-                    m.Children.Add(m1);
+                    service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;

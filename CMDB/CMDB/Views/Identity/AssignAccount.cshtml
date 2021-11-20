@@ -1,7 +1,7 @@
-﻿@model IdenAccount;
+﻿@model CMDB.Domain.Entities.IdenAccount;
 @{
     Layout = "_Layout";
-    Identity identity = (Identity)ViewBag.Identity;
+    CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
 }
 @if ((bool)ViewData["AssignAccount"])
 {

@@ -1,0 +1,41 @@
+2021-11-06 17:40:52.5204|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario I want to create a new Identity started
+2021-11-06 17:40:53.2253|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Spencer.Gottlieb
+2021-11-06 17:40:54.4407|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-06 17:40:55.6301|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-06 17:41:08.6158|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-06 17:41:08.6512|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-06 17:41:09.4833|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-06 17:41:10.3211|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-06 17:41:11.3694|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-06 17:41:11.4001|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[.=' Add']
+2021-11-06 17:41:12.4318|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='FirstName'], Test447799610
+2021-11-06 17:41:13.5744|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDB447799610
+2021-11-06 17:41:14.7081|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='EMail'], Test.CMDB@brightest.be
+2021-11-06 17:41:15.8924|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='Company'], Brightest
+2021-11-06 17:41:17.0407|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='UserID'], Test447799610
+2021-11-06 17:41:18.1716|DEBUG|CMDB.UI.Tests.Pages.Page|Select value in dropdown by xpath: //select[@id='Type'], Werknemer
+2021-11-06 17:41:18.7778|DEBUG|CMDB.UI.Tests.Pages.Page|Select value in dropdown by xpath: //select[@id='Language'], NL
+2021-11-06 17:41:19.3876|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Create']
+2021-11-06 17:42:55.4270|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario I want to create a new Identity started
+2021-11-06 17:42:55.9910|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Lonnie.Mayert99
+2021-11-06 17:42:57.1353|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
+2021-11-06 17:42:58.2613|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-06 17:43:05.4778|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
+2021-11-06 17:43:05.5075|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']
+2021-11-06 17:43:06.3388|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity2']
+2021-11-06 17:43:07.1553|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@href='/Identity']
+2021-11-06 17:43:08.2297|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //a[.=' Add']
+2021-11-06 17:43:08.2575|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[.=' Add']
+2021-11-06 17:43:09.2919|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='FirstName'], Test577489748
+2021-11-06 17:43:10.4439|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='LastName'], CMDB577489748
+2021-11-06 17:43:11.5720|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='EMail'], Test.CMDB@brightest.be
+2021-11-06 17:43:12.6901|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='Company'], Brightest
+2021-11-06 17:43:13.8160|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='UserID'], Test577489748
+2021-11-06 17:43:14.9412|DEBUG|CMDB.UI.Tests.Pages.Page|Select value in dropdown by xpath: //select[@id='Type'], Werknemer
+2021-11-06 17:43:15.5279|DEBUG|CMDB.UI.Tests.Pages.Page|Select value in dropdown by xpath: //select[@id='Language'], NL
+2021-11-06 17:43:16.1222|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[.='Create']
+2021-11-06 17:43:17.3427|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@name='search'], Test577489748
+2021-11-06 17:43:18.4743|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
+2021-11-06 17:43:19.6091|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@title='Info']
+2021-11-06 17:43:36.7726|DEBUG|CMDB.UI.Tests.Pages.Page|Get tekst from ellement by xpath: //td[contains(text(),'Identity')]
+2021-11-06 17:44:11.1348|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario I want to create a new Identity stoped

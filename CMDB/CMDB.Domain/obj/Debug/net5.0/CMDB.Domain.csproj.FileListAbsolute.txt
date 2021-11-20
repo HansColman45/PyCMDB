@@ -1,0 +1,14 @@
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\CMDB.Domain.deps.json
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\CMDB.Domain.runtimeconfig.json
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\CMDB.Domain.runtimeconfig.dev.json
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\CMDB.Domain.dll
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\ref\CMDB.Domain.dll
+C:\Software\PyCMDB\CMDB\CMDB.Domain\bin\Debug\net5.0\CMDB.Domain.pdb
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.AssemblyInfoInputs.cache
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.AssemblyInfo.cs
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.csproj.CoreCompileInputs.cache
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.dll
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\ref\CMDB.Domain.dll
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.pdb
+C:\Software\PyCMDB\CMDB\CMDB.Domain\obj\Debug\net5.0\CMDB.Domain.genruntimeconfig.cache

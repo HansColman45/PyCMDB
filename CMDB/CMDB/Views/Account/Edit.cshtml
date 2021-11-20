@@ -1,4 +1,4 @@
-﻿@model CMDB.Models.Account  
+﻿@model CMDB.Domain.Entities.Account
 @{
     Layout = "_Layout";
 }
@@ -31,6 +31,8 @@
             <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
         </div>
     </form>
-}else{
+}
+else
+{
     <p>You do not access to this page</p>
 }

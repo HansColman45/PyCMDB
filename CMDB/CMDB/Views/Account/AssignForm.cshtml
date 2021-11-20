@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Models.Account>
+﻿@model IEnumerable<CMDB.Domain.Entities.Account>
 @{
     Layout = "_Layout";
 }
@@ -25,7 +25,7 @@
     </tbody>
 </table>
 @foreach (var item in Model)
-{   
+{
     <H3>Identity overview</H3>
     @if (item.Identities.Count > 0)
     {
@@ -42,7 +42,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (IdenAccount idenAccount in item.Identities)
+                @foreach (CMDB.Domain.Entities.IdenAccount idenAccount in item.Identities)
                 {
                     <tr>
                         <td class="small">@idenAccount.Identity.Name</td>

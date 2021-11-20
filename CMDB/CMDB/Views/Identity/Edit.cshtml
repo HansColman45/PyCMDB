@@ -1,4 +1,4 @@
-﻿@model CMDB.Models.Identity
+﻿@model CMDB.Domain.Entities.Identity
 @{
     Layout = "_Layout";
     var Language = ViewData["Language"];
@@ -35,13 +35,13 @@
         </div>
         <div class="form-group">
             <label class="control-label">Language <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Language, (IEnumerable<SelectListItem>)ViewBag.Languages, new { @class = "form-control" })
+            @Html.DropDownListFor(Model => Model.Language.Code, (IEnumerable<SelectListItem>)ViewBag.Languages, new { @class = "form-control" })
             <span class="text-danger field-validation-valid" asp-validation-for="Language" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label class="control-label">Type <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Type, (IEnumerable<SelectListItem>)ViewBag.Types, new { @class = "form-control" })
-            <span class="text-danger field-validation-valid" asp-validation-for="Language" data-valmsg-replace="true"></span>
+            @Html.DropDownListFor(Model => Model.Type.TypeID, (IEnumerable<SelectListItem>)ViewBag.Types, new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Type" data-valmsg-replace="true"></span>
         </div>
         <input type="hidden" name="form-submitted" value="1" /><br>
         <div class="form-actions">
