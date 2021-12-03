@@ -71,6 +71,6 @@ Execution.*.txt
 CMDB/.vs/
 CMDB/bin/
 CMDB/CMDB/
-CMDB/CMDB.Domain/obj/Debug/*
-*.cache
+CMDB/CMDB.Domain/obj/Debug/
 CMDB/CMDB.Domain/obj/Debug/net5.0/CMDB.Domain.csproj.FileListAbsolute.txt
+CMDB/CMDB.UI.Tests/
