@@ -48,19 +48,21 @@ namespace CMDB.Services
         }
         public void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
+            string OldType = assetType.Type;
+            string OldVendor = assetType.Vendor;
             if (String.Compare(assetType.Vendor, Vendor) != 0)
             {
                 assetType.Vendor = Vendor;
                 _context.AssetTypes.Update(assetType);
                 _context.SaveChanges();
-                LogUpdate(Table, assetType.TypeID, "Vendor", assetType.Vendor, Vendor, Admin.Account.UserID);
+                LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor, Admin.Account.UserID);
             }
             if (String.Compare(assetType.Type, Type) != 0)
             {
                 assetType.Type = Type;
                 _context.AssetTypes.Update(assetType);
                 _context.SaveChanges();
-                LogUpdate(Table, assetType.TypeID, "Type", assetType.Type, Type, Admin.Account.UserID);
+                LogUpdate(Table, assetType.TypeID, "Type", OldType, Type, Admin.Account.UserID);
             }
         }
         public void DeactivateAssetType(AssetType assetType, string reason, string Table)
@@ -78,7 +80,7 @@ namespace CMDB.Services
             assetType.DeactivateReason = "";
             _context.AssetTypes.Update(assetType);
             _context.SaveChanges();
-            string Value = assetType.Category.Category + " type Vendor: " + assetType.Vendor + " and type " + assetType.Type;
+            string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogActivate(Table, assetType.TypeID, Value);
         }
         public bool IsAssetTypeExisting(AssetType assetType, string Vendor = "", string type = "")

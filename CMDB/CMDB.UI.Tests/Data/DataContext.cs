@@ -32,5 +32,13 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return iden;
         }
+        public AssetType GetAssetType(int AssetTypeID)
+        {
+            var assetType = context.AssetTypes
+                .Include(x => x.Category)
+                .Where(x => x.TypeID == AssetTypeID)
+                .FirstOrDefault();
+            return assetType;
+        }
     }
 }

@@ -1,0 +1,5 @@
+{
+  "shadowCopy": false,
+  "$schema": "https://xunit.github.io/schema/current/xunit.runner.schema.json",
+  "diagnosticMessages": true
+}

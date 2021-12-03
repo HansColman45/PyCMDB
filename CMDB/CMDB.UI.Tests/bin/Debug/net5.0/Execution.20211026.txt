@@ -1,6 +1,0 @@
-2021-10-26 21:52:24.2252|DEBUG|CMDB.UI.Tests.Hooks.Hooks|Scenario I want to create a new Identity started
-2021-10-26 21:52:25.8006|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='text'], Clinton25
-2021-10-26 21:52:27.0212|DEBUG|CMDB.UI.Tests.Pages.Page|Enter in ellement by xpath: //input[@type='password'], 1234
-2021-10-26 21:52:28.1786|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //button[@type='submit']
-2021-10-26 21:52:37.2008|DEBUG|CMDB.UI.Tests.Pages.Page|Wait Until Element Vissable by Xpath: //h1
-2021-10-26 21:52:37.2778|DEBUG|CMDB.UI.Tests.Pages.Page|Clicking ellement by xpath: //a[@id='Identity']

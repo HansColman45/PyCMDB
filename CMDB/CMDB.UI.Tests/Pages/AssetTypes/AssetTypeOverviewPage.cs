@@ -22,5 +22,20 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(InfoXpath);
             return new(driver);
         }
+        public AssetTypeEditPage Edit()
+        {
+            ClickElementByXpath(EditXpath);
+            return new(driver);
+        }
+        public DeactivateAssetTypePage Deactivate()
+        {
+            ClickElementByXpath(DeactivateXpath);
+            return new(driver);
+        }
+        public void Activate()
+        {
+            ClickElementByXpath(ActivateXpath);
+            WaitUntilElmentVisableByXpath(NewXpath);
+        }
     }
 }

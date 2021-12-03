@@ -1,4 +1,4 @@
-﻿Feature: AssetTypes
+﻿Feature: Create AssetTypes
 
 Scenario Outline: I want to create an assettype
 	Given I want to create a new <Category> with <Vendor> and <Type>

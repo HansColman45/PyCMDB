@@ -12,6 +12,14 @@ namespace CMDB.UI.Tests.Pages
         public AssetTypeDetailPage(IWebDriver webDriver) : base(webDriver)
         {
         }
+        public int Id
+        {
+            get
+            {
+                string id = TekstFromTextBox("//input[@name='id']");
+                return Int32.Parse(id);
+            }
+        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));
