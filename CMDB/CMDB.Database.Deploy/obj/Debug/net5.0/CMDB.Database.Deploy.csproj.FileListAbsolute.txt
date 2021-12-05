@@ -9,4 +9,3 @@ C:\Software\PyCMDB\CMDB\CMDB.Database.Deploy\obj\Debug\net5.0\CMDB.Database.Depl
 C:\Software\PyCMDB\CMDB\CMDB.Database.Deploy\obj\Debug\net5.0\CMDB.Database.Deploy.dll
 C:\Software\PyCMDB\CMDB\CMDB.Database.Deploy\obj\Debug\net5.0\ref\CMDB.Database.Deploy.dll
 C:\Software\PyCMDB\CMDB\CMDB.Database.Deploy\obj\Debug\net5.0\CMDB.Database.Deploy.pdb
-C:\Software\PyCMDB\CMDB\CMDB.Database.Deploy\obj\Debug\net5.0\CMDB.Database.Deploy.csproj.AssemblyReference.cache

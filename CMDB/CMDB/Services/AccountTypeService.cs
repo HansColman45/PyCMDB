@@ -23,7 +23,7 @@ namespace CMDB.Services
             _context.AccountTypes.Add(accountType);
             _context.SaveChanges();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            LogCreate(Table, accountType.TypeID, Value, Admin.Account.UserID);
+            LogCreate(Table, accountType.TypeID, Value);
         }
         public void Update(AccountType accountType, string Type, string Description, string Table)
         {
@@ -32,13 +32,13 @@ namespace CMDB.Services
             {
                 accountType.Type = Type;
                 _context.SaveChanges();
-                LogUpdate(Table, accountType.TypeID, "Type", accountType.Type, Type, Admin.Account.UserID);
+                LogUpdate(Table, accountType.TypeID, "Type", accountType.Type, Type);
             }
             if (String.Compare(accountType.Description, Description) != 0)
             {
                 accountType.Description = Description;
                 _context.SaveChanges();
-                LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description, Admin.Account.UserID);
+                LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description);
             }
         }
         public void Deactivate(AccountType accountType, string Reason, string Table)

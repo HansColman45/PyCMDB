@@ -44,7 +44,7 @@ namespace CMDB.Services
             _context.AssetTypes.Add(assetType);
             _context.SaveChanges();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            LogCreate(Table, assetType.TypeID, Value, Admin.Account.UserID);
+            LogCreate(Table, assetType.TypeID, Value);
         }
         public void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
@@ -55,14 +55,14 @@ namespace CMDB.Services
                 assetType.Vendor = Vendor;
                 _context.AssetTypes.Update(assetType);
                 _context.SaveChanges();
-                LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor, Admin.Account.UserID);
+                LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor);
             }
             if (String.Compare(assetType.Type, Type) != 0)
             {
                 assetType.Type = Type;
                 _context.AssetTypes.Update(assetType);
                 _context.SaveChanges();
-                LogUpdate(Table, assetType.TypeID, "Type", OldType, Type, Admin.Account.UserID);
+                LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
             }
         }
         public void DeactivateAssetType(AssetType assetType, string reason, string Table)
@@ -71,7 +71,7 @@ namespace CMDB.Services
             assetType.DeactivateReason = reason;
             _context.AssetTypes.Update(assetType);
             _context.SaveChanges();
-            string Value = assetType.Category.Category + " type Vendor: " + assetType.Vendor + " and type " + assetType.Type;
+            string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogDeactivate(Table, assetType.TypeID, Value, reason);
         }
         public void ActivateAssetType(AssetType assetType, string Table)

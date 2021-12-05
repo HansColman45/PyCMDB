@@ -36,7 +36,7 @@ namespace CMDB.Services
             _context.AssetCategories.Add(category);
             _context.SaveChanges();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            LogCreate(table, category.Id, Value, Admin.Account.UserID);
+            LogCreate(table, category.Id, Value);
         }
         public void Update(AssetCategory category, string Category, string prefix, string Table)
         {
@@ -45,7 +45,7 @@ namespace CMDB.Services
                 category.Category = Category;
                 _context.AssetCategories.Update(category);
                 _context.SaveChanges();
-                LogUpdate(Table, category.Id, "Category", category.Category, Category, Admin.Account.UserID);
+                LogUpdate(Table, category.Id, "Category", category.Category, Category);
             }
             if (String.Compare(category.Prefix, prefix) != 0)
             {
@@ -56,7 +56,7 @@ namespace CMDB.Services
                     category.Prefix = "Empty";
                 if (String.IsNullOrEmpty(prefix))
                     prefix = "Empty";
-                LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix, Admin.Account.UserID);
+                LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
             }
         }
         public void Deactivate(AssetCategory category, string Reason, string Table)

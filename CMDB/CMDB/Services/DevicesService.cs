@@ -91,14 +91,14 @@ namespace CMDB.Services
             _context.Desktops.Add(desktop);
             _context.SaveChanges();
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
-            LogCreate(table, desktop.AssetTag, Value, Admin.Account.UserID);
+            LogCreate(table, desktop.AssetTag, Value);
         }
         public void CreateNewLaptop(Laptop laptop, string table)
         {
             _context.Laptops.Add(laptop);
             _context.SaveChanges();
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
-            LogCreate(table, laptop.AssetTag, Value, Admin.Account.UserID);
+            LogCreate(table, laptop.AssetTag, Value);
         }
         public void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
@@ -106,25 +106,25 @@ namespace CMDB.Services
             {
                 desktop.RAM = newRam;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "RAM", desktop.RAM, newRam, Admin.Account.UserID);
+                LogUpdate(Table, desktop.AssetTag, "RAM", desktop.RAM, newRam);
             }
             if (String.Compare(desktop.MAC, newMAC) != 0)
             {
                 desktop.MAC = newMAC;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "MAC", desktop.MAC, newMAC, Admin.Account.UserID);
+                LogUpdate(Table, desktop.AssetTag, "MAC", desktop.MAC, newMAC);
             }
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "SerialNumber", desktop.SerialNumber, newSerialNumber, Admin.Account.UserID);
+                LogUpdate(Table, desktop.AssetTag, "SerialNumber", desktop.SerialNumber, newSerialNumber);
             }
             if (desktop.Type.TypeID != newAssetType.TypeID)
             {
                 desktop.Type = newAssetType;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "Type", desktop.Type.Vendor + " " + desktop.Type, newAssetType.Vendor + " " + newAssetType.Type, Admin.Account.UserID);
+                LogUpdate(Table, desktop.AssetTag, "Type", desktop.Type.Vendor + " " + desktop.Type, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
@@ -133,25 +133,25 @@ namespace CMDB.Services
             {
                 laptop.RAM = newRam;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "RAM", laptop.RAM, newRam, Admin.Account.UserID);
+                LogUpdate(Table, laptop.AssetTag, "RAM", laptop.RAM, newRam);
             }
             if (String.Compare(laptop.MAC, newMAC) != 0)
             {
                 laptop.MAC = newMAC;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "MAC", laptop.MAC, newMAC, Admin.Account.UserID);
+                LogUpdate(Table, laptop.AssetTag, "MAC", laptop.MAC, newMAC);
             }
             if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
             {
                 laptop.SerialNumber = newSerialNumber;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "SerialNumber", laptop.SerialNumber, newSerialNumber, Admin.Account.UserID);
+                LogUpdate(Table, laptop.AssetTag, "SerialNumber", laptop.SerialNumber, newSerialNumber);
             }
             if (laptop.Type.TypeID != newAssetType.TypeID)
             {
                 laptop.Type = newAssetType;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "Type", laptop.Type.Vendor + " " + laptop.Type, newAssetType.Vendor + " " + newAssetType.Type, Admin.Account.UserID);
+                LogUpdate(Table, laptop.AssetTag, "Type", laptop.Type.Vendor + " " + laptop.Type, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public void Deactivate(Device device, string Reason, string table)

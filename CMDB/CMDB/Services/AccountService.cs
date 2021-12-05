@@ -53,7 +53,7 @@ namespace CMDB.Services
             _context.Accounts.Add(account);
             _context.SaveChanges();
             string Value = "Account width UserID: " + UserID + " with type " + accountType.Type + " for application " + applications.Name;
-            LogCreate(Table, account.AccID, Value, Admin.Account.UserID);
+            LogCreate(Table, account.AccID, Value);
         }
         public void Edit(Account account, string UserID, int type, int application, string Table)
         {
@@ -61,17 +61,17 @@ namespace CMDB.Services
             var applications = GetApplicationByID(application).First();
             if (String.Compare(account.UserID, UserID) != 0)
             {
-                LogUpdate(Table, account.AccID, "UserID", account.UserID, UserID, Admin.Account.UserID);
+                LogUpdate(Table, account.AccID, "UserID", account.UserID, UserID);
                 account.UserID = UserID;
             }
             if (account.Type.TypeID != type)
             {
-                LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type, Admin.Account.UserID);
+                LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type);
                 account.Type = accountType;
             }
             if (account.Application.AppID != application)
             {
-                LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name, Admin.Account.UserID);
+                LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name);
                 account.Application = applications;
             }
             _context.Accounts.Update(account);

@@ -146,46 +146,46 @@ namespace CMDB.Services
             _context.Identities.Add(identity);
             _context.SaveChanges();
             string Value = "Identity width name: " + firstName + ", " + LastName;
-            LogCreate(Table, identity.IdenId, Value, Admin.Account.UserID);
+            LogCreate(Table, identity.IdenId, Value);
         }
         public void Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             if (String.Compare(identity.FirstName, firstName) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
                 identity.FirstName = firstName;
             }
             if (String.Compare(identity.LastName, LastName) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "LastName", identity.LastName, LastName, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "LastName", identity.LastName, LastName);
                 identity.LastName = LastName;
             }
             if (String.Compare(identity.Company, Company) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "Company", identity.Company, Company, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "Company", identity.Company, Company);
                 identity.Company = Company;
             }
             if (String.Compare(identity.Language.Code, Language) != 0)
             {
                 var language = _context.Languages.Where(x => x.Code == Language).First();
-                LogUpdate(Table, identity.IdenId, "Language", identity.Language.Code, Language, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "Language", identity.Language.Code, Language);
                 identity.Language = language;
             }
             if (string.Compare(identity.EMail, EMail) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "EMail", identity.EMail, EMail, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "Email", identity.EMail, EMail);
                 identity.EMail = EMail;
             }
             if (String.Compare(identity.UserID, UserID) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID);
                 identity.UserID = UserID;
             }
             if (identity.Type.TypeID != type)
             {
                 var Type = GetIdenityTypeByID(type);
                 IdentityType newType = Type.ElementAt<IdentityType>(0);
-                LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type, Admin.Account.UserID);
+                LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type);
                 identity.Type = newType;
             }
             _context.Identities.Update(identity);

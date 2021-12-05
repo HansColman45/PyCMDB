@@ -15,7 +15,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
 
         private readonly Random rnd = new();
         private int rndNr;
-        private string vendor, type, newtype;
+        private string vendor, type, newtype, reason;
         public AssetTypesSteps(ScenarioData scenarioData) : base(scenarioData)
         {
         }
@@ -102,14 +102,17 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         {
             var deactivatepage = overviewPage.Deactivate();
             deactivatepage.Reason = reason;
+            this.reason = reason;
             deactivatepage.Delete();
         }
         [Then(@"the assettype has been deactiveted")]
         public void ThenTheAssettypeHasBeenDeactiveted()
         {
             overviewPage.Search("kensington");
-            string expectedlog = $"The Type in table assettype has been changed from {type} to {newtype} by {admin.Account.UserID}";
             var detail = overviewPage.Detail();
+            int id = detail.Id;
+            CMDB.Domain.Entities.AssetType assetType = context.GetAssetType(id);
+            string expectedlog = $"The {assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} in table assettype is deleted due to {reason} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }

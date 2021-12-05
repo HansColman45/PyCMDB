@@ -37,7 +37,7 @@ namespace CMDB.Services
             _context.IdentityTypes.Add(identityType);
             _context.SaveChanges();
             string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
-            LogCreate(Table, identityType.TypeID, Value, Admin.Account.UserID);
+            LogCreate(Table, identityType.TypeID, Value);
         }
         public void Update(IdentityType identityType, string Type, string Description, string Table)
         {
@@ -45,13 +45,13 @@ namespace CMDB.Services
             {
                 identityType.Type = Type;
                 _context.SaveChanges();
-                LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type, Admin.Account.UserID);
+                LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type);
             }
             if (String.Compare(identityType.Description, Description) != 0)
             {
                 identityType.Description = Description;
                 _context.SaveChanges();
-                LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description, Admin.Account.UserID);
+                LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description);
             }
         }
         public void Deactivate(IdentityType identityType, string reason, string Table)

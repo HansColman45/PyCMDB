@@ -5,6 +5,9 @@
     <Compile Update="Hooks\Hooks.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Stepdefinitions\Account\AccountSteps.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Stepdefinitions\AssetType\AssetTypesSteps.cs">
       <SubType>Code</SubType>
     </Compile>

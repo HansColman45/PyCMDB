@@ -283,11 +283,11 @@
             },
             "Microsoft.NET.Test.Sdk": {
               "target": "Package",
-              "version": "[16.11.0, )"
+              "version": "[17.0.0, )"
             },
             "NLog": {
               "target": "Package",
-              "version": "[4.7.11, )"
+              "version": "[4.7.12, )"
             },
             "NLog.Extensions.Logging": {
               "target": "Package",
@@ -299,23 +299,23 @@
             },
             "Selenium.Support": {
               "target": "Package",
-              "version": "[4.0.1, )"
+              "version": "[4.1.0, )"
             },
             "Selenium.WebDriver": {
               "target": "Package",
-              "version": "[4.0.1, )"
+              "version": "[4.1.0, )"
             },
             "Selenium.WebDriver.ChromeDriver": {
               "target": "Package",
-              "version": "[95.0.4638.5400, )"
+              "version": "[95.0.4638.6900, )"
             },
             "SpecFlow": {
               "target": "Package",
-              "version": "[3.9.22, )"
+              "version": "[3.9.40, )"
             },
             "SpecFlow.xUnit": {
               "target": "Package",
-              "version": "[3.9.22, )"
+              "version": "[3.9.40, )"
             },
             "Xunit.Extensions.Ordering": {
               "target": "Package",

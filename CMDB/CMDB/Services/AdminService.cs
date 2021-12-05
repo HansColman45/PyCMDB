@@ -71,7 +71,7 @@ namespace CMDB.Services
             _context.Admins.Add(admin);
             _context.SaveChanges();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            LogCreate(Table, Admin.AdminId, Value, this.Admin.Account.UserID);
+            LogCreate(Table, Admin.AdminId, Value);
         }
         public void Update(Admin admin, int level, string Table)
         {
@@ -79,7 +79,7 @@ namespace CMDB.Services
             {
                 admin.Level = level;
                 _context.SaveChanges();
-                LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString(), this.Admin.Account.UserID);
+                LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
             }
         }
         public void Deactivate(Admin admin, string reason, string table)

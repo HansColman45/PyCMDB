@@ -64,72 +64,72 @@ namespace CMDB.Services
                 _ => throw new Exception("No log insert statement created for table: " + table),
             };
         }
-        protected void LogCreate(string table, int ID, string Value, string AdminName)
+        protected void LogCreate(string table, int ID, string Value)
         {
-            this.LogText = "The " + Value + " is created by " + AdminName + " in table " + table;
+            LogText = $"The {Value} is created by {Admin.Account.UserID} in table {table}";
             DoLog(table, ID);
         }
-        protected void LogCreate(string table, string AssetTag, string Value, string AdminName)
+        protected void LogCreate(string table, string AssetTag, string Value)
         {
-            this.LogText = "The " + Value + " is created by " + AdminName + " in table " + table;
+            LogText = $"The {Value} is created by {Admin.Account.UserID} in table {table}";
             DoLog(table, AssetTag);
         }
-        protected void LogUpdate(string table, int ID, string field, string oldValue, string newValue, string AdminName)
+        protected void LogUpdate(string table, int ID, string field, string oldValue, string newValue)
         {
             if (String.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
-            LogText = "The " + field + " in table " + table + " has been changed from " + oldValue + " to " + newValue + " by " + AdminName;
+            LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
             DoLog(table, ID);
         }
-        protected void LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue, string AdminName)
+        protected void LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue)
         {
             if (String.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
-            LogText = "The " + field + " in table " + table + " has been changed from " + oldValue + " to " + newValue + " by " + AdminName;
+            LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
             DoLog(table, AssetTag);
         }
         protected void LogDeactivate(string table, int ID, string value, string reason)
         {
-            LogText = "The " + value + " in table " + table + " is deleted due to " + reason + " by " + Admin.Account.UserID;
+            LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
             DoLog(table, ID);
         }
         protected void LogDeactivated(string table, string AssetTag, string value, string reason)
         {
-            LogText = "The " + value + " in table " + table + " is deleted due to " + reason + " by " + Admin.Account.UserID;
+            LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
             DoLog(table, AssetTag);
         }
         protected void LogActivate(string table, int ID, string value)
         {
-            LogText = "The " + value + " in table " + table + " is activated by " + Admin.Account.UserID;
+            LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
             DoLog(table, ID);
         }
         protected void LogActivate(string table, string AssetTag, string value)
         {
-            LogText = "The " + value + " in table " + table + " is activated by " + Admin.Account.UserID;
+            LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
             DoLog(table, AssetTag);
         }
         protected void LogAssignIden2Account(string table, int ID, Identity identity, Account account)
         {
-            LogText = "The Identity width name:" + identity.Name + " in table " + table + " is assigned to Account with UserID" + account.UserID + " by " + Admin.Account.UserID;
+            LogText = $"The Identity width name: {identity.Name} in table {table} is assigned to Account with UserID {account.UserID} by {Admin.Account.UserID}";
             DoLog(table, ID);
         }
         protected void LogAssignAccount2Identity(string table, int ID, Account account, Identity identity)
         {
-            LogText = "The Account with UserID " + account.UserID + " in table " + table + " is assigned to Identity width name:" + identity.Name + " by " + Admin.Account.UserID;
+            LogText = $"The Account with UserID {account.UserID} in table {table} is assigned to Identity width name: {identity.Name} by {Admin.Account.UserID}";
             DoLog(table, ID);
         }
         protected void LogReleaseAccountFromIdentity(string table, int IdenId, Identity identity, Account account)
         {
-            LogText = "Identity with Name " + identity.Name + " in table " + table + " is released from Account with UserID " + account.UserID + " in appliction " + account.Application.Name + " by " + Admin.Account.UserID;
+            LogText = $"Identity with Name {identity.Name} in table {table} is released from Account with UserID {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID}";
             DoLog(table, IdenId);
         }
         protected void LogReleaseIdentity4Account(string table, int AccId, Identity identity, Account account)
         {
-            LogText = "Account with UserID " + account.UserID + " in appliction " + account.Application.Name + " in table " + table + " is released from Identity with Name " + identity.Name + " by " + Admin.Account.UserID;
+            LogText = $"Account with UserID {account.UserID} in appliction {account.Application.Name} in table {table} is released from Identity with Name {identity.Name} by {Admin.Account.UserID}";
             DoLog(table, AccId);
         }
         private void DoLog(string table, int ID)

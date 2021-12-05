@@ -69,8 +69,14 @@ Execution.*.txt
 
 #spefic build:
 CMDB/.vs/
-CMDB/bin/
-CMDB/CMDB/
+CMDB/CMDB/bin/Debug/
+CMDB/CMDB.Database.Deploy/bin/Debug
 CMDB/CMDB.Domain/obj/Debug/
-CMDB/CMDB.Domain/obj/Debug/net5.0/CMDB.Domain.csproj.FileListAbsolute.txt
-CMDB/CMDB.UI.Tests/
+CMDB/CMDB.Domain/bin/Debug/
+CMDB/CMDB.Infrastructure/obj/Debug/
+CMDB/CMDB.Infrastructure/bin/Debug/
+CMDB/CMDB.Testing/bin/Debug/
+CMDB/CMDB.Testing/obj/Debug/
+CMDB/CMDB.UI.Tests/obj/Debug/
+CMDB/CMDB.UI.Tests/bin/Debug/
+CMDB/CMDB.UI.Tests/TestExecution/
