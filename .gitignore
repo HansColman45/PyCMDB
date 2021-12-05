@@ -71,6 +71,7 @@ Execution.*.txt
 CMDB/.vs/
 CMDB/CMDB/bin/Debug/
 CMDB/CMDB.Database.Deploy/bin/Debug
+CMDB/CMDB.Database.Deploy/obj/Debug
 CMDB/CMDB.Domain/obj/Debug/
 CMDB/CMDB.Domain/bin/Debug/
 CMDB/CMDB.Infrastructure/obj/Debug/
