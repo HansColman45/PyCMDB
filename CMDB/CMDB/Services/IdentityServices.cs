@@ -121,6 +121,7 @@ namespace CMDB.Services
         public void GetAssignedAccounts(Identity identity)
         {
             var accounts = _context.Identities
+                .Include(x => x.Language)
                 .Include(x => x.Accounts)
                 .ThenInclude(d => d.Account)
                 .SelectMany(x => x.Accounts)

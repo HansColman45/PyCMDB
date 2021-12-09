@@ -36,7 +36,7 @@ namespace CMDB.Services
             List<Account> accounts = _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
-                .Where(x => EF.Functions.Like(x.Application.Name, searhterm) && EF.Functions.Like(x.Type.Type, searhterm) && EF.Functions.Like(x.Type.Description, searhterm))
+                .Where(x => EF.Functions.Like(x.Application.Name, searhterm) || EF.Functions.Like(x.Type.Type, searhterm) || EF.Functions.Like(x.Type.Description, searhterm) || EF.Functions.Like(x.UserID, searhterm))
                 .ToList();
             return accounts;
         }
@@ -52,7 +52,7 @@ namespace CMDB.Services
             };
             _context.Accounts.Add(account);
             _context.SaveChanges();
-            string Value = "Account width UserID: " + UserID + " with type " + accountType.Type + " for application " + applications.Name;
+            string Value = $"Account width UserID: {UserID} with type {accountType.Type} for application {applications.Name}";
             LogCreate(Table, account.AccID, Value);
         }
         public void Edit(Account account, string UserID, int type, int application, string Table)
@@ -61,7 +61,7 @@ namespace CMDB.Services
             var applications = GetApplicationByID(application).First();
             if (String.Compare(account.UserID, UserID) != 0)
             {
-                LogUpdate(Table, account.AccID, "UserID", account.UserID, UserID);
+                LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
                 account.UserID = UserID;
             }
             if (account.Type.TypeID != type)
@@ -81,7 +81,7 @@ namespace CMDB.Services
         {
             account.DeactivateReason = Reason;
             account.Active = "Inactive";
-            string value = "Account width UserID: " + account.UserID + " and type " + account.Type.Description;
+            string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             LogDeactivate(Table, account.AccID, value, Reason);
             _context.Accounts.Update(account);
             _context.SaveChanges();
@@ -90,7 +90,7 @@ namespace CMDB.Services
         {
             account.DeactivateReason = null;
             account.Active = "Active";
-            string value = "Account width UserID: " + account.UserID + " and type " + account.Type.Description;
+            string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             LogActivate(Table, account.AccID, value);
             _context.Accounts.Update(account);
             _context.SaveChanges();
@@ -100,13 +100,15 @@ namespace CMDB.Services
             var Accounts = _context.Accounts
                 .Include(x => x.Identities)
                 .ThenInclude(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identities)
+                .ThenInclude(x => x.Identity)
+                .ThenInclude(x => x.Language)
+                .Include(x => x.Identities)
+                .ThenInclude(x => x.Identity)
                 .SelectMany(x => x.Identities)
                 .Where(x => x.Account.AccID == account.AccID)
                 .ToList();
-            foreach (var acc in Accounts)
-            {
-                account.Identities.Add(acc);
-            }
         }
         public List<SelectListItem> ListActiveAccountTypes()
         {
@@ -114,7 +116,7 @@ namespace CMDB.Services
             List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.active == 1).ToList();
             foreach (var accountType in accountTypes)
             {
-                accounts.Add(new SelectListItem(accountType.Type + " " + accountType.Description, accountType.TypeID.ToString()));
+                accounts.Add(new SelectListItem(accountType.Type, accountType.TypeID.ToString()));
             }
             return accounts;
         }
@@ -245,6 +247,7 @@ namespace CMDB.Services
                 .ThenInclude(x => x.Application)
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
+                .Where(x => x.ID == id)
                 .ToList();
             return idenAccounts;
         }

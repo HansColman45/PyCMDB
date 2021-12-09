@@ -7,27 +7,27 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class AssetTypeOverviewPage : MainPage
+    public class AccountOverviewPage : MainPage
     {
-        public AssetTypeOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public AccountOverviewPage(IWebDriver webDriver) : base(webDriver)
         {
         }
-        public CreateAssetTypePage New()
+        public CreateAccountPage New()
         {
             ClickElementByXpath(NewXpath);
             return new(driver);
         }
-        public AssetTypeDetailPage Detail()
+        public AccountDetailPage Detail()
         {
             ClickElementByXpath(InfoXpath);
             return new(driver);
         }
-        public UpdateAssetTypePage Edit()
+        public EditAccountPage Edit()
         {
             ClickElementByXpath(EditXpath);
             return new(driver);
         }
-        public DeactivateAssetTypePage Deactivate()
+        public DeactivateAccountPage Deactivate()
         {
             ClickElementByXpath(DeactivateXpath);
             return new(driver);

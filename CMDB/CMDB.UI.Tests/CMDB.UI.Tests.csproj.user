@@ -14,6 +14,9 @@
     <Compile Update="Stepdefinitions\Identity\IdentitySteps.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Stepdefinitions\Laptop\LaptopSteps.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Stepdefinitions\LoginSteps.cs">
       <SubType>Code</SubType>
     </Compile>

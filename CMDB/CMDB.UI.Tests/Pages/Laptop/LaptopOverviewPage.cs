@@ -7,29 +7,25 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class AssetTypeOverviewPage : MainPage
+    public class LaptopOverviewPage : MainPage
     {
-        public AssetTypeOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public LaptopOverviewPage(IWebDriver webDriver) : base(webDriver)
         {
         }
-        public CreateAssetTypePage New()
+        public CreateLaptopPage New()
         {
             ClickElementByXpath(NewXpath);
             return new(driver);
         }
-        public AssetTypeDetailPage Detail()
+        public LaptopDetailPage Detail()
         {
             ClickElementByXpath(InfoXpath);
             return new(driver);
         }
-        public UpdateAssetTypePage Edit()
+        public UpdateLaptopPage Update()
         {
             ClickElementByXpath(EditXpath);
-            return new(driver);
-        }
-        public DeactivateAssetTypePage Deactivate()
-        {
-            ClickElementByXpath(DeactivateXpath);
+            WaitUntilElmentVisableByXpath("//input[@name='FirstName']");
             return new(driver);
         }
         public void Activate()

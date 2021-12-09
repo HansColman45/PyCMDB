@@ -23,6 +23,7 @@
                     <td>@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
                     <td>@Html.DisplayTextFor(modelItem => item.Active)</td>
                 </tr>
+                <input type="hidden" name="id" value="@Html.DisplayFor(modelItem => item.AccID)" />
             }
         </tbody>
     </table>

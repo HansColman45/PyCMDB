@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class AssetTypeEditPage : MainPage
+    public class UpdateAssetTypePage : MainPage
     {
-        public AssetTypeEditPage(IWebDriver webDriver) : base(webDriver)
+        public UpdateAssetTypePage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public string Category

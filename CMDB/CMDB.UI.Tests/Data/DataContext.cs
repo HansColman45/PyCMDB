@@ -9,7 +9,7 @@ namespace CMDB.UI.Tests.Data
 {
     public class DataContext
     {
-        CMDBContext context;
+        private readonly CMDBContext context;
         public DataContext()
         {
             string connectionstring = Settings.ConnectionString;
@@ -39,6 +39,15 @@ namespace CMDB.UI.Tests.Data
                 .Where(x => x.TypeID == AssetTypeID)
                 .FirstOrDefault();
             return assetType;
+        }
+        public Account GetAccount(int AccountId)
+        {
+            var account = context.Accounts
+                .Include(x => x.Application)
+                .Include(x => x.Type)
+                .Where(x => x.AccID == AccountId)
+                .FirstOrDefault();
+            return account;
         }
     }
 }

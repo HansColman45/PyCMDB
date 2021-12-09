@@ -12,11 +12,11 @@ namespace CMDB.UI.Tests.Pages
         public MainPage(IWebDriver webDriver) : base(webDriver)
         {
         }
-        protected string NewXpath => "//a[.=' Add']";
-        protected string EditXpath => "//a[@title='Edit']";
-        protected string DeactivateXpath => "//a[@title='Deactivate']";
-        protected string InfoXpath => "//a[@title='Info']";
-        protected string ActivateXpath => "//a[@title='Activate']";
+        protected static string NewXpath => "//a[.=' Add']";
+        protected static string EditXpath => "//a[@title='Edit']";
+        protected static string DeactivateXpath => "//a[@title='Deactivate']";
+        protected static string InfoXpath => "//a[@title='Info']";
+        protected static string ActivateXpath => "//a[@title='Activate']";
 
         public bool LoggedIn()
         {
@@ -35,6 +35,14 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Asset Type28']");
             ClickElementByXpath("//a[@href='/AssetType']");
+            WaitOnAddNew();
+            return new(driver);
+        }
+        public AccountOverviewPage AccountOverview()
+        {
+            ClickElementByXpath("//a[@id='Account']");
+            ClickElementByXpath("//a[@id='Account5']");
+            ClickElementByXpath("//a[@href='/Account']");
             WaitOnAddNew();
             return new(driver);
         }

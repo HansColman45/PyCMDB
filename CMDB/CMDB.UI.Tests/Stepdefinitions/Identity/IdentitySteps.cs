@@ -2,9 +2,6 @@
 using CMDB.UI.Tests.Hooks;
 using CMDB.UI.Tests.Pages;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Xunit;

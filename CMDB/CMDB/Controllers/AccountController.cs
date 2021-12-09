@@ -17,7 +17,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Account";
         private readonly static string table = "account";
         private readonly IWebHostEnvironment env;
-        private AccountService service;
+        private new readonly AccountService service;
         public AccountController(CMDBContext context, ILogger<AccountController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;
