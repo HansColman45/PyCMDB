@@ -69,16 +69,16 @@ Execution.*.txt
 
 #spefic build:
 CMDB/.vs/
-CMDB/obj/Debug/
+CMDB/obj/
 CMDB/CMDB/bin/Debug/
-CMDB/CMDB.Database.Deploy/bin/Debug
-CMDB/CMDB.Database.Deploy/obj/Debug
+CMDB/CMDB.Database.Deploy/bin/Debug/
+CMDB/CMDB.Database.Deploy/obj/
 CMDB/CMDB.Domain/obj/Debug/
 CMDB/CMDB.Domain/bin/Debug/
-CMDB/CMDB.Infrastructure/obj/Debug/
+CMDB/CMDB.Infrastructure/obj/
 CMDB/CMDB.Infrastructure/bin/Debug/
 CMDB/CMDB.Testing/bin/Debug/
-CMDB/CMDB.Testing/obj/Debug/
-CMDB/CMDB.UI.Tests/obj/Debug/
+CMDB/CMDB.Testing/obj/
+CMDB/CMDB.UI.Tests/obj/
 CMDB/CMDB.UI.Tests/bin/Debug/
 CMDB/CMDB.UI.Tests/TestExecution/

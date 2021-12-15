@@ -6,6 +6,6 @@ Scenario: I want to create a new Laptop
 		| AssetTag     | IND           |
 		| SerialNumber | 123456789     |
 		| Type         | Dell Latitude |
-		| RAM          | 5Gb           |
+		| RAM          | 5 Gb          |
 	When I save the Laptop
 	Then I can find the newly created Laptop back
