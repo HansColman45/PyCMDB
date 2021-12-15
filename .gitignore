@@ -69,11 +69,12 @@ Execution.*.txt
 
 #spefic build:
 CMDB/.vs/
+CMDB/CMDB/obj/
 CMDB/obj/
 CMDB/CMDB/bin/Debug/
 CMDB/CMDB.Database.Deploy/bin/Debug/
 CMDB/CMDB.Database.Deploy/obj/
-CMDB/CMDB.Domain/obj/Debug/
+CMDB/CMDB.Domain/obj/
 CMDB/CMDB.Domain/bin/Debug/
 CMDB/CMDB.Infrastructure/obj/
 CMDB/CMDB.Infrastructure/bin/Debug/

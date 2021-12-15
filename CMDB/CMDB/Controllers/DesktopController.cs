@@ -160,7 +160,7 @@ namespace CMDB.Controllers
             }
             Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
             service.GetLogs(table, desktop.AssetTag, desktop);
-            ViewBag.Identity = service.GetIdentityByID(desktop.Identity.IdenId).ElementAt<Identity>(0);
+            service.GetAssignedIdentity(desktop);
             return View(desktop);
         }
         public IActionResult Delete(IFormCollection values, string id)

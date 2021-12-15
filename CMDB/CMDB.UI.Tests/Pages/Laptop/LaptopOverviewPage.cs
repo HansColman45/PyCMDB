@@ -25,7 +25,6 @@ namespace CMDB.UI.Tests.Pages
         public UpdateLaptopPage Update()
         {
             ClickElementByXpath(EditXpath);
-            WaitUntilElmentVisableByXpath("//input[@name='FirstName']");
             return new(driver);
         }
         public DeactivateLaptopPage Deactivate()

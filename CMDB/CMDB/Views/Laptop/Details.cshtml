@@ -1,6 +1,5 @@
 ﻿@model CMDB.Domain.Entities.Laptop;
 @{
-    CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
     Layout = "_Layout";
 }
 @if ((bool)ViewData["InfoAccess"])
@@ -30,28 +29,35 @@
     @if ((bool)ViewData["IdentityOverview"])
     {
         <H3>Identity overview</H3>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>UserID</td>
-                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenId > 1)
-                    {
-                        <th>Action</th>
-                    }
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="small">@identity.Name</td>
-                    <td class="small">@identity.UserID</td>
-                    @if ((bool)ViewData["ReleaseIdentity"] && identity.IdenId > 1)
-                    {
-                        <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.AssetTag" asp-route-idenid="@identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
-                    }
-                </tr>
-            </tbody>
-        </table>
+        @if (Model.Identity is not null)
+        {
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>UserID</td>
+                        @if ((bool)ViewData["ReleaseIdentity"] && Model.Identity.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="small">@Model.Identity.Name</td>
+                        <td class="small">@Model.Identity.UserID</td>
+                        @if ((bool)ViewData["ReleaseIdentity"] && Model.Identity.IdenId > 1)
+                        {
+                            <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.AssetTag" asp-route-idenid="@Model.Identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                        }
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No identities assigned to this Laptop</p>
+        }
     }
     <H3>Log overview</H3>
     @if (Model.Logs.Count > 0)
@@ -76,7 +82,7 @@
     }
     else
     {
-        <p>No logs for to this Desktop</p>
+        <p>No logs for to this Laptop</p>
     }
 }
 else

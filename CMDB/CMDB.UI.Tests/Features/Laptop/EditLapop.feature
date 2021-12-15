@@ -5,7 +5,7 @@ Scenario Outline: I want to update an existing Laptop
 	When I update the <field> with <Value> and I save
 	Then The Laptop is saved
 
-	Examples: 
-	| field        | Value     |
-	| Serialnumber | 987654321 |
-	| RAM          | 4GB       |
+	Examples:
+		| field        | Value     |
+		| Serialnumber | 987654321 |
+		| RAM          | 4 Gb      |

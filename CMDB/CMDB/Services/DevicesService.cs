@@ -53,7 +53,8 @@ namespace CMDB.Services
                     var laptops = _context.Laptops
                         .Include(x => x.Category)
                         .Include(x => x.Identity)
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm))
+                        .Include(x => x.Type)
+                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .ToList();
                     foreach (var laptop in laptops)
                     {
@@ -129,29 +130,34 @@ namespace CMDB.Services
         }
         public void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
+            string OldRam, OldMac,OldSerial,OldType;
+            OldMac = laptop.MAC;
+            OldRam = laptop.RAM;
+            OldSerial = laptop.SerialNumber;
+            OldType = laptop.Type.Vendor + " " + laptop.Type;
             if (String.Compare(laptop.RAM, newRam) != 0)
             {
                 laptop.RAM = newRam;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "RAM", laptop.RAM, newRam);
+                LogUpdate(Table, laptop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(laptop.MAC, newMAC) != 0)
             {
                 laptop.MAC = newMAC;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "MAC", laptop.MAC, newMAC);
+                LogUpdate(Table, laptop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
             {
                 laptop.SerialNumber = newSerialNumber;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "SerialNumber", laptop.SerialNumber, newSerialNumber);
+                LogUpdate(Table, laptop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (laptop.Type.TypeID != newAssetType.TypeID)
             {
                 laptop.Type = newAssetType;
                 _context.SaveChanges();
-                LogUpdate(Table, laptop.AssetTag, "Type", laptop.Type.Vendor + " " + laptop.Type, newAssetType.Vendor + " " + newAssetType.Type);
+                LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public void Deactivate(Device device, string Reason, string table)
@@ -249,13 +255,19 @@ namespace CMDB.Services
                 .ToList();
             return devices;
         }
-        public ICollection<Identity> GetIdentityByID(int id)
+        public void GetAssignedIdentity(Laptop laptop)
         {
-            List<Identity> identities = _context.Identities
-                .Include(x => x.Type)
-                .Where(x => x.IdenId == id)
-                .ToList();
-            return identities;
+            var Identity = _context.Laptops
+                .Include(x => x.Identity)
+                .Where(x => x.AssetTag == laptop.AssetTag)
+                .Select(x => x.Identity);
+        }
+        public void GetAssignedIdentity(Desktop desktop)
+        {
+            var Identity = _context.Laptops
+                .Include(x => x.Identity)
+                .Where(x => x.AssetTag == desktop.AssetTag)
+                .Select(x => x.Identity);
         }
     }
 }

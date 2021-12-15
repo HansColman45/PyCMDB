@@ -148,7 +148,7 @@ namespace CMDB.Controllers
         public IActionResult Details(string id)
         {
             _logger.LogDebug("Using details in {0}", table);
-            ViewData["Title"] = "Desktop details";
+            ViewData["Title"] = "Laptop details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
@@ -163,7 +163,7 @@ namespace CMDB.Controllers
             }
             Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
             service.GetLogs(table, laptop.AssetTag, laptop);
-            ViewBag.Identity = service.GetIdentityByID(laptop.Identity.IdenId).ElementAt<Identity>(0);
+            service.GetAssignedIdentity(laptop);
             return View(laptop);
         }
         public IActionResult Delete(IFormCollection values, string id)

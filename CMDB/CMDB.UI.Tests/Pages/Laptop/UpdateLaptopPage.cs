@@ -24,11 +24,13 @@ namespace CMDB.UI.Tests.Pages
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='Type']", "7");
+            set => SelectValueInDropDownByXpath("//select[@id='Type_TypeID']", "7");
+            get => GetSelectedValueFromDropDownByXpath("//select[@id='Type_TypeID']");
         }
         public string RAM
         {
             set => SelectTektInDropDownByXpath("//select[@id='RAM']", value);
+            get => GetSelectedValueFromDropDownByXpath("//select[@id='RAM']");
         }
         public string MAC
         {

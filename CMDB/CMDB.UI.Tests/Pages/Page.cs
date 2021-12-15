@@ -168,6 +168,11 @@ namespace CMDB.UI.Tests.Pages
             IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xpath)));
             return element.Text;
         }
+        /// <summary>
+        /// This function will get the text from a textbox
+        /// </summary>
+        /// <param name="xpath"></param>
+        /// <returns></returns>
         protected string TekstFromTextBox(string xpath)
         {
             log.Debug("Get tekst from ellement by xpath: {0}", xpath);
@@ -180,6 +185,20 @@ namespace CMDB.UI.Tests.Pages
             fluentWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
             IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xpath)));
             return element.GetAttribute("value");
+        }
+        protected string GetSelectedValueFromDropDownByXpath(string xpath)
+        {
+            log.Debug("Get selected value from Dropdown by xpath: {0}", xpath);
+            var fluentWait = new DefaultWait<IWebDriver>(driver)
+            {
+                Timeout = TimeSpan.FromSeconds(10),
+                PollingInterval = TimeSpan.FromMilliseconds(250)
+            };
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            fluentWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
+            IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xpath)));
+            SelectElement selectElement = new(element);
+            return selectElement.SelectedOption.Text;
         }
         /// <summary>
         /// This function will return the text from a WebElement selected by CSS

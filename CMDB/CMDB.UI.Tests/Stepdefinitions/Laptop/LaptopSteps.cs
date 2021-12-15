@@ -84,8 +84,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
             laptop = new()
             {
                 AssetTag = updatepage.AssetTag,
-                SerialNumber = updatepage.SerialNumber
+                SerialNumber = updatepage.SerialNumber,
+                Type = updatepage.Type,
+                RAM = updatepage.RAM
             };
+            
             updatedField = field;
             switch (field)
             {
@@ -98,6 +101,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     updatepage.RAM = newValue;
                     break;
             }
+            updatepage.Edit();
         }
         [Then(@"The Laptop is saved")]
         public void ThenTheLaptopIsSaved()
@@ -108,10 +112,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedField)
             {
                 case "Serialnumber":
-                    expectedlog = $"The Serial number has been changed from {laptop.SerialNumber} to {newValue} in table laptop by {admin.Account.UserID}";
+                    expectedlog = $"The SerialNumber in table laptop has been changed from {laptop.SerialNumber} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "RAM":
-                    expectedlog = $"The RAM number has been changed from {laptop.RAM} to {newValue} in table laptop by {admin.Account.UserID}";
+                    expectedlog = $"The RAM number in table laptop has been changed from {laptop.RAM} to {newValue} by {admin.Account.UserID}";
                     break;
             }
             Assert.Equal(log, expectedlog);
