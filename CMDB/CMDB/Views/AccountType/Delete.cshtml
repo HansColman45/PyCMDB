@@ -17,9 +17,9 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Type)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Active)</td>
+                    <td id="Type">@Html.DisplayFor(modelItem => item.Type)</td>
+                    <td id="Description">@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td id="Active">@Html.DisplayFor(modelItem => item.Active)</td>
                 </tr>
             }
         </tbody>

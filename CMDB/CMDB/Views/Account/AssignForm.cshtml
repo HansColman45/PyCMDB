@@ -16,10 +16,10 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Active)</td>
+                <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
+                <td id="Application">@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
+                <td id="Active">@Html.DisplayTextFor(modelItem => item.Active)</td>
             </tr>
         }
     </tbody>

@@ -12,18 +12,19 @@
                 <th>Type</th>
                 <th>Application</th>
                 <th>Active</th>
+                <th class="d-none">Id</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                    <td>@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
-                    <td>@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
-                    <td>@Html.DisplayTextFor(modelItem => item.Active)</td>
+                    <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
+                    <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
+                    <td id="Application">@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
+                    <td id="Active">@Html.DisplayTextFor(modelItem => item.Active)</td>
+                    <td id="Id" class="d-none">@Html.DisplayTextFor(modelItem => item.AccID)</td>
                 </tr>
-                <input type="hidden" name="id" value="@Html.DisplayFor(modelItem => item.AccID)" />
             }
         </tbody>
     </table>

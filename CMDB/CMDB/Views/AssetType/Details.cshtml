@@ -13,14 +13,16 @@
                 <th>@Html.DisplayNameFor(model => model.Vendor)</th>
                 <th>@Html.DisplayNameFor(model => model.Type)</th>
                 <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th class="d-none">@Html.DisplayNameFor(model => model.TypeID)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.Category.Category)</td>
-                <td>@Html.DisplayFor(model => model.Vendor)</td>
-                <td>@Html.DisplayFor(model => model.Type)</td>
-                <td>@Html.DisplayFor(model => model.Active)</td>
+                <td id="Category">@Html.DisplayFor(model => model.Category.Category)</td>
+                <td id="Vendor">@Html.DisplayFor(model => model.Vendor)</td>
+                <td id="Type">@Html.DisplayFor(model => model.Type)</td>
+                <td id="Active">@Html.DisplayFor(model => model.Active)</td>
+                <td id="Id" class="d-none">@Html.DisplayFor(model => model.TypeID)</td>
             </tr>
         </tbody>
     </table>

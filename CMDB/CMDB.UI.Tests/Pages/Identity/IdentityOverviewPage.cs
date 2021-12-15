@@ -23,7 +23,7 @@ namespace CMDB.UI.Tests.Pages
             WaitUntilElmentVisableByXpath("//input[@name='FirstName']");
             return new(driver);
         }
-        public DeactivateAssetTypePage Deactivate()
+        public DeactivateIdentityPage Deactivate()
         {
             ClickElementByXpath(DeactivateXpath);
             WaitUntilElmentVisableByXpath("//input[@id='reason']");

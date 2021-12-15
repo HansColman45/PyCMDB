@@ -28,6 +28,11 @@ namespace CMDB.UI.Tests.Pages
             WaitUntilElmentVisableByXpath("//input[@name='FirstName']");
             return new(driver);
         }
+        public DeactivateLaptopPage Deactivate()
+        {
+            ClickElementByXpath(DeactivateXpath);
+            return new(driver);
+        }
         public void Activate()
         {
             ClickElementByXpath(ActivateXpath);

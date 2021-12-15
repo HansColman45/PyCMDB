@@ -11,13 +11,15 @@
                 <th>@Html.DisplayNameFor(model => model.Category)</th>
                 <th>@Html.DisplayNameFor(model => model.Prefix)</th>
                 <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th class="d-none">@Html.DisplayNameFor(model => model.Id)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.Category)</td>
-                <td>@Html.DisplayFor(model => model.Prefix)</td>
-                <td>@Html.DisplayFor(model => model.Active)</td>
+                <td id="Category">@Html.DisplayFor(model => model.Category)</td>
+                <td id="Prefix">@Html.DisplayFor(model => model.Prefix)</td>
+                <td id="Acitve">@Html.DisplayFor(model => model.Active)</td>
+                <td class="d-none" id="Id">@Html.DisplayFor(model => model.Active)</td>
             </tr>
         </tbody>
     </table>

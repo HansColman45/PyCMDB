@@ -18,12 +18,12 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@Html.DisplayTextFor(modelItem => item.Name)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.EMail)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Language)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Type.Description)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Active)</td>
+                <td id="Name">@Html.DisplayTextFor(modelItem => item.Name)</td>
+                <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
+                <td id="EMail">@Html.DisplayTextFor(modelItem => item.EMail)</td>
+                <td id="Language">@Html.DisplayTextFor(modelItem => item.Language.Description)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Description)</td>
+                <td id="State">@Html.DisplayTextFor(modelItem => item.Active)</td>
             </tr>
         }
     </tbody>

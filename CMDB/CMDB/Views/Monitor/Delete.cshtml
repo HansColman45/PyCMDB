@@ -15,9 +15,9 @@
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.AssetTag)</td>
-                <td>@Html.DisplayFor(model => model.SerialNumber)</td>
-                <td>@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="AssetTag">@Html.DisplayFor(model => model.AssetTag)</td>
+                <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
             </tr>
         </tbody>
     </table>

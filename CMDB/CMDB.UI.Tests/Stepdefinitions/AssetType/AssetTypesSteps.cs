@@ -12,6 +12,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         private LoginPage login;
         private MainPage main;
         private AssetTypeOverviewPage overviewPage;
+        private CreateAssetTypePage createAssetTypePage;
 
         private readonly Random rnd = new();
         private int rndNr;
@@ -30,17 +31,17 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.AssetTypeOverview();
-            var newPage = overviewPage.New();
-            newPage.Category = category;
-            newPage.Vendor = vendor + rndNr.ToString();
-            newPage.Type = type + rndNr.ToString();
+            createAssetTypePage = overviewPage.New();
+            createAssetTypePage.Category = category;
+            createAssetTypePage.Vendor = vendor + rndNr.ToString();
+            createAssetTypePage.Type = type + rndNr.ToString();
             this.vendor = vendor + rndNr.ToString();
             this.type = type + rndNr.ToString();
         }
         [When(@"I create that (.*)")]
         public void WhenICreateThatKensington(string category)
         {
-            overviewPage.Create();
+            createAssetTypePage.Create();
         }
         [Then(@"The (.*) is created")]
         public void ThenTheIsCreated(string category)

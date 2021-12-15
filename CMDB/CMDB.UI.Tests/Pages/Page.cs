@@ -21,7 +21,6 @@ namespace CMDB.UI.Tests.Pages
         /// Constructor
         /// </summary>
         /// <param name="webDriver">The web driver</param>
-        /// <param name="logger">The logger</param>
         public Page(IWebDriver webDriver)
         {
             driver = webDriver;

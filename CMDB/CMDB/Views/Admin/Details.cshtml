@@ -11,15 +11,17 @@
                 <th>@Html.DisplayNameFor(model => model.Account.UserID)</th>
                 <th>@Html.DisplayNameFor(model => model.Level)</th>
                 <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th class="d-none">@Html.DisplayNameFor(model => model.AdminId)</th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Account.UserID)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Level)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Active)</td>
+                    <td id="UserID">@Html.DisplayFor(modelItem => item.Account.UserID)</td>
+                    <td id="Level">@Html.DisplayFor(modelItem => item.Level)</td>
+                    <td id="State">@Html.DisplayFor(modelItem => item.Active)</td>
+                    <td class="d-none" id="Id">@Html.DisplayFor(modelItem => item.AdminId)</td>
                 </tr>
             }
         </tbody>

@@ -24,5 +24,9 @@ namespace CMDB.UI.Tests.Pages
         {
             set => SelectTektInDropDownByXpath("//select[@id='Application']", value);
         }
+        public void Create()
+        {
+            ClickElementByXpath("//button[.='Create']");
+        }
     }
 }

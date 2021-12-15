@@ -22,7 +22,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='Type']", "7");
+            set => SelectValueInDropDownByXpath("//select[@id='Type']", value);
         }
         public string RAM
         {
@@ -31,6 +31,10 @@ namespace CMDB.UI.Tests.Pages
         public string MAC
         {
             set => EnterInTextboxByXPath("//input[@id='MAC']", value);
+        }
+        public void Create()
+        {
+            ClickElementByXpath("//button[.='Create']");
         }
     }
 }

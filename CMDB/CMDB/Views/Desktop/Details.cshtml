@@ -18,11 +18,11 @@
         </thead>
         <tbody>
             <tr>
-                <td>@Html.DisplayFor(model => model.AssetTag)</td>
-                <td>@Html.DisplayFor(model => model.SerialNumber)</td>
-                <td>@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
-                <td>@Html.DisplayFor(model => model.MAC)</td>
-                <td>@Html.DisplayFor(model => model.RAM)</td>
+                <td id="AssetTag">@Html.DisplayFor(model => model.AssetTag)</td>
+                <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="MAC">@Html.DisplayFor(model => model.MAC)</td>
+                <td id="RAM">@Html.DisplayFor(model => model.RAM)</td>
             </tr>
         </tbody>
     </table>

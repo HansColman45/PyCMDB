@@ -40,5 +40,9 @@ namespace CMDB.UI.Tests.Pages
         {
             set => EnterInTextboxByXPath("//input[@name='UserID']", value);
         }
+        public void Create()
+        {
+            ClickElementByXpath("//button[.='Create']");
+        }
     }
 }

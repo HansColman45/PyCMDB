@@ -55,6 +55,7 @@ namespace CMDB.UI.Tests.Hooks
             {
                 AcceptInsecureCertificates = true
             };
+            options.AddArgument("--allow-file-access-from-files");
             IWebDriver webDriver = new ChromeDriver(options);
             scenarioData.Driver = webDriver;
             scenarioData.Driver.Manage().Window.Maximize();
