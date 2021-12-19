@@ -16,7 +16,7 @@ namespace CMDB.UI.Tests.Pages
         {
             get
             {
-                string id = TekstFromTextBox("//input[@name='id']");
+                string id = TekstFromTextBox("//td[@id='Id']");
                 return Int32.Parse(id);
             }
         }

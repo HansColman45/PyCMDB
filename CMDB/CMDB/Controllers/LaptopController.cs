@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Laptop";
         private readonly static string table = "laptop";
         private readonly IWebHostEnvironment _env;
-        private DevicesService service;
+        private new readonly DevicesService service;
         public LaptopController(CMDBContext context, ILogger<LaptopController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

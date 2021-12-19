@@ -209,7 +209,8 @@ namespace CMDB.Util
             //MemoryStream stringInMemoryStream =
             //   new MemoryStream(ASCIIEncoding.Default.GetBytes(HTML));
             var document = new HTMLDocument(HTML, ".");
-            Aspose.Html.Converters.Converter.ConvertHTML(document, new PdfSaveOptions(), path);
+            //Aspose.Html.Converters.Converter.ConvertHTML(document, new PdfSaveOptions(), path);
+            document.Save(path);
         }
     }
 }

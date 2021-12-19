@@ -4,8 +4,11 @@ using CMDB.UI.Tests.Pages;
 using System;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
+using TechTalk.SpecFlow.UnitTestProvider;
 using Xunit;
 using Xunit.Extensions.Ordering;
+using helpers = CMDB.UI.Tests.Helpers;
+using entity = CMDB.Domain.Entities;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -17,14 +20,20 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private IdentityOverviewPage overviewPage;
         private CreateIdentityPage createIdentity;
         private UpdateIdentityPage updateIdentity;
+        private AssignAccountPage assignAccount;
+        private AssignFormPage AssignFom;
 
+        private readonly IUnitTestRuntimeProvider _unitTestRuntimeProvider;
         private readonly Random rnd = new();
         private int rndNr;
-        private Identity iden;
+        private helpers.Identity iden;
+        private entity.Account Account;
         private string updatedfield, newvalue, reason;
-        public IdentitySteps(ScenarioData scenarioData) : base(scenarioData)
+        public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider) : base(scenarioData)
         {
+            _unitTestRuntimeProvider = unitTestRuntimeProvider;
         }
+        #region create
         [Order(1)]
         [Given(@"I want to create an Identity with these details")]
         public void GivenIWantToCreateAnIdentityWithTheseDetails(Table table)
@@ -63,6 +72,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             string expectedlog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
             Assert.Equal(expectedlog, log);
         }
+        #endregion
         [Order(4)]
         [Given(@"An Identity exisist in the system")]
         public void GivenAnIdentityExisistInTheSystem()
@@ -76,6 +86,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage = main.IdentityOverview();
             overviewPage.Search("Test");
         }
+        #region Update
         [Order(5)]
         [When(@"I want to update (.*) with (.*)")]
         public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
@@ -150,6 +161,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
+        #endregion
+        #region Deactivate
         [Order(7)]
         [Given(@"An acive Identity exisist in the system")]
         public void GivenAnAciveIdentityExisistInTheSystem()
@@ -179,11 +192,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.Search("Test");
             var detail = overviewPage.Detail();
             int Id = detail.Id;
-            CMDB.Domain.Entities.Identity iden = context.GetIdentity(Id);
+            entity.Identity iden = context.GetIdentity(Id);
             string expectedlog = $"The Identity width name: {iden.FirstName} , {iden.LastName} in table identity is deleted due to {reason} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
+        #endregion
+        #region Activate
         [Order(10)]
         [Given(@"An inactive Identity exisist in the system")]
         public void GivenAnInactiveIdentityExisistInTheSystem()
@@ -210,11 +225,88 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.Search("Test");
             var detail = overviewPage.Detail();
             int Id = detail.Id;
-            CMDB.Domain.Entities.Identity iden = context.GetIdentity(Id);
+            entity.Identity iden = context.GetIdentity(Id);
             string expectedlog = $"The Identity width name: {iden.FirstName} , {iden.LastName} in table identity is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
-
+        #endregion
+        #region Assign Account
+        [Given(@"an Account exist as well")]
+        public void GivenAnAccountExistAsWell()
+        {
+            Account = context.CreateAccount();
+        }
+        [When(@"I assign the account to the identity")]
+        public void WhenIAssignTheAccountToTheIdentity()
+        {
+            assignAccount = overviewPage.AssignAccount();
+            iden = new()
+            {
+                UserId = assignAccount.UserId,
+                Email = assignAccount.EMail,
+                Type = assignAccount.Type,
+                FirstName = assignAccount.Name.Split(",")[1].Trim(),
+                LastName = assignAccount.Name.Split(",")[0]
+            };
+            assignAccount.SelectAccount(Account);
+            DateTime validFrom = DateTime.Now.AddYears(-1);
+            DateTime validUntil = DateTime.Now.AddYears(+1);
+            assignAccount.ValidFrom = validFrom.ToString("dd/MM/yyyy\tHH:mm\tt");
+            assignAccount.ValidUntil = validUntil.ToString("dd/MM/yyyy\tHH:mm\tt");
+            AssignFom = assignAccount.Assign();
+            Assert.False(assignAccount.IsVaidationErrorVisable());
+        }
+        [When(@"I fill in the assig form")]
+        public void WhenIFillInTheAssigForm()
+        {
+            string naam = AssignFom.Name;
+            Assert.Equal(naam, AssignFom.ITEmployee);
+            AssignFom.CreatePDF();
+        }
+        [Then(@"The account is assigned to the idenity")]
+        public void ThenTheAccountIsAssignedToTheIdenity()
+        {
+            overviewPage.Search(iden.UserId);
+            var detail = overviewPage.Detail();
+            int Id = detail.Id;
+            entity.Identity identity = context.GetIdentity(Id);
+            string expectedlog = $"The Identity width name: {identity.FirstName} , {identity.LastName} in table identity is activated by {admin.Account.UserID}";
+            var log = detail.GetLastLog();
+            Assert.Equal(expectedlog, log);
+        }
+        #endregion
+        #region Assign Devices
+        [Given(@"a (.*) exist as well")]
+        public void GivenALaptopExistAsWell(string category)
+        {
+            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
+            /*switch (category)
+            {
+                case "Laptop":
+                    break;
+            }*/
+        }
+        [When(@"I assign that (.*) to the identity")]
+        public void WhenIAssignThatLaptopToTheIdentity(string category)
+        {
+            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
+            /*switch (category)
+            {
+                case "Laptop":
+                    break;
+            }*/
+        }
+        [Then(@"The (.*) is assigned")]
+        public void ThenTheLaptopIsAssigned(string category)
+        {
+            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
+            /*switch (category)
+            {
+                case "Laptop":
+                    break;
+            }*/
+        }
+        #endregion
     }
 }

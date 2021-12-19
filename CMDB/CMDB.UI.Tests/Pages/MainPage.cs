@@ -12,6 +12,10 @@ namespace CMDB.UI.Tests.Pages
         public MainPage(IWebDriver webDriver) : base(webDriver)
         {
         }
+        public bool IsVaidationErrorVisable()
+        {
+            return IsElementVisable(By.XPath("//div[@class='text-danger validation-summary-errors']"));
+        }
         protected static string NewXpath => "//a[.=' Add']";
         protected static string EditXpath => "//a[@title='Edit']";
         protected static string DeactivateXpath => "//a[@title='Deactivate']";

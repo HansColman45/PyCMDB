@@ -18,7 +18,7 @@ namespace CMDB.Controllers
         private readonly ILogger<AccountTypeController> _logger;
         private readonly static string sitePart = "Account Type";
         private readonly static string table = "accounttype";
-        private AccountTypeService service;
+        private new readonly AccountTypeService service;
         public AccountTypeController(CMDBContext context, ILogger<AccountTypeController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             this._logger = logger;

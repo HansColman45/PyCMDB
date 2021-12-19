@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly ILogger<PermissionController> _logger;
         private readonly static string sitePart = "Permission";
         private readonly static string table = "permission";
-        private PermissionService service;
+        private new readonly PermissionService service;
         public PermissionController(CMDBContext context, ILogger<PermissionController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

@@ -34,5 +34,11 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(ActivateXpath);
             WaitUntilElmentVisableByXpath(NewXpath);
         }
+        public AssignAccountPage AssignAccount()
+        {
+            ClickElementByXpath("//a[@title='Assign Account']");
+            WaitUntilElmentVisableByXpath("//button[@type='submit']");
+            return new(driver);
+        }
     }
 }

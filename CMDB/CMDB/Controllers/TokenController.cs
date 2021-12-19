@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Token";
         private readonly static string table = "token";
         private readonly IWebHostEnvironment _env;
-        private DevicesService service;
+        private new readonly DevicesService service;
         public TokenController(CMDBContext context, ILogger<TokenController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

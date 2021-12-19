@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Docking station";
         private readonly static string table = "docking";
         private readonly IWebHostEnvironment _env;
-        private DevicesService service;
+        private new readonly DevicesService service;
 
         public DockingController(CMDBContext context, ILogger<DockingController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {

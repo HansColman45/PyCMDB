@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Monitor";
         private readonly static string table = "screen";
         private readonly IWebHostEnvironment _env;
-        private DevicesService service;
+        private new readonly DevicesService service;
         public MonitorController(CMDBContext context, ILogger<MonitorController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

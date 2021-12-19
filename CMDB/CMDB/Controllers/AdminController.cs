@@ -15,7 +15,7 @@ namespace CMDB.Controllers
         private readonly ILogger<AdminController> _logger;
         private readonly static string table = "admin";
         private readonly static string sitePart = "Admin";
-        private AdminService service;
+        private new readonly AdminService service;
         public AdminController(CMDBContext context, ILogger<AdminController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

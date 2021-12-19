@@ -49,6 +49,11 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return account;
         }
+        public Account CreateAccount()
+        {
+            var Account = AccountHelper.CreateSimpleAccount(context);
+            return Account;
+        }
         public AssetCategory GetAssetCategory(string category)
         {
             var Category = context.AssetCategories

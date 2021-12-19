@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly static string sitePart = "Asset Category";
         private readonly static string table = "assetcategory";
         private readonly IWebHostEnvironment _env;
-        private AssetCategoryService service;
+        private new readonly AssetCategoryService service;
         public AssetCategoryController(CMDBContext context, ILogger<AssetCategoryController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

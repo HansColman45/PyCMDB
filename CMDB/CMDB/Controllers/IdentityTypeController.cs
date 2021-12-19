@@ -16,7 +16,7 @@ namespace CMDB.Controllers
         private readonly IWebHostEnvironment _env;
         private readonly static string table = "identitytype";
         private readonly static string sitePart = "Identity Type";
-        private IdentityTypeService service;
+        private new readonly IdentityTypeService service;
         public IdentityTypeController(CMDBContext context, ILogger<IdentityTypeController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;

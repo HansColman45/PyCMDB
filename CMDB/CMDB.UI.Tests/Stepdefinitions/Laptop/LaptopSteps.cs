@@ -88,7 +88,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
                 Type = updatepage.Type,
                 RAM = updatepage.RAM
             };
-            
+
             updatedField = field;
             switch (field)
             {
@@ -147,7 +147,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.Search("IND");
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();
-            expectedlog = $"";
+            expectedlog = $"The Laptop with type Dell Latitude in table laptop is deleted due to {newValue} by {admin.Account.UserID}";
+            Assert.Equal(log, expectedlog);
         }
 
         [Given(@"There is an inactive Laptop existing")]
@@ -165,10 +166,16 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I activate the Laptop")]
         public void WhenIActivateTheLaptop()
         {
+            overviewPage.Activate();
         }
         [Then(@"The laptop is active")]
         public void ThenTheLaptopIsActive()
         {
+            overviewPage.Search("IND");
+            var detail = overviewPage.Detail();
+            string log = detail.GetLastLog();
+            expectedlog = $"The Laptop with type Dell Latitude in table laptop is activated by {admin.Account.UserID}";
+            Assert.Equal(log, expectedlog);
         }
 
     }

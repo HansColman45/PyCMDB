@@ -60,6 +60,31 @@ namespace CMDB.Services
             }
             return langs;
         }
+        public List<Device> ListAllFreeDevices()
+        {
+            List<Device> devices = new();
+
+            var Laptops = _context.Laptops
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.Identity == null)
+                .ToList();
+            foreach (var laptop in Laptops)
+            {
+                devices.Add(laptop);
+            }
+
+            var Desktops = _context.Desktops
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.Identity == null)
+                .ToList();
+            foreach (var desktop in Desktops)
+            {
+                devices.Add(desktop);
+            }
+            return devices;
+        }
         public void GetAssingedDevices(Identity identity)
         {
             var laptops = _context.Identities
@@ -237,7 +262,7 @@ namespace CMDB.Services
             List<SelectListItem> accounts = new();
             var freeAccounts = _context.Accounts
                 .Include(x => x.Application)
-                .Where(x => x.active == 1)
+                .Where(x => x.active == 1 && x.Application.Name == "CMDB")
                 .ToList();
             var idenaccounts = _context.IdenAccounts
                 .Include(x => x.Account)
@@ -248,7 +273,7 @@ namespace CMDB.Services
                 foreach (var iden in idenaccounts)
                 {
                     if (!(iden.Account.AccID == account.AccID))
-                        accounts.Add(new(account.AccID + " " + account.Application.Name, account.AccID.ToString()));
+                        accounts.Add(new(account.UserID + " " + account.Application.Name, account.AccID.ToString()));
                 }
             }
             return accounts;
@@ -256,7 +281,7 @@ namespace CMDB.Services
         public bool IsPeriodOverlapping(int? IdenID, int? AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            if (IdenID == null || AccID == null)
+            if (IdenID == null && AccID == null)
                 throw new Exception("Missing required id's");
             else
             {

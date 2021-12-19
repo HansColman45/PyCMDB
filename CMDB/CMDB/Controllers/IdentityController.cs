@@ -18,7 +18,7 @@ namespace CMDB.Controllers
         private readonly IWebHostEnvironment env;
         private readonly static string table = "identity";
         private readonly static string sitePart = "Identity";
-        private new IdentityServices service;
+        private new readonly IdentityServices service;
         public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env) : base(context, logger, env)
         {
             _logger = logger;
@@ -236,6 +236,30 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        public IActionResult AssignDevice(IFormCollection values, int? id)
+        {
+            _logger.LogDebug("Using Activate in {0}", table);
+            ViewData["Title"] = "Assign device to identity";
+            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
+            BuildMenu();
+            if (id == null)
+            {
+                return NotFound();
+            }
+            string FormSubmit = values["form-submitted"];
+            var list = service.GetByID((int)id);
+            if (list == null)
+            {
+                return NotFound();
+            }
+            Identity identity = list.ElementAt<Identity>(0);
+            ViewBag.Devices = service.ListAllFreeDevices();
+            ViewData["backUrl"] = "Identity";
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+            }
+            return View(list);
+        }
         public IActionResult AssignAccount(IFormCollection values, int? id)
         {
             _logger.LogDebug("Using Assign Account in {0}", table);
@@ -248,6 +272,10 @@ namespace CMDB.Controllers
             }
             string FormSubmit = values["form-submitted"];
             var list = service.GetByID((int)id);
+            if (list == null)
+            {
+                return NotFound();
+            }
             Identity identity = list.ElementAt<Identity>(0);
             ViewBag.Identity = identity;
             ViewBag.Accounts = service.ListAllFreeAccounts();
@@ -273,10 +301,6 @@ namespace CMDB.Controllers
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
-            }
-            if (list == null)
-            {
-                return NotFound();
             }
             return View();
         }
@@ -328,7 +352,7 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             _logger.LogDebug("Using Assign Form in {0}", table);
-            ViewData["Title"] = "Assign gosods";
+            ViewData["Title"] = "Assign form";
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
             var list = service.GetByID((int)id);
