@@ -269,6 +269,25 @@ namespace CMDB.UI.Tests.Pages
             }
         }
         /// <summary>
+        /// This function will return the value of a property for an Element found by XPath
+        /// </summary>
+        /// <param name="xpath">The xpath</param>
+        /// <param name="property">The property</param>
+        /// <returns></returns>
+        protected string GetAttributeFromXpath(string xpath, string property)
+        {
+            log.Debug("Get property {0} from ellement by xpath: {1}", property, xpath);
+            var fluentWait = new DefaultWait<IWebDriver>(driver)
+            {
+                Timeout = TimeSpan.FromSeconds(10),
+                PollingInterval = TimeSpan.FromMilliseconds(250)
+            };
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            fluentWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
+            IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xpath)));
+            return element.GetAttribute(property);
+        }
+        /// <summary>
         /// This function will scoll to an given ellemt 
         /// </summary>
         /// <param name="by">the way you want to select the element</param>

@@ -261,7 +261,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public void WhenIFillInTheAssigForm()
         {
             string naam = AssignFom.Name;
-            Assert.Equal(naam, AssignFom.ITEmployee);
+            Assert.Equal(naam, AssignFom.Employee);
             AssignFom.CreatePDF();
         }
         [Then(@"The account is assigned to the idenity")]
@@ -271,7 +271,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             int Id = detail.Id;
             entity.Identity identity = context.GetIdentity(Id);
-            string expectedlog = $"The Identity width name: {identity.FirstName} , {identity.LastName} in table identity is activated by {admin.Account.UserID}";
+            string expectedlog = $"The Identity width name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID {Account.UserID} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }

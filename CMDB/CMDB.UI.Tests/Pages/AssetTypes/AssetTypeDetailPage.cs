@@ -16,7 +16,7 @@ namespace CMDB.UI.Tests.Pages
         {
             get
             {
-                string id = TekstFromTextBox("//td[@id='Id']");
+                string id = GetAttributeFromXpath("//td[@id='Id']", "innerHTML");
                 return Int32.Parse(id);
             }
         }

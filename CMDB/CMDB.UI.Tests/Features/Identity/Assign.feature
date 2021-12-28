@@ -7,7 +7,8 @@ Scenario: I want to assign an Account to an existing Identity
 	And I fill in the assig form
 	Then The account is assigned to the idenity
 
-Scenario Outline: 2 I want to assign a device to an existing Identity
+@ignore
+Scenario Outline: I want to assign a device to an existing Identity
 	Given An Identity exisist in the system
 	And a <Device> exist as well
 	When I assign that <Device> to the identity

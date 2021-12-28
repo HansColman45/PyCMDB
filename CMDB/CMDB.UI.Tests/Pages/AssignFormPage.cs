@@ -49,6 +49,7 @@ namespace CMDB.UI.Tests.Pages
         public void CreatePDF()
         {
             ClickElementByXpath("//button[@type='submit']");
+            WaitOnAddNew();
         }
     }
 }

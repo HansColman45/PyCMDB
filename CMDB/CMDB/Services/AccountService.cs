@@ -123,18 +123,36 @@ namespace CMDB.Services
         public bool IsAccountExisting(Account account, string UserID = "", int application = 0)
         {
             bool result = false;
-
-            if (!String.IsNullOrEmpty(UserID) && String.Compare(account.UserID, UserID) != 0)
+            if (String.IsNullOrEmpty(UserID) && application == 0)
             {
-                var accounts = _context.Accounts.Where(x => x.UserID == UserID).ToList();
+                var accounts = _context.Accounts
+                    .Include(x => x.Application)
+                    .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).ToList();
                 if (accounts.Count > 0)
                     result = true;
             }
-            if (application != 0 && account.Application.AppID != application)
+            else
             {
-                var accounts = _context.Accounts.Include(x => x.Application).Where(x => x.Application.AppID == application).ToList();
-                if (accounts.Count > 0)
-                    result = true;
+                if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID == application)
+                {
+                    var accounts = _context.Accounts
+                        .Include(x => x.Application)
+                        .Where(x => x.UserID == UserID && x.Application.AppID == account.Application.AppID).ToList();
+                    if (accounts.Count > 0)
+                        result = true;
+                }
+                else if (String.Compare(account.UserID, UserID) == 0 && account.Application.AppID == application)
+                {
+                    result = false;
+                }
+                else if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID != application)
+                {
+                    var accounts = _context.Accounts
+                        .Include(x => x.Application)
+                        .Where(x => x.UserID == UserID && x.Application.AppID == application).ToList();
+                    if (accounts.Count > 0)
+                        result = true;
+                }
             }
             return result;
         }

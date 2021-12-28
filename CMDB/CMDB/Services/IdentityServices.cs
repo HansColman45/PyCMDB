@@ -329,8 +329,8 @@ namespace CMDB.Services
                 Include(x => x.Identity)
                 .Where(x => x.ID == idenAccountID)
                 .Single<IdenAccount>();
-            idenAccount.ValidUntil = new DateTime();
-            _context.IdenAccounts.Update(idenAccount);
+            idenAccount.ValidUntil = DateTime.Now;
+            // _context.IdenAccounts.Update(idenAccount);
             _context.SaveChanges();
             LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
             LogReleaseIdentity4Account("account", account.AccID, identity, account);
@@ -349,6 +349,8 @@ namespace CMDB.Services
             var idenAccounts = _context.IdenAccounts
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type)
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
                 .Where(x => x.ID == id)
