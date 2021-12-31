@@ -15,7 +15,8 @@ namespace CMDB.Testing.Builders.EntityBuilders
             {
                 l.AssetTag = "LPT" + f.Address.ZipCode();
                 l.Type = new AssetTypeBuilder().Build();
-                l.RAM = "4028";
+                l.RAM = "128";
+                l.MAC = "";
                 l.SerialNumber = f.Commerce.Ean8();
             });
         }

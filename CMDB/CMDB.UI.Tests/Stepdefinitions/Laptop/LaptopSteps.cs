@@ -20,6 +20,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private readonly Random rnd = new();
         private int rndNr;
         private helpers.Laptop laptop;
+        private entity.Laptop Laptop;
         string expectedlog, updatedField, newValue;
         public LaptopSteps(ScenarioData scenarioData) : base(scenarioData)
         {
@@ -67,6 +68,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Given(@"There is an Laptop existing")]
         public void GivenThereIsAnLaptopExisting()
         {
+            Laptop = context.CreateLaptop();
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -74,7 +76,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.LaptopOverview();
-            overviewPage.Search("IND");
+            overviewPage.Search(Laptop.AssetTag);
         }
         [When(@"I update the (.*) with (.*) and I save")]
         public void WhenIUpdateTheSerialnumberWithAndISave(string field, string value)
@@ -115,7 +117,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     expectedlog = $"The SerialNumber in table laptop has been changed from {laptop.SerialNumber} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "RAM":
-                    expectedlog = $"The RAM number in table laptop has been changed from {laptop.RAM} to {newValue} by {admin.Account.UserID}";
+                    var oldRam = context.GetRAM(laptop.RAM);
+                    var newRam = context.GetRAM(newValue);
+                    expectedlog = $"The RAM in table laptop has been changed from {oldRam.Value} to {newRam.Value} by {admin.Account.UserID}";
                     break;
             }
             Assert.Equal(log, expectedlog);

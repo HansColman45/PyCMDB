@@ -9,6 +9,7 @@ using Xunit;
 using Xunit.Extensions.Ordering;
 using helpers = CMDB.UI.Tests.Helpers;
 using entity = CMDB.Domain.Entities;
+using CMDB.Testing.Helpers;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -28,6 +29,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private int rndNr;
         private helpers.Identity iden;
         private entity.Account Account;
+        private entity.Identity Identity;
         private string updatedfield, newvalue, reason;
         public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider) : base(scenarioData)
         {
@@ -77,6 +79,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Given(@"An Identity exisist in the system")]
         public void GivenAnIdentityExisistInTheSystem()
         {
+            Identity = context.CreateIdentity();
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -84,7 +87,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
-            overviewPage.Search("Test");
+            overviewPage.Search(Identity.FirstName);
         }
         #region Update
         [Order(5)]

@@ -10,9 +10,11 @@ namespace CMDB.Testing.Helpers
         public static Laptop CreateSimpleLaptop(CMDBContext context)
         {
             var cat = context.AssetCategories.Where(x => x.Category == "Laptop").SingleOrDefault();
+            var AssetType = AssetTypeHelper.CreateSimpleAssetType(context, cat);
 
             Laptop laptop = new LaptopBuilder()
                 .With(x => x.Category, cat)
+                .With(x => x.Type, AssetType)
                 .Build();
             laptop.Logs.Add(new LogBuilder()
                 .With(x => x.Laptop, laptop)

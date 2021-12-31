@@ -18,11 +18,21 @@ namespace CMDB.UI.Tests.Data
                 .Options;
             context = new CMDBContext(options);
         }
+        /// <summary>
+        /// This will create a new Admin
+        /// </summary>
+        /// <param name="level">The level you wan to have the admin to have by default 9</param>
+        /// <returns>Admin</returns>
         public Admin CreateNewAdmin(int level = 9)
         {
             var admin = AdminHelper.CreateCMDBAdmin(context, level);
             return admin;
         }
+        /// <summary>
+        /// This function will return an Identity using the Id
+        /// </summary>
+        /// <param name="IdenId">The identityId</param>
+        /// <returns>Identity</returns>
         public Identity GetIdentity(int IdenId)
         {
             var iden = context.Identities
@@ -32,6 +42,20 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return iden;
         }
+        /// <summary>
+        /// This will create a new Identity
+        /// </summary>
+        /// <returns>Identity</returns>
+        public Identity CreateIdentity()
+        {
+            Identity identity = IdentityHelper.CreateSimpleIdentity(context);
+            return identity;
+        }
+        /// <summary>
+        /// This will return an AssetType using the Id
+        /// </summary>
+        /// <param name="AssetTypeID">The AssetTypeId</param>
+        /// <returns></returns>
         public AssetType GetAssetType(int AssetTypeID)
         {
             var assetType = context.AssetTypes
@@ -40,6 +64,11 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return assetType;
         }
+        /// <summary>
+        /// This will return the Account using the Id
+        /// </summary>
+        /// <param name="AccountId">The AccountId</param>
+        /// <returns>Account</returns>
         public Account GetAccount(int AccountId)
         {
             var account = context.Accounts
@@ -49,11 +78,20 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return account;
         }
+        /// <summary>
+        /// This will create an Account
+        /// </summary>
+        /// <returns>Account</returns>
         public Account CreateAccount()
         {
             var Account = AccountHelper.CreateSimpleAccount(context);
             return Account;
         }
+        /// <summary>
+        /// This will return abn AssetCategory using the Category
+        /// </summary>
+        /// <param name="category">Category</param>
+        /// <returns>AssetCategory</returns>
         public AssetCategory GetAssetCategory(string category)
         {
             var Category = context.AssetCategories
@@ -61,6 +99,11 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return Category;
         }
+        /// <summary>
+        /// This will return an AssetCategory using the Id
+        /// </summary>
+        /// <param name="CatId">The Category Id</param>
+        /// <returns></returns>
         public AssetCategory GetAssetCategory(int CatId)
         {
             var Category = context.AssetCategories
@@ -68,6 +111,13 @@ namespace CMDB.UI.Tests.Data
                 .FirstOrDefault();
             return Category;
         }
+        /// <summary>
+        /// This will check or create a new AssetType
+        /// </summary>
+        /// <param name="vendor">The vendor</param>
+        /// <param name="type">The Type</param>
+        /// <param name="category">The category</param>
+        /// <returns>AssetType</returns>
         public AssetType GetOrCreateAssetType(string vendor, string type, AssetCategory category)
         {
             var assetTypes = context.AssetTypes
@@ -88,6 +138,29 @@ namespace CMDB.UI.Tests.Data
             }
             else
                 return assetTypes.FirstOrDefault();
+        }
+        /// <summary>
+        /// This will return a laptop using the Asset Tagr
+        /// </summary>
+        /// <param name="AssetTag">AssetTag</param>
+        /// <returns></returns>
+        public Laptop GetLaptop(string AssetTag)
+        {
+            var Laptop = context.Laptops
+                .Include(x => x.Type)
+                .Where(x => x.AssetTag == AssetTag).FirstOrDefault();
+            return Laptop;
+        }
+        public Laptop CreateLaptop() => LaptopHelper.CreateSimpleLaptop(context);
+        /// <summary>
+        /// This function will return the RAM info
+        /// </summary>
+        /// <param name="display">The display value</param>
+        /// <returns>RAM</returns>
+        public RAM GetRAM(string display)
+        {
+            var ram = context.RAMs.Where(x => x.Display == display).FirstOrDefault();
+            return ram;
         }
     }
 }
