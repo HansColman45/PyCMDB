@@ -26,5 +26,6 @@ namespace CMDB.Domain.Entities
 
         public virtual ICollection<IdenAccount> Identities { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
+
     }
 }

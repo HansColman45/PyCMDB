@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,30 @@ namespace CMDB.Domain.Entities
 {
     public class Admin : Model
     {
+        public Admin()
+        {
+            Laptops = new List<Laptop>();
+            Desktops = new List<Desktop>();
+            Screens = new List<Screen>();
+            Tokens = new List<Token>();
+            Mobiles = new List<Mobile>();
+            Dockings = new List<Docking>();
+            Kensingtons = new List<Kensington>();
+            Subscriptions = new List<Subscription>();
+            SubscriptionTypes = new List<SubscriptionType>();
+            Identities = new List<Identity>();
+            IdentityTypes = new List<IdentityType>();
+            IdenAccounts = new List<IdenAccount>();
+            Admins = new List<Admin>();
+            AssetCategories = new List<AssetCategory>();
+            AssetTypes = new List<AssetType>();
+            AccountTypes = new List<AccountType>();
+            Applications = new List<Application>();
+            RolePerms = new List<RolePerm>();
+            Roles = new List<Role>();
+            RoleTypes = new List<RoleType>();
+            Permissions = new List<Permission>();
+        }
         [Column("Admin_id")]
         [Key]
         public int AdminId { get; set; }
@@ -16,5 +41,28 @@ namespace CMDB.Domain.Entities
         public int Level { get; set; }
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
+
+        public virtual ICollection<Laptop> Laptops { get; set; }
+        public virtual ICollection<Desktop> Desktops { get; set; }
+        public virtual ICollection<Docking> Dockings { get; set; }
+        public virtual ICollection<Token> Tokens { get; set; }
+        public virtual ICollection<Mobile> Mobiles { get; set; }
+        public virtual ICollection<Screen> Screens { get; set; }
+        public virtual ICollection<Kensington> Kensingtons { get; set; }
+        public virtual ICollection<Subscription> Subscriptions { get; set; }
+        public virtual ICollection<SubscriptionType> SubscriptionTypes { get; set; }
+        public virtual ICollection<Identity> Identities { get; set; }
+        public virtual ICollection<IdentityType> IdentityTypes { get; set; }
+        public virtual ICollection<Account> Accounts { get; set; }
+        public virtual ICollection<AccountType> AccountTypes { get; set; }
+        public virtual ICollection<Admin> Admins { get; set; }
+        public virtual ICollection<Application> Applications { get; set; }
+        public virtual ICollection<AssetCategory> AssetCategories { get; set; }
+        public virtual ICollection<AssetType> AssetTypes { get; set; }
+        public virtual ICollection<IdenAccount> IdenAccounts { get; set; }
+        public virtual ICollection<Permission> Permissions { get; set; }
+        public virtual ICollection<RolePerm> RolePerms { get; set; }
+        public virtual ICollection<Role> Roles { get; set; }
+        public virtual ICollection<RoleType> RoleTypes { get; set; }
     }
 }

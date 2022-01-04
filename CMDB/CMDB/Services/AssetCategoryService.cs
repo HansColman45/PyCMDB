@@ -33,6 +33,7 @@ namespace CMDB.Services
         }
         public void Create(AssetCategory category, string table)
         {
+            category.LastModfiedAdmin = Admin;
             _context.AssetCategories.Add(category);
             _context.SaveChanges();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
@@ -40,6 +41,7 @@ namespace CMDB.Services
         }
         public void Update(AssetCategory category, string Category, string prefix, string Table)
         {
+            category.LastModfiedAdmin = Admin;
             if (String.Compare(category.Category, Category) != 0)
             {
                 category.Category = Category;
@@ -61,6 +63,7 @@ namespace CMDB.Services
         }
         public void Deactivate(AssetCategory category, string Reason, string Table)
         {
+            category.LastModfiedAdmin = Admin;
             category.Active = "Inactive";
             category.DeactivateReason = Reason;
             _context.AssetCategories.Update(category);
@@ -70,6 +73,7 @@ namespace CMDB.Services
         }
         public void Activate(AssetCategory category, string Table)
         {
+            category.LastModfiedAdmin = Admin;
             category.Active = "Active";
             category.DeactivateReason = "";
             _context.AssetCategories.Update(category);

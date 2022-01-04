@@ -16,20 +16,28 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Mobiles)
                 .HasForeignKey(e => e.IdentityId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Mobile_Identity");
 
             builder.HasOne(e => e.MobileType)
                 .WithMany(d => d.Mobiles)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Mobile_Type");
+                .HasConstraintName("FK_Mobile_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Mobiles)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Mobile_Category");
+                .HasConstraintName("FK_Mobile_Category")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Mobiles)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Mobile_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

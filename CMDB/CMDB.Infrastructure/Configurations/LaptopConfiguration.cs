@@ -14,31 +14,40 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Laptop_Asset");
 
             builder.Property(e => e.SerialNumber)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Laptops)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Laptop_Type");
+                .HasConstraintName("FK_Laptop_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Laptops)
                 .HasForeignKey(e => e.IdentityId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Laptop_Identity");
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Laptops)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Laptop_Category");
+                .HasConstraintName("FK_Laptop_Category")
+                .IsRequired();
 
             builder.Property(e => e.MAC)
                 .HasColumnType("varchar(255)");
 
             builder.Property(e => e.RAM)
                 .HasColumnType("varchar(255)");
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Laptops)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Laptop_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

@@ -89,6 +89,7 @@ namespace CMDB.Services
         }
         public void CreateNewDesktop(Desktop desktop, string table)
         {
+            desktop.LastModfiedAdmin = Admin;
             _context.Desktops.Add(desktop);
             _context.SaveChanges();
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
@@ -96,6 +97,7 @@ namespace CMDB.Services
         }
         public void CreateNewLaptop(Laptop laptop, string table)
         {
+            laptop.LastModfiedAdmin = Admin;
             _context.Laptops.Add(laptop);
             _context.SaveChanges();
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
@@ -103,38 +105,45 @@ namespace CMDB.Services
         }
         public void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
+            desktop.LastModfiedAdmin = Admin;
+            string OldRam, OldMac, OldSerial, OldType;
+            OldMac = desktop.MAC;
+            OldRam = desktop.RAM;
+            OldSerial = desktop.SerialNumber;
+            OldType = desktop.Type.Vendor + " " + desktop.Type.Type;
             if (String.Compare(desktop.RAM, newRam) != 0)
             {
                 desktop.RAM = newRam;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "RAM", desktop.RAM, newRam);
+                LogUpdate(Table, desktop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(desktop.MAC, newMAC) != 0)
             {
                 desktop.MAC = newMAC;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "MAC", desktop.MAC, newMAC);
+                LogUpdate(Table, desktop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "SerialNumber", desktop.SerialNumber, newSerialNumber);
+                LogUpdate(Table, desktop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (desktop.Type.TypeID != newAssetType.TypeID)
             {
                 desktop.Type = newAssetType;
                 _context.SaveChanges();
-                LogUpdate(Table, desktop.AssetTag, "Type", desktop.Type.Vendor + " " + desktop.Type, newAssetType.Vendor + " " + newAssetType.Type);
+                LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
-            string OldRam, OldMac,OldSerial,OldType;
+            laptop.LastModfiedAdmin = Admin;
+            string OldRam, OldMac, OldSerial, OldType;
             OldMac = laptop.MAC;
             OldRam = laptop.RAM;
             OldSerial = laptop.SerialNumber;
-            OldType = laptop.Type.Vendor + " " + laptop.Type;
+            OldType = laptop.Type.Vendor + " " + laptop.Type.Type;
             if (String.Compare(laptop.RAM, newRam) != 0)
             {
                 laptop.RAM = newRam;
@@ -162,6 +171,7 @@ namespace CMDB.Services
         }
         public void Deactivate(Device device, string Reason, string table)
         {
+            device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
             device.Active = "Inactive";
             _context.SaveChanges();
@@ -170,6 +180,7 @@ namespace CMDB.Services
         }
         public void Activate(Device device, string table)
         {
+            device.LastModfiedAdmin = Admin;
             device.DeactivateReason = "";
             device.Active = "Active";
             _context.SaveChanges();

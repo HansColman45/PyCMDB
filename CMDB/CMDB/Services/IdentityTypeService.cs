@@ -34,6 +34,7 @@ namespace CMDB.Services
         }
         public void Create(IdentityType identityType, string Table)
         {
+            identityType.LastModfiedAdmin = Admin;
             _context.IdentityTypes.Add(identityType);
             _context.SaveChanges();
             string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
@@ -41,6 +42,7 @@ namespace CMDB.Services
         }
         public void Update(IdentityType identityType, string Type, string Description, string Table)
         {
+            identityType.LastModfiedAdmin = Admin;
             if (String.Compare(identityType.Type, Type) != 0)
             {
                 identityType.Type = Type;
@@ -56,6 +58,7 @@ namespace CMDB.Services
         }
         public void Deactivate(IdentityType identityType, string reason, string Table)
         {
+            identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = reason;
             identityType.Active = "Inactive";
             _context.SaveChanges();
@@ -64,6 +67,7 @@ namespace CMDB.Services
         }
         public void Activate(IdentityType identityType, string table)
         {
+            identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = "";
             identityType.Active = "Active";
             _context.SaveChanges();

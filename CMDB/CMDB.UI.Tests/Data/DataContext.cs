@@ -29,6 +29,14 @@ namespace CMDB.UI.Tests.Data
             return admin;
         }
         /// <summary>
+        /// This will delete all Created or update entities the Admin has done
+        /// </summary>
+        /// <param name="admin">The Admin</param>
+        public void DeleteAllCreatedOrUpdated(Admin admin)
+        {
+            AdminHelper.DeleteCascading(context, admin);
+        }
+        /// <summary>
         /// This function will return an Identity using the Id
         /// </summary>
         /// <param name="IdenId">The identityId</param>
@@ -140,7 +148,7 @@ namespace CMDB.UI.Tests.Data
                 return assetTypes.FirstOrDefault();
         }
         /// <summary>
-        /// This will return a laptop using the Asset Tagr
+        /// This will return a laptop using the Asset Tag
         /// </summary>
         /// <param name="AssetTag">AssetTag</param>
         /// <returns></returns>
@@ -151,6 +159,10 @@ namespace CMDB.UI.Tests.Data
                 .Where(x => x.AssetTag == AssetTag).FirstOrDefault();
             return Laptop;
         }
+        /// <summary>
+        /// This function will create a new Laptop
+        /// </summary>
+        /// <returns>Laptop</returns>
         public Laptop CreateLaptop() => LaptopHelper.CreateSimpleLaptop(context);
         /// <summary>
         /// This function will return the RAM info

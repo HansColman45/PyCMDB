@@ -1,6 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 
 namespace CMDB.Testing.Helpers
@@ -62,6 +63,43 @@ namespace CMDB.Testing.Helpers
 
             context.SaveChanges();
             return admin;
+        }
+        public static void DeleteCascading(CMDBContext context, Admin admin)
+        {
+            //AccountType
+            var accountType = context.AccountTypes
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var type in accountType)
+            {
+                context.RemoveRange(type.Logs);
+                context.SaveChanges();
+            }
+            context.RemoveRange(accountType);
+            context.SaveChanges();
+            //IdentityTypes
+            var identypes = context.IdentityTypes
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var type in identypes)
+            {
+                context.RemoveRange(type.Logs);
+                context.SaveChanges();
+            }
+            context.RemoveRange(identypes);
+            context.SaveChanges();
+            //Identity
+            var identities = context.Identities
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var identity in identities)
+            {
+                context.RemoveRange(identity.Logs);
+                context.SaveChanges();
+            }
         }
     }
 }

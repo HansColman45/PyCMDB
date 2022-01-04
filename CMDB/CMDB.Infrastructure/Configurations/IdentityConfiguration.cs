@@ -16,24 +16,36 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Identity")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            builder.Property(e => e.Name);
+            builder.Property(e => e.Name)
+                .IsRequired();
 
-            builder.Property(e => e.UserID);
+            builder.Property(e => e.UserID)
+                .IsRequired();
 
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Identities)
                 .HasForeignKey(e => e.TypeId)
                 .HasConstraintName("FK_Identity_Type")
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
             builder.HasOne(e => e.Language)
                 .WithMany(d => d.Identities)
                 .HasConstraintName("FK_Identity_Language")
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
-            builder.Property(e => e.EMail);
+            builder.Property(e => e.EMail)
+                .IsRequired();
 
-            builder.Property(e => e.Company);
+            builder.Property(e => e.Company)
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Identities)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Identity_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

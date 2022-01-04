@@ -16,15 +16,24 @@ namespace CMDB.Infrastructure.Configurations
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             builder.Property(e => e.Name)
+                .IsRequired()
                 .HasColumnType("varchar(255)");
 
             builder.Property(e => e.Description)
+                .IsRequired()
                 .HasColumnType("varchar(255)");
 
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Roles)
                 .HasConstraintName("FK_Role_Type")
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Roles)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Role_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

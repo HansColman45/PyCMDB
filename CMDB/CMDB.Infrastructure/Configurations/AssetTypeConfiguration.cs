@@ -16,15 +16,24 @@ namespace CMDB.Infrastructure.Configuration
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             builder.Property(e => e.Type)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.Property(e => e.Vendor)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Types)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.AssetTypes)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_AssetType_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

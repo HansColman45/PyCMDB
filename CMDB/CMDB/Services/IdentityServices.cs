@@ -167,7 +167,8 @@ namespace CMDB.Services
                 Company = Company,
                 EMail = EMail,
                 Type = Type,
-                Language = Lang
+                Language = Lang,
+                LastModfiedAdmin = Admin
             };
             _context.Identities.Add(identity);
             _context.SaveChanges();
@@ -176,6 +177,7 @@ namespace CMDB.Services
         }
         public void Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
+            identity.LastModfiedAdmin = Admin;
             if (String.Compare(identity.FirstName, firstName) != 0)
             {
                 LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
@@ -219,6 +221,7 @@ namespace CMDB.Services
         }
         public void Deactivate(Identity identity, string Reason, string Table)
         {
+            identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = Reason;
             identity.Active = "Inactive";
             _context.Identities.Update(identity);
@@ -228,6 +231,7 @@ namespace CMDB.Services
         }
         public void Activate(Identity identity, string Table)
         {
+            identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = null;
             identity.Active = "Active";
             _context.Identities.Update(identity);
@@ -318,8 +322,11 @@ namespace CMDB.Services
             {
                 Account = Account,
                 ValidFrom = ValidFrom,
-                ValidUntil = ValidUntil
+                ValidUntil = ValidUntil,
+                LastModifiedAdmin = Admin
             });
+            identity.LastModfiedAdmin = Admin;
+            Account.LastModfiedAdmin = Admin;
             LogAssignIden2Account(Table, identity.IdenId, identity, Account);
             LogAssignAccount2Identity("account", AccID, Account, identity);
         }
@@ -330,7 +337,9 @@ namespace CMDB.Services
                 .Where(x => x.ID == idenAccountID)
                 .Single<IdenAccount>();
             idenAccount.ValidUntil = DateTime.Now;
-            // _context.IdenAccounts.Update(idenAccount);
+            idenAccount.LastModifiedAdmin = Admin;
+            account.LastModfiedAdmin = Admin;
+            identity.LastModfiedAdmin = Admin;
             _context.SaveChanges();
             LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
             LogReleaseIdentity4Account("account", account.AccID, identity, account);

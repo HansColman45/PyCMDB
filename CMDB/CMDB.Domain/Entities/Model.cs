@@ -37,6 +37,7 @@ namespace CMDB.Domain.Entities
         }
         [Column("Deactivate_reason")]
         public string DeactivateReason { get; set; }
-
+        public Admin LastModfiedAdmin { get; set; }
+        public int? LastModifiedAdminId { get; set; }
     }
 }

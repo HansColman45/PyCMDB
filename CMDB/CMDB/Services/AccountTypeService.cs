@@ -20,6 +20,7 @@ namespace CMDB.Services
         }
         public void Create(AccountType accountType, string Table)
         {
+            accountType.LastModfiedAdmin = Admin;
             _context.AccountTypes.Add(accountType);
             _context.SaveChanges();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
@@ -27,7 +28,7 @@ namespace CMDB.Services
         }
         public void Update(AccountType accountType, string Type, string Description, string Table)
         {
-
+            accountType.LastModfiedAdmin = Admin;
             if (String.Compare(accountType.Type, Type) != 0)
             {
                 accountType.Type = Type;
@@ -45,6 +46,7 @@ namespace CMDB.Services
         {
             accountType.Active = "Inactive";
             accountType.DeactivateReason = Reason;
+            accountType.LastModfiedAdmin = Admin;
             _context.SaveChanges();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
             LogDeactivate(Table, accountType.TypeID, Value, Reason);
@@ -53,6 +55,7 @@ namespace CMDB.Services
         {
             accountType.Active = "Active";
             accountType.DeactivateReason = "";
+            accountType.LastModfiedAdmin = Admin;
             _context.SaveChanges();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
             LogActivate(Table, accountType.TypeID, Value);

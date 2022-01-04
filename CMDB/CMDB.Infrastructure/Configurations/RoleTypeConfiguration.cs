@@ -19,7 +19,14 @@ namespace CMDB.Infrastructure.Configurations
                 .HasColumnType("varchar(255)");
 
             builder.Property(e => e.Type)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.RoleTypes)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_RoleType_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

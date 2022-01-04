@@ -14,25 +14,34 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Docking_Asset");
 
             builder.Property(e => e.SerialNumber)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Dockings)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Docking_Type");
+                .HasConstraintName("FK_Docking_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Dockings)
                 .HasForeignKey(e => e.IdentityId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Docking_Identity");
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Dockings)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Docking_Category");
+                .HasConstraintName("FK_Docking_Category")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Dockings)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Docking_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

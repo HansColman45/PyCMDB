@@ -19,18 +19,28 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Accounts)
                 .HasForeignKey(e => e.IdentityId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
             builder.HasOne(e => e.Account)
                 .WithMany(d => d.Identities)
                 .HasForeignKey(e => e.AccountId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
 
             builder.Property(e => e.ValidFrom)
-                .HasColumnType("datetime2(0)");
+                .HasColumnType("datetime2(0)")
+                .IsRequired();
 
             builder.Property(e => e.ValidUntil)
-                .HasColumnType("datetime2(0)");
+                .HasColumnType("datetime2(0)")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModifiedAdmin)
+                 .WithMany(p => p.IdenAccounts)
+                 .HasForeignKey(e => e.LastModifiedAdminId)
+                 .OnDelete(DeleteBehavior.SetNull)
+                 .HasConstraintName("FK_IdenAccount_LastModifiedAdmin");
 
             builder.HasIndex(e => new { e.AccountId, e.IdentityId, e.ValidFrom, e.ValidUntil }).IsUnique();
         }

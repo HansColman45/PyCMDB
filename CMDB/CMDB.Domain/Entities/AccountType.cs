@@ -5,6 +5,10 @@ namespace CMDB.Domain.Entities
 {
     public class AccountType : Model
     {
+        public AccountType()
+        {
+            Accounts = new List<Account>();
+        }
         public int TypeID { get; set; }
         [Required(ErrorMessage = "Please fill in a Type")]
         public string Type { get; set; }

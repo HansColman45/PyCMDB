@@ -23,13 +23,21 @@ namespace CMDB.Infrastructure.Configuration
                 .WithMany(p => p.Accounts)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Account_Type");
+                .HasConstraintName("FK_Account_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Application)
                 .WithMany(p => p.Accounts)
                 .HasForeignKey(e => e.ApplicationId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Account_Application");
+                .HasConstraintName("FK_Account_Application")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Accounts)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .HasConstraintName("FK_Account_LastModifiedAdmin")
+                .OnDelete(DeleteBehavior.SetNull);
 
             builder.Property(e => e.active)
                 .IsRequired()

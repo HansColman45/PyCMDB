@@ -15,19 +15,29 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Admin")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            builder.Property(e => e.Level);
+            builder.Property(e => e.Level)
+                .IsRequired();
 
             builder.Property(e => e.DateSet)
-                .HasColumnType("datetime2(0)");
+                .HasColumnType("datetime2(0)")
+                .IsRequired();
 
             builder.HasOne(e => e.Account)
                 .WithMany(d => d.Admins)
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Admin_Account");
+                .HasConstraintName("FK_Admin_Account")
+                .IsRequired();
 
             builder.Property(e => e.Password)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Admins)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_Admin_LastModiefiedAdmin");
 
             builder.Property(e => e.active)
                .IsRequired()

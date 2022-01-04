@@ -68,6 +68,7 @@ namespace CMDB.Services
             string pwd = new PasswordHasher().EncryptPassword("cmdb");
             admin.Password = pwd;
             admin.DateSet = DateTime.Now;
+            admin.LastModfiedAdmin = Admin;
             _context.Admins.Add(admin);
             _context.SaveChanges();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
@@ -78,6 +79,7 @@ namespace CMDB.Services
             if (admin.Level != level)
             {
                 admin.Level = level;
+                admin.LastModfiedAdmin = Admin;
                 _context.SaveChanges();
                 LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
             }
@@ -86,6 +88,7 @@ namespace CMDB.Services
         {
             admin.Active = "Inactive";
             admin.DeactivateReason = reason;
+            admin.LastModfiedAdmin = Admin;
             _context.SaveChanges();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogDeactivate(table, admin.AdminId, Value, reason);
@@ -94,6 +97,7 @@ namespace CMDB.Services
         {
             admin.Active = "Active";
             admin.DeactivateReason = "";
+            admin.LastModfiedAdmin = Admin;
             _context.SaveChanges();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogActivate(table, admin.AdminId, Value);

@@ -27,5 +27,7 @@ namespace CMDB.Domain.Entities
 
         public int? IdentityId { get; set; }
         public int? AccountId { get; set; }
+        public Admin LastModifiedAdmin { get; set; }
+        public int? LastModifiedAdminId { get; set; }
     }
 }

@@ -18,10 +18,17 @@ namespace CMDB.Infrastructure.Configurations
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
             builder.Property(e => e.Rights)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.Property(e => e.Description)
                 .HasColumnType("varchar(255)");
+
+            builder.HasOne(e => e.LastModifiedAdmin)
+                .WithMany(p => p.Permissions)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Permission_CreatedAdmin");
         }
     }
 }

@@ -18,6 +18,8 @@ namespace CMDB.Domain.Entities
         [Required(ErrorMessage = "Please fill in a permision")]
         public string Rights { get; set; }
         public string Description { get; set; }
+        public Admin LastModifiedAdmin { get; set; }
+        public int? LastModifiedAdminId { get; set; }
 
         public virtual ICollection<Log> Logs { get; set; }
         public virtual ICollection<RolePerm> Roles { get; set; }

@@ -41,6 +41,7 @@ namespace CMDB.Services
         }
         public void CreateNewAssetType(AssetType assetType, string Table)
         {
+            assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Add(assetType);
             _context.SaveChanges();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
@@ -48,6 +49,7 @@ namespace CMDB.Services
         }
         public void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
+            assetType.LastModfiedAdmin = Admin;
             string OldType = assetType.Type;
             string OldVendor = assetType.Vendor;
             if (String.Compare(assetType.Vendor, Vendor) != 0)
@@ -69,6 +71,7 @@ namespace CMDB.Services
         {
             assetType.Active = "Inactive";
             assetType.DeactivateReason = reason;
+            assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);
             _context.SaveChanges();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
@@ -78,6 +81,7 @@ namespace CMDB.Services
         {
             assetType.Active = "Active";
             assetType.DeactivateReason = "";
+            assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);
             _context.SaveChanges();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";

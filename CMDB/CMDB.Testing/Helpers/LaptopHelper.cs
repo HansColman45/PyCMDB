@@ -26,5 +26,15 @@ namespace CMDB.Testing.Helpers
 
             return laptop;
         }
+        public static void CascadingDelete(CMDBContext context, Laptop laptop)
+        {
+            var logs = context.Logs.Where(x => x.Laptop.AssetTag == laptop.AssetTag).ToList();
+            context.RemoveRange(logs);
+
+            context.Remove<AssetType>(laptop.Type);
+
+            context.Remove<Laptop>(laptop);
+            context.SaveChanges();
+        }
     }
 }

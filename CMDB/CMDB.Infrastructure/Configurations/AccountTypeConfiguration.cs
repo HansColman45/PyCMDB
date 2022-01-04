@@ -21,6 +21,12 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.Description)
                 .HasColumnType("varchar(255)");
 
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.AccountTypes)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_AccountType_LastModifiedAdmin");
+
             builder.Property(e => e.active)
                 .IsRequired()
                 .HasMaxLength(1)

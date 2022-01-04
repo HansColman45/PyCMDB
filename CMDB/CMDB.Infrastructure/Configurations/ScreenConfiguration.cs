@@ -14,25 +14,35 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Screen_Asset");
 
             builder.Property(e => e.SerialNumber)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Screens)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Screen_Type");
+                .HasConstraintName("FK_Screen_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Screens)
                 .HasForeignKey(e => e.IdentityId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Screen_Identity");
+                .HasConstraintName("FK_Screen_Identity")
+                .IsRequired();
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Screens)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Screen_Category");
+                .HasConstraintName("FK_Screen_Category")
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Screens)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Screen_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()

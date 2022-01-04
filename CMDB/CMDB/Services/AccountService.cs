@@ -48,7 +48,8 @@ namespace CMDB.Services
             {
                 UserID = UserID,
                 Application = applications,
-                Type = accountType
+                Type = accountType,
+                LastModfiedAdmin = Admin
             };
             _context.Accounts.Add(account);
             _context.SaveChanges();
@@ -74,6 +75,7 @@ namespace CMDB.Services
                 LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name);
                 account.Application = applications;
             }
+            account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
             _context.SaveChanges();
         }
@@ -83,6 +85,7 @@ namespace CMDB.Services
             account.Active = "Inactive";
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             LogDeactivate(Table, account.AccID, value, Reason);
+            account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
             _context.SaveChanges();
         }
@@ -92,6 +95,7 @@ namespace CMDB.Services
             account.Active = "Active";
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             LogActivate(Table, account.AccID, value);
+            account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
             _context.SaveChanges();
         }
@@ -164,8 +168,11 @@ namespace CMDB.Services
                 Identity = Identity,
                 Account = account,
                 ValidFrom = ValidFrom,
-                ValidUntil = ValidUntil
+                ValidUntil = ValidUntil,
+                LastModifiedAdmin = Admin
             };
+            account.LastModfiedAdmin = Admin;
+            Identity.LastModfiedAdmin = Admin;
             _context.IdenAccounts.Add(IdenAcc);
             _context.SaveChanges();
             LogAssignAccount2Identity(Table, account.AccID, account, Identity);
@@ -174,10 +181,14 @@ namespace CMDB.Services
         public void ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
         {
             var IdenAccount = _context.IdenAccounts.Where(x => x.ID == idenAccountID).First();
+            IdenAccount.UpdatedAdmin = Admin;
             IdenAccount.ValidUntil = DateTime.Now.AddDays(-1);
             _context.IdenAccounts.Update(IdenAccount);
             LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
             LogReleaseIdentity4Account("identity", account.AccID, identity, account);
+            account.LastModfiedAdmin = Admin;
+            identity.LastModfiedAdmin = Admin;
+            _context.SaveChanges();
         }
         public List<Application> GetApplicationByID(int ID)
         {

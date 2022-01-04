@@ -15,7 +15,8 @@ namespace CMDB.Infrastructure.Configuration
                 .HasName("PK_Language");
 
             builder.Property(e => e.Description)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
             builder.Property(e => e.active)
                 .IsRequired()

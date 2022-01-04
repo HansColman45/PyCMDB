@@ -67,10 +67,16 @@ namespace CMDB.UI.Tests.Hooks
         [AfterFeature]
         public static void AfterFeature(ScenarioData scenarioData)
         {
+            scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
             scenarioData.Driver.Close();
             scenarioData.Driver.Quit();
             scenarioData.Context = null;
         }
+        /// <summary>
+        /// This function will run after each step
+        /// </summary>
+        /// <param name="scenarioData">The data of the scenario</param>
+        /// <param name="context">The context of the scenario</param>
         [AfterStep]
         public void AfterStep(ScenarioData scenarioData, ScenarioContext context)
         {

@@ -20,16 +20,17 @@ namespace CMDB.Infrastructure.Configuration
                 .WithMany(d => d.Kensingtons)
                 .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Kensington_Type");
+                .HasConstraintName("FK_Kensington_Type")
+                .IsRequired();
 
             builder.HasOne(e => e.Laptop)
                 .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Key_Laptop");
 
             builder.HasOne(e => e.Desktop)
                 .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Key_Deskop");
 
             builder.HasOne(e => e.Docking)
@@ -39,21 +40,31 @@ namespace CMDB.Infrastructure.Configuration
 
             builder.HasOne(e => e.Screen)
                 .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Key_Screen");
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Kensingtons)
                 .HasForeignKey(e => e.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_Kensington_Category");
+                .HasConstraintName("FK_Kensington_Category")
+                .IsRequired();
 
             builder.Property(e => e.SerialNumber)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .IsRequired();
 
-            builder.Property(e => e.HasLock);
+            builder.Property(e => e.HasLock)
+                .IsRequired();
 
-            builder.Property(e => e.AmountOfKeys);
+            builder.Property(e => e.AmountOfKeys)
+                .IsRequired();
+
+            builder.HasOne(e => e.LastModfiedAdmin)
+                .WithMany(p => p.Kensingtons)
+                .HasForeignKey(e => e.LastModifiedAdminId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Kensington_LastModifiedAdmin");
 
             builder.Property(e => e.active)
                 .IsRequired()
