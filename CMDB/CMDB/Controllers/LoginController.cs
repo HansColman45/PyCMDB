@@ -12,12 +12,8 @@ namespace CMDB.Controllers
 {
     public class LoginController : CMDBController
     {
-        private readonly ILogger<LoginController> _logger;
-        private readonly IWebHostEnvironment _env;
-        public LoginController(CMDBContext context, ILogger<LoginController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public LoginController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
-            _env = env;
         }
         public IActionResult Index()
         {
@@ -25,7 +21,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Login(IFormCollection values)
         {
-            _logger.LogDebug("Using Login in {0}", "Login");
+            log.Debug("Using Login in {0}", "Login");
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
             Admin admin;

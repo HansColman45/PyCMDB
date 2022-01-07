@@ -40,7 +40,7 @@ namespace CMDB.Services
                 .ToList();
             return accounts;
         }
-        public void CreateNew(string UserID, int type, int application, string Table)
+        public async void CreateNew(string UserID, int type, int application, string Table)
         {
             var accountType = GetAccountTypeByID(type).First();
             var applications = GetApplicationByID(application).First();
@@ -52,11 +52,11 @@ namespace CMDB.Services
                 LastModfiedAdmin = Admin
             };
             _context.Accounts.Add(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = $"Account width UserID: {UserID} with type {accountType.Type} for application {applications.Name}";
             LogCreate(Table, account.AccID, Value);
         }
-        public void Edit(Account account, string UserID, int type, int application, string Table)
+        public async void Edit(Account account, string UserID, int type, int application, string Table)
         {
             var accountType = GetAccountTypeByID(type).First();
             var applications = GetApplicationByID(application).First();
@@ -77,9 +77,9 @@ namespace CMDB.Services
             }
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Deactivate(Account account, string Reason, string Table)
+        public async void Deactivate(Account account, string Reason, string Table)
         {
             account.DeactivateReason = Reason;
             account.Active = "Inactive";
@@ -87,9 +87,9 @@ namespace CMDB.Services
             LogDeactivate(Table, account.AccID, value, Reason);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Activate(Account account, string Table)
+        public async void Activate(Account account, string Table)
         {
             account.DeactivateReason = null;
             account.Active = "Active";
@@ -97,7 +97,7 @@ namespace CMDB.Services
             LogActivate(Table, account.AccID, value);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public void GetAssignedIdentitiesForAccount(Account account)
         {
@@ -160,7 +160,7 @@ namespace CMDB.Services
             }
             return result;
         }
-        public void AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
+        public async void AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
             var Identity = GetIdentityByID(IdenID).First();
             IdenAccount IdenAcc = new()
@@ -174,21 +174,21 @@ namespace CMDB.Services
             account.LastModfiedAdmin = Admin;
             Identity.LastModfiedAdmin = Admin;
             _context.IdenAccounts.Add(IdenAcc);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             LogAssignAccount2Identity(Table, account.AccID, account, Identity);
             LogAssignIden2Account("identity", IdenID, Identity, account);
         }
-        public void ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
+        public async void ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
         {
             var IdenAccount = _context.IdenAccounts.Where(x => x.ID == idenAccountID).First();
-            IdenAccount.UpdatedAdmin = Admin;
+            IdenAccount.LastModifiedAdmin = Admin;
             IdenAccount.ValidUntil = DateTime.Now.AddDays(-1);
             _context.IdenAccounts.Update(IdenAccount);
             LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
             LogReleaseIdentity4Account("identity", account.AccID, identity, account);
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public List<Application> GetApplicationByID(int ID)
         {

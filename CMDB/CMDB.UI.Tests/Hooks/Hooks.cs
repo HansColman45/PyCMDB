@@ -5,6 +5,7 @@ using TechTalk.SpecFlow;
 using CMDB.UI.Tests.Data;
 using System.IO;
 using System;
+using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Hooks
 {
@@ -32,7 +33,7 @@ namespace CMDB.UI.Tests.Hooks
         /// </summary>
         /// <param name="context"></param>
         [AfterScenario]
-        public void AfterScenario(ScenarioContext context)
+        public void AfterScenario(ScenarioContext context, ScenarioData scenarioData)
         {
             log.Debug("Scenario {0} stoped", context.ScenarioInfo.Title);
         }
@@ -41,10 +42,10 @@ namespace CMDB.UI.Tests.Hooks
         /// </summary>
         /// <param name="scenarioData">The data of the scenario</param>
         [BeforeFeature]
-        public static void BeforeFeature(ScenarioData scenarioData)
+        public static async Task BeforeFeature(ScenarioData scenarioData)
         {
             scenarioData.Context = new DataContext();
-            scenarioData.Admin = scenarioData.Context.CreateNewAdmin();
+            scenarioData.Admin = await scenarioData.Context.CreateNewAdmin();
             /*var options = new FirefoxOptions
             {
                 AcceptInsecureCertificates = true

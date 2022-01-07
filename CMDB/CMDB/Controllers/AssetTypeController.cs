@@ -12,21 +12,20 @@ namespace CMDB.Controllers
 {
     public class AssetTypeController : CMDBController
     {
-        private readonly ILogger<AssetTypeController> _logger;
         private readonly static string sitePart = "Asset Type";
         private readonly static string table = "assettype";
-        private readonly IWebHostEnvironment _env;
         private new AssetTypeService service;
-        public AssetTypeController(CMDBContext context, ILogger<AssetTypeController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public AssetTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
-            _env = env;
             service = new(context);
         }
-
+        /// <summary>
+        /// The Default view
+        /// </summary>
+        /// <returns>View</returns>
         public IActionResult Index()
         {
-            _logger.LogDebug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", sitePart);
             BuildMenu();
             var accounts = service.ListAllAssetTypes();
             ViewData["Title"] = "Assettype overview";
@@ -38,9 +37,14 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\AssetType\Search";
             return View(accounts);
         }
+        /// <summary>
+        /// The search view
+        /// </summary>
+        /// <param name="search">The search param</param>
+        /// <returns>View</returns>
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", sitePart);
             BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
@@ -58,9 +62,14 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// The create view
+        /// </summary>
+        /// <param name="values">The values of the create form</param>
+        /// <returns>View</returns>
         public IActionResult Create(IFormCollection values)
         {
-            _logger.LogDebug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create assettype";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             AssetType assetType = new();
@@ -88,8 +97,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Debug("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -98,7 +106,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Edit(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit assettype";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             BuildMenu();
@@ -127,8 +135,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -137,7 +144,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Details(int? id)
         {
-            _logger.LogDebug("Using details in {0}", table);
+            log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Assettype details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -154,7 +161,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Delete in {0}", table);
+            log.Debug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Assettype";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             BuildMenu();
@@ -178,8 +185,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -188,7 +194,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Account";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();

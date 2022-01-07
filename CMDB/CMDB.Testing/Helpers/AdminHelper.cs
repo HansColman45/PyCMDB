@@ -3,12 +3,13 @@ using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
 {
     public class AdminHelper
     {
-        public static Admin CreateCMDBAdmin(CMDBContext context, int level = 9)
+        public static async Task<Admin> CreateCMDBAdmin(CMDBContext context, int level = 9)
         {
             var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
             var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
@@ -18,6 +19,7 @@ namespace CMDB.Testing.Helpers
             var Account = new AccountBuilder()
                 .With(x => x.Application, app)
                 .With(x => x.Type, accounttype)
+                .With(x => x.LastModifiedAdminId, 1)
                 .Build();
 
             Account.Logs.Add(new LogBuilder()
@@ -30,6 +32,7 @@ namespace CMDB.Testing.Helpers
             var admin = new AdminBuilder()
                 .With(x => x.Level, level)
                 .With(x => x.Account, Account)
+                .With(x => x.LastModifiedAdminId, 1)
                 .Build();
 
             admin.Logs.Add(new LogBuilder()
@@ -39,12 +42,13 @@ namespace CMDB.Testing.Helpers
             );
 
             context.Admins.Add(admin);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             var identity = new IdentityBuilder()
                 .With(x => x.Language, language)
                 .With(x => x.Type, identype)
                 .With(x => x.UserID, Account.UserID)
+                .With(x => x.LastModifiedAdminId, 1)
                 .Build();
 
             identity.Logs.Add(new LogBuilder()
@@ -58,13 +62,14 @@ namespace CMDB.Testing.Helpers
             context.IdenAccounts.Add(new()
             {
                 Identity = identity,
-                Account = Account
+                Account = Account,
+                LastModifiedAdminId = 1
             });
 
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return admin;
         }
-        public static void DeleteCascading(CMDBContext context, Admin admin)
+        public static async void DeleteCascading(CMDBContext context, Admin admin)
         {
             //AccountType
             var accountType = context.AccountTypes
@@ -73,11 +78,8 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var type in accountType)
             {
-                context.RemoveRange(type.Logs);
-                context.SaveChanges();
+                AssetTypeHelper.Delete(context, type);
             }
-            context.RemoveRange(accountType);
-            context.SaveChanges();
             //IdentityTypes
             var identypes = context.IdentityTypes
                 .Include(x => x.Logs)
@@ -85,11 +87,25 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var type in identypes)
             {
-                context.RemoveRange(type.Logs);
-                context.SaveChanges();
+                IdentityTypeHelper.Delete(context, type);
             }
-            context.RemoveRange(identypes);
-            context.SaveChanges();
+            //Laptop
+            var laptops = context.Laptops
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var laptop in laptops)
+            {
+                LaptopHelper.Delete(context, laptop);
+            }
+            //IdenAccount
+            var idenAccs = context.IdenAccounts
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var idenacc in idenAccs)
+            {
+                context.Remove<IdenAccount>(idenacc);
+            }
             //Identity
             var identities = context.Identities
                 .Include(x => x.Logs)
@@ -97,9 +113,21 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var identity in identities)
             {
-                context.RemoveRange(identity.Logs);
-                context.SaveChanges();
+                IdentityHelper.Delete(context, identity);
             }
+            //Account
+            var accounts = context.Accounts
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var account in accounts)
+            {
+                AccountHelper.Delete(context, account);
+            }
+            //Admin
+            context.RemoveRange(admin.Logs);
+            context.Remove<Admin>(admin);
+            await context.SaveChangesAsync();
         }
     }
 }

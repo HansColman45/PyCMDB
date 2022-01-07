@@ -169,226 +169,226 @@ INSERT INTO Permission (Rights,description) VALUES
 ('MenuOverview','This Permission is to see the Menu');
 -- role permision
 -- Identity =2
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 2),
-(9, 2, 2),
-(9, 3, 2),
-(9, 4, 2),
-(9, 5, 2),
-(9, 6, 2),
-(9, 7, 2),
-(9, 8, 2),
-(9, 9, 2),
-(9, 10, 2),
-(9, 11, 2),
-(9, 12, 2),
-(9, 13, 2),
-(9, 26, 2),
-(9, 27, 2);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 2, 1),
+(9, 2, 2, 1),
+(9, 3, 2, 1),
+(9, 4, 2, 1),
+(9, 5, 2, 1),
+(9, 6, 2, 1),
+(9, 7, 2, 1),
+(9, 8, 2, 1),
+(9, 9, 2, 1),
+(9, 10, 2, 1),
+(9, 11, 2, 1),
+(9, 12, 2, 1),
+(9, 13, 2, 1),
+(9, 26, 2, 1),
+(9, 27, 2, 1);
 -- IdentityType =30
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 30),
-(9, 2, 30),
-(9, 3, 30),
-(9, 4, 30),
-(9, 5, 30);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 30, 1),
+(9, 2, 30, 1),
+(9, 3, 30, 1),
+(9, 4, 30, 1),
+(9, 5, 30, 1);
 -- Account =5
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 5),
-(9, 2, 5),
-(9, 3, 5),
-(9, 4, 5),
-(9, 5, 5),
-(9, 14, 5),
-(9, 15, 5),
-(9, 30, 5);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 5, 1),
+(9, 2, 5, 1),
+(9, 3, 5, 1),
+(9, 4, 5, 1),
+(9, 5, 5, 1),
+(9, 14, 5, 1),
+(9, 15, 5, 1),
+(9, 30, 5, 1);
 -- Role = 8
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 8),
-(9, 2, 8),
-(9, 3, 8),
-(9, 4, 8),
-(9, 5, 8),
-(9, 20, 8),
-(9, 21, 8),
-(9, 33, 8),
-(9, 34, 8);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 8, 1),
+(9, 2, 8, 1),
+(9, 3, 8, 1),
+(9, 4, 8, 1),
+(9, 5, 8, 1),
+(9, 20, 8, 1),
+(9, 21, 8, 1),
+(9, 33, 8, 1),
+(9, 34, 8, 1);
 -- Laptop = 11
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 11),
-(9, 2, 11),
-(9, 3, 11),
-(9, 4, 11),
-(9, 5, 11),
-(9, 14, 11),
-(9, 15, 11),
-(9, 24, 11),
-(9, 25, 11),
-(9, 30, 11),
-(9, 35, 11);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 11, 1),
+(9, 2, 11, 1),
+(9, 3, 11, 1),
+(9, 4, 11, 1),
+(9, 5, 11, 1),
+(9, 14, 11, 1),
+(9, 15, 11, 1),
+(9, 24, 11, 1),
+(9, 25, 11, 1),
+(9, 30, 11, 1),
+(9, 35, 11, 1);
 -- Desktop = 13
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 13),
-(9, 2, 13),
-(9, 3, 13),
-(9, 4, 13),
-(9, 5, 13),
-(9, 14, 13),
-(9, 15, 13),
-(9, 24, 13),
-(9, 25, 13),
-(9, 30, 13),
-(9, 35, 13);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 13, 1),
+(9, 2, 13, 1),
+(9, 3, 13, 1),
+(9, 4, 13, 1),
+(9, 5, 13, 1),
+(9, 14, 13, 1),
+(9, 15, 13, 1),
+(9, 24, 13, 1),
+(9, 25, 13, 1),
+(9, 30, 13, 1),
+(9, 35, 13, 1);
 -- Monitor = 15
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 15),
-(9, 2, 15),
-(9, 3, 15),
-(9, 4, 15),
-(9, 5, 15),
-(9, 14, 15),
-(9, 15, 15),
-(9, 24, 15),
-(9, 25, 15),
-(9, 30, 15),
-(9, 35, 15);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 15, 1),
+(9, 2, 15, 1),
+(9, 3, 15, 1),
+(9, 4, 15, 1),
+(9, 5, 15, 1),
+(9, 14, 15, 1),
+(9, 15, 15, 1),
+(9, 24, 15, 1),
+(9, 25, 15, 1),
+(9, 30, 15, 1),
+(9, 35, 15, 1);
 -- Docking = 17
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 17),
-(9, 2, 17),
-(9, 3, 17),
-(9, 4, 17),
-(9, 5, 17),
-(9, 14, 17),
-(9, 15, 17),
-(9, 24, 15),
-(9, 25, 15),
-(9, 30, 17),
-(9, 35, 17);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 17, 1),
+(9, 2, 17, 1),
+(9, 3, 17, 1),
+(9, 4, 17, 1),
+(9, 5, 17, 1),
+(9, 14, 17, 1),
+(9, 15, 17, 1),
+(9, 24, 15, 1),
+(9, 25, 15, 1),
+(9, 30, 17, 1),
+(9, 35, 17, 1);
 -- Token = 19
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 19),
-(9, 2, 19),
-(9, 3, 19),
-(9, 4, 19),
-(9, 5, 19),
-(9, 14, 19),
-(9, 15, 19),
-(9, 30, 19);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 19,1),
+(9, 2, 19,1),
+(9, 3, 19,1),
+(9, 4, 19,1),
+(9, 5, 19,1),
+(9, 14, 19, 1),
+(9, 15, 19, 1),
+(9, 30, 19, 1);
 -- Kensington = 21
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 21),
-(9, 2, 21),
-(9, 3, 21),
-(9, 4, 21),
-(9, 5, 21),
-(9, 8, 21),
-(9, 9, 21),
-(9, 26, 21);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 21, 1),
+(9, 2, 21, 1),
+(9, 3, 21, 1),
+(9, 4, 21, 1),
+(9, 5, 21, 1),
+(9, 8, 21, 1),
+(9, 9, 21, 1),
+(9, 26, 21, 1);
 -- Mobile = 23
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 23),
-(9, 2, 23),
-(9, 3, 23),
-(9, 4, 23),
-(9, 5, 23),
-(9, 14, 23),
-(9, 15, 23),
-(9, 12, 23),
-(9, 13, 23),
-(9, 29, 23),
-(9, 30, 23);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 23, 1),
+(9, 2, 23, 1),
+(9, 3, 23, 1),
+(9, 4, 23, 1),
+(9, 5, 23, 1),
+(9, 14, 23, 1),
+(9, 15, 23, 1),
+(9, 12, 23, 1),
+(9, 13, 23, 1),
+(9, 29, 23, 1),
+(9, 30, 23, 1);
 -- Subscription = 25
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 25),
-(9, 2, 25),
-(9, 3, 25),
-(9, 4, 25),
-(9, 5, 25),
-(9, 10, 25),
-(9, 11, 25),
-(9, 14, 25),
-(9, 15, 25),
-(9, 28, 25),
-(9, 30, 25);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 25, 1),
+(9, 2, 25, 1),
+(9, 3, 25, 1),
+(9, 4, 25, 1),
+(9, 5, 25, 1),
+(9, 10, 25, 1),
+(9, 11, 25, 1),
+(9, 14, 25, 1),
+(9, 15, 25, 1),
+(9, 28, 25, 1),
+(9, 30, 25, 1);
 -- Asset Type = 28
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 28),
-(9, 2, 28),
-(9, 3, 28),
-(9, 4, 28),
-(9, 5, 28);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 28, 1),
+(9, 2, 28, 1),
+(9, 3, 28, 1),
+(9, 4, 28, 1),
+(9, 5, 28, 1);
 -- Asset Category = 30
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 30),
-(9, 2, 30),
-(9, 3, 30),
-(9, 4, 30),
-(9, 5, 30);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 30, 1),
+(9, 2, 30, 1),
+(9, 3, 30, 1),
+(9, 4, 30, 1),
+(9, 5, 30, 1);
 -- Identity Type = 32
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 32),
-(9, 2, 32),
-(9, 3, 32),
-(9, 4, 32),
-(9, 5, 32);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 32, 1),
+(9, 2, 32, 1),
+(9, 3, 32, 1),
+(9, 4, 32, 1),
+(9, 5, 32, 1);
 -- ACCOUNT Type = 34
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 34),
-(9, 2, 34),
-(9, 3, 34),
-(9, 4, 34),
-(9, 5, 34);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 34, 1),
+(9, 2, 34, 1),
+(9, 3, 34, 1),
+(9, 4, 34, 1),
+(9, 5, 34, 1);
 -- Role Type = 36
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 36),
-(9, 2, 36),
-(9, 3, 36),
-(9, 4, 36),
-(9, 5, 36);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 36, 1),
+(9, 2, 36, 1),
+(9, 3, 36, 1),
+(9, 4, 36, 1),
+(9, 5, 36, 1);
 -- Subscription type = 38
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 38),
-(9, 2, 38),
-(9, 3, 38),
-(9, 4, 38),
-(9, 5, 38);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 38, 1),
+(9, 2, 38, 1),
+(9, 3, 38, 1),
+(9, 4, 38, 1),
+(9, 5, 38, 1);
 -- System = 41
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 41),
-(9, 2, 41),
-(9, 3, 41),
-(9, 4, 41),
-(9, 5, 41),
-(9, 6, 41),
-(9, 7, 41),
-(9, 32, 41);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 41, 1),
+(9, 2, 41, 1),
+(9, 3, 41, 1),
+(9, 4, 41, 1),
+(9, 5, 41, 1),
+(9, 6, 41, 1),
+(9, 7, 41, 1),
+(9, 32, 41, 1);
 -- Application = 44
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 44),
-(9, 2, 44),
-(9, 3, 44),
-(9, 4, 44),
-(9, 5, 44),
-(9, 6, 44),
-(9, 7, 44),
-(9, 31, 44);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 44, 1),
+(9, 2, 44, 1),
+(9, 3, 44, 1),
+(9, 4, 44, 1),
+(9, 5, 44, 1),
+(9, 6, 44, 1),
+(9, 7, 44, 1),
+(9, 31, 44, 1);
 -- Admin = 47
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 47),
-(9, 2, 47),
-(9, 3, 47),
-(9, 4, 47),
-(9, 5, 47),
-(9, 6, 47),
-(9, 7, 47),
-(9, 27, 47);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 47, 1),
+(9, 2, 47, 1),
+(9, 3, 47, 1),
+(9, 4, 47, 1),
+(9, 5, 47, 1),
+(9, 6, 47, 1),
+(9, 7, 47, 1),
+(9, 27, 47, 1);
 -- Permission = 49
-INSERT INTO roleperm (level, PermissionId, menuId) VALUES
-(9, 1, 49),
-(9, 2, 49),
-(9, 3, 49),
-(9, 5, 49);
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 49, 1),
+(9, 2, 49, 1),
+(9, 3, 49, 1),
+(9, 5, 49, 1);
 insert into log (AssetCategoryId, LogText, LogDate) values
 (1,'Kensington Created by SQL Import','2012-01-01 00:00:00'),
 (2,'Mobile Created by SQL Import','2012-01-01 00:00:00'),

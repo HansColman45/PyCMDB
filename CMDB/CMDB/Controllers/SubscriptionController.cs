@@ -8,13 +8,11 @@ namespace CMDB.Controllers
 
     public class SubscriptionController : CMDBController
     {
-        private readonly ILogger<SubscriptionController> _logger;
         private readonly static string sitePart = "Subscription";
         private readonly static string table = "subscription";
         private readonly IWebHostEnvironment _env;
-        public SubscriptionController(CMDBContext context, ILogger<SubscriptionController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public SubscriptionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
             _env = env;
         }
         public IActionResult Index()

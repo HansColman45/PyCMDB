@@ -11,7 +11,7 @@ namespace CMDB.Testing.Helpers
 {
     public class IdentityHelper
     {
-        public static Identity CreateSimpleIdentity(CMDBContext context)
+        public static async Task<Identity> CreateSimpleIdentity(CMDBContext context, Admin admin, bool active = true)
         {
             var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
             var identype = context.IdentityTypes.Where(x => x.Type == "Werknemer").FirstOrDefault();
@@ -19,6 +19,8 @@ namespace CMDB.Testing.Helpers
             var identity = new IdentityBuilder()
                 .With(x => x.Language, language)
                 .With(x => x.Type, identype)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
+                .With(x => x.active, active ? 1 : 0)
                 .Build();
 
             identity.Logs.Add(new LogBuilder()
@@ -28,9 +30,15 @@ namespace CMDB.Testing.Helpers
             );
 
             context.Identities.Add(identity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
 
             return identity;
+        }
+        public static void Delete(CMDBContext context, Identity identity)
+        {
+            context.RemoveRange(identity.Logs);
+            context.Remove<Identity>(identity);
+            context.SaveChanges();
         }
     }
 }

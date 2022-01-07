@@ -31,29 +31,29 @@ namespace CMDB.Services
             var categories = _context.AssetCategories.Where(x => x.Id == id).ToList();
             return categories;
         }
-        public void Create(AssetCategory category, string table)
+        public async void Create(AssetCategory category, string table)
         {
             category.LastModfiedAdmin = Admin;
             _context.AssetCategories.Add(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
             LogCreate(table, category.Id, Value);
         }
-        public void Update(AssetCategory category, string Category, string prefix, string Table)
+        public async void Update(AssetCategory category, string Category, string prefix, string Table)
         {
             category.LastModfiedAdmin = Admin;
             if (String.Compare(category.Category, Category) != 0)
             {
                 category.Category = Category;
                 _context.AssetCategories.Update(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, category.Id, "Category", category.Category, Category);
             }
             if (String.Compare(category.Prefix, prefix) != 0)
             {
                 category.Prefix = prefix;
                 _context.AssetCategories.Update(category);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 if (String.IsNullOrEmpty(category.Prefix))
                     category.Prefix = "Empty";
                 if (String.IsNullOrEmpty(prefix))
@@ -61,23 +61,23 @@ namespace CMDB.Services
                 LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
             }
         }
-        public void Deactivate(AssetCategory category, string Reason, string Table)
+        public async void Deactivate(AssetCategory category, string Reason, string Table)
         {
             category.LastModfiedAdmin = Admin;
             category.Active = "Inactive";
             category.DeactivateReason = Reason;
             _context.AssetCategories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
             LogDeactivate(Table, category.Id, Value, Reason);
         }
-        public void Activate(AssetCategory category, string Table)
+        public async void Activate(AssetCategory category, string Table)
         {
             category.LastModfiedAdmin = Admin;
             category.Active = "Active";
             category.DeactivateReason = "";
             _context.AssetCategories.Update(category);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
             LogActivate(Table, category.Id, Value);
         }

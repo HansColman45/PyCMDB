@@ -12,19 +12,17 @@ namespace CMDB.Controllers
 {
     public class AdminController : CMDBController
     {
-        private readonly ILogger<AdminController> _logger;
         private readonly static string table = "admin";
         private readonly static string sitePart = "Admin";
         private new readonly AdminService service;
-        public AdminController(CMDBContext context, ILogger<AdminController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public AdminController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
             service = new(context);
         }
 
         public IActionResult Index()
         {
-            _logger.LogDebug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", table);
             var list = service.ListAll();
             ViewData["Title"] = "Admin overview";
             BuildMenu();
@@ -38,7 +36,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", table);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
@@ -60,7 +58,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Create(IFormCollection values)
         {
-            _logger.LogDebug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", sitePart);
             Admin admin = new();
             ViewData["Title"] = "Create Admin";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
@@ -85,7 +83,7 @@ namespace CMDB.Controllers
                 catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -94,7 +92,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Edit(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Admin";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             ViewBag.Accounts = service.ListActiveCMDBAccounts();
@@ -120,7 +118,7 @@ namespace CMDB.Controllers
                 catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -129,7 +127,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Details(int? id)
         {
-            _logger.LogDebug("Using details in {0}", table);
+            log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Admin details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -146,7 +144,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
             {
                 return NotFound();
@@ -170,8 +168,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -180,7 +177,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Admin";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();

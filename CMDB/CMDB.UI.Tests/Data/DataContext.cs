@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Threading.Tasks;
 using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.UI.Tests.Data
@@ -23,9 +24,9 @@ namespace CMDB.UI.Tests.Data
         /// </summary>
         /// <param name="level">The level you wan to have the admin to have by default 9</param>
         /// <returns>Admin</returns>
-        public Admin CreateNewAdmin(int level = 9)
+        public async Task<Admin> CreateNewAdmin(int level = 9)
         {
-            var admin = AdminHelper.CreateCMDBAdmin(context, level);
+            var admin = await AdminHelper.CreateCMDBAdmin(context, level);
             return admin;
         }
         /// <summary>
@@ -54,9 +55,9 @@ namespace CMDB.UI.Tests.Data
         /// This will create a new Identity
         /// </summary>
         /// <returns>Identity</returns>
-        public Identity CreateIdentity()
+        public async Task<Identity> CreateIdentity(Admin admin, bool active = true)
         {
-            Identity identity = IdentityHelper.CreateSimpleIdentity(context);
+            Identity identity = await IdentityHelper.CreateSimpleIdentity(context, admin, active);
             return identity;
         }
         /// <summary>
@@ -90,9 +91,9 @@ namespace CMDB.UI.Tests.Data
         /// This will create an Account
         /// </summary>
         /// <returns>Account</returns>
-        public Account CreateAccount()
+        public async Task<Account> CreateAccount(Admin admin)
         {
-            var Account = AccountHelper.CreateSimpleAccount(context);
+            var Account = await AccountHelper.CreateSimpleAccountAsync(context, admin);
             return Account;
         }
         /// <summary>
@@ -163,7 +164,7 @@ namespace CMDB.UI.Tests.Data
         /// This function will create a new Laptop
         /// </summary>
         /// <returns>Laptop</returns>
-        public Laptop CreateLaptop() => LaptopHelper.CreateSimpleLaptop(context);
+        public async Task<Laptop> CreateLaptop(Admin admin) => await LaptopHelper.CreateSimpleLaptop(context, admin);
         /// <summary>
         /// This function will return the RAM info
         /// </summary>

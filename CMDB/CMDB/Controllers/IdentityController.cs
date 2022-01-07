@@ -9,25 +9,24 @@ using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class IdentityController : CMDBController
     {
-        private readonly ILogger<IdentityController> _logger;
         private readonly IWebHostEnvironment env;
         private readonly static string table = "identity";
         private readonly static string sitePart = "Identity";
         private new readonly IdentityServices service;
-        public IdentityController(CMDBContext context, ILogger<IdentityController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public IdentityController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
             this.env = env;
             service = new(context);
         }
         public IActionResult Index()
         {
-            _logger.LogDebug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", table);
             var list = service.ListAll();
             ViewData["Title"] = "Identity overview";
             BuildMenu();
@@ -43,7 +42,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using search in {0}", table);
+            log.Debug("Using search in {0}", table);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
@@ -67,7 +66,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Details(int? id)
         {
-            _logger.LogDebug("Using details in {0}", table);
+            log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Identity Details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -96,7 +95,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Create(IFormCollection values)
         {
-            _logger.LogDebug("Using Create in {0}", table);
+            log.Debug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identity";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             BuildMenu();
@@ -129,17 +128,17 @@ namespace CMDB.Controllers
                     }
                 }
             }
-            catch (Exception /* ex */)
+            catch (Exception ex)
             {
-                //Log the error (uncomment ex variable name and write a log.
                 ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                     "see your system administrator.");
+                log.Error(ex.ToString());
             }
             return View(identity);
         }
-        public IActionResult Edit(IFormCollection values, int? id)
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", table);
+            log.Debug("Using Edit in {0}", table);
             ViewData["Title"] = "Edit Identity";
             BuildMenu();
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
@@ -167,14 +166,13 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        service.Edit(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, table);
+                        await service.EditAsync(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("DB error: {0}", ex.ToString());
-                    //Log the error (uncomment ex variable name and write a log.
+                    log.Error("DB error: {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -183,7 +181,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Delete in {0}", table);
+            log.Debug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Identity";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             BuildMenu();
@@ -205,8 +203,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("DB error: {0}", ex.ToString());
-                    //Log the error (uncomment ex variable name and write a log.
+                    log.Error("DB error: {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -215,7 +212,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Identity";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
@@ -238,7 +235,7 @@ namespace CMDB.Controllers
         }
         public IActionResult AssignDevice(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Assign device to identity";
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
             BuildMenu();
@@ -262,7 +259,7 @@ namespace CMDB.Controllers
         }
         public IActionResult AssignAccount(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Assign Account in {0}", table);
+            log.Debug("Using Assign Account in {0}", table);
             ViewData["Title"] = "Assign Account";
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
             BuildMenu();
@@ -296,7 +293,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogCritical("DB error: {0}", ex.ToString());
+                    log.Error("DB error: {0}", ex.ToString());
                     //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -306,6 +303,7 @@ namespace CMDB.Controllers
         }
         public IActionResult ReleaseAccount(IFormCollection values, int id)
         {
+            log.Debug("Using Release Account in {0}", table);
             if (id == 0)
             {
                 return NotFound();
@@ -351,7 +349,7 @@ namespace CMDB.Controllers
             {
                 return NotFound();
             }
-            _logger.LogDebug("Using Assign Form in {0}", table);
+            log.Debug("Using Assign Form in {0}", table);
             ViewData["Title"] = "Assign form";
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");

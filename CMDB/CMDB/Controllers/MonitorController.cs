@@ -12,20 +12,16 @@ namespace CMDB.Controllers
 {
     public class MonitorController : CMDBController
     {
-        private readonly ILogger<MonitorController> _logger;
         private readonly static string sitePart = "Monitor";
         private readonly static string table = "screen";
-        private readonly IWebHostEnvironment _env;
         private new readonly DevicesService service;
-        public MonitorController(CMDBContext context, ILogger<MonitorController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public MonitorController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
-            _env = env;
             service = new(context);
         }
         public IActionResult Index()
         {
-            _logger.LogDebug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", table);
             ViewData["Title"] = "Monitor overview";
             BuildMenu();
             var Desktops = service.ListAll("Monitor");
@@ -39,11 +35,10 @@ namespace CMDB.Controllers
         }
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", sitePart);
             BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
-                _logger.LogDebug("Using List all in {0}", table);
                 ViewData["Title"] = "Monitor overview";
                 BuildMenu();
                 var Desktops = service.ListAll(sitePart, search);
@@ -62,7 +57,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, string id)
         {
-            _logger.LogDebug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
             {
                 return NotFound();
@@ -86,8 +81,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -96,7 +90,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(string id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Laptop";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();

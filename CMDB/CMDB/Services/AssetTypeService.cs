@@ -39,15 +39,15 @@ namespace CMDB.Services
                 .ToList();
             return devices;
         }
-        public void CreateNewAssetType(AssetType assetType, string Table)
+        public async void CreateNewAssetType(AssetType assetType, string Table)
         {
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Add(assetType);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogCreate(Table, assetType.TypeID, Value);
         }
-        public void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
+        public async void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
             assetType.LastModfiedAdmin = Admin;
             string OldType = assetType.Type;
@@ -56,34 +56,34 @@ namespace CMDB.Services
             {
                 assetType.Vendor = Vendor;
                 _context.AssetTypes.Update(assetType);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor);
             }
             if (String.Compare(assetType.Type, Type) != 0)
             {
                 assetType.Type = Type;
                 _context.AssetTypes.Update(assetType);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
             }
         }
-        public void DeactivateAssetType(AssetType assetType, string reason, string Table)
+        public async void DeactivateAssetType(AssetType assetType, string reason, string Table)
         {
             assetType.Active = "Inactive";
             assetType.DeactivateReason = reason;
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogDeactivate(Table, assetType.TypeID, Value, reason);
         }
-        public void ActivateAssetType(AssetType assetType, string Table)
+        public async void ActivateAssetType(AssetType assetType, string Table)
         {
             assetType.Active = "Active";
             assetType.DeactivateReason = "";
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogActivate(Table, assetType.TypeID, Value);
         }

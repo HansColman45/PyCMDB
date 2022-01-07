@@ -6,6 +6,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -153,7 +154,7 @@ namespace CMDB.Services
                 .Where(x => x.Identity.IdenId == identity.IdenId)
                 .ToList();
         }
-        public void Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
+        public async void Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             var Type = GetIdenityTypeByID(type).First();
             var Lang = _context.Languages.
@@ -171,11 +172,11 @@ namespace CMDB.Services
                 LastModfiedAdmin = Admin
             };
             _context.Identities.Add(identity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = "Identity width name: " + firstName + ", " + LastName;
             LogCreate(Table, identity.IdenId, Value);
         }
-        public void Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
+        public async Task EditAsync(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             if (String.Compare(identity.FirstName, firstName) != 0)
@@ -217,25 +218,25 @@ namespace CMDB.Services
                 identity.Type = newType;
             }
             _context.Identities.Update(identity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
-        public void Deactivate(Identity identity, string Reason, string Table)
+        public async void Deactivate(Identity identity, string Reason, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = Reason;
             identity.Active = "Inactive";
             _context.Identities.Update(identity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
             LogDeactivate(Table, identity.IdenId, value, Reason);
         }
-        public void Activate(Identity identity, string Table)
+        public async void Activate(Identity identity, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = null;
             identity.Active = "Active";
             _context.Identities.Update(identity);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
             LogActivate(Table, identity.IdenId, value);
         }
@@ -315,7 +316,7 @@ namespace CMDB.Services
             }
             return result;
         }
-        public void AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
+        public async void AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
             var Account = GetAccountByID(AccID).First<Account>();
             identity.Accounts.Add(new()
@@ -327,10 +328,11 @@ namespace CMDB.Services
             });
             identity.LastModfiedAdmin = Admin;
             Account.LastModfiedAdmin = Admin;
+            await _context.SaveChangesAsync();
             LogAssignIden2Account(Table, identity.IdenId, identity, Account);
             LogAssignAccount2Identity("account", AccID, Account, identity);
         }
-        public void ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
+        public async void ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
             var idenAccount = _context.IdenAccounts.
                 Include(x => x.Identity)
@@ -340,7 +342,7 @@ namespace CMDB.Services
             idenAccount.LastModifiedAdmin = Admin;
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
             LogReleaseIdentity4Account("account", account.AccID, identity, account);
         }

@@ -87,23 +87,23 @@ namespace CMDB.Services
             }
             return assettypes;
         }
-        public void CreateNewDesktop(Desktop desktop, string table)
+        public async void CreateNewDesktop(Desktop desktop, string table)
         {
             desktop.LastModfiedAdmin = Admin;
             _context.Desktops.Add(desktop);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
             LogCreate(table, desktop.AssetTag, Value);
         }
-        public void CreateNewLaptop(Laptop laptop, string table)
+        public async void CreateNewLaptop(Laptop laptop, string table)
         {
             laptop.LastModfiedAdmin = Admin;
             _context.Laptops.Add(laptop);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
             LogCreate(table, laptop.AssetTag, Value);
         }
-        public void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        public async void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             desktop.LastModfiedAdmin = Admin;
             string OldRam, OldMac, OldSerial, OldType;
@@ -114,29 +114,29 @@ namespace CMDB.Services
             if (String.Compare(desktop.RAM, newRam) != 0)
             {
                 desktop.RAM = newRam;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, desktop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(desktop.MAC, newMAC) != 0)
             {
                 desktop.MAC = newMAC;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, desktop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, desktop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (desktop.Type.TypeID != newAssetType.TypeID)
             {
                 desktop.Type = newAssetType;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
-        public void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        public async void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             laptop.LastModfiedAdmin = Admin;
             string OldRam, OldMac, OldSerial, OldType;
@@ -147,43 +147,43 @@ namespace CMDB.Services
             if (String.Compare(laptop.RAM, newRam) != 0)
             {
                 laptop.RAM = newRam;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, laptop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(laptop.MAC, newMAC) != 0)
             {
                 laptop.MAC = newMAC;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, laptop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
             {
                 laptop.SerialNumber = newSerialNumber;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, laptop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (laptop.Type.TypeID != newAssetType.TypeID)
             {
                 laptop.Type = newAssetType;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
-        public void Deactivate(Device device, string Reason, string table)
+        public async void Deactivate(Device device, string Reason, string table)
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
             device.Active = "Inactive";
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
             LogDeactivated(table, device.AssetTag, Value, Reason);
         }
-        public void Activate(Device device, string table)
+        public async void Activate(Device device, string table)
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = "";
             device.Active = "Active";
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
             LogActivate(table, device.AssetTag, Value);
         }

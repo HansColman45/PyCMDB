@@ -77,9 +77,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #endregion
         [Order(4)]
         [Given(@"An Identity exisist in the system")]
-        public void GivenAnIdentityExisistInTheSystem()
+        public async void GivenAnIdentityExisistInTheSystem()
         {
-            Identity = context.CreateIdentity();
+            Identity = await context.CreateIdentity(admin);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -168,8 +168,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #region Deactivate
         [Order(7)]
         [Given(@"An acive Identity exisist in the system")]
-        public void GivenAnAciveIdentityExisistInTheSystem()
+        public async void GivenAnAciveIdentityExisistInTheSystem()
         {
+            Identity = await context.CreateIdentity(admin);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -177,7 +178,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
-            overviewPage.Search("Test");
+            overviewPage.Search(Identity.FirstName);
         }
         [Order(8)]
         [When(@"I want to deactivete the identity whith the reason (.*)")]
@@ -192,7 +193,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The Idenetity is inactive")]
         public void ThenTheIdenetityIsInactive()
         {
-            overviewPage.Search("Test");
+            overviewPage.Search(Identity.FirstName);
             var detail = overviewPage.Detail();
             int Id = detail.Id;
             entity.Identity iden = context.GetIdentity(Id);
@@ -204,8 +205,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #region Activate
         [Order(10)]
         [Given(@"An inactive Identity exisist in the system")]
-        public void GivenAnInactiveIdentityExisistInTheSystem()
+        public async void GivenAnInactiveIdentityExisistInTheSystem()
         {
+            Identity = await context.CreateIdentity(admin, false);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -213,7 +215,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
-            overviewPage.Search("Test");
+            overviewPage.Search(Identity.FirstName);
         }
         [Order(11)]
         [When(@"I want to activate this identity")]
@@ -225,7 +227,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The Identity is active")]
         public void ThenTheIdentityIsActive()
         {
-            overviewPage.Search("Test");
+            overviewPage.Search(Identity.FirstName);
             var detail = overviewPage.Detail();
             int Id = detail.Id;
             entity.Identity iden = context.GetIdentity(Id);
@@ -236,9 +238,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #endregion
         #region Assign Account
         [Given(@"an Account exist as well")]
-        public void GivenAnAccountExistAsWell()
+        public async void GivenAnAccountExistAsWell()
         {
-            Account = context.CreateAccount();
+            Account = await context.CreateAccount(admin);
         }
         [When(@"I assign the account to the identity")]
         public void WhenIAssignTheAccountToTheIdentity()

@@ -13,20 +13,16 @@ namespace CMDB.Controllers
 {
     public class AccountController : CMDBController
     {
-        private readonly ILogger<AccountController> _logger;
         private readonly static string sitePart = "Account";
         private readonly static string table = "account";
-        private readonly IWebHostEnvironment env;
         private new readonly AccountService service;
-        public AccountController(CMDBContext context, ILogger<AccountController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public AccountController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
-            this.env = env;
             service = new(context);
         }
         public IActionResult Index()
         {
-            _logger.LogDebug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", sitePart);
             BuildMenu();
             var accounts = service.ListAll();
             ViewData["Title"] = "Account overview";
@@ -41,7 +37,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", sitePart);
             BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
@@ -64,7 +60,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Create(IFormCollection values)
         {
-            _logger.LogDebug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create Account";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             BuildMenu();
@@ -96,7 +92,7 @@ namespace CMDB.Controllers
                 catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -105,7 +101,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Edit(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Account";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             BuildMenu();
@@ -137,7 +133,7 @@ namespace CMDB.Controllers
                 catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -146,7 +142,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Details(int? id)
         {
-            _logger.LogDebug("Using details in {0}", table);
+            log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Account Details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -171,7 +167,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Delete in {0}", table);
+            log.Debug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Account";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             BuildMenu();
@@ -198,7 +194,7 @@ namespace CMDB.Controllers
                 catch (Exception ex)
                 {
                     //Log the error (uncomment ex variable name and write a log.
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -207,7 +203,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Account";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
@@ -234,7 +230,7 @@ namespace CMDB.Controllers
         }
         public IActionResult AssignIdentity(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Assign Identity in {0}", table);
+            log.Debug("Using Assign Identity in {0}", table);
             ViewData["Title"] = "Assign Identity";
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
             BuildMenu();
@@ -267,7 +263,7 @@ namespace CMDB.Controllers
         }
         public IActionResult ReleaseIdentity(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Assign Identity in {0}", table);
+            log.Debug("Using Assign Identity in {0}", table);
             ViewData["Title"] = "Release Identity";
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
             BuildMenu();
@@ -302,7 +298,7 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
-                    PDFGenerator.GeneratePDF(env);
+                    PDFGenerator.GeneratePDF(_env);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -310,7 +306,7 @@ namespace CMDB.Controllers
         }
         public IActionResult AssignFrom(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Assign Form in {0}", table);
+            log.Debug("Using Assign Form in {0}", table);
             if (id == null)
             {
                 return NotFound();
@@ -340,7 +336,7 @@ namespace CMDB.Controllers
                     Receiver = accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0).Identity.Name
                 };
                 PDFGenerator.SetAccontInfo(accounts.ElementAt<Account>(0).Identities.ElementAt<IdenAccount>(0));
-                PDFGenerator.GeneratePDF(env);
+                PDFGenerator.GeneratePDF(_env);
             }
             return View(accounts);
         }

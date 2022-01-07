@@ -63,42 +63,42 @@ namespace CMDB.Services
             }
             return Levels;
         }
-        public void Create(Admin admin, string Table)
+        public async void Create(Admin admin, string Table)
         {
             string pwd = new PasswordHasher().EncryptPassword("cmdb");
             admin.Password = pwd;
             admin.DateSet = DateTime.Now;
             admin.LastModfiedAdmin = Admin;
             _context.Admins.Add(admin);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogCreate(Table, Admin.AdminId, Value);
         }
-        public void Update(Admin admin, int level, string Table)
+        public async void Update(Admin admin, int level, string Table)
         {
             if (admin.Level != level)
             {
                 admin.Level = level;
                 admin.LastModfiedAdmin = Admin;
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
             }
         }
-        public void Deactivate(Admin admin, string reason, string table)
+        public async void Deactivate(Admin admin, string reason, string table)
         {
             admin.Active = "Inactive";
             admin.DeactivateReason = reason;
             admin.LastModfiedAdmin = Admin;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogDeactivate(table, admin.AdminId, Value, reason);
         }
-        public void Activate(Admin admin, string table)
+        public async void Activate(Admin admin, string table)
         {
             admin.Active = "Active";
             admin.DeactivateReason = "";
             admin.LastModfiedAdmin = Admin;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogActivate(table, admin.AdminId, Value);
         }

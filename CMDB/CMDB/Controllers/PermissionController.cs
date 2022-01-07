@@ -13,18 +13,16 @@ namespace CMDB.Controllers
 {
     public class PermissionController : CMDBController
     {
-        private readonly ILogger<PermissionController> _logger;
         private readonly static string sitePart = "Permission";
         private readonly static string table = "permission";
         private new readonly PermissionService service;
-        public PermissionController(CMDBContext context, ILogger<PermissionController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public PermissionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _logger = logger;
             service = new(context);
         }
         public IActionResult Index()
         {
-            _logger.LogDebug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", sitePart);
             BuildMenu();
             ViewData["Title"] = "Permissiont overview";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");

@@ -8,6 +8,7 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using System.Linq;
+using NLog;
 
 namespace CMDB.Controllers
 {
@@ -15,13 +16,12 @@ namespace CMDB.Controllers
     {
         protected CMDBServices service;
         protected CMDBContext _context;
-        private readonly ILogger<Controller> _logger;
-        private readonly IWebHostEnvironment _env;
+        protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        protected readonly IWebHostEnvironment _env;
 
-        public CMDBController(CMDBContext context, ILogger<Controller> logger, IWebHostEnvironment env)
+        public CMDBController(CMDBContext context, IWebHostEnvironment env)
         {
             _context = context;
-            _logger = logger;
             _env = env;
             service = new(context);
         }
@@ -57,7 +57,6 @@ namespace CMDB.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            _logger.LogWarning(Activity.Current?.Id, HttpContext.TraceIdentifier);
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }

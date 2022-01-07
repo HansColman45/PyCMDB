@@ -11,14 +11,21 @@ namespace CMDB.Testing.Helpers
 {
     public class AssetTypeHelper
     {
-        public static AssetType CreateSimpleAssetType(CMDBContext context, AssetCategory category)
+        public static async Task<AssetType> CreateSimpleAssetType(CMDBContext context, AssetCategory category, Admin admin)
         {
             var assetType = new AssetTypeBuilder()
                 .With(x => x.Category, category)
+                .With(x => x.LastModfiedAdmin, admin)
                 .Build();
             context.AssetTypes.Add(assetType);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
             return assetType;
+        }
+        public static async void Delete(CMDBContext context, AccountType accountType)
+        {
+            context.RemoveRange(accountType.Logs);
+            context.Remove<AccountType>(accountType);
+            await context.SaveChangesAsync();
         }
     }
 }

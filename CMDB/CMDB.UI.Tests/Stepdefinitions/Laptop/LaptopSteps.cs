@@ -66,9 +66,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         }
 
         [Given(@"There is an Laptop existing")]
-        public void GivenThereIsAnLaptopExisting()
+        public async void GivenThereIsAnLaptopExisting()
         {
-            Laptop = context.CreateLaptop();
+            Laptop = await context.CreateLaptop(admin);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);

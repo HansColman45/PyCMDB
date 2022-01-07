@@ -132,7 +132,7 @@ namespace CMDB.Services
             LogText = $"Account with UserID {account.UserID} in appliction {account.Application.Name} in table {table} is released from Identity with Name {identity.Name} by {Admin.Account.UserID}";
             DoLog(table, AccId);
         }
-        private void DoLog(string table, int ID)
+        private async void DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;
             Log log = new()
@@ -146,90 +146,90 @@ namespace CMDB.Services
                     Identity identity = _context.Identities.Where(x => x.IdenId == ID).First();
                     log.Identity = identity;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "identitytype":
                     IdentityType identityType = _context.IdentityTypes.Where(x => x.TypeID == ID).First();
                     log.IdentityType = identityType;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "account":
                     Account account = _context.Accounts.Where(x => x.AccID == ID).First();
                     log.Account = account;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "accounttype":
                     log.AccountType = _context.AccountTypes.Where(x => x.TypeID == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "role":
                     log.Role = _context.Roles.Where(x => x.RoleId == ID).First(); ;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "roletype":
                     log.RoleType = _context.RoleTypes.Where(x => x.TypeId == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "assettype":
                     log.AssetType = _context.AssetTypes.Where(x => x.TypeID == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "menu":
                     log.Menu = _context.Menus.Where(x => x.MenuId == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "permissions":
                     log.Permission = _context.Permissions.Where(x => x.Id == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "application":
                     log.Application = _context.Applications.Where(x => x.AppID == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "kensington":
                     log.Kensington = _context.Kensingtons.Where(x => x.KeyID == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "admin":
                     log.Admin = _context.Admins.Where(x => x.AdminId == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "mobile":
                     log.Mobile = _context.Mobiles.Where(x => x.IMEI == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "subscriptiontype":
                     log.SubscriptionType = _context.SubscriptionTypes.Where(x => x.Id == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "subscription":
                     log.Subscription = _context.Subscriptions.Where(x => x.Id == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "assetcategory":
                     log.Category = _context.AssetCategories.Where(x => x.Id == ID).First();
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 default:
                     throw new Exception("No log insert statement created for table: " + table);
             }
         }
-        private void DoLog(string table, string AssetTag)
+        private async void DoLog(string table, string AssetTag)
         {
             DateTime LogDate = DateTime.Now;
             Log log = new()
@@ -243,31 +243,31 @@ namespace CMDB.Services
                     var Laptop = _context.Laptops.Where(x => x.AssetTag == AssetTag).First();
                     log.Laptop = Laptop;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "desktop":
                     var desktop = _context.Desktops.Where(x => x.AssetTag == AssetTag).First();
                     log.Desktop = desktop;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "docking":
                     var docking = _context.Dockings.Where(x => x.AssetTag == AssetTag).First();
                     log.Docking = docking;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "screen":
                     var Screen = _context.Screens.Where(x => x.AssetTag == AssetTag).First();
                     log.Screen = Screen;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 case "token":
                     var Token = _context.Tokens.Where(x => x.AssetTag == AssetTag).First();
                     log.Token = Token;
                     _context.Logs.Add(log);
-                    _context.SaveChanges();
+                    await _context.SaveChangesAsync();
                     break;
                 default:
                     throw new Exception("No log insert statement created for table: " + table);

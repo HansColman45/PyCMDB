@@ -15,18 +15,16 @@ namespace CMDB.Controllers
 {
     public class AccountTypeController : CMDBController
     {
-        private readonly ILogger<AccountTypeController> _logger;
         private readonly static string sitePart = "Account Type";
         private readonly static string table = "accounttype";
         private new readonly AccountTypeService service;
-        public AccountTypeController(CMDBContext context, ILogger<AccountTypeController> logger, IWebHostEnvironment env) : base(context, logger, env)
+        public AccountTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            this._logger = logger;
             service = new(context);
         }
         public IActionResult Index()
         {
-            _logger.LogDebug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", sitePart);
             BuildMenu();
             var types = service.ListAll();
             ViewData["Title"] = "Accounttype overview";
@@ -40,7 +38,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Search(string search)
         {
-            _logger.LogDebug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", sitePart);
             BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
@@ -62,7 +60,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Create(IFormCollection values)
         {
-            _logger.LogDebug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", sitePart);
             AccountType accountType = new();
             ViewData["Title"] = "Create Accounttype";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
@@ -84,7 +82,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -93,7 +91,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Edit(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", sitePart);
             if (id == null)
             {
                 return NotFound();
@@ -119,7 +117,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -128,7 +126,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Delete(IFormCollection values, int? id)
         {
-            _logger.LogDebug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
             {
                 return NotFound();
@@ -152,7 +150,7 @@ namespace CMDB.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Database exception {0}", ex.ToString());
+                    log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -161,7 +159,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Activate(int? id)
         {
-            _logger.LogDebug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Accounttype";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
             BuildMenu();
@@ -183,7 +181,7 @@ namespace CMDB.Controllers
         }
         public IActionResult Details(int? id)
         {
-            _logger.LogDebug("Using details in {0}", table);
+            log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Accounttype details";
             BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
