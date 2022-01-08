@@ -75,7 +75,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(token, values["reason"], table);
+                        _ = service.Deactivate(token, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -101,7 +101,7 @@ namespace CMDB.Controllers
             Token token = service.ListTokenByID(id).ElementAt<Token>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(token, table);
+                _ = service.Activate(token, table);
                 return RedirectToAction(nameof(Index));
             }
             else

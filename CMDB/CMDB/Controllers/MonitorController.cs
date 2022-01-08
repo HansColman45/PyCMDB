@@ -75,7 +75,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(moniror, values["reason"], table);
+                        _ = service.Deactivate(moniror, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -101,7 +101,7 @@ namespace CMDB.Controllers
             Screen moniror = service.ListScreensByID(id).ElementAt<Screen>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(moniror, table);
+                _ = service.Activate(moniror, table);
                 return RedirectToAction(nameof(Index));
             }
             else

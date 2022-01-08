@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -40,7 +41,7 @@ namespace CMDB.Services
                 .ToList();
             return accounts;
         }
-        public async void CreateNew(string UserID, int type, int application, string Table)
+        public async Task CreateNew(string UserID, int type, int application, string Table)
         {
             var accountType = GetAccountTypeByID(type).First();
             var applications = GetApplicationByID(application).First();
@@ -56,7 +57,7 @@ namespace CMDB.Services
             string Value = $"Account width UserID: {UserID} with type {accountType.Type} for application {applications.Name}";
             LogCreate(Table, account.AccID, Value);
         }
-        public async void Edit(Account account, string UserID, int type, int application, string Table)
+        public async Task Edit(Account account, string UserID, int type, int application, string Table)
         {
             var accountType = GetAccountTypeByID(type).First();
             var applications = GetApplicationByID(application).First();
@@ -79,7 +80,7 @@ namespace CMDB.Services
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
         }
-        public async void Deactivate(Account account, string Reason, string Table)
+        public async Task Deactivate(Account account, string Reason, string Table)
         {
             account.DeactivateReason = Reason;
             account.Active = "Inactive";
@@ -89,7 +90,7 @@ namespace CMDB.Services
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
         }
-        public async void Activate(Account account, string Table)
+        public async Task Activate(Account account, string Table)
         {
             account.DeactivateReason = null;
             account.Active = "Active";
@@ -160,7 +161,7 @@ namespace CMDB.Services
             }
             return result;
         }
-        public async void AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
+        public async Task AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
             var Identity = GetIdentityByID(IdenID).First();
             IdenAccount IdenAcc = new()
@@ -178,7 +179,7 @@ namespace CMDB.Services
             LogAssignAccount2Identity(Table, account.AccID, account, Identity);
             LogAssignIden2Account("identity", IdenID, Identity, account);
         }
-        public async void ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
+        public async Task ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
         {
             var IdenAccount = _context.IdenAccounts.Where(x => x.ID == idenAccountID).First();
             IdenAccount.LastModifiedAdmin = Admin;

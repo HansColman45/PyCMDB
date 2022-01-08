@@ -1,14 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using CMDB.Models;
-using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Hosting;
 using System.Diagnostics;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
-using System.Linq;
-using NLog;
 
 namespace CMDB.Controllers
 {

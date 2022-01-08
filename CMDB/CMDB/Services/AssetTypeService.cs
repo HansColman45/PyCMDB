@@ -7,6 +7,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -39,7 +40,7 @@ namespace CMDB.Services
                 .ToList();
             return devices;
         }
-        public async void CreateNewAssetType(AssetType assetType, string Table)
+        public async Task CreateNewAssetType(AssetType assetType, string Table)
         {
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Add(assetType);
@@ -47,7 +48,7 @@ namespace CMDB.Services
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogCreate(Table, assetType.TypeID, Value);
         }
-        public async void UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
+        public async Task UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
             assetType.LastModfiedAdmin = Admin;
             string OldType = assetType.Type;
@@ -67,7 +68,7 @@ namespace CMDB.Services
                 LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
             }
         }
-        public async void DeactivateAssetType(AssetType assetType, string reason, string Table)
+        public async Task DeactivateAssetType(AssetType assetType, string reason, string Table)
         {
             assetType.Active = "Inactive";
             assetType.DeactivateReason = reason;
@@ -77,7 +78,7 @@ namespace CMDB.Services
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
             LogDeactivate(Table, assetType.TypeID, Value, reason);
         }
-        public async void ActivateAssetType(AssetType assetType, string Table)
+        public async Task ActivateAssetType(AssetType assetType, string Table)
         {
             assetType.Active = "Active";
             assetType.DeactivateReason = "";

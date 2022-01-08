@@ -71,13 +71,12 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Assetcategory alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        service.Create(category, table);
+                        _ = service.Create(category, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -107,7 +106,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Assetcategory alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        service.Update(category, Category, Prefix, table);
+                        _ = service.Update(category, Category, Prefix, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -158,7 +157,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(category, values["reason"], table);
+                        _ = service.Deactivate(category, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -184,7 +183,7 @@ namespace CMDB.Controllers
             AssetCategory category = service.ListByID((int)id).ElementAt<AssetCategory>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(category, table);
+                _ = service.Activate(category, table);
                 return RedirectToAction(nameof(Index));
             }
             else

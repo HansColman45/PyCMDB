@@ -66,9 +66,9 @@ namespace CMDB.UI.Tests.Hooks
         /// </summary>
         /// <param name="scenarioData">The data of the scenario</param>
         [AfterFeature]
-        public static void AfterFeature(ScenarioData scenarioData)
+        public static async void AfterFeature(ScenarioData scenarioData)
         {
-            scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
+            await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
             scenarioData.Driver.Close();
             scenarioData.Driver.Quit();
             scenarioData.Context = null;

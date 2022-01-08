@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -55,7 +56,7 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create Desktop";
@@ -83,7 +84,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        service.CreateNewDesktop(desktop, table);
+                        await service.CreateNewDesktop(desktop, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -121,7 +122,7 @@ namespace CMDB.Controllers
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, table);
+                        _ = service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -176,7 +177,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(desktop, values["reason"], table);
+                        _ = service.Deactivate(desktop, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -202,7 +203,7 @@ namespace CMDB.Controllers
             Desktop desktop = service.ListDekstopByID(id).ElementAt<Desktop>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(desktop, table);
+                _ = service.Activate(desktop, table);
                 return RedirectToAction(nameof(Index));
             }
             else

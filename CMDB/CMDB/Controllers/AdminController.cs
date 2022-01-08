@@ -76,13 +76,12 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Admin is already existing");
                     if (ModelState.IsValid)
                     {
-                        service.Create(admin, table);
+                        _ = service.Create(admin, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -111,13 +110,12 @@ namespace CMDB.Controllers
                     int Level = Convert.ToInt32(values["Level"]);
                     if (ModelState.IsValid)
                     {
-                        service.Update(admin, Level, table);
+                        _ = service.Update(admin, Level, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -162,7 +160,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(admin, values["reason"].ToString(), table);
+                        _ = service.Deactivate(admin, values["reason"].ToString(), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -188,7 +186,7 @@ namespace CMDB.Controllers
             Admin admin = service.GetByID((int)id).ElementAt<Admin>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(admin, table);
+                _ = service.Activate(admin, table);
                 return RedirectToAction(nameof(Index));
             }
             else

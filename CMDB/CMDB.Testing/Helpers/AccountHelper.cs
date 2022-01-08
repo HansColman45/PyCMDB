@@ -31,7 +31,7 @@ namespace CMDB.Testing.Helpers
             await context.SaveChangesAsync();
             return Account;
         }
-        public static async void Delete(CMDBContext context, Account account)
+        public static async Task Delete(CMDBContext context, Account account)
         {
             context.RemoveRange(account.Logs);
             context.Remove<Account>(account);

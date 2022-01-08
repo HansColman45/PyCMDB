@@ -86,7 +86,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        service.CreateNewLaptop(laptop, table);
+                        _ = service.CreateNewLaptop(laptop, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -125,7 +125,7 @@ namespace CMDB.Controllers
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, table);
+                        _ = service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -180,7 +180,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(laptop, values["reason"], table);
+                        _ = service.Deactivate(laptop, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -206,7 +206,7 @@ namespace CMDB.Controllers
             Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(laptop, table);
+                _ = service.Activate(laptop, table);
                 return RedirectToAction(nameof(Index));
             }
             else

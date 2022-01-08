@@ -21,7 +21,7 @@ namespace CMDB.Testing.Helpers
             await context.SaveChangesAsync();
             return assetType;
         }
-        public static async void Delete(CMDBContext context, AccountType accountType)
+        public static async Task Delete(CMDBContext context, AccountType accountType)
         {
             context.RemoveRange(accountType.Logs);
             context.Remove<AccountType>(accountType);

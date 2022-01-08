@@ -33,9 +33,9 @@ namespace CMDB.UI.Tests.Data
         /// This will delete all Created or update entities the Admin has done
         /// </summary>
         /// <param name="admin">The Admin</param>
-        public void DeleteAllCreatedOrUpdated(Admin admin)
+        public async Task DeleteAllCreatedOrUpdated(Admin admin)
         {
-            AdminHelper.DeleteCascading(context, admin);
+            await AdminHelper.DeleteCascading(context, admin);
         }
         /// <summary>
         /// This function will return an Identity using the Id

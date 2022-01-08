@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(docking, values["reason"], table);
+                        _ = service.Deactivate(docking, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -102,7 +102,7 @@ namespace CMDB.Controllers
             Docking docking = service.ListDockingByID(id).ElementAt<Docking>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(docking, table);
+                _ = service.Activate(docking, table);
                 return RedirectToAction(nameof(Index));
             }
             else

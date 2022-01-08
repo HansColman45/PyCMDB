@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        service.Create(accountType, table);
+                        _ = service.Create(accountType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -111,7 +111,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        service.Update(accountType.ElementAt<AccountType>(0), newType, newDescription, table);
+                        _ = service.Update(accountType.ElementAt<AccountType>(0), newType, newDescription, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -144,7 +144,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(accountType.ElementAt<AccountType>(0), ViewData["reason"].ToString(), table);
+                        _ = service.Deactivate(accountType.ElementAt<AccountType>(0), ViewData["reason"].ToString(), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -170,7 +170,7 @@ namespace CMDB.Controllers
             var accountType = service.GetAccountTypeByID((int)id);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(accountType.ElementAt<AccountType>(0), table);
+                _ = service.Activate(accountType.ElementAt<AccountType>(0), table);
                 return RedirectToAction(nameof(Index));
             }
             else

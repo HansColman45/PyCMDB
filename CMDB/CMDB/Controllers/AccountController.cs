@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -58,7 +59,7 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create Account";
@@ -85,7 +86,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Account alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);
+                        await service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -126,13 +127,12 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Account alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        service.Edit(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);
+                        _ = service.Edit(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -188,12 +188,11 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    service.Deactivate(account, ViewData["reason"].ToString(), table);
+                    _ = service.Deactivate(account, ViewData["reason"].ToString(), table);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -219,7 +218,7 @@ namespace CMDB.Controllers
             }
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(account, table);
+                _ = service.Activate(account, table);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -255,7 +254,7 @@ namespace CMDB.Controllers
                 service.IsPeriodOverlapping(null, id, from, until);
                 if (ModelState.IsValid)
                 {
-                    service.AssignIdentity2Account(account, IdenID, from, until, table);
+                    _ = service.AssignIdentity2Account(account, IdenID, from, until, table);
                     return RedirectToAction("AssignFrom", "Account", new { id });
                 }
             }

@@ -28,7 +28,7 @@ namespace CMDB.Testing.Helpers
 
             return laptop;
         }
-        public static async void Delete(CMDBContext context, Laptop laptop)
+        public static async Task Delete(CMDBContext context, Laptop laptop)
         {
             context.RemoveRange(laptop.Logs);
             context.Remove<Laptop>(laptop);

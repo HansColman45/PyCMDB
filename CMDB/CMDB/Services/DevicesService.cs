@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -87,7 +88,7 @@ namespace CMDB.Services
             }
             return assettypes;
         }
-        public async void CreateNewDesktop(Desktop desktop, string table)
+        public async Task CreateNewDesktop(Desktop desktop, string table)
         {
             desktop.LastModfiedAdmin = Admin;
             _context.Desktops.Add(desktop);
@@ -95,7 +96,7 @@ namespace CMDB.Services
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
             LogCreate(table, desktop.AssetTag, Value);
         }
-        public async void CreateNewLaptop(Laptop laptop, string table)
+        public async Task CreateNewLaptop(Laptop laptop, string table)
         {
             laptop.LastModfiedAdmin = Admin;
             _context.Laptops.Add(laptop);
@@ -103,7 +104,7 @@ namespace CMDB.Services
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
             LogCreate(table, laptop.AssetTag, Value);
         }
-        public async void UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        public async Task UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             desktop.LastModfiedAdmin = Admin;
             string OldRam, OldMac, OldSerial, OldType;
@@ -136,7 +137,7 @@ namespace CMDB.Services
                 LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
-        public async void UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
+        public async Task UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             laptop.LastModfiedAdmin = Admin;
             string OldRam, OldMac, OldSerial, OldType;
@@ -169,7 +170,7 @@ namespace CMDB.Services
                 LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
-        public async void Deactivate(Device device, string Reason, string table)
+        public async Task Deactivate(Device device, string Reason, string table)
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
@@ -178,7 +179,7 @@ namespace CMDB.Services
             string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
             LogDeactivated(table, device.AssetTag, Value, Reason);
         }
-        public async void Activate(Device device, string table)
+        public async Task Activate(Device device, string table)
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = "";

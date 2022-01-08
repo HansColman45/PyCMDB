@@ -91,7 +91,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        service.CreateNewAssetType(assetType, table);
+                        _ = service.CreateNewAssetType(assetType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -129,7 +129,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        service.UpdateAssetType(assetType, newVendor, newType, table);
+                        _ = service.UpdateAssetType(assetType, newVendor, newType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -179,7 +179,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.DeactivateAssetType(assetType, values["reason"].ToString(), table);
+                        _ = service.DeactivateAssetType(assetType, values["reason"].ToString(), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -205,7 +205,7 @@ namespace CMDB.Controllers
             AssetType assetType = service.ListById((int)id).ElementAt<AssetType>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.ActivateAssetType(assetType, table);
+                _ = service.ActivateAssetType(assetType, table);
                 return RedirectToAction(nameof(Index));
             }
             else

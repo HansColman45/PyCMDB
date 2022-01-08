@@ -154,7 +154,7 @@ namespace CMDB.Services
                 .Where(x => x.Identity.IdenId == identity.IdenId)
                 .ToList();
         }
-        public async void Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
+        public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             var Type = GetIdenityTypeByID(type).First();
             var Lang = _context.Languages.
@@ -220,7 +220,7 @@ namespace CMDB.Services
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
         }
-        public async void Deactivate(Identity identity, string Reason, string Table)
+        public async Task Deactivate(Identity identity, string Reason, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = Reason;
@@ -230,7 +230,7 @@ namespace CMDB.Services
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
             LogDeactivate(Table, identity.IdenId, value, Reason);
         }
-        public async void Activate(Identity identity, string Table)
+        public async Task Activate(Identity identity, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = null;
@@ -316,7 +316,7 @@ namespace CMDB.Services
             }
             return result;
         }
-        public async void AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
+        public async Task AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
             var Account = GetAccountByID(AccID).First<Account>();
             identity.Accounts.Add(new()
@@ -332,7 +332,7 @@ namespace CMDB.Services
             LogAssignIden2Account(Table, identity.IdenId, identity, Account);
             LogAssignAccount2Identity("account", AccID, Account, identity);
         }
-        public async void ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
+        public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
             var idenAccount = _context.IdenAccounts.
                 Include(x => x.Identity)

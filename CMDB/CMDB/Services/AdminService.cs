@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -63,7 +64,7 @@ namespace CMDB.Services
             }
             return Levels;
         }
-        public async void Create(Admin admin, string Table)
+        public async Task Create(Admin admin, string Table)
         {
             string pwd = new PasswordHasher().EncryptPassword("cmdb");
             admin.Password = pwd;
@@ -74,7 +75,7 @@ namespace CMDB.Services
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogCreate(Table, Admin.AdminId, Value);
         }
-        public async void Update(Admin admin, int level, string Table)
+        public async Task Update(Admin admin, int level, string Table)
         {
             if (admin.Level != level)
             {
@@ -84,7 +85,7 @@ namespace CMDB.Services
                 LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
             }
         }
-        public async void Deactivate(Admin admin, string reason, string table)
+        public async Task Deactivate(Admin admin, string reason, string table)
         {
             admin.Active = "Inactive";
             admin.DeactivateReason = reason;
@@ -93,7 +94,7 @@ namespace CMDB.Services
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
             LogDeactivate(table, admin.AdminId, Value, reason);
         }
-        public async void Activate(Admin admin, string table)
+        public async Task Activate(Admin admin, string table)
         {
             admin.Active = "Active";
             admin.DeactivateReason = "";

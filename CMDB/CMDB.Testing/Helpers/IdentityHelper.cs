@@ -34,11 +34,11 @@ namespace CMDB.Testing.Helpers
 
             return identity;
         }
-        public static void Delete(CMDBContext context, Identity identity)
+        public static async Task Delete(CMDBContext context, Identity identity)
         {
             context.RemoveRange(identity.Logs);
             context.Remove<Identity>(identity);
-            context.SaveChanges();
+            await context.SaveChangesAsync();
         }
     }
 }

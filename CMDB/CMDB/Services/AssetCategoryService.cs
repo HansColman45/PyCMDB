@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System;
 using System.Text;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -31,7 +32,7 @@ namespace CMDB.Services
             var categories = _context.AssetCategories.Where(x => x.Id == id).ToList();
             return categories;
         }
-        public async void Create(AssetCategory category, string table)
+        public async Task Create(AssetCategory category, string table)
         {
             category.LastModfiedAdmin = Admin;
             _context.AssetCategories.Add(category);
@@ -39,7 +40,7 @@ namespace CMDB.Services
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
             LogCreate(table, category.Id, Value);
         }
-        public async void Update(AssetCategory category, string Category, string prefix, string Table)
+        public async Task Update(AssetCategory category, string Category, string prefix, string Table)
         {
             category.LastModfiedAdmin = Admin;
             if (String.Compare(category.Category, Category) != 0)
@@ -61,7 +62,7 @@ namespace CMDB.Services
                 LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
             }
         }
-        public async void Deactivate(AssetCategory category, string Reason, string Table)
+        public async Task Deactivate(AssetCategory category, string Reason, string Table)
         {
             category.LastModfiedAdmin = Admin;
             category.Active = "Inactive";
@@ -71,7 +72,7 @@ namespace CMDB.Services
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
             LogDeactivate(Table, category.Id, Value, Reason);
         }
-        public async void Activate(AssetCategory category, string Table)
+        public async Task Activate(AssetCategory category, string Table)
         {
             category.LastModfiedAdmin = Admin;
             category.Active = "Active";

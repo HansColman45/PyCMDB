@@ -4,6 +4,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -32,7 +33,7 @@ namespace CMDB.Services
                 .ToList();
             return types;
         }
-        public async void Create(IdentityType identityType, string Table)
+        public async Task Create(IdentityType identityType, string Table)
         {
             identityType.LastModfiedAdmin = Admin;
             _context.IdentityTypes.Add(identityType);
@@ -40,7 +41,7 @@ namespace CMDB.Services
             string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
             LogCreate(Table, identityType.TypeID, Value);
         }
-        public async void Update(IdentityType identityType, string Type, string Description, string Table)
+        public async Task Update(IdentityType identityType, string Type, string Description, string Table)
         {
             identityType.LastModfiedAdmin = Admin;
             if (String.Compare(identityType.Type, Type) != 0)
@@ -56,7 +57,7 @@ namespace CMDB.Services
                 LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description);
             }
         }
-        public async void Deactivate(IdentityType identityType, string reason, string Table)
+        public async Task Deactivate(IdentityType identityType, string reason, string Table)
         {
             identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = reason;
@@ -65,7 +66,7 @@ namespace CMDB.Services
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
             LogDeactivate(Table, identityType.TypeID, Value, reason);
         }
-        public async void Activate(IdentityType identityType, string table)
+        public async Task Activate(IdentityType identityType, string table)
         {
             identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = "";

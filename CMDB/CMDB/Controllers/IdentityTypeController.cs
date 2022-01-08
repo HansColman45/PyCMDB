@@ -94,7 +94,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        service.Create(idenType, table);
+                        _ = service.Create(idenType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -129,7 +129,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        service.Update(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);
+                        _ = service.Update(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -162,7 +162,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        service.Deactivate(idenType.ElementAt<IdentityType>(0), values["reason"], table);
+                        _ = service.Deactivate(idenType.ElementAt<IdentityType>(0), values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -188,7 +188,7 @@ namespace CMDB.Controllers
             var idenType = service.GetByID((int)id);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(idenType.ElementAt<IdentityType>(0), table);
+                _ = service.Activate(idenType.ElementAt<IdentityType>(0), table);
                 return RedirectToAction(nameof(Index));
             }
             else

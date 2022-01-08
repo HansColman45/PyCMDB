@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -18,7 +19,7 @@ namespace CMDB.Services
             List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.TypeID == ID).ToList();
             return accountTypes;
         }
-        public async void Create(AccountType accountType, string Table)
+        public async Task Create(AccountType accountType, string Table)
         {
             accountType.LastModfiedAdmin = Admin;
             _context.AccountTypes.Add(accountType);
@@ -26,7 +27,7 @@ namespace CMDB.Services
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
             LogCreate(Table, accountType.TypeID, Value);
         }
-        public async void Update(AccountType accountType, string Type, string Description, string Table)
+        public async Task Update(AccountType accountType, string Type, string Description, string Table)
         {
             accountType.LastModfiedAdmin = Admin;
             if (String.Compare(accountType.Type, Type) != 0)
@@ -42,7 +43,7 @@ namespace CMDB.Services
                 LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description);
             }
         }
-        public async void Deactivate(AccountType accountType, string Reason, string Table)
+        public async Task Deactivate(AccountType accountType, string Reason, string Table)
         {
             accountType.Active = "Inactive";
             accountType.DeactivateReason = Reason;
@@ -51,7 +52,7 @@ namespace CMDB.Services
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
             LogDeactivate(Table, accountType.TypeID, Value, Reason);
         }
-        public async void Activate(AccountType accountType, string Table)
+        public async Task Activate(AccountType accountType, string Table)
         {
             accountType.Active = "Active";
             accountType.DeactivateReason = "";

@@ -123,7 +123,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
-                        service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
+                        _ = service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -198,7 +198,7 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    service.Deactivate(identity, ViewData["reason"].ToString(), table);
+                    _ = service.Deactivate(identity, ViewData["reason"].ToString(), table);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -224,7 +224,7 @@ namespace CMDB.Controllers
             Identity identity = list.ElementAt<Identity>(0);
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                service.Activate(identity, table);
+                _ = service.Activate(identity, table);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -287,14 +287,13 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
-                        service.AssignAccount2Idenity(identity, AccId, from, until, table);
+                        _ = service.AssignAccount2Idenity(identity, AccId, from, until, table);
                         return RedirectToAction("AssignFrom", "Identity", new { id });
                     }
                 }
                 catch (Exception ex)
                 {
                     log.Error("DB error: {0}", ex.ToString());
-                    //Log the error (uncomment ex variable name and write a log.
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
@@ -325,7 +324,7 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, table);
+                    _ = service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, table);
                     idenAccount = service.GetIdenAccountByID(id);
                     PDFGenerator PDFGenerator = new()
                     {

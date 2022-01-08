@@ -10,7 +10,7 @@ namespace CMDB.Testing.Helpers
 {
     public class IdentityTypeHelper
     {
-        public static async void Delete(CMDBContext context, IdentityType identityType)
+        public static async Task Delete(CMDBContext context, IdentityType identityType)
         {
             context.RemoveRange(identityType.Logs);
             context.Remove<IdentityType>(identityType);

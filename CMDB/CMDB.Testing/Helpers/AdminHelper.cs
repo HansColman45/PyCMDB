@@ -69,7 +69,7 @@ namespace CMDB.Testing.Helpers
             await context.SaveChangesAsync();
             return admin;
         }
-        public static async void DeleteCascading(CMDBContext context, Admin admin)
+        public static async Task DeleteCascading(CMDBContext context, Admin admin)
         {
             //AccountType
             var accountType = context.AccountTypes
@@ -78,7 +78,7 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var type in accountType)
             {
-                AssetTypeHelper.Delete(context, type);
+                await AssetTypeHelper.Delete(context, type);
             }
             //IdentityTypes
             var identypes = context.IdentityTypes
@@ -87,7 +87,7 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var type in identypes)
             {
-                IdentityTypeHelper.Delete(context, type);
+                await IdentityTypeHelper.Delete(context, type);
             }
             //Laptop
             var laptops = context.Laptops
@@ -96,7 +96,7 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var laptop in laptops)
             {
-                LaptopHelper.Delete(context, laptop);
+                await LaptopHelper.Delete(context, laptop);
             }
             //IdenAccount
             var idenAccs = context.IdenAccounts
@@ -113,7 +113,7 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var identity in identities)
             {
-                IdentityHelper.Delete(context, identity);
+                await IdentityHelper.Delete(context, identity);
             }
             //Account
             var accounts = context.Accounts
@@ -122,7 +122,7 @@ namespace CMDB.Testing.Helpers
                 .ToList();
             foreach (var account in accounts)
             {
-                AccountHelper.Delete(context, account);
+                await AccountHelper.Delete(context, account);
             }
             //Admin
             context.RemoveRange(admin.Logs);
