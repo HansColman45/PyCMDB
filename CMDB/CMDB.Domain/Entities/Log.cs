@@ -20,16 +20,8 @@ namespace CMDB.Domain.Entities
         public int? AssetCategoryId { get; set; }
         public AssetType AssetType { get; set; }
         public int? AssetTypeId { get; set; }
-        public Laptop Laptop { get; set; }
-        public string LaptopAssetTag { get; set; }
-        public Desktop Desktop { get; set; }
-        public string DesktopAssetTag { get; set; }
-        public Screen Screen { get; set; }
-        public string ScreenAssetTag { get; set; }
-        public Docking Docking { get; set; }
-        public string DockingAssetTag { get; set; }
-        public Token Token { get; set; }
-        public string TokenAssetTag { get; set; }
+        public Device Device { get; set; }
+        public string AssetTag { get; set; }
         public Identity Identity { get; set; }
         public int? IdentityId { get; set; }
         public IdentityType IdentityType { get; set; }

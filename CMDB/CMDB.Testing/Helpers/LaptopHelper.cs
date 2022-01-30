@@ -19,7 +19,7 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.LastModfiedAdmin, admin)
                 .Build();
             laptop.Logs.Add(new LogBuilder()
-                .With(x => x.Laptop, laptop)
+                .With(x => x.Device, laptop)
                 .With(x => x.LogText, $"The {cat.Category} with type {laptop.Type} is created by Automation in table laptop")
                 .Build()
                 );

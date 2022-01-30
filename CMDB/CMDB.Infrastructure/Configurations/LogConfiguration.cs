@@ -56,18 +56,6 @@ namespace CMDB.Infrastructure.Configuration
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Category");
 
-            builder.HasOne(e => e.Desktop)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.DesktopAssetTag)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_Desktop");
-
-            builder.HasOne(e => e.Docking)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.DockingAssetTag)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_Docking");
-
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Logs)
                 .HasForeignKey(e => e.IdentityId)
@@ -86,12 +74,6 @@ namespace CMDB.Infrastructure.Configuration
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_KensingTone");
 
-            builder.HasOne(e => e.Laptop)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.LaptopAssetTag)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_Laptop");
-
             builder.HasOne(e => e.Menu)
                 .WithMany(d => d.Logs)
                 .HasForeignKey(e => e.MenuId)
@@ -103,12 +85,6 @@ namespace CMDB.Infrastructure.Configuration
                 .HasForeignKey(e => e.MobileId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Mobile");
-
-            builder.HasOne(e => e.Screen)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.ScreenAssetTag)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_Screen");
 
             builder.HasOne(e => e.Permission)
                 .WithMany(d => d.Logs)
@@ -140,11 +116,11 @@ namespace CMDB.Infrastructure.Configuration
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_SubscriptionType");
 
-            builder.HasOne(e => e.Token)
+            builder.HasOne(e => e.Device)
                 .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.TokenAssetTag)
+                .HasForeignKey(e => e.AssetTag)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_Token");
+                .HasConstraintName("FK_Device_Asset");
         }
     }
 }

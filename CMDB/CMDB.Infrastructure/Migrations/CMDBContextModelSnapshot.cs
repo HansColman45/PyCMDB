@@ -579,14 +579,11 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<int?>("AssetCategoryId")
                         .HasColumnType("int");
 
+                    b.Property<string>("AssetTag")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<int?>("AssetTypeId")
                         .HasColumnType("int");
-
-                    b.Property<string>("DesktopAssetTag")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DockingAssetTag")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("IdentityId")
                         .HasColumnType("int");
@@ -598,9 +595,6 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("LanguageCode")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LaptopAssetTag")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("LogDate")
@@ -625,17 +619,11 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<int?>("RoleTypeId")
                         .HasColumnType("int");
 
-                    b.Property<string>("ScreenAssetTag")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("SubscriptionTypeId")
                         .HasColumnType("int");
 
                     b.Property<int?>("SubsriptionId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TokenAssetTag")
-                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id")
                         .HasName("PK_Log");
@@ -650,11 +638,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("AssetCategoryId");
 
+                    b.HasIndex("AssetTag");
+
                     b.HasIndex("AssetTypeId");
-
-                    b.HasIndex("DesktopAssetTag");
-
-                    b.HasIndex("DockingAssetTag");
 
                     b.HasIndex("IdentityId");
 
@@ -663,8 +649,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasIndex("KensingtonId");
 
                     b.HasIndex("LanguageCode");
-
-                    b.HasIndex("LaptopAssetTag");
 
                     b.HasIndex("MenuId");
 
@@ -676,13 +660,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("RoleTypeId");
 
-                    b.HasIndex("ScreenAssetTag");
-
                     b.HasIndex("SubscriptionTypeId");
 
                     b.HasIndex("SubsriptionId");
-
-                    b.HasIndex("TokenAssetTag");
 
                     b.ToTable("Log");
                 });
@@ -1355,22 +1335,16 @@ namespace CMDB.Infrastructure.Migrations
                         .HasConstraintName("FK_Log_Category")
                         .OnDelete(DeleteBehavior.SetNull);
 
+                    b.HasOne("CMDB.Domain.Entities.Device", "Device")
+                        .WithMany("Logs")
+                        .HasForeignKey("AssetTag")
+                        .HasConstraintName("FK_Device_Asset")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("CMDB.Domain.Entities.AssetType", "AssetType")
                         .WithMany("Logs")
                         .HasForeignKey("AssetTypeId")
                         .HasConstraintName("FK_Log_AssetType")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Desktop", "Desktop")
-                        .WithMany("Logs")
-                        .HasForeignKey("DesktopAssetTag")
-                        .HasConstraintName("FK_Log_Desktop")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Docking", "Docking")
-                        .WithMany("Logs")
-                        .HasForeignKey("DockingAssetTag")
-                        .HasConstraintName("FK_Log_Docking")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
@@ -1394,12 +1368,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Language", null)
                         .WithMany("Logs")
                         .HasForeignKey("LanguageCode");
-
-                    b.HasOne("CMDB.Domain.Entities.Laptop", "Laptop")
-                        .WithMany("Logs")
-                        .HasForeignKey("LaptopAssetTag")
-                        .HasConstraintName("FK_Log_Laptop")
-                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.Menu", "Menu")
                         .WithMany("Logs")
@@ -1431,12 +1399,6 @@ namespace CMDB.Infrastructure.Migrations
                         .HasConstraintName("FK_Log_RoleType")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("CMDB.Domain.Entities.Screen", "Screen")
-                        .WithMany("Logs")
-                        .HasForeignKey("ScreenAssetTag")
-                        .HasConstraintName("FK_Log_Screen")
-                        .OnDelete(DeleteBehavior.SetNull);
-
                     b.HasOne("CMDB.Domain.Entities.SubscriptionType", "SubscriptionType")
                         .WithMany("Logs")
                         .HasForeignKey("SubscriptionTypeId")
@@ -1447,12 +1409,6 @@ namespace CMDB.Infrastructure.Migrations
                         .WithMany("Logs")
                         .HasForeignKey("SubsriptionId")
                         .HasConstraintName("FK_Log_Subscription")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Token", "Token")
-                        .WithMany("Logs")
-                        .HasForeignKey("TokenAssetTag")
-                        .HasConstraintName("FK_Log_Token")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Account");
@@ -1467,17 +1423,13 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Desktop");
-
-                    b.Navigation("Docking");
+                    b.Navigation("Device");
 
                     b.Navigation("Identity");
 
                     b.Navigation("IdentityType");
 
                     b.Navigation("Kensington");
-
-                    b.Navigation("Laptop");
 
                     b.Navigation("Menu");
 
@@ -1489,13 +1441,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("RoleType");
 
-                    b.Navigation("Screen");
-
                     b.Navigation("Subscription");
 
                     b.Navigation("SubscriptionType");
-
-                    b.Navigation("Token");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Menu", b =>
@@ -1777,6 +1725,8 @@ namespace CMDB.Infrastructure.Migrations
             modelBuilder.Entity("CMDB.Domain.Entities.Device", b =>
                 {
                     b.Navigation("Keys");
+
+                    b.Navigation("Logs");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Identity", b =>
@@ -1856,31 +1806,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("Subscriptions");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
-                {
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
-                {
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
-                {
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
-                {
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Token", b =>
-                {
-                    b.Navigation("Logs");
                 });
 #pragma warning restore 612, 618
         }

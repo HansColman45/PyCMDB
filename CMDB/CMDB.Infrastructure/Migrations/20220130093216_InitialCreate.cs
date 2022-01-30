@@ -382,7 +382,7 @@ namespace CMDB.Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Level = table.Column<int>(type: "int", nullable: false),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: false),
+                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
                     MenuId = table.Column<int>(type: "int", nullable: false),
                     PermissionId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -672,11 +672,7 @@ namespace CMDB.Infrastructure.Migrations
                     ApplicationId = table.Column<int>(type: "int", nullable: true),
                     AssetCategoryId = table.Column<int>(type: "int", nullable: true),
                     AssetTypeId = table.Column<int>(type: "int", nullable: true),
-                    LaptopAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DesktopAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ScreenAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DockingAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    TokenAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     IdentityId = table.Column<int>(type: "int", nullable: true),
                     IdentityTypeId = table.Column<int>(type: "int", nullable: true),
                     KensingtonId = table.Column<int>(type: "int", nullable: true),
@@ -692,6 +688,12 @@ namespace CMDB.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Log", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Device_Asset",
+                        column: x => x.AssetTag,
+                        principalTable: "asset",
+                        principalColumn: "AssetTag",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Log_Account",
                         column: x => x.AccountId,
@@ -729,18 +731,6 @@ namespace CMDB.Infrastructure.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Log_Desktop",
-                        column: x => x.DesktopAssetTag,
-                        principalTable: "asset",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Log_Docking",
-                        column: x => x.DockingAssetTag,
-                        principalTable: "asset",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
                         name: "FK_Log_Identity",
                         column: x => x.IdentityId,
                         principalTable: "Identity",
@@ -764,12 +754,6 @@ namespace CMDB.Infrastructure.Migrations
                         principalTable: "Language",
                         principalColumn: "Code",
                         onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Log_Laptop",
-                        column: x => x.LaptopAssetTag,
-                        principalTable: "asset",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Log_Menu",
                         column: x => x.MenuId,
@@ -801,12 +785,6 @@ namespace CMDB.Infrastructure.Migrations
                         principalColumn: "TypeId",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Log_Screen",
-                        column: x => x.ScreenAssetTag,
-                        principalTable: "asset",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
                         name: "FK_Log_Subscription",
                         column: x => x.SubsriptionId,
                         principalTable: "Subscription",
@@ -817,12 +795,6 @@ namespace CMDB.Infrastructure.Migrations
                         column: x => x.SubscriptionTypeId,
                         principalTable: "SubscriptionType",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Log_Token",
-                        column: x => x.TokenAssetTag,
-                        principalTable: "asset",
-                        principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                 });
 
@@ -984,19 +956,14 @@ namespace CMDB.Infrastructure.Migrations
                 column: "AssetCategoryId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Log_AssetTag",
+                table: "Log",
+                column: "AssetTag");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Log_AssetTypeId",
                 table: "Log",
                 column: "AssetTypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_DesktopAssetTag",
-                table: "Log",
-                column: "DesktopAssetTag");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_DockingAssetTag",
-                table: "Log",
-                column: "DockingAssetTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Log_IdentityId",
@@ -1017,11 +984,6 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_Log_LanguageCode",
                 table: "Log",
                 column: "LanguageCode");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_LaptopAssetTag",
-                table: "Log",
-                column: "LaptopAssetTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Log_MenuId",
@@ -1049,11 +1011,6 @@ namespace CMDB.Infrastructure.Migrations
                 column: "RoleTypeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Log_ScreenAssetTag",
-                table: "Log",
-                column: "ScreenAssetTag");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Log_SubscriptionTypeId",
                 table: "Log",
                 column: "SubscriptionTypeId");
@@ -1062,11 +1019,6 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_Log_SubsriptionId",
                 table: "Log",
                 column: "SubsriptionId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Log_TokenAssetTag",
-                table: "Log",
-                column: "TokenAssetTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Menu_ParentId",

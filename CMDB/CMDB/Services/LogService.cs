@@ -57,11 +57,11 @@ namespace CMDB.Services
         {
             model.Logs = table switch
             {
-                "laptop" => _context.Logs.Include(x => x.Laptop).Where(x => x.Laptop.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
-                "desktop" => _context.Logs.Include(x => x.Desktop).Where(x => x.Desktop.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
-                "docking" => _context.Logs.Include(x => x.Docking).Where(x => x.Docking.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
-                "token" => _context.Logs.Include(x => x.Token).Where(x => x.Token.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
-                "screen" => _context.Logs.Include(x => x.Screen).Where(x => x.Screen.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
+                "laptop" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
+                "desktop" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
+                "docking" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
+                "token" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
+                "screen" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
                 _ => throw new Exception("No log insert statement created for table: " + table),
             };
         }
@@ -242,31 +242,31 @@ namespace CMDB.Services
             {
                 case "laptop":
                     var Laptop = _context.Laptops.Where(x => x.AssetTag == AssetTag).First();
-                    log.Laptop = Laptop;
+                    log.Device = Laptop;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "desktop":
                     var desktop = _context.Desktops.Where(x => x.AssetTag == AssetTag).First();
-                    log.Desktop = desktop;
+                    log.Device = desktop;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "docking":
                     var docking = _context.Dockings.Where(x => x.AssetTag == AssetTag).First();
-                    log.Docking = docking;
+                    log.Device = docking;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "screen":
                     var Screen = _context.Screens.Where(x => x.AssetTag == AssetTag).First();
-                    log.Screen = Screen;
+                    log.Device = Screen;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "token":
                     var Token = _context.Tokens.Where(x => x.AssetTag == AssetTag).First();
-                    log.Token = Token;
+                    log.Device = Token;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
