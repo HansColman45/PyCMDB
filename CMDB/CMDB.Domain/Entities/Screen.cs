@@ -6,8 +6,6 @@ namespace CMDB.Domain.Entities
     {
         public Screen()
         {
-            Keys = new List<Kensington>();
         }
-        public virtual List<Kensington> Keys { get; set; }
     }
 }

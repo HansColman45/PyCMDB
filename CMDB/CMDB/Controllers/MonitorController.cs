@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -19,11 +20,11 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             ViewData["Title"] = "Monitor overview";
-            BuildMenu();
+            await BuildMenu();
             var Desktops = service.ListAll("Monitor");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -33,14 +34,13 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Monitor\Search";
             return View(Desktops);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Monitor overview";
-                BuildMenu();
+                await BuildMenu();
                 var Desktops = service.ListAll(sitePart, search);
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -55,19 +55,20 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Delete(IFormCollection values, string id)
+        public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Monitor";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Screen moniror = service.ListScreensByID(id).ElementAt<Screen>(0);
+            var monitors = await service.ListScreensByID(id);
+            Screen moniror = monitors.FirstOrDefault();
+            if (moniror == null)
+                return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -75,7 +76,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(moniror, values["reason"], table);
+                        await service.Deactivate(moniror, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -88,20 +89,21 @@ namespace CMDB.Controllers
             }
             return View(moniror);
         }
-        public IActionResult Activate(string id)
+        public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Laptop";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
-            if (String.IsNullOrEmpty(id))
-            {
+            await BuildMenu();
+            if (id == null)
                 return NotFound();
-            }
-            Screen moniror = service.ListScreensByID(id).ElementAt<Screen>(0);
+            var monitors = await service.ListScreensByID(id);
+            Screen moniror = monitors.FirstOrDefault();
+            if (moniror == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(moniror, table);
+                await service.Activate(moniror, table);
                 return RedirectToAction(nameof(Index));
             }
             else

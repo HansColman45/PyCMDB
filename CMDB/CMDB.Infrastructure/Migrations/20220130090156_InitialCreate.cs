@@ -440,85 +440,46 @@ namespace CMDB.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Desktop",
+                name: "asset",
                 columns: table => new
                 {
                     AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
+                    TypeId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    IdentityId = table.Column<int>(type: "int", nullable: true),
+                    Discriminator = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MAC = table.Column<string>(type: "varchar(255)", nullable: true),
-                    RAM = table.Column<string>(type: "varchar(255)", nullable: false),
+                    RAM = table.Column<string>(type: "varchar(255)", nullable: true),
+                    Laptop_MAC = table.Column<string>(type: "varchar(255)", nullable: true),
+                    Laptop_RAM = table.Column<string>(type: "varchar(255)", nullable: true),
                     active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
                     Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
-                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: true)
+                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Desktop_Asset", x => x.AssetTag);
+                    table.PrimaryKey("PK_Device_AssetTag", x => x.AssetTag);
                     table.ForeignKey(
-                        name: "FK_Desktop_Category",
+                        name: "FK_Device_Category",
                         column: x => x.CategoryId,
                         principalTable: "category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Desktop_Identity",
+                        name: "FK_Device_Identity",
                         column: x => x.IdentityId,
                         principalTable: "Identity",
                         principalColumn: "IdenId",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Desktop_LastModifiedAdmin",
+                        name: "FK_Device_LastModfiedAdmin",
                         column: x => x.LastModifiedAdminId,
                         principalTable: "Admin",
                         principalColumn: "Admin_id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Desktop_Type",
-                        column: x => x.TypeId,
-                        principalTable: "AssetType",
-                        principalColumn: "TypeID",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Docking",
-                columns: table => new
-                {
-                    AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
-                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Docking_Asset", x => x.AssetTag);
-                    table.ForeignKey(
-                        name: "FK_Docking_Category",
-                        column: x => x.CategoryId,
-                        principalTable: "category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Docking_Identity",
-                        column: x => x.IdentityId,
-                        principalTable: "Identity",
-                        principalColumn: "IdenId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Docking_LastModifiedAdmin",
-                        column: x => x.LastModifiedAdminId,
-                        principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Docking_Type",
+                        name: "FK_Device_Type",
                         column: x => x.TypeId,
                         principalTable: "AssetType",
                         principalColumn: "TypeID",
@@ -558,50 +519,6 @@ namespace CMDB.Infrastructure.Migrations
                         principalTable: "Admin",
                         principalColumn: "Admin_id",
                         onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Laptop",
-                columns: table => new
-                {
-                    AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    MAC = table.Column<string>(type: "varchar(255)", nullable: true),
-                    RAM = table.Column<string>(type: "varchar(255)", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
-                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Laptop_Asset", x => x.AssetTag);
-                    table.ForeignKey(
-                        name: "FK_Laptop_Category",
-                        column: x => x.CategoryId,
-                        principalTable: "category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Laptop_Identity",
-                        column: x => x.IdentityId,
-                        principalTable: "Identity",
-                        principalColumn: "IdenId",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Laptop_LastModifiedAdmin",
-                        column: x => x.LastModifiedAdminId,
-                        principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Laptop_Type",
-                        column: x => x.TypeId,
-                        principalTable: "AssetType",
-                        principalColumn: "TypeID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -647,87 +564,48 @@ namespace CMDB.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Screen",
+                name: "Kensington",
                 columns: table => new
                 {
-                    AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
+                    KeyID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
+                    DeviceAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    AmountOfKeys = table.Column<int>(type: "int", nullable: false),
+                    HasLock = table.Column<bool>(type: "bit", nullable: false),
                     TypeId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: false)
+                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
+                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
+                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Screen_Asset", x => x.AssetTag);
+                    table.PrimaryKey("PK_Kensington", x => x.KeyID);
                     table.ForeignKey(
-                        name: "FK_Screen_Category",
+                        name: "FK_Kensington_Category",
                         column: x => x.CategoryId,
                         principalTable: "category",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Screen_Identity",
-                        column: x => x.IdentityId,
-                        principalTable: "Identity",
-                        principalColumn: "IdenId",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Screen_LastModifiedAdmin",
+                        name: "FK_Kensington_LastModifiedAdmin",
                         column: x => x.LastModifiedAdminId,
                         principalTable: "Admin",
                         principalColumn: "Admin_id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_Screen_Type",
+                        name: "FK_Kensington_Type",
                         column: x => x.TypeId,
                         principalTable: "AssetType",
                         principalColumn: "TypeID",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Token",
-                columns: table => new
-                {
-                    AssetTag = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true),
-                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Token_Asset", x => x.AssetTag);
                     table.ForeignKey(
-                        name: "FK_Token_Category",
-                        column: x => x.CategoryId,
-                        principalTable: "category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Token_Identity",
-                        column: x => x.IdentityId,
-                        principalTable: "Identity",
-                        principalColumn: "IdenId",
+                        name: "FK_Key_Device",
+                        column: x => x.DeviceAssetTag,
+                        principalTable: "asset",
+                        principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Token_LastModfiedAdmin",
-                        column: x => x.LastModifiedAdminId,
-                        principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Token_Type",
-                        column: x => x.TypeId,
-                        principalTable: "AssetType",
-                        principalColumn: "TypeID",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -778,72 +656,6 @@ namespace CMDB.Infrastructure.Migrations
                         principalTable: "SubscriptionType",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Kensington",
-                columns: table => new
-                {
-                    KeyID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    SerialNumber = table.Column<string>(type: "varchar(255)", nullable: false),
-                    LaptopAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DesktopAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    DockingAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ScreenAssetTag = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AmountOfKeys = table.Column<int>(type: "int", nullable: false),
-                    HasLock = table.Column<bool>(type: "bit", nullable: false),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Kensington", x => x.KeyID);
-                    table.ForeignKey(
-                        name: "FK_Kensington_Category",
-                        column: x => x.CategoryId,
-                        principalTable: "category",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Kensington_LastModifiedAdmin",
-                        column: x => x.LastModifiedAdminId,
-                        principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Kensington_Type",
-                        column: x => x.TypeId,
-                        principalTable: "AssetType",
-                        principalColumn: "TypeID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Key_Deskop",
-                        column: x => x.DesktopAssetTag,
-                        principalTable: "Desktop",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Key_Docking",
-                        column: x => x.DockingAssetTag,
-                        principalTable: "Docking",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Key_Laptop",
-                        column: x => x.LaptopAssetTag,
-                        principalTable: "Laptop",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Key_Screen",
-                        column: x => x.ScreenAssetTag,
-                        principalTable: "Screen",
-                        principalColumn: "AssetTag",
-                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -919,13 +731,13 @@ namespace CMDB.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Log_Desktop",
                         column: x => x.DesktopAssetTag,
-                        principalTable: "Desktop",
+                        principalTable: "asset",
                         principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Log_Docking",
                         column: x => x.DockingAssetTag,
-                        principalTable: "Docking",
+                        principalTable: "asset",
                         principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
@@ -955,7 +767,7 @@ namespace CMDB.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Log_Laptop",
                         column: x => x.LaptopAssetTag,
-                        principalTable: "Laptop",
+                        principalTable: "asset",
                         principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
@@ -991,7 +803,7 @@ namespace CMDB.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Log_Screen",
                         column: x => x.ScreenAssetTag,
-                        principalTable: "Screen",
+                        principalTable: "asset",
                         principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
@@ -1009,7 +821,7 @@ namespace CMDB.Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Log_Token",
                         column: x => x.TokenAssetTag,
-                        principalTable: "Token",
+                        principalTable: "asset",
                         principalColumn: "AssetTag",
                         onDelete: ReferentialAction.SetNull);
                 });
@@ -1050,6 +862,26 @@ namespace CMDB.Infrastructure.Migrations
                 column: "LastModifiedAdminId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_asset_CategoryId",
+                table: "asset",
+                column: "CategoryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asset_IdentityId",
+                table: "asset",
+                column: "IdentityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asset_LastModifiedAdminId",
+                table: "asset",
+                column: "LastModifiedAdminId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_asset_TypeId",
+                table: "asset",
+                column: "TypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AssetType_CategoryId",
                 table: "AssetType",
                 column: "CategoryId");
@@ -1063,46 +895,6 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_category_LastModifiedAdminId",
                 table: "category",
                 column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Desktop_CategoryId",
-                table: "Desktop",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Desktop_IdentityId",
-                table: "Desktop",
-                column: "IdentityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Desktop_LastModifiedAdminId",
-                table: "Desktop",
-                column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Desktop_TypeId",
-                table: "Desktop",
-                column: "TypeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Docking_CategoryId",
-                table: "Docking",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Docking_IdentityId",
-                table: "Docking",
-                column: "IdentityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Docking_LastModifiedAdminId",
-                table: "Docking",
-                column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Docking_TypeId",
-                table: "Docking",
-                column: "TypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdenAccount_AccountId_IdentityId_ValidFrom_ValidUntil",
@@ -1147,29 +939,14 @@ namespace CMDB.Infrastructure.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Kensington_DesktopAssetTag",
+                name: "IX_Kensington_DeviceAssetTag",
                 table: "Kensington",
-                column: "DesktopAssetTag");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Kensington_DockingAssetTag",
-                table: "Kensington",
-                column: "DockingAssetTag");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Kensington_LaptopAssetTag",
-                table: "Kensington",
-                column: "LaptopAssetTag");
+                column: "DeviceAssetTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Kensington_LastModifiedAdminId",
                 table: "Kensington",
                 column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Kensington_ScreenAssetTag",
-                table: "Kensington",
-                column: "ScreenAssetTag");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Kensington_TypeId",
@@ -1180,26 +957,6 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_Language_LastModfiedAdminAdminId",
                 table: "Language",
                 column: "LastModfiedAdminAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Laptop_CategoryId",
-                table: "Laptop",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Laptop_IdentityId",
-                table: "Laptop",
-                column: "IdentityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Laptop_LastModifiedAdminId",
-                table: "Laptop",
-                column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Laptop_TypeId",
-                table: "Laptop",
-                column: "TypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Log_AccountId",
@@ -1372,26 +1129,6 @@ namespace CMDB.Infrastructure.Migrations
                 column: "LastModifiedAdminId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Screen_CategoryId",
-                table: "Screen",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Screen_IdentityId",
-                table: "Screen",
-                column: "IdentityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Screen_LastModifiedAdminId",
-                table: "Screen",
-                column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Screen_TypeId",
-                table: "Screen",
-                column: "TypeId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Subscription_AssetCategoryId",
                 table: "Subscription",
                 column: "AssetCategoryId");
@@ -1425,26 +1162,6 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_SubscriptionType_LastModifiedAdminId",
                 table: "SubscriptionType",
                 column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Token_CategoryId",
-                table: "Token",
-                column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Token_IdentityId",
-                table: "Token",
-                column: "IdentityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Token_LastModifiedAdminId",
-                table: "Token",
-                column: "LastModifiedAdminId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Token_TypeId",
-                table: "Token",
-                column: "TypeId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Admin_Account",
@@ -1494,25 +1211,13 @@ namespace CMDB.Infrastructure.Migrations
                 name: "Subscription");
 
             migrationBuilder.DropTable(
-                name: "Token");
-
-            migrationBuilder.DropTable(
                 name: "Menu");
 
             migrationBuilder.DropTable(
                 name: "Permission");
 
             migrationBuilder.DropTable(
-                name: "Desktop");
-
-            migrationBuilder.DropTable(
-                name: "Docking");
-
-            migrationBuilder.DropTable(
-                name: "Laptop");
-
-            migrationBuilder.DropTable(
-                name: "Screen");
+                name: "asset");
 
             migrationBuilder.DropTable(
                 name: "RoleType");

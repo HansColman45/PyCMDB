@@ -16,28 +16,30 @@ namespace CMDB.Services
         public AssetTypeService(CMDBContext context) : base(context)
         {
         }
-        public List<AssetType> ListAllAssetTypes()
+        public async Task<List<AssetType>> ListAllAssetTypes()
         {
-            var devices = _context.AssetTypes
+            var devices = await _context.AssetTypes
                 .Include(x => x.Category)
-                .ToList();
+                .ToListAsync();
             return devices;
         }
-        public List<AssetType> ListAllAssetTypes(string searchString)
+        public async Task<List<AssetType>> ListAllAssetTypes(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            var devices = _context.AssetTypes
+            var devices = await _context.AssetTypes
                 .Include(x => x.Category)
-                .Where(x => EF.Functions.Like(x.Vendor, searhterm) || EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Category.Category, searhterm))
-                .ToList();
+                .Where(x => EF.Functions.Like(x.Vendor, searhterm)
+                    || EF.Functions.Like(x.Type, searhterm)
+                    || EF.Functions.Like(x.Category.Category, searhterm))
+                .ToListAsync();
             return devices;
         }
-        public List<AssetType> ListById(int id)
+        public async Task<List<AssetType>> ListById(int id)
         {
-            var devices = _context.AssetTypes
+            var devices = await _context.AssetTypes
                 .Include(x => x.Category)
                 .Where(x => x.TypeID == id)
-                .ToList();
+                .ToListAsync();
             return devices;
         }
         public async Task CreateNewAssetType(AssetType assetType, string Table)
@@ -46,7 +48,7 @@ namespace CMDB.Services
             _context.AssetTypes.Add(assetType);
             await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            LogCreate(Table, assetType.TypeID, Value);
+            await LogCreate(Table, assetType.TypeID, Value);
         }
         public async Task UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
         {
@@ -58,14 +60,14 @@ namespace CMDB.Services
                 assetType.Vendor = Vendor;
                 _context.AssetTypes.Update(assetType);
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor);
+                await LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor);
             }
             if (String.Compare(assetType.Type, Type) != 0)
             {
                 assetType.Type = Type;
                 _context.AssetTypes.Update(assetType);
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
+                await LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
             }
         }
         public async Task DeactivateAssetType(AssetType assetType, string reason, string Table)
@@ -76,7 +78,7 @@ namespace CMDB.Services
             _context.AssetTypes.Update(assetType);
             await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            LogDeactivate(Table, assetType.TypeID, Value, reason);
+            await LogDeactivate(Table, assetType.TypeID, Value, reason);
         }
         public async Task ActivateAssetType(AssetType assetType, string Table)
         {
@@ -86,7 +88,7 @@ namespace CMDB.Services
             _context.AssetTypes.Update(assetType);
             await _context.SaveChangesAsync();
             string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            LogActivate(Table, assetType.TypeID, Value);
+            await LogActivate(Table, assetType.TypeID, Value);
         }
         public bool IsAssetTypeExisting(AssetType assetType, string Vendor = "", string type = "")
         {

@@ -12,10 +12,7 @@ namespace CMDB.Domain.Entities
         [Required(ErrorMessage = "Please enter a serial number")]
         public string SerialNumber { get; set; }
         public AssetCategory Category { get; set; }
-        public Laptop Laptop { get; set; }
-        public Desktop Desktop { get; set; }
-        public Docking Docking { get; set; }
-        public Screen Screen { get; set; }
+        public Device Device { get; set; }
         public int AmountOfKeys { get; set; }
         public bool HasLock { get; set; }
         public int? TypeId { get; set; }

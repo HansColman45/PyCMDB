@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -19,12 +20,12 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             var list = service.ListAll();
             ViewData["Title"] = "Identitytype overview";
-            BuildMenu();
+            await BuildMenu();
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -33,7 +34,7 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\IdentityType\Search";
             return View(list);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using List all in {0}", table);
             if (!String.IsNullOrEmpty(search))
@@ -41,7 +42,7 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var list = service.ListAll(search);
                 ViewData["Title"] = "Identitytype overview";
-                BuildMenu();
+                await BuildMenu();
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -55,33 +56,34 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", table);
+            if (id == null)
+                return NotFound();
             ViewData["Title"] = "Identitytype Details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (id == null)
-            {
+            var idenTypes = await service.GetByID((int)id);
+            var idenType = idenTypes.FirstOrDefault();
+            if (idenType == null)
                 return NotFound();
-            }
-            var idenType = service.GetByID((int)id);
-            service.GetLogs(table, (int)id, idenType.ElementAt<IdentityType>(0));
+            service.GetLogs(table, (int)id, idenType);
             if (idenType == null)
             {
                 return NotFound();
             }
-            return View(idenType);
+            return View(idenTypes);
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identitytype";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            BuildMenu();
+            await BuildMenu();
             IdentityType idenType = new();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -94,7 +96,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Create(idenType, table);
+                        await service.Create(idenType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -107,17 +109,18 @@ namespace CMDB.Controllers
             }
             return View(idenType);
         }
-        public IActionResult Edit(IFormCollection values, int? id)
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Edit Identitytype";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            BuildMenu();
-            var idenType = service.GetByID((int)id);
+            await BuildMenu();
+            var idenTypes = await service.GetByID((int)id);
+            var idenType = idenTypes.FirstOrDefault();
+            if (idenType == null)
+                return NotFound();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -125,11 +128,11 @@ namespace CMDB.Controllers
                 {
                     string newTpe = values["Type"];
                     string newDescription = values["Description"];
-                    if (service.IsExisting(idenType.ElementAt<IdentityType>(0), newTpe, newDescription))
+                    if (service.IsExisting(idenType, newTpe, newDescription))
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Update(idenType.ElementAt<IdentityType>(0), newTpe, newDescription, table);
+                        _ = service.Update(idenType, newTpe, newDescription, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -140,20 +143,21 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(idenType.ElementAt<IdentityType>(0));
+            return View(idenType);
         }
-        public IActionResult Delete(IFormCollection values, int? id)
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Identitytype";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "IdentityType";
-            var idenType = service.GetByID((int)id);
-            BuildMenu();
+            var idenTypes = await service.GetByID((int)id);
+            var idenType = idenTypes.FirstOrDefault();
+            if (idenType == null)
+                return NotFound();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -162,7 +166,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(idenType.ElementAt<IdentityType>(0), values["reason"], table);
+                        _ = service.Deactivate(idenType, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -173,22 +177,23 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(idenType);
+            return View(idenTypes);
         }
-        public IActionResult Activate(int? id)
+        public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Identitytype";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            var idenType = service.GetByID((int)id);
+            var idenTypes = await service.GetByID((int)id);
+            var idenType = idenTypes.FirstOrDefault();
+            if (idenType == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(idenType.ElementAt<IdentityType>(0), table);
+                await service.Activate(idenType, table);
                 return RedirectToAction(nameof(Index));
             }
             else

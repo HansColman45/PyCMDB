@@ -20,10 +20,10 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", sitePart);
-            BuildMenu();
+            await BuildMenu();
             ViewData["Title"] = "Permissiont overview";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");

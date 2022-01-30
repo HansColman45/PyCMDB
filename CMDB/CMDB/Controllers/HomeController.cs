@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -11,10 +12,10 @@ namespace CMDB.Controllers
         public HomeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", "Home");
-            BuildMenu();
+            await BuildMenu();
             ViewData["Company"] = service.Company;
             return View();
         }
@@ -25,9 +26,9 @@ namespace CMDB.Controllers
             string stringFullUrl = @"\Login";
             return Redirect(stringFullUrl);
         }
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
-            BuildMenu();
+            await BuildMenu();
             return View();
         }
     }

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -64,75 +65,75 @@ namespace CMDB.Services
                 _ => throw new Exception("No log insert statement created for table: " + table),
             };
         }
-        protected void LogCreate(string table, int ID, string Value)
+        protected async Task LogCreate(string table, int ID, string Value)
         {
             LogText = $"The {Value} is created by {Admin.Account.UserID} in table {table}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogCreate(string table, string AssetTag, string Value)
+        protected async Task LogCreate(string table, string AssetTag, string Value)
         {
             LogText = $"The {Value} is created by {Admin.Account.UserID} in table {table}";
-            DoLog(table, AssetTag);
+            await DoLog(table, AssetTag);
         }
-        protected void LogUpdate(string table, int ID, string field, string oldValue, string newValue)
+        protected async Task LogUpdate(string table, int ID, string field, string oldValue, string newValue)
         {
             if (String.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
             LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue)
+        protected async Task LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue)
         {
             if (String.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
             LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
-            DoLog(table, AssetTag);
+            await DoLog(table, AssetTag);
         }
-        protected void LogDeactivate(string table, int ID, string value, string reason)
+        protected async Task LogDeactivate(string table, int ID, string value, string reason)
         {
             LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogDeactivated(string table, string AssetTag, string value, string reason)
+        protected async Task LogDeactivated(string table, string AssetTag, string value, string reason)
         {
             LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
-            DoLog(table, AssetTag);
+            await DoLog(table, AssetTag);
         }
-        protected void LogActivate(string table, int ID, string value)
+        protected async Task LogActivate(string table, int ID, string value)
         {
             LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogActivate(string table, string AssetTag, string value)
+        protected async Task LogActivate(string table, string AssetTag, string value)
         {
             LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
-            DoLog(table, AssetTag);
+            await DoLog(table, AssetTag);
         }
-        protected void LogAssignIden2Account(string table, int ID, Identity identity, Account account)
+        protected async Task LogAssignIden2Account(string table, int ID, Identity identity, Account account)
         {
             LogText = $"The Identity width name: {identity.Name} in table {table} is assigned to Account with UserID {account.UserID} by {Admin.Account.UserID}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogAssignAccount2Identity(string table, int ID, Account account, Identity identity)
+        protected async Task LogAssignAccount2Identity(string table, int ID, Account account, Identity identity)
         {
             LogText = $"The Account with UserID {account.UserID} in table {table} is assigned to Identity width name: {identity.Name} by {Admin.Account.UserID}";
-            DoLog(table, ID);
+            await DoLog(table, ID);
         }
-        protected void LogReleaseAccountFromIdentity(string table, int IdenId, Identity identity, Account account)
+        protected async Task LogReleaseAccountFromIdentity(string table, int IdenId, Identity identity, Account account)
         {
             LogText = $"Identity with Name {identity.Name} in table {table} is released from Account with UserID {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID}";
-            DoLog(table, IdenId);
+            await DoLog(table, IdenId);
         }
-        protected void LogReleaseIdentity4Account(string table, int AccId, Identity identity, Account account)
+        protected async Task LogReleaseIdentity4Account(string table, int AccId, Identity identity, Account account)
         {
             LogText = $"Account with UserID {account.UserID} in appliction {account.Application.Name} in table {table} is released from Identity with Name {identity.Name} by {Admin.Account.UserID}";
-            DoLog(table, AccId);
+            await DoLog(table, AccId);
         }
-        private async void DoLog(string table, int ID)
+        private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;
             Log log = new()
@@ -229,7 +230,7 @@ namespace CMDB.Services
                     throw new Exception("No log insert statement created for table: " + table);
             }
         }
-        private async void DoLog(string table, string AssetTag)
+        private async Task DoLog(string table, string AssetTag)
         {
             DateTime LogDate = DateTime.Now;
             Log log = new()

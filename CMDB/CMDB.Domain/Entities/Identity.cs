@@ -10,13 +10,9 @@ namespace CMDB.Domain.Entities
     {
         public Identity()
         {
-            Laptops = new List<Laptop>();
-            Desktops = new List<Desktop>();
+            Devices = new List<Device>();
             Mobiles = new List<Mobile>();
-            Screens = new List<Screen>();
-            Dockings = new List<Docking>();
             Accounts = new List<IdenAccount>();
-            Tokens = new List<Token>();
             Subscriptions = new List<Subscription>();
         }
 
@@ -63,12 +59,8 @@ namespace CMDB.Domain.Entities
         public IdentityType Type { get; set; }
 
         public int? TypeId { get; set; }
-        public ICollection<Laptop> Laptops { get; set; }
-        public ICollection<Desktop> Desktops { get; set; }
-        public ICollection<Docking> Dockings { get; set; }
-        public ICollection<Screen> Screens { get; set; }
+        public ICollection<Device> Devices { get; set; }
         public ICollection<Mobile> Mobiles { get; set; }
-        public ICollection<Token> Tokens { get; set; }
         public virtual ICollection<IdenAccount> Accounts { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
     }

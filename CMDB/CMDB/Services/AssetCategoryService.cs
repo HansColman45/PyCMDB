@@ -15,21 +15,22 @@ namespace CMDB.Services
         public AssetCategoryService(CMDBContext context) : base(context)
         {
         }
-        public List<AssetCategory> ListAll()
+        public async Task<List<AssetCategory>> ListAll()
         {
-            var categories = _context.AssetCategories.ToList();
+            var categories = await _context.AssetCategories.ToListAsync();
             return categories;
         }
-        public List<AssetCategory> ListAll(string searchString)
+        public async Task<List<AssetCategory>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            var categories = _context.AssetCategories
-                .Where(x => EF.Functions.Like(x.Category, searhterm) && EF.Functions.Like(x.Prefix, searhterm)).ToList();
+            var categories = await _context.AssetCategories
+                .Where(x => EF.Functions.Like(x.Category, searhterm) && EF.Functions.Like(x.Prefix, searhterm))
+                .ToListAsync();
             return categories;
         }
-        public List<AssetCategory> ListByID(int id)
+        public async Task<List<AssetCategory>> ListByID(int id)
         {
-            var categories = _context.AssetCategories.Where(x => x.Id == id).ToList();
+            var categories = await _context.AssetCategories.Where(x => x.Id == id).ToListAsync();
             return categories;
         }
         public async Task Create(AssetCategory category, string table)
@@ -38,7 +39,7 @@ namespace CMDB.Services
             _context.AssetCategories.Add(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            LogCreate(table, category.Id, Value);
+            await LogCreate(table, category.Id, Value);
         }
         public async Task Update(AssetCategory category, string Category, string prefix, string Table)
         {
@@ -48,7 +49,7 @@ namespace CMDB.Services
                 category.Category = Category;
                 _context.AssetCategories.Update(category);
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, category.Id, "Category", category.Category, Category);
+                await LogUpdate(Table, category.Id, "Category", category.Category, Category);
             }
             if (String.Compare(category.Prefix, prefix) != 0)
             {
@@ -59,7 +60,7 @@ namespace CMDB.Services
                     category.Prefix = "Empty";
                 if (String.IsNullOrEmpty(prefix))
                     prefix = "Empty";
-                LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
+                await LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
             }
         }
         public async Task Deactivate(AssetCategory category, string Reason, string Table)
@@ -70,7 +71,7 @@ namespace CMDB.Services
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            LogDeactivate(Table, category.Id, Value, Reason);
+            await LogDeactivate(Table, category.Id, Value, Reason);
         }
         public async Task Activate(AssetCategory category, string Table)
         {
@@ -80,7 +81,7 @@ namespace CMDB.Services
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            LogActivate(Table, category.Id, Value);
+            await LogActivate(Table, category.Id, Value);
         }
         public bool IsExisting(AssetCategory category, string Category = "")
         {

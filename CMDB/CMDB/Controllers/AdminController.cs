@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -20,12 +21,12 @@ namespace CMDB.Controllers
             service = new(context);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
-            var list = service.ListAll();
+            var list = await service.ListAll();
             ViewData["Title"] = "Admin overview";
-            BuildMenu();
+            await BuildMenu();
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -34,15 +35,15 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Admin\Search";
             return View(list);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using List all in {0}", table);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
-                var list = service.ListAll(search);
+                var list = await service.ListAll(search);
                 ViewData["Title"] = "Admin overview";
-                BuildMenu();
+                await BuildMenu();
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -56,27 +57,28 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", sitePart);
             Admin admin = new();
             ViewData["Title"] = "Create Admin";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewBag.Accounts = service.ListActiveCMDBAccounts();
+            ViewBag.Accounts = await service.ListActiveCMDBAccounts();
             ViewBag.Levels = service.ListAllLevels();
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
-                    admin.Account = service.GetAccountByID(Convert.ToInt32(values["Account"])).First();
+                    var accounts = await service.GetAccountByID(Convert.ToInt32(values["Account"]));
+                    admin.Account = accounts.First();
                     admin.Level = Convert.ToInt32(values["Level"]);
                     if (service.IsExisting(admin))
                         ModelState.AddModelError("", "Admin is already existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Create(admin, table);
+                        await service.Create(admin, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -89,20 +91,21 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
-        public IActionResult Edit(IFormCollection values, int? id)
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Admin";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            ViewBag.Accounts = service.ListActiveCMDBAccounts();
+            ViewBag.Accounts = await service.ListActiveCMDBAccounts();
             ViewBag.Levels = service.ListAllLevels();
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
             string FormSubmit = values["form-submitted"];
-            Admin admin = service.GetByID((int)id).ElementAt<Admin>(0);
+            var admins = await service.GetByID((int)id);
+            Admin admin = admins.FirstOrDefault();
+            if (admin == null)
+                return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -110,7 +113,7 @@ namespace CMDB.Controllers
                     int Level = Convert.ToInt32(values["Level"]);
                     if (ModelState.IsValid)
                     {
-                        _ = service.Update(admin, Level, table);
+                        await service.Update(admin, Level, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -123,36 +126,38 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Admin details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
-            {
                 return NotFound();
-            }
-            var Admins = service.GetByID((int)id);
-            service.GetLogs(table, (int)id, Admins.ElementAt<Admin>(0));
-            return View(Admins);
+            var admins = await service.GetByID((int)id);
+            Admin admin = admins.FirstOrDefault();
+            if (admin == null)
+                return NotFound();
+            service.GetLogs(table, (int)id, admin);
+            return View(admins);
         }
-        public IActionResult Delete(IFormCollection values, int? id)
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete admin";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Admin admin = service.GetByID((int)id).ElementAt<Admin>(0);
+            var admins = await service.GetByID((int)id);
+            Admin admin = admins.FirstOrDefault();
+            if (admin == null)
+                return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -160,7 +165,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(admin, values["reason"].ToString(), table);
+                        await service.Deactivate(admin, values["reason"].ToString(), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -173,20 +178,21 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
-        public IActionResult Activate(int? id)
+        public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Admin";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            Admin admin = service.GetByID((int)id).ElementAt<Admin>(0);
+            var admins = await service.GetByID((int)id);
+            Admin admin = admins.FirstOrDefault();
+            if (admin == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(admin, table);
+                await service.Activate(admin, table);
                 return RedirectToAction(nameof(Index));
             }
             else

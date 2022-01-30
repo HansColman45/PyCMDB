@@ -9,12 +9,8 @@ namespace CMDB.Domain.Entities
     {
         public Admin()
         {
-            Laptops = new List<Laptop>();
-            Desktops = new List<Desktop>();
-            Screens = new List<Screen>();
-            Tokens = new List<Token>();
+            Devices = new List<Device>();
             Mobiles = new List<Mobile>();
-            Dockings = new List<Docking>();
             Kensingtons = new List<Kensington>();
             Subscriptions = new List<Subscription>();
             SubscriptionTypes = new List<SubscriptionType>();
@@ -42,12 +38,8 @@ namespace CMDB.Domain.Entities
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
 
-        public virtual ICollection<Laptop> Laptops { get; set; }
-        public virtual ICollection<Desktop> Desktops { get; set; }
-        public virtual ICollection<Docking> Dockings { get; set; }
-        public virtual ICollection<Token> Tokens { get; set; }
+        public virtual ICollection<Device> Devices { get; set; }
         public virtual ICollection<Mobile> Mobiles { get; set; }
-        public virtual ICollection<Screen> Screens { get; set; }
         public virtual ICollection<Kensington> Kensingtons { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual ICollection<SubscriptionType> SubscriptionTypes { get; set; }

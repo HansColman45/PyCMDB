@@ -284,7 +284,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.ToTable("Configuration");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
+            modelBuilder.Entity("CMDB.Domain.Entities.Device", b =>
                 {
                     b.Property<string>("AssetTag")
                         .HasColumnType("nvarchar(450)");
@@ -297,59 +297,9 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("Deactivate_reason");
 
-                    b.Property<int?>("IdentityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LastModifiedAdminId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MAC")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("RAM")
+                    b.Property<string>("Discriminator")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("TypeId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int>("active")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(1)
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.HasKey("AssetTag")
-                        .HasName("PK_Desktop_Asset");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.HasIndex("LastModifiedAdminId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Desktop");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
-                {
-                    b.Property<string>("AssetTag")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeactivateReason")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("Deactivate_reason");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int?>("IdentityId")
                         .HasColumnType("int");
@@ -372,7 +322,7 @@ namespace CMDB.Infrastructure.Migrations
                         .HasDefaultValue(1);
 
                     b.HasKey("AssetTag")
-                        .HasName("PK_Docking_Asset");
+                        .HasName("PK_Device_AssetTag");
 
                     b.HasIndex("CategoryId");
 
@@ -382,7 +332,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Docking");
+                    b.ToTable("asset");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Device");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.IdenAccount", b =>
@@ -534,23 +486,14 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("Deactivate_reason");
 
-                    b.Property<string>("DesktopAssetTag")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("DockingAssetTag")
+                    b.Property<string>("DeviceAssetTag")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("HasLock")
                         .HasColumnType("bit");
 
-                    b.Property<string>("LaptopAssetTag")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int?>("LastModifiedAdminId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ScreenAssetTag")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SerialNumber")
                         .IsRequired()
@@ -572,15 +515,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("DesktopAssetTag");
-
-                    b.HasIndex("DockingAssetTag");
-
-                    b.HasIndex("LaptopAssetTag");
+                    b.HasIndex("DeviceAssetTag");
 
                     b.HasIndex("LastModifiedAdminId");
-
-                    b.HasIndex("ScreenAssetTag");
 
                     b.HasIndex("TypeId");
 
@@ -618,60 +555,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasIndex("LastModfiedAdminAdminId");
 
                     b.ToTable("Language");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
-                {
-                    b.Property<string>("AssetTag")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeactivateReason")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("Deactivate_reason");
-
-                    b.Property<int?>("IdentityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LastModifiedAdminId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("MAC")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("RAM")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("TypeId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int>("active")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(1)
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.HasKey("AssetTag")
-                        .HasName("PK_Laptop_Asset");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.HasIndex("LastModifiedAdminId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Laptop");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Log", b =>
@@ -1032,54 +915,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.ToTable("RoleType");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
-                {
-                    b.Property<string>("AssetTag")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeactivateReason")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("Deactivate_reason");
-
-                    b.Property<int?>("IdentityId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LastModifiedAdminId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<int?>("TypeId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int>("active")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(1)
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
-
-                    b.HasKey("AssetTag")
-                        .HasName("PK_Screen_Asset");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("IdentityId");
-
-                    b.HasIndex("LastModifiedAdminId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Screen");
-                });
-
             modelBuilder.Entity("CMDB.Domain.Entities.Subscription", b =>
                 {
                     b.Property<int>("Id")
@@ -1176,51 +1011,65 @@ namespace CMDB.Infrastructure.Migrations
                     b.ToTable("SubscriptionType");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Token", b =>
+            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
                 {
-                    b.Property<string>("AssetTag")
-                        .HasColumnType("nvarchar(450)");
+                    b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.Property<int?>("CategoryId")
-                        .IsRequired()
-                        .HasColumnType("int");
+                    b.Property<string>("MAC")
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<string>("DeactivateReason")
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("Deactivate_reason");
-
-                    b.Property<int?>("IdentityId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("LastModifiedAdminId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SerialNumber")
+                    b.Property<string>("RAM")
                         .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<int?>("TypeId")
+                    b.ToTable("asset");
+
+                    b.HasDiscriminator().HasValue("Desktop");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.Device");
+
+                    b.ToTable("asset");
+
+                    b.HasDiscriminator().HasValue("Docking");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.Device");
+
+                    b.Property<string>("MAC")
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("Laptop_MAC");
+
+                    b.Property<string>("RAM")
                         .IsRequired()
-                        .HasColumnType("int");
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("Laptop_RAM");
 
-                    b.Property<int>("active")
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(1)
-                        .HasColumnType("int")
-                        .HasDefaultValue(1);
+                    b.ToTable("asset");
 
-                    b.HasKey("AssetTag")
-                        .HasName("PK_Token_Asset");
+                    b.HasDiscriminator().HasValue("Laptop");
+                });
 
-                    b.HasIndex("CategoryId");
+            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.HasIndex("IdentityId");
+                    b.ToTable("asset");
 
-                    b.HasIndex("LastModifiedAdminId");
+                    b.HasDiscriminator().HasValue("Screen");
+                });
 
-                    b.HasIndex("TypeId");
+            modelBuilder.Entity("CMDB.Domain.Entities.Token", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("Token");
+                    b.ToTable("asset");
+
+                    b.HasDiscriminator().HasValue("Token");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Account", b =>
@@ -1324,68 +1173,31 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("LastModfiedAdmin");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
+            modelBuilder.Entity("CMDB.Domain.Entities.Device", b =>
                 {
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
-                        .WithMany("Desktops")
+                        .WithMany("Devices")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Desktop_Category")
+                        .HasConstraintName("FK_Device_Category")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
-                        .WithMany("Desktops")
+                        .WithMany("Devices")
                         .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Desktop_Identity")
+                        .HasConstraintName("FK_Device_Identity")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
-                        .WithMany("Desktops")
+                        .WithMany("Devices")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Desktop_LastModifiedAdmin")
+                        .HasConstraintName("FK_Device_LastModfiedAdmin")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
-                        .WithMany("Desktops")
+                        .WithMany("Devices")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Desktop_Type")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Identity");
-
-                    b.Navigation("LastModfiedAdmin");
-
-                    b.Navigation("Type");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
-                {
-                    b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
-                        .WithMany("Dockings")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Docking_Category")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
-                        .WithMany("Dockings")
-                        .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Docking_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
-                        .WithMany("Dockings")
-                        .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Docking_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
-                        .WithMany("Dockings")
-                        .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Docking_Type")
+                        .HasConstraintName("FK_Device_Type")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1474,34 +1286,16 @@ namespace CMDB.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CMDB.Domain.Entities.Desktop", "Desktop")
+                    b.HasOne("CMDB.Domain.Entities.Device", "Device")
                         .WithMany("Keys")
-                        .HasForeignKey("DesktopAssetTag")
-                        .HasConstraintName("FK_Key_Deskop")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Docking", "Docking")
-                        .WithMany("Keys")
-                        .HasForeignKey("DockingAssetTag")
-                        .HasConstraintName("FK_Key_Docking")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Laptop", "Laptop")
-                        .WithMany("Keys")
-                        .HasForeignKey("LaptopAssetTag")
-                        .HasConstraintName("FK_Key_Laptop")
+                        .HasForeignKey("DeviceAssetTag")
+                        .HasConstraintName("FK_Key_Device")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Kensingtons")
                         .HasForeignKey("LastModifiedAdminId")
                         .HasConstraintName("FK_Kensington_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Screen", "Screen")
-                        .WithMany("Keys")
-                        .HasForeignKey("ScreenAssetTag")
-                        .HasConstraintName("FK_Key_Screen")
                         .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
@@ -1513,15 +1307,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("Category");
 
-                    b.Navigation("Desktop");
-
-                    b.Navigation("Docking");
-
-                    b.Navigation("Laptop");
+                    b.Navigation("Device");
 
                     b.Navigation("LastModfiedAdmin");
-
-                    b.Navigation("Screen");
 
                     b.Navigation("Type");
                 });
@@ -1533,43 +1321,6 @@ namespace CMDB.Infrastructure.Migrations
                         .HasForeignKey("LastModfiedAdminAdminId");
 
                     b.Navigation("LastModfiedAdmin");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
-                {
-                    b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
-                        .WithMany("Laptops")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Laptop_Category")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
-                        .WithMany("Laptops")
-                        .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Laptop_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
-                        .WithMany("Laptops")
-                        .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Laptop_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
-                        .WithMany("Laptops")
-                        .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Laptop_Type")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Identity");
-
-                    b.Navigation("LastModfiedAdmin");
-
-                    b.Navigation("Type");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Log", b =>
@@ -1866,44 +1617,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("LastModfiedAdmin");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
-                {
-                    b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
-                        .WithMany("Screens")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Screen_Category")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
-                        .WithMany("Screens")
-                        .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Screen_Identity")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
-                        .WithMany("Screens")
-                        .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Screen_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
-                        .WithMany("Screens")
-                        .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Screen_Type")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Identity");
-
-                    b.Navigation("LastModfiedAdmin");
-
-                    b.Navigation("Type");
-                });
-
             modelBuilder.Entity("CMDB.Domain.Entities.Subscription", b =>
                 {
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
@@ -1969,43 +1682,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("LastModfiedAdmin");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Token", b =>
-                {
-                    b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
-                        .WithMany("Tokens")
-                        .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Token_Category")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
-                        .WithMany("Tokens")
-                        .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Token_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
-                        .WithMany("Tokens")
-                        .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Token_LastModfiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
-                        .WithMany("Tokens")
-                        .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Token_Type")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Identity");
-
-                    b.Navigation("LastModfiedAdmin");
-
-                    b.Navigation("Type");
-                });
-
             modelBuilder.Entity("CMDB.Domain.Entities.Account", b =>
                 {
                     b.Navigation("Admins");
@@ -2036,9 +1712,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("AssetTypes");
 
-                    b.Navigation("Desktops");
-
-                    b.Navigation("Dockings");
+                    b.Navigation("Devices");
 
                     b.Navigation("IdenAccounts");
 
@@ -2047,8 +1721,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("IdentityTypes");
 
                     b.Navigation("Kensingtons");
-
-                    b.Navigation("Laptops");
 
                     b.Navigation("Logs");
 
@@ -2062,13 +1734,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("RoleTypes");
 
-                    b.Navigation("Screens");
-
                     b.Navigation("Subscriptions");
 
                     b.Navigation("SubscriptionTypes");
-
-                    b.Navigation("Tokens");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Application", b =>
@@ -2080,81 +1748,48 @@ namespace CMDB.Infrastructure.Migrations
 
             modelBuilder.Entity("CMDB.Domain.Entities.AssetCategory", b =>
                 {
-                    b.Navigation("Desktops");
-
-                    b.Navigation("Dockings");
+                    b.Navigation("Devices");
 
                     b.Navigation("Kensingtons");
-
-                    b.Navigation("Laptops");
 
                     b.Navigation("Logs");
 
                     b.Navigation("Mobiles");
 
-                    b.Navigation("Screens");
-
                     b.Navigation("Subscriptions");
 
                     b.Navigation("SubscriptionTypes");
-
-                    b.Navigation("Tokens");
 
                     b.Navigation("Types");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.AssetType", b =>
                 {
-                    b.Navigation("Desktops");
-
-                    b.Navigation("Dockings");
+                    b.Navigation("Devices");
 
                     b.Navigation("Kensingtons");
-
-                    b.Navigation("Laptops");
 
                     b.Navigation("Logs");
 
                     b.Navigation("Mobiles");
-
-                    b.Navigation("Screens");
-
-                    b.Navigation("Tokens");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
+            modelBuilder.Entity("CMDB.Domain.Entities.Device", b =>
                 {
                     b.Navigation("Keys");
-
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
-                {
-                    b.Navigation("Keys");
-
-                    b.Navigation("Logs");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Identity", b =>
                 {
                     b.Navigation("Accounts");
 
-                    b.Navigation("Desktops");
-
-                    b.Navigation("Dockings");
-
-                    b.Navigation("Laptops");
+                    b.Navigation("Devices");
 
                     b.Navigation("Logs");
 
                     b.Navigation("Mobiles");
 
-                    b.Navigation("Screens");
-
                     b.Navigation("Subscriptions");
-
-                    b.Navigation("Tokens");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.IdentityType", b =>
@@ -2172,13 +1807,6 @@ namespace CMDB.Infrastructure.Migrations
             modelBuilder.Entity("CMDB.Domain.Entities.Language", b =>
                 {
                     b.Navigation("Identities");
-
-                    b.Navigation("Logs");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
-                {
-                    b.Navigation("Keys");
 
                     b.Navigation("Logs");
                 });
@@ -2218,13 +1846,6 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("Roles");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
-                {
-                    b.Navigation("Keys");
-
-                    b.Navigation("Logs");
-                });
-
             modelBuilder.Entity("CMDB.Domain.Entities.Subscription", b =>
                 {
                     b.Navigation("Logs");
@@ -2235,6 +1856,26 @@ namespace CMDB.Infrastructure.Migrations
                     b.Navigation("Logs");
 
                     b.Navigation("Subscriptions");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
+                {
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Docking", b =>
+                {
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
+                {
+                    b.Navigation("Logs");
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
+                {
+                    b.Navigation("Logs");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Token", b =>

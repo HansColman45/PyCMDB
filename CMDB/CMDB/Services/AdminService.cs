@@ -14,28 +14,28 @@ namespace CMDB.Services
         public AdminService(CMDBContext context) : base(context)
         {
         }
-        public List<Admin> ListAll()
+        public async Task<List<Admin>> ListAll()
         {
-            List<Admin> admins = _context.Admins
+            List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
-                .ToList();
+                .ToListAsync();
             return admins;
         }
-        public List<Admin> ListAll(string searchString)
+        public async Task<List<Admin>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            List<Admin> admins = _context.Admins
+            List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
                 .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm))
-                .ToList();
+                .ToListAsync();
             return admins;
         }
-        public List<Admin> GetByID(int id)
+        public async Task<List<Admin>> GetByID(int id)
         {
-            List<Admin> admins = _context.Admins
+            List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
                 .Where(x => x.AdminId == id)
-                .ToList();
+                .ToListAsync();
             return admins;
         }
         public List<SelectListItem> ListAllLevels()
@@ -47,14 +47,14 @@ namespace CMDB.Services
             }
             return Levels;
         }
-        public List<SelectListItem> ListActiveCMDBAccounts()
+        public async Task<List<SelectListItem>> ListActiveCMDBAccounts()
         {
             List<SelectListItem> Levels = new();
-            var accounts = _context.Accounts
+            var accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Identities)
                 .Where(x => x.Application.Name == "CMDB")
-                .ToList();
+                .ToListAsync();
             foreach (var account in accounts)
             {
                 foreach (var idenAcc in account.Identities.Where(x => DateTime.Now <= x.ValidFrom && x.ValidUntil >= DateTime.Now))
@@ -73,7 +73,7 @@ namespace CMDB.Services
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            LogCreate(Table, Admin.AdminId, Value);
+            await LogCreate(Table, Admin.AdminId, Value);
         }
         public async Task Update(Admin admin, int level, string Table)
         {
@@ -82,7 +82,7 @@ namespace CMDB.Services
                 admin.Level = level;
                 admin.LastModfiedAdmin = Admin;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
+                await LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
             }
         }
         public async Task Deactivate(Admin admin, string reason, string table)
@@ -92,7 +92,7 @@ namespace CMDB.Services
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            LogDeactivate(table, admin.AdminId, Value, reason);
+            await LogDeactivate(table, admin.AdminId, Value, reason);
         }
         public async Task Activate(Admin admin, string table)
         {
@@ -101,7 +101,7 @@ namespace CMDB.Services
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            LogActivate(table, admin.AdminId, Value);
+            await LogActivate(table, admin.AdminId, Value);
         }
         public bool IsExisting(Admin admin)
         {
@@ -109,13 +109,13 @@ namespace CMDB.Services
             var admins = _context.Admins.Include(x => x.Account).Where(x => x.Account.UserID == admin.Account.UserID);
             return result;
         }
-        public List<Account> GetAccountByID(int ID)
+        public async Task<List<Account>> GetAccountByID(int ID)
         {
-            List<Account> accounts = _context.Accounts
+            List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
-                .ToList();
+                .ToListAsync();
             return accounts;
         }
     }

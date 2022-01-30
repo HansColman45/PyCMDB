@@ -22,11 +22,11 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", sitePart);
-            BuildMenu();
-            var types = service.ListAll();
+            await BuildMenu();
+            var types = await service.ListAll();
             ViewData["Title"] = "Accounttype overview";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -36,14 +36,14 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\AccountType\Search";
             return View(types);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
+            await BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
-                var types = service.ListAll(search);
+                var types = await service.ListAll(search);
                 ViewData["Title"] = "Accounttype overview";
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -58,13 +58,13 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", sitePart);
             AccountType accountType = new();
             ViewData["Title"] = "Create Accounttype";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Create(accountType, table);
+                        await service.Create(accountType, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -89,17 +89,18 @@ namespace CMDB.Controllers
             }
             return View(accountType);
         }
-        public IActionResult Edit(IFormCollection values, int? id)
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Edit Accounttype";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            var accountType = service.GetAccountTypeByID((int)id);
-            BuildMenu();
+            var accountTypes = await service.GetAccountTypeByID((int)id);
+            var accountType = accountTypes.FirstOrDefault();
+            if (accountType == null)
+                return NotFound();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -107,11 +108,11 @@ namespace CMDB.Controllers
                 {
                     string newType = values["Type"];
                     string newDescription = values["Description"];
-                    if (service.IsExisting(accountType.ElementAt<AccountType>(0), newType, newDescription))
+                    if (service.IsExisting(accountType, newType, newDescription))
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Update(accountType.ElementAt<AccountType>(0), newType, newDescription, table);
+                        await service.Update(accountType, newType, newDescription, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -122,20 +123,21 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(accountType.ElementAt<AccountType>(0));
+            return View(accountType);
         }
-        public IActionResult Delete(IFormCollection values, int? id)
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Accounttype";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "AccountType";
-            var accountType = service.GetAccountTypeByID((int)id);
-            BuildMenu();
+            var accountTypes = await service.GetAccountTypeByID((int)id);
+            var accountType = accountTypes.FirstOrDefault();
+            if (accountType == null)
+                return NotFound();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -144,7 +146,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(accountType.ElementAt<AccountType>(0), ViewData["reason"].ToString(), table);
+                        await service.Deactivate(accountType, ViewData["reason"].ToString(), table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -155,22 +157,23 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(accountType);
+            return View(accountTypes);
         }
-        public IActionResult Activate(int? id)
+        public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Accounttype";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            var accountType = service.GetAccountTypeByID((int)id);
+            var accountTypes = await service.GetAccountTypeByID((int)id);
+            var accountType = accountTypes.FirstOrDefault();
+            if (accountType == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(accountType.ElementAt<AccountType>(0), table);
+                await service.Activate(accountType, table);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -179,21 +182,22 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Accounttype details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
-            {
                 return NotFound();
-            }
-            var accountTypes = service.GetAccountTypeByID((int)id);
-            service.GetLogs(table, (int)id, accountTypes.ElementAt<AccountType>(0));
+            var accountTypes = await service.GetAccountTypeByID((int)id);
+            var accountType = accountTypes.FirstOrDefault();
+            if (accountType == null)
+                return NotFound();
+            service.GetLogs(table, (int)id, accountType);
             return View(accountTypes);
         }
     }

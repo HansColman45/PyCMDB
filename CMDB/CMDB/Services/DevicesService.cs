@@ -14,26 +14,26 @@ namespace CMDB.Services
         public DevicesService(CMDBContext context) : base(context)
         {
         }
-        public List<Device> ListAll(string category)
+        public async Task<List<Device>> ListAll(string category)
         {
             List<Device> devices = new();
             switch (category)
             {
                 case "Laptop":
-                    var laptops = _context.Laptops
+                    var laptops = await _context.Laptops
                         .Include(x => x.Category)
                         .Include(x => x.Identity)
-                        .ToList();
+                        .ToListAsync();
                     foreach (var laptop in laptops)
                     {
                         devices.Add(laptop);
                     }
                     break;
                 case "Desktops":
-                    var dekstops = _context.Desktops
+                    var dekstops = await _context.Desktops
                        .Include(x => x.Category)
                        .Include(x => x.Identity)
-                       .ToList();
+                       .ToListAsync();
                     foreach (var desktop in dekstops)
                     {
                         devices.Add(desktop);
@@ -44,30 +44,31 @@ namespace CMDB.Services
             }
             return devices;
         }
-        public List<Device> ListAll(string category, string searchString)
+        public async Task<List<Device>> ListAll(string category, string searchString)
         {
             string searhterm = "%" + searchString + "%";
             List<Device> devices = new();
             switch (category)
             {
                 case "Laptop":
-                    var laptops = _context.Laptops
+                    var laptops = await _context.Laptops
                         .Include(x => x.Category)
                         .Include(x => x.Identity)
                         .Include(x => x.Type)
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .ToList();
+                        .ToListAsync();
                     foreach (var laptop in laptops)
                     {
                         devices.Add(laptop);
                     }
                     break;
                 case "Desktops":
-                    var dekstops = _context.Desktops
+                    var dekstops = await _context.Desktops
                        .Include(x => x.Category)
                        .Include(x => x.Identity)
-                       .Where(x => EF.Functions.Like(x.SerialNumber, searhterm))
-                       .ToList();
+                       .Include(x => x.Type)
+                       .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                       .ToListAsync();
                     foreach (var desktop in dekstops)
                     {
                         devices.Add(desktop);
@@ -94,7 +95,7 @@ namespace CMDB.Services
             _context.Desktops.Add(desktop);
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
-            LogCreate(table, desktop.AssetTag, Value);
+            await LogCreate(table, desktop.AssetTag, Value);
         }
         public async Task CreateNewLaptop(Laptop laptop, string table)
         {
@@ -102,7 +103,7 @@ namespace CMDB.Services
             _context.Laptops.Add(laptop);
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
-            LogCreate(table, laptop.AssetTag, Value);
+            await LogCreate(table, laptop.AssetTag, Value);
         }
         public async Task UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
@@ -116,25 +117,25 @@ namespace CMDB.Services
             {
                 desktop.RAM = newRam;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, desktop.AssetTag, "RAM", OldRam, newRam);
+                await LogUpdate(Table, desktop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(desktop.MAC, newMAC) != 0)
             {
                 desktop.MAC = newMAC;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, desktop.AssetTag, "MAC", OldMac, newMAC);
+                await LogUpdate(Table, desktop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, desktop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
+                await LogUpdate(Table, desktop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (desktop.Type.TypeID != newAssetType.TypeID)
             {
                 desktop.Type = newAssetType;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
+                await LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public async Task UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
@@ -149,25 +150,25 @@ namespace CMDB.Services
             {
                 laptop.RAM = newRam;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, laptop.AssetTag, "RAM", OldRam, newRam);
+                await LogUpdate(Table, laptop.AssetTag, "RAM", OldRam, newRam);
             }
             if (String.Compare(laptop.MAC, newMAC) != 0)
             {
                 laptop.MAC = newMAC;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, laptop.AssetTag, "MAC", OldMac, newMAC);
+                await LogUpdate(Table, laptop.AssetTag, "MAC", OldMac, newMAC);
             }
             if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
             {
                 laptop.SerialNumber = newSerialNumber;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, laptop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
+                await LogUpdate(Table, laptop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
             }
             if (laptop.Type.TypeID != newAssetType.TypeID)
             {
                 laptop.Type = newAssetType;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
+                await LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
         public async Task Deactivate(Device device, string Reason, string table)
@@ -177,7 +178,7 @@ namespace CMDB.Services
             device.Active = "Inactive";
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
-            LogDeactivated(table, device.AssetTag, Value, Reason);
+            await LogDeactivated(table, device.AssetTag, Value, Reason);
         }
         public async Task Activate(Device device, string table)
         {
@@ -186,51 +187,51 @@ namespace CMDB.Services
             device.Active = "Active";
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
-            LogActivate(table, device.AssetTag, Value);
+            await LogActivate(table, device.AssetTag, Value);
         }
-        public List<Desktop> ListDekstopByID(string assetTag)
+        public async Task<List<Desktop>> ListDekstopByID(string assetTag)
         {
-            var desktops = _context.Desktops
+            var desktops = await _context.Desktops
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
-                .ToList();
+                .ToListAsync();
             return desktops;
         }
-        public List<Laptop> ListLaptopByID(string assetTag)
+        public async Task<List<Laptop>> ListLaptopByID(string assetTag)
         {
-            var laptops = _context.Laptops
+            var laptops = await _context.Laptops
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
-                .ToList();
+                .ToListAsync();
             return laptops;
         }
-        public List<Docking> ListDockingByID(string assetTag)
+        public async Task<List<Docking>> ListDockingByID(string assetTag)
         {
-            var dockings = _context.Dockings
+            var dockings = await _context.Dockings
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
-                .ToList();
+                .ToListAsync();
             return dockings;
         }
-        public List<Screen> ListScreensByID(string assetTag)
+        public async Task<List<Screen>> ListScreensByID(string assetTag)
         {
-            var screens = _context.Screens
+            var screens = await _context.Screens
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
-                .ToList();
+                .ToListAsync();
             return screens;
         }
-        public List<Token> ListTokenByID(string assetTag)
+        public async Task<List<Token>> ListTokenByID(string assetTag)
         {
-            var tokens = _context.Tokens
+            var tokens = await _context.Tokens
                  .Include(x => x.Category)
                  .Include(x => x.Identity)
                  .Where(x => x.AssetTag == assetTag)
-                 .ToList();
+                 .ToListAsync();
             return tokens;
         }
         public bool IsLaptopExisting(Laptop device)

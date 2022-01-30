@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -20,11 +21,11 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             ViewData["Title"] = "Docking overview";
-            BuildMenu();
+            await BuildMenu();
             var Desktops = service.ListAll(sitePart);
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -34,14 +35,13 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Docking\Search";
             return View(Desktops);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Docking overview";
-                BuildMenu();
+                await BuildMenu();
                 var Desktops = service.ListAll(sitePart, search);
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -56,19 +56,20 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Delete(IFormCollection values, string id)
+        public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Docking station";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Docking docking = service.ListDockingByID(id).ElementAt<Docking>(0);
+            var dockings = await service.ListDockingByID(id);
+            Docking docking = dockings.FirstOrDefault();
+            if (docking == null)
+                return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -76,7 +77,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(docking, values["reason"], table);
+                        await service.Deactivate(docking, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -89,20 +90,23 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
-        public IActionResult Activate(string id)
+        public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Docking station";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
-            Docking docking = service.ListDockingByID(id).ElementAt<Docking>(0);
+            var dockings = await service.ListDockingByID(id);
+            Docking docking = dockings.FirstOrDefault();
+            if (docking == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(docking, table);
+                await service.Activate(docking, table);
                 return RedirectToAction(nameof(Index));
             }
             else

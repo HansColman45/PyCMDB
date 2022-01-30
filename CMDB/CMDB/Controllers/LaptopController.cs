@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -20,11 +21,11 @@ namespace CMDB.Controllers
             service = new(context);
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             ViewData["Title"] = "Laptop overview";
-            BuildMenu();
+            await BuildMenu();
             var Desktops = service.ListAll(sitePart);
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -35,14 +36,13 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Laptop\Search";
             return View(Desktops);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Laptop overview";
-                BuildMenu();
+                await BuildMenu();
                 var Desktops = service.ListAll(sitePart, search);
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -58,12 +58,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", sitePart);
             ViewData["Title"] = "Create Laptop";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            BuildMenu();
+            await BuildMenu();
             Laptop laptop = new();
             ViewBag.Types = service.ListAssetTypes(sitePart);
             ViewBag.Rams = service.ListRams();
@@ -86,13 +86,12 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        _ = service.CreateNewLaptop(laptop, table);
+                        await service.CreateNewLaptop(laptop, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
                 catch (Exception ex)
                 {
-                    //Log the error (uncomment ex variable name and write a log.
                     log.Error("Database exception {0}", ex.ToString());
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
@@ -100,17 +99,18 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
-        public IActionResult Edit(IFormCollection values, string id)
+        public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Laptop";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            BuildMenu();
+            await BuildMenu();
             if (String.IsNullOrEmpty(id))
-            {
                 return NotFound();
-            }
-            Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
             ViewBag.AssetTypes = service.ListAssetTypes(sitePart);
             ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
@@ -125,7 +125,7 @@ namespace CMDB.Controllers
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, table);
+                        await service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -139,11 +139,11 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
-        public IActionResult Details(string id)
+        public async Task<IActionResult> Details(string id)
         {
             log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Laptop details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, sitePart, "IdentityOverview");
@@ -151,28 +151,30 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (String.IsNullOrEmpty(id))
-            {
+            if (id == null)
                 return NotFound();
-            }
-            Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
             service.GetLogs(table, laptop.AssetTag, laptop);
             service.GetAssignedIdentity(laptop);
             return View(laptop);
         }
-        public IActionResult Delete(IFormCollection values, string id)
+        public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", sitePart);
-            if (String.IsNullOrEmpty(id))
-            {
+            if (id == null)
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Laptop";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            BuildMenu();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -180,7 +182,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(laptop, values["reason"], table);
+                        await service.Deactivate(laptop, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -193,20 +195,21 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
-        public IActionResult Activate(string id)
+        public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Laptop";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
-            if (String.IsNullOrEmpty(id))
-            {
+            await BuildMenu();
+            if (id == null)
                 return NotFound();
-            }
-            Laptop laptop = service.ListLaptopByID(id).ElementAt<Laptop>(0);
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(laptop, table);
+                await service.Activate(laptop, table);
                 return RedirectToAction(nameof(Index));
             }
             else

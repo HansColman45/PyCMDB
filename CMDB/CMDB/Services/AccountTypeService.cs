@@ -14,9 +14,9 @@ namespace CMDB.Services
         public AccountTypeService(CMDBContext context) : base(context)
         {
         }
-        public List<AccountType> GetAccountTypeByID(int ID)
+        public async Task<List<AccountType>> GetAccountTypeByID(int ID)
         {
-            List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.TypeID == ID).ToList();
+            List<AccountType> accountTypes = await _context.AccountTypes.Where(x => x.TypeID == ID).ToListAsync();
             return accountTypes;
         }
         public async Task Create(AccountType accountType, string Table)
@@ -25,7 +25,7 @@ namespace CMDB.Services
             _context.AccountTypes.Add(accountType);
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            LogCreate(Table, accountType.TypeID, Value);
+            await LogCreate(Table, accountType.TypeID, Value);
         }
         public async Task Update(AccountType accountType, string Type, string Description, string Table)
         {
@@ -34,13 +34,13 @@ namespace CMDB.Services
             {
                 accountType.Type = Type;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, accountType.TypeID, "Type", accountType.Type, Type);
+                await LogUpdate(Table, accountType.TypeID, "Type", accountType.Type, Type);
             }
             if (String.Compare(accountType.Description, Description) != 0)
             {
                 accountType.Description = Description;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description);
+                await LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description);
             }
         }
         public async Task Deactivate(AccountType accountType, string Reason, string Table)
@@ -50,7 +50,7 @@ namespace CMDB.Services
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            LogDeactivate(Table, accountType.TypeID, Value, Reason);
+            await LogDeactivate(Table, accountType.TypeID, Value, Reason);
         }
         public async Task Activate(AccountType accountType, string Table)
         {
@@ -59,18 +59,18 @@ namespace CMDB.Services
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            LogActivate(Table, accountType.TypeID, Value);
+            await LogActivate(Table, accountType.TypeID, Value);
         }
-        public ICollection<AccountType> ListAll()
+        public async Task<List<AccountType>> ListAll()
         {
-            List<AccountType> accountTypes = _context.AccountTypes.ToList();
+            List<AccountType> accountTypes = await _context.AccountTypes.ToListAsync();
             return accountTypes;
         }
-        public ICollection<AccountType> ListAll(string searchString)
+        public async Task<List<AccountType>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            List<AccountType> accountTypes = _context.AccountTypes
-                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm)).ToList();
+            List<AccountType> accountTypes = await _context.AccountTypes
+                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm)).ToListAsync();
             return accountTypes;
         }
         public bool IsExisting(AccountType accountType, string Type = "", string Description = "")

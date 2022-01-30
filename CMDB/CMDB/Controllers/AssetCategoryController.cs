@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -19,10 +20,10 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", sitePart);
-            BuildMenu();
+            await BuildMenu();
             ViewData["Title"] = "Category overview";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -33,10 +34,10 @@ namespace CMDB.Controllers
             var Categories = service.ListAll();
             return View(Categories);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
+            await BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
@@ -47,18 +48,18 @@ namespace CMDB.Controllers
                 ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
                 ViewData["actionUrl"] = @"\AssetCategory\Search";
-                var Categories = service.ListAll(search);
+                var Categories = await service.ListAll(search);
                 return View(Categories);
             }
             else
                 return RedirectToAction(nameof(Index));
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Create category";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            BuildMenu();
+            await BuildMenu();
             AssetCategory category = new();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -71,7 +72,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Assetcategory alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Create(category, table);
+                        await service.Create(category, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -84,17 +85,18 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
-        public IActionResult Edit(IFormCollection values, int? id)
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", sitePart);
             ViewData["Title"] = "Edit Account";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            AssetCategory category = service.ListByID((int)id).ElementAt<AssetCategory>(0);
+            var categories = await service.ListByID((int)id);
+            AssetCategory category = categories.FirstOrDefault();
+            if (category == null)
+                return NotFound();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -106,7 +108,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Assetcategory alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Update(category, Category, Prefix, table);
+                        await service.Update(category, Category, Prefix, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -120,34 +122,36 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Category Details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
-            {
                 return NotFound();
-            }
-            AssetCategory category = service.ListByID((int)id).ElementAt<AssetCategory>(0);
+            var categories = await service.ListByID((int)id);
+            AssetCategory category = categories.FirstOrDefault();
+            if (category == null)
+                return NotFound();
             service.GetLogs(table, category.Id, category);
             return View(category);
         }
-        public IActionResult Delete(IFormCollection values, int? id)
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Account";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            AssetCategory category = service.ListByID((int)id).ElementAt<AssetCategory>(0);
+            var categories = await service.ListByID((int)id);
+            AssetCategory category = categories.FirstOrDefault();
+            if (category == null)
+                return NotFound();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Account";
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -157,7 +161,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(category, values["reason"], table);
+                        await service.Deactivate(category, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -170,20 +174,21 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
-        public IActionResult Activate(int? id)
+        public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Category";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            AssetCategory category = service.ListByID((int)id).ElementAt<AssetCategory>(0);
+            var categories = await service.ListByID((int)id);
+            AssetCategory category = categories.FirstOrDefault();
+            if (category == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(category, table);
+                await service.Activate(category, table);
                 return RedirectToAction(nameof(Index));
             }
             else

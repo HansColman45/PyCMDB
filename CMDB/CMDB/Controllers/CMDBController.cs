@@ -6,6 +6,7 @@ using System.Diagnostics;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -15,26 +16,27 @@ namespace CMDB.Controllers
         protected CMDBContext _context;
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected readonly IWebHostEnvironment _env;
-
+        protected string sitePart { get; set; }
+        protected string table { get; set; }
         public CMDBController(CMDBContext context, IWebHostEnvironment env)
         {
             _context = context;
             _env = env;
             service = new(context);
         }
-        protected void BuildMenu()
+        protected async Task BuildMenu()
         {
-            List<Menu> menul1 = (List<Menu>)service.ListFirstMenuLevel();
+            List<Menu> menul1 = (List<Menu>)await service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {
                 if (m.Children is null)
                     m.Children = new List<Menu>();
-                List<Menu> mL2 = (List<Menu>)service.ListSecondMenuLevel(m.MenuId);
+                List<Menu> mL2 = (List<Menu>)await service.ListSecondMenuLevel(m.MenuId);
                 foreach (Menu m1 in mL2)
                 {
                     if (m1.Children is null)
                         m1.Children = new List<Menu>();
-                    service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
+                    await service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;

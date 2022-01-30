@@ -6,8 +6,6 @@ namespace CMDB.Domain.Entities
     {
         public Docking()
         {
-            Keys = new List<Kensington>();
         }
-        public virtual List<Kensington> Keys { get; set; }
     }
 }

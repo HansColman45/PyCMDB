@@ -13,24 +13,24 @@ namespace CMDB.Services
         public IdentityTypeService(CMDBContext context) : base(context)
         {
         }
-        public ICollection<IdentityType> ListAll()
+        public async Task<ICollection<IdentityType>> ListAll()
         {
-            var types = _context.IdentityTypes.ToList();
+            var types = await _context.IdentityTypes.ToListAsync();
             return types;
         }
-        public ICollection<IdentityType> ListAll(string searchString)
+        public async Task<ICollection<IdentityType>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            var types = _context.IdentityTypes
+            var types = await _context.IdentityTypes
                 .Where(x => EF.Functions.Like(x.Description, searhterm) || EF.Functions.Like(x.Type, searchString))
-                .ToList();
+                .ToListAsync();
             return types;
         }
-        public ICollection<IdentityType> GetByID(int id)
+        public async Task<ICollection<IdentityType>> GetByID(int id)
         {
-            var types = _context.IdentityTypes
+            var types = await _context.IdentityTypes
                 .Where(x => x.TypeID == id)
-                .ToList();
+                .ToListAsync();
             return types;
         }
         public async Task Create(IdentityType identityType, string Table)
@@ -39,7 +39,7 @@ namespace CMDB.Services
             _context.IdentityTypes.Add(identityType);
             await _context.SaveChangesAsync();
             string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
-            LogCreate(Table, identityType.TypeID, Value);
+            await LogCreate(Table, identityType.TypeID, Value);
         }
         public async Task Update(IdentityType identityType, string Type, string Description, string Table)
         {
@@ -48,13 +48,13 @@ namespace CMDB.Services
             {
                 identityType.Type = Type;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type);
+                await LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type);
             }
             if (String.Compare(identityType.Description, Description) != 0)
             {
                 identityType.Description = Description;
                 await _context.SaveChangesAsync();
-                LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description);
+                await LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description);
             }
         }
         public async Task Deactivate(IdentityType identityType, string reason, string Table)
@@ -64,7 +64,7 @@ namespace CMDB.Services
             identityType.Active = "Inactive";
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
-            LogDeactivate(Table, identityType.TypeID, Value, reason);
+            await LogDeactivate(Table, identityType.TypeID, Value, reason);
         }
         public async Task Activate(IdentityType identityType, string table)
         {
@@ -73,7 +73,7 @@ namespace CMDB.Services
             identityType.Active = "Active";
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
-            LogActivate(table, identityType.TypeID, Value);
+            await LogActivate(table, identityType.TypeID, Value);
         }
         public bool IsExisting(IdentityType identityType, string Type = "", string Description = "")
         {

@@ -15,6 +15,7 @@ namespace CMDB.Infrastructure
         public virtual DbSet<Application> Applications { get; set; }
         public virtual DbSet<AssetCategory> AssetCategories { get; set; }
         public virtual DbSet<AssetType> AssetTypes { get; set; }
+        public virtual DbSet<Device> Devices { get; set; }
         public virtual DbSet<Laptop> Laptops { get; set; }
         public virtual DbSet<Desktop> Desktops { get; set; }
         public virtual DbSet<Screen> Screens { get; set; }

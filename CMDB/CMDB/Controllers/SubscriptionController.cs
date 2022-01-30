@@ -10,10 +10,8 @@ namespace CMDB.Controllers
     {
         private readonly static string sitePart = "Subscription";
         private readonly static string table = "subscription";
-        private readonly IWebHostEnvironment _env;
         public SubscriptionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
-            _env = env;
         }
         public IActionResult Index()
         {

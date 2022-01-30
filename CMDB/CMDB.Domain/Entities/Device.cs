@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CMDB.Domain.Entities
@@ -6,6 +7,10 @@ namespace CMDB.Domain.Entities
     [Table("asset")]
     public class Device : Model
     {
+        public Device()
+        {
+            Keys = new List<Kensington>();
+        }
         [Key]
         [Required(ErrorMessage = "Please enter a Assettag")]
         public string AssetTag { get; set; }
@@ -19,5 +24,7 @@ namespace CMDB.Domain.Entities
         public int? TypeId { get; set; }
         public int? CategoryId { get; set; }
         public int? IdentityId { get; set; }
+
+        public virtual ICollection<Kensington> Keys { get; set; }
     }
 }

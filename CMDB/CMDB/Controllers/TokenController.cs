@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -19,11 +20,11 @@ namespace CMDB.Controllers
         {
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             ViewData["Title"] = "Token overview";
-            BuildMenu();
+            await BuildMenu();
             var Desktops = service.ListAll("Token");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -33,14 +34,13 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Token\Search";
             return View(Desktops);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", sitePart);
-            BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Token overview";
-                BuildMenu();
+                await BuildMenu();
                 var Desktops = service.ListAll(sitePart, search);
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
@@ -55,19 +55,20 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Delete(IFormCollection values, string id)
+        public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", sitePart);
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Delete Token";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            BuildMenu();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            Token token = service.ListTokenByID(id).ElementAt<Token>(0);
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -75,7 +76,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(token, values["reason"], table);
+                        await service.Deactivate(token, values["reason"], table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -88,20 +89,21 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
-        public IActionResult Activate(string id)
+        public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Token";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
-            if (String.IsNullOrEmpty(id))
-            {
+            if (id == null)
                 return NotFound();
-            }
-            Token token = service.ListTokenByID(id).ElementAt<Token>(0);
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            await BuildMenu();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(token, table);
+                await service.Activate(token, table);
                 return RedirectToAction(nameof(Index));
             }
             else

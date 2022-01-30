@@ -6,6 +6,12 @@ namespace CMDB.Domain.Entities
 {
     public class AssetType : Model
     {
+        public AssetType()
+        {
+            Devices = new List<Device>();
+            Kensingtons = new List<Kensington>();
+            Mobiles = new List<Mobile>();
+        }
         [Key]
         public int TypeID { get; set; }
         [Required(ErrorMessage = "Please fill in a vendor")]
@@ -15,13 +21,9 @@ namespace CMDB.Domain.Entities
         [Required]
         public AssetCategory Category { get; set; }
         public int? CategoryId { get; set; }
-        public ICollection<Laptop> Laptops { get; set; }
-        public ICollection<Desktop> Desktops { get; set; }
-        public ICollection<Docking> Dockings { get; set; }
+        public ICollection<Device> Devices { get; set; }
         public ICollection<Kensington> Kensingtons { get; set; }
-        public ICollection<Screen> Screens { get; set; }
         public ICollection<Mobile> Mobiles { get; set; }
-        public ICollection<Token> Tokens { get; set; }
 
         public override string ToString()
         {

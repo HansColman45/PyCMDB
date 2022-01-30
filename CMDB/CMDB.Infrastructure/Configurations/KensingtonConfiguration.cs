@@ -23,25 +23,10 @@ namespace CMDB.Infrastructure.Configuration
                 .HasConstraintName("FK_Kensington_Type")
                 .IsRequired();
 
-            builder.HasOne(e => e.Laptop)
+            builder.HasOne(e => e.Device)
                 .WithMany(d => d.Keys)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Key_Laptop");
-
-            builder.HasOne(e => e.Desktop)
-                .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Key_Deskop");
-
-            builder.HasOne(e => e.Docking)
-                .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Key_Docking");
-
-            builder.HasOne(e => e.Screen)
-                .WithMany(d => d.Keys)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Key_Screen");
+                .HasConstraintName("FK_Key_Device");
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Kensingtons)

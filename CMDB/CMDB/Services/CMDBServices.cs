@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -110,30 +111,30 @@ namespace CMDB.Services
             return strBuilder.ToString();
         }
         #region generic menu
-        public ICollection<Menu> ListFirstMenuLevel()
+        public async Task<ICollection<Menu>> ListFirstMenuLevel()
         {
-            var menu = _context.Menus.Where(x => x.ParentId == null)
+            var menu = await _context.Menus.Where(x => x.ParentId == null)
                 .OrderBy(x => x.ParentId).ThenBy(x => x.MenuId)
-                .ToList();
+                .ToListAsync();
             return menu;
         }
-        public ICollection<Menu> ListSecondMenuLevel(int menuID)
+        public async Task<ICollection<Menu>> ListSecondMenuLevel(int menuID)
         {
-            var menu = _context.Menus
+            var menu = await _context.Menus
                 .Include(x => x.Parent)
                 .Where(x => x.ParentId == menuID)
                 .OrderBy(x => x.ParentId).ThenBy(x => x.MenuId)
-                .ToList();
+                .ToListAsync();
             return menu;
         }
-        public ICollection<Menu> ListPersonalMenu(int level, int menuID)
+        public async Task<ICollection<Menu>> ListPersonalMenu(int level, int menuID)
         {
-            var menu = _context.RolePerms
+            var menu = await _context.RolePerms
                 .Include(x => x.Menu)
                 .ThenInclude(x => x.Children)
                 .Include(x => x.Permission)
                 .Where(x => x.Permission.Rights == "Read" || x.Level == level || x.Menu.MenuId == menuID)
-                .SelectMany(x => x.Menu.Children).ToList();
+                .SelectMany(x => x.Menu.Children).ToListAsync();
             return menu;
         }
         #endregion

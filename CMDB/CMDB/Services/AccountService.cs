@@ -14,31 +14,34 @@ namespace CMDB.Services
         public AccountService(CMDBContext context) : base(context)
         {
         }
-        public ICollection<Account> ListAll()
+        public async Task<List<Account>> ListAll()
         {
-            List<Account> accounts = _context.Accounts
+            List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
-                .ToList();
+                .ToListAsync();
             return accounts;
         }
-        public List<Account> GetByID(int ID)
+        public async Task<List<Account>> GetByID(int ID)
         {
-            List<Account> accounts = _context.Accounts
+            List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
-                .ToList();
+                .ToListAsync();
             return accounts;
         }
-        public List<Account> ListAll(string searchString)
+        public async Task<List<Account>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            List<Account> accounts = _context.Accounts
+            List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
-                .Where(x => EF.Functions.Like(x.Application.Name, searhterm) || EF.Functions.Like(x.Type.Type, searhterm) || EF.Functions.Like(x.Type.Description, searhterm) || EF.Functions.Like(x.UserID, searhterm))
-                .ToList();
+                .Where(x => EF.Functions.Like(x.Application.Name, searhterm)
+                    || EF.Functions.Like(x.Type.Type, searhterm)
+                    || EF.Functions.Like(x.Type.Description, searhterm)
+                    || EF.Functions.Like(x.UserID, searhterm))
+                .ToListAsync();
             return accounts;
         }
         public async Task CreateNew(string UserID, int type, int application, string Table)
@@ -55,7 +58,7 @@ namespace CMDB.Services
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
             string Value = $"Account width UserID: {UserID} with type {accountType.Type} for application {applications.Name}";
-            LogCreate(Table, account.AccID, Value);
+            await LogCreate(Table, account.AccID, Value);
         }
         public async Task Edit(Account account, string UserID, int type, int application, string Table)
         {
@@ -63,17 +66,17 @@ namespace CMDB.Services
             var applications = GetApplicationByID(application).First();
             if (String.Compare(account.UserID, UserID) != 0)
             {
-                LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
+                await LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
                 account.UserID = UserID;
             }
             if (account.Type.TypeID != type)
             {
-                LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type);
+                await LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type);
                 account.Type = accountType;
             }
             if (account.Application.AppID != application)
             {
-                LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name);
+                await LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name);
                 account.Application = applications;
             }
             account.LastModfiedAdmin = Admin;
@@ -85,7 +88,7 @@ namespace CMDB.Services
             account.DeactivateReason = Reason;
             account.Active = "Inactive";
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
-            LogDeactivate(Table, account.AccID, value, Reason);
+            await LogDeactivate(Table, account.AccID, value, Reason);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
@@ -95,7 +98,7 @@ namespace CMDB.Services
             account.DeactivateReason = null;
             account.Active = "Active";
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
-            LogActivate(Table, account.AccID, value);
+            await LogActivate(Table, account.AccID, value);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
             await _context.SaveChangesAsync();
@@ -163,7 +166,8 @@ namespace CMDB.Services
         }
         public async Task AssignIdentity2Account(Account account, int IdenID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
-            var Identity = GetIdentityByID(IdenID).First();
+            var identities = await GetIdentityByID(IdenID);
+            var Identity = identities.First();
             IdenAccount IdenAcc = new()
             {
                 Identity = Identity,
@@ -176,8 +180,8 @@ namespace CMDB.Services
             Identity.LastModfiedAdmin = Admin;
             _context.IdenAccounts.Add(IdenAcc);
             await _context.SaveChangesAsync();
-            LogAssignAccount2Identity(Table, account.AccID, account, Identity);
-            LogAssignIden2Account("identity", IdenID, Identity, account);
+            await LogAssignAccount2Identity(Table, account.AccID, account, Identity);
+            await LogAssignIden2Account("identity", IdenID, Identity, account);
         }
         public async Task ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
         {
@@ -185,8 +189,8 @@ namespace CMDB.Services
             IdenAccount.LastModifiedAdmin = Admin;
             IdenAccount.ValidUntil = DateTime.Now.AddDays(-1);
             _context.IdenAccounts.Update(IdenAccount);
-            LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
-            LogReleaseIdentity4Account("identity", account.AccID, identity, account);
+            await LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
+            await LogReleaseIdentity4Account("identity", account.AccID, identity, account);
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
@@ -262,23 +266,23 @@ namespace CMDB.Services
             }
             return result;
         }
-        public ICollection<Identity> GetIdentityByID(int id)
+        public async Task<List<Identity>> GetIdentityByID(int id)
         {
-            List<Identity> identities = _context.Identities
+            List<Identity> identities = await _context.Identities
                 .Include(x => x.Type)
                 .Where(x => x.IdenId == id)
-                .ToList();
+                .ToListAsync();
             return identities;
         }
-        public List<IdenAccount> GetIdenAccountByID(int id)
+        public async Task<List<IdenAccount>> GetIdenAccountByID(int id)
         {
-            var idenAccounts = _context.IdenAccounts
+            var idenAccounts = await _context.IdenAccounts
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
                 .Where(x => x.ID == id)
-                .ToList();
+                .ToListAsync();
             return idenAccounts;
         }
     }

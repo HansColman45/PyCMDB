@@ -24,12 +24,12 @@ namespace CMDB.Controllers
             this.env = env;
             service = new(context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", table);
             var list = service.ListAll();
             ViewData["Title"] = "Identity overview";
-            BuildMenu();
+            await BuildMenu();
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -40,7 +40,7 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
-        public IActionResult Search(string search)
+        public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", table);
             if (!String.IsNullOrEmpty(search))
@@ -48,7 +48,7 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var list = service.ListAll(search);
                 ViewData["Title"] = "Identity overview";
-                BuildMenu();
+                await BuildMenu();
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
@@ -64,11 +64,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", table);
             ViewData["Title"] = "Identity Details";
-            BuildMenu();
+            await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
             ViewData["AccountOverview"] = service.HasAdminAccess(service.Admin, sitePart, "AccountOverview");
@@ -80,25 +80,22 @@ namespace CMDB.Controllers
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
-            {
                 return NotFound();
-            }
-            var list = service.GetByID((int)id);
-            service.GetAssingedDevices(list.ElementAt<Identity>(0));
-            service.GetAssignedAccounts(list.ElementAt<Identity>(0));
-            service.GetLogs(table, (int)id, list.ElementAt<Identity>(0));
+            var list = await service.GetByID((int)id);
+            service.GetAssingedDevices(list.First());
+            service.GetAssignedAccounts(list.First());
+            service.GetLogs(table, (int)id, list.First());
             if (list == null)
-            {
                 return NotFound();
-            }
+
             return View(list);
         }
-        public IActionResult Create(IFormCollection values)
+        public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", table);
             ViewData["Title"] = "Create Identity";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            BuildMenu();
+            await BuildMenu();
             ViewBag.Types = service.ListActiveIdentityTypes();
             ViewBag.Languages = service.ListAllActiveLanguages();
             Identity identity = new();
@@ -123,7 +120,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
+                        await service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -140,17 +137,18 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", table);
             ViewData["Title"] = "Edit Identity";
-            BuildMenu();
+            await BuildMenu();
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
             if (id == null)
-            {
                 return NotFound();
-            }
             ViewBag.Types = service.ListActiveIdentityTypes();
             ViewBag.Languages = service.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
-            var list = service.GetByID((int)id);
-            Identity identity = list.ElementAt<Identity>(0);
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
+                return NotFound();
+
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string NewFirstName = values["FirstName"];
@@ -179,26 +177,26 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
-        public IActionResult Delete(IFormCollection values, int? id)
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", table);
             ViewData["Title"] = "Deactivate Identity";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
             string FormSubmit = values["form-submitted"];
-            var list = service.GetByID((int)id);
-            Identity identity = list.ElementAt<Identity>(0);
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
+                return NotFound();
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    _ = service.Deactivate(identity, ViewData["reason"].ToString(), table);
+                    await service.Deactivate(identity, ViewData["reason"].ToString(), table);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -210,21 +208,21 @@ namespace CMDB.Controllers
             }
             return View(list);
         }
-        public IActionResult Activate(int? id)
+        public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Activate Identity";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            var list = service.GetByID((int)id);
-            Identity identity = list.ElementAt<Identity>(0);
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
+                return NotFound();
             if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
             {
-                _ = service.Activate(identity, table);
+                await service.Activate(identity, table);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -233,49 +231,41 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public IActionResult AssignDevice(IFormCollection values, int? id)
+        public async Task<IActionResult> AssignDevice(IFormCollection values, int? id)
         {
             log.Debug("Using Activate in {0}", table);
             ViewData["Title"] = "Assign device to identity";
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
             string FormSubmit = values["form-submitted"];
-            var list = service.GetByID((int)id);
-            if (list == null)
-            {
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
                 return NotFound();
-            }
-            Identity identity = list.ElementAt<Identity>(0);
-            ViewBag.Devices = service.ListAllFreeDevices();
+            ViewBag.Devices = await service.ListAllFreeDevices();
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
             }
             return View(list);
         }
-        public IActionResult AssignAccount(IFormCollection values, int? id)
+        public async Task<IActionResult> AssignAccount(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Account in {0}", table);
             ViewData["Title"] = "Assign Account";
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
-            BuildMenu();
+            await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
             string FormSubmit = values["form-submitted"];
-            var list = service.GetByID((int)id);
-            if (list == null)
-            {
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
                 return NotFound();
-            }
-            Identity identity = list.ElementAt<Identity>(0);
             ViewBag.Identity = identity;
-            ViewBag.Accounts = service.ListAllFreeAccounts();
+            ViewBag.Accounts = await service.ListAllFreeAccounts();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 int AccId = Convert.ToInt32(values["Account"]);
@@ -287,7 +277,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
-                        _ = service.AssignAccount2Idenity(identity, AccId, from, until, table);
+                        await service.AssignAccount2Idenity(identity, AccId, from, until, table);
                         return RedirectToAction("AssignFrom", "Identity", new { id });
                     }
                 }
@@ -300,22 +290,22 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public IActionResult ReleaseAccount(IFormCollection values, int id)
+        public async Task<IActionResult> ReleaseAccount(IFormCollection values, int id)
         {
             log.Debug("Using Release Account in {0}", table);
             if (id == 0)
-            {
                 return NotFound();
-            }
             ViewData["Title"] = "Release Account";
-            var idenAccount = service.GetIdenAccountByID(id);
-            ViewBag.Identity = idenAccount.ElementAt<IdenAccount>(0).Identity;
-            ViewBag.Account = idenAccount.ElementAt<IdenAccount>(0).Account;
+            var idenAccount = await service.GetIdenAccountByID(id);
+            if (idenAccount.FirstOrDefault() == null)
+                return NotFound();
+            ViewBag.Identity = idenAccount.First().Identity;
+            ViewBag.Account = idenAccount.First().Account;
             ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseAccount");
-            BuildMenu();
+            await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseAccount";
-            ViewData["Name"] = idenAccount.ElementAt<IdenAccount>(0).Identity.Name;
+            ViewData["Name"] = idenAccount.First().Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -324,15 +314,15 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    _ = service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, table);
-                    idenAccount = service.GetIdenAccountByID(id);
+                    await service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, table);
+                    idenAccount = await service.GetIdenAccountByID(id);
                     PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
-                        UserID = idenAccount.ElementAt<IdenAccount>(0).Identity.UserID,
-                        Language = idenAccount.ElementAt<IdenAccount>(0).Identity.Language.Code,
-                        Receiver = idenAccount.ElementAt<IdenAccount>(0).Identity.Name,
+                        UserID = idenAccount.First().Identity.UserID,
+                        Language = idenAccount.First().Identity.Language.Code,
+                        Receiver = idenAccount.First().Identity.Name,
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
@@ -342,23 +332,23 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public IActionResult AssignFrom(IFormCollection values, int? id)
+        public async Task<IActionResult> AssignFrom(IFormCollection values, int? id)
         {
             if (id == null)
-            {
                 return NotFound();
-            }
             log.Debug("Using Assign Form in {0}", table);
             ViewData["Title"] = "Assign form";
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, sitePart, "AssignDevice");
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, sitePart, "AssignAccount");
-            var list = service.GetByID((int)id);
-            service.GetAssingedDevices(list.ElementAt<Identity>(0));
-            service.GetAssignedAccounts(list.ElementAt<Identity>(0));
-            BuildMenu();
+            var list = await service.GetByID((int)id);
+            if (list.FirstOrDefault() == null)
+                return NotFound();
+            service.GetAssingedDevices(list.First());
+            service.GetAssignedAccounts(list.First());
+            await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "AssignFrom";
-            ViewData["Name"] = list.ElementAt<Identity>(0).Name;
+            ViewData["Name"] = list.First().Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
@@ -371,35 +361,15 @@ namespace CMDB.Controllers
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
-                    UserID = list.ElementAt<Identity>(0).UserID,
-                    Language = list.ElementAt<Identity>(0).Language.Code,
-                    Receiver = list.ElementAt<Identity>(0).Name
+                    UserID = list.First().UserID,
+                    Language = list.First().Language.Code,
+                    Receiver = list.First().Name
                 };
-                if (list.ElementAt<Identity>(0).Accounts.Count > 0)
-                    PDFGenerator.SetAccontInfo(list.ElementAt<Identity>(0).Accounts.ElementAt<IdenAccount>(0));
-                else if (list.ElementAt<Identity>(0).Laptops.Count > 0)
+                if (list.First().Accounts.Count > 0)
+                    PDFGenerator.SetAccontInfo(list.First().Accounts.First());
+                else if (list.First().Devices.Count > 0)
                 {
-                    foreach (Device d in list.ElementAt<Identity>(0).Laptops)
-                        PDFGenerator.SetAssetInfo(d);
-                }
-                else if (list.ElementAt<Identity>(0).Desktops.Count > 0)
-                {
-                    foreach (Device d in list.ElementAt<Identity>(0).Desktops)
-                        PDFGenerator.SetAssetInfo(d);
-                }
-                else if (list.ElementAt<Identity>(0).Dockings.Count > 0)
-                {
-                    foreach (Device d in list.ElementAt<Identity>(0).Dockings)
-                        PDFGenerator.SetAssetInfo(d);
-                }
-                else if (list.ElementAt<Identity>(0).Screens.Count > 0)
-                {
-                    foreach (Device d in list.ElementAt<Identity>(0).Screens)
-                        PDFGenerator.SetAssetInfo(d);
-                }
-                else if (list.ElementAt<Identity>(0).Tokens.Count > 0)
-                {
-                    foreach (Device d in list.ElementAt<Identity>(0).Tokens)
+                    foreach (Device d in list.First().Devices)
                         PDFGenerator.SetAssetInfo(d);
                 }
                 PDFGenerator.GeneratePDF(env);

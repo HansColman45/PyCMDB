@@ -15,30 +15,30 @@ namespace CMDB.Services
         public IdentityServices(CMDBContext context) : base(context)
         {
         }
-        public ICollection<Identity> ListAll()
+        public async Task<ICollection<Identity>> ListAll()
         {
-            List<Identity> identities = _context.Identities
+            List<Identity> identities = await _context.Identities
                 .Include(x => x.Type)
-                .ToList();
+                .ToListAsync();
             return identities;
         }
-        public ICollection<Identity> ListAll(string searchString)
+        public async Task<ICollection<Identity>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            List<Identity> list = _context.Identities
+            List<Identity> list = await _context.Identities
                 .Include(x => x.Type)
                 .Where(x => EF.Functions.Like(x.Name, searhterm) || EF.Functions.Like(x.UserID, searhterm)
                     || EF.Functions.Like(x.EMail, searhterm) || EF.Functions.Like(x.Type.Type, searhterm))
-                .ToList();
+                .ToListAsync();
             return list;
         }
-        public ICollection<Identity> GetByID(int id)
+        public async Task<ICollection<Identity>> GetByID(int id)
         {
-            List<Identity> identities = _context.Identities
+            List<Identity> identities = await _context.Identities
                 .Include(x => x.Type)
                 .Include(x => x.Language)
                 .Where(x => x.IdenId == id)
-                .ToList();
+                .ToListAsync();
             return identities;
         }
         public List<SelectListItem> ListActiveIdentityTypes()
@@ -61,25 +61,25 @@ namespace CMDB.Services
             }
             return langs;
         }
-        public List<Device> ListAllFreeDevices()
+        public async Task<List<Device>> ListAllFreeDevices()
         {
             List<Device> devices = new();
 
-            var Laptops = _context.Laptops
+            var Laptops = await _context.Laptops
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.Identity == null)
-                .ToList();
+                .ToListAsync();
             foreach (var laptop in Laptops)
             {
                 devices.Add(laptop);
             }
 
-            var Desktops = _context.Desktops
+            var Desktops = await _context.Desktops
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.Identity == null)
-                .ToList();
+                .ToListAsync();
             foreach (var desktop in Desktops)
             {
                 devices.Add(desktop);
@@ -89,60 +89,15 @@ namespace CMDB.Services
         public void GetAssingedDevices(Identity identity)
         {
             var laptops = _context.Identities
-                .Include(x => x.Laptops)
+                .Include(x => x.Devices)
                 .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Laptops)
+                .SelectMany(x => x.Devices)
                 .ToList();
-            foreach (var laptop in laptops)
-            {
-                identity.Laptops.Add(laptop);
-            }
-            var desktops = _context.Identities
-                .Include(x => x.Desktops)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Desktops)
-                .ToList();
-            foreach (var desktop in desktops)
-            {
-                identity.Desktops.Add(desktop);
-            }
-            var Screens = _context.Identities
-                .Include(x => x.Screens)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Screens)
-                .ToList();
-            foreach (var screen in Screens)
-            {
-                identity.Screens.Add(screen);
-            }
-            var Dockings = _context.Identities
-                .Include(x => x.Dockings)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Dockings)
-                .ToList();
-            foreach (var docking in Dockings)
-            {
-                identity.Dockings.Add(docking);
-            }
             var mobiles = _context.Identities
                 .Include(x => x.Mobiles)
                 .Where(x => x.IdenId == identity.IdenId)
                 .SelectMany(x => x.Mobiles)
                 .ToList();
-            foreach (var mobile in mobiles)
-            {
-                identity.Mobiles.Add(mobile);
-            }
-            var tokens = _context.Identities
-                .Include(x => x.Tokens)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Tokens)
-                .ToList();
-            foreach (var token in tokens)
-            {
-                identity.Tokens.Add(token);
-            }
-
         }
         public void GetAssignedAccounts(Identity identity)
         {
@@ -174,47 +129,47 @@ namespace CMDB.Services
             _context.Identities.Add(identity);
             await _context.SaveChangesAsync();
             string Value = "Identity width name: " + firstName + ", " + LastName;
-            LogCreate(Table, identity.IdenId, Value);
+            await LogCreate(Table, identity.IdenId, Value);
         }
         public async Task EditAsync(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             if (String.Compare(identity.FirstName, firstName) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
+                await LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
                 identity.FirstName = firstName;
             }
             if (String.Compare(identity.LastName, LastName) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "LastName", identity.LastName, LastName);
+                await LogUpdate(Table, identity.IdenId, "LastName", identity.LastName, LastName);
                 identity.LastName = LastName;
             }
             if (String.Compare(identity.Company, Company) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "Company", identity.Company, Company);
+                await LogUpdate(Table, identity.IdenId, "Company", identity.Company, Company);
                 identity.Company = Company;
             }
             if (String.Compare(identity.Language.Code, Language) != 0)
             {
                 var language = _context.Languages.Where(x => x.Code == Language).First();
-                LogUpdate(Table, identity.IdenId, "Language", identity.Language.Code, Language);
+                await LogUpdate(Table, identity.IdenId, "Language", identity.Language.Code, Language);
                 identity.Language = language;
             }
             if (string.Compare(identity.EMail, EMail) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "Email", identity.EMail, EMail);
+                await LogUpdate(Table, identity.IdenId, "Email", identity.EMail, EMail);
                 identity.EMail = EMail;
             }
             if (String.Compare(identity.UserID, UserID) != 0)
             {
-                LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID);
+                await LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID);
                 identity.UserID = UserID;
             }
             if (identity.Type.TypeID != type)
             {
                 var Type = GetIdenityTypeByID(type);
                 IdentityType newType = Type.ElementAt<IdentityType>(0);
-                LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type);
+                await LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type);
                 identity.Type = newType;
             }
             _context.Identities.Update(identity);
@@ -228,7 +183,7 @@ namespace CMDB.Services
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
-            LogDeactivate(Table, identity.IdenId, value, Reason);
+            await LogDeactivate(Table, identity.IdenId, value, Reason);
         }
         public async Task Activate(Identity identity, string Table)
         {
@@ -238,7 +193,7 @@ namespace CMDB.Services
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
-            LogActivate(Table, identity.IdenId, value);
+            await LogActivate(Table, identity.IdenId, value);
         }
         public bool IsExisting(Identity identity, string UserID = "")
         {
@@ -262,17 +217,17 @@ namespace CMDB.Services
                 .ToList();
             return types;
         }
-        public List<SelectListItem> ListAllFreeAccounts()
+        public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
             List<SelectListItem> accounts = new();
-            var freeAccounts = _context.Accounts
+            var freeAccounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Where(x => x.active == 1 && x.Application.Name == "CMDB")
-                .ToList();
-            var idenaccounts = _context.IdenAccounts
+                .ToListAsync();
+            var idenaccounts = await _context.IdenAccounts
                 .Include(x => x.Account)
                 .Where(x => x.ValidFrom <= DateTime.Now && x.ValidUntil >= DateTime.Now)
-                .ToList();
+                .ToListAsync();
             foreach (var account in freeAccounts)
             {
                 foreach (var iden in idenaccounts)
@@ -318,7 +273,8 @@ namespace CMDB.Services
         }
         public async Task AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
-            var Account = GetAccountByID(AccID).First<Account>();
+            var Accounts = await GetAccountByID(AccID);
+            var Account = Accounts.First<Account>();
             identity.Accounts.Add(new()
             {
                 Account = Account,
@@ -329,8 +285,8 @@ namespace CMDB.Services
             identity.LastModfiedAdmin = Admin;
             Account.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
-            LogAssignIden2Account(Table, identity.IdenId, identity, Account);
-            LogAssignAccount2Identity("account", AccID, Account, identity);
+            await LogAssignIden2Account(Table, identity.IdenId, identity, Account);
+            await LogAssignAccount2Identity("account", AccID, Account, identity);
         }
         public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
@@ -343,21 +299,21 @@ namespace CMDB.Services
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
-            LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
-            LogReleaseIdentity4Account("account", account.AccID, identity, account);
+            await LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
+            await LogReleaseIdentity4Account("account", account.AccID, identity, account);
         }
-        public List<Account> GetAccountByID(int ID)
+        public async Task<List<Account>> GetAccountByID(int ID)
         {
-            List<Account> accounts = _context.Accounts
+            List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
-                .ToList();
+                .ToListAsync();
             return accounts;
         }
-        public List<IdenAccount> GetIdenAccountByID(int id)
+        public async Task<List<IdenAccount>> GetIdenAccountByID(int id)
         {
-            var idenAccounts = _context.IdenAccounts
+            var idenAccounts = await _context.IdenAccounts
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
                 .Include(x => x.Account)
@@ -365,7 +321,7 @@ namespace CMDB.Services
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
                 .Where(x => x.ID == id)
-                .ToList();
+                .ToListAsync();
             return idenAccounts;
         }
     }
