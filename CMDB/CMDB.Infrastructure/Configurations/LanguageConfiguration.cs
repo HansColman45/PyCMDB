@@ -17,14 +17,6 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.Description)
                 .HasColumnType("varchar(255)")
                 .IsRequired();
-
-            builder.Property(e => e.active)
-                .IsRequired()
-                .HasMaxLength(1)
-                .HasDefaultValue(1);
-
-            builder.Property(e => e.DeactivateReason)
-                .HasColumnType("varchar(255)");
         }
     }
 }

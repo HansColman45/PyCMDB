@@ -11,15 +11,16 @@ namespace CMDB.Testing.Helpers
 {
     public class AccountHelper
     {
-        public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin)
+        public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin, bool active = true)
         {
-            var accounttype = context.AccountTypes.Where(x => x.Type == "Administrator").FirstOrDefault();
+            var accounttype = context.AccountTypes.Where(x => x.Type == "Normal User").FirstOrDefault();
             var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
 
-            var Account = new AccountBuilder()
+            Account Account = new AccountBuilder()
                 .With(x => x.Application, app)
                 .With(x => x.Type, accounttype)
                 .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.active, active ? 1 : 0)
                 .Build();
 
             Account.Logs.Add(new LogBuilder()
@@ -29,6 +30,12 @@ namespace CMDB.Testing.Helpers
             );
             context.Accounts.Add(Account);
             await context.SaveChangesAsync();
+            if (!active)
+            {
+                //For some reason the savechanges above changes the state
+                Account.active = 0;
+                context.SaveChanges();
+            }
             return Account;
         }
         public static async Task Delete(CMDBContext context, Account account)

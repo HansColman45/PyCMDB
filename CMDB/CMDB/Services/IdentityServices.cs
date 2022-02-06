@@ -54,7 +54,7 @@ namespace CMDB.Services
         public List<SelectListItem> ListAllActiveLanguages()
         {
             List<SelectListItem> langs = new();
-            List<Language> languages = _context.Languages.Where(x => x.active == 1).ToList();
+            List<Language> languages = _context.Languages.ToList();
             foreach (var language in languages)
             {
                 langs.Add(new SelectListItem(language.Description, language.Code));

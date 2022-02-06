@@ -13,12 +13,17 @@ namespace CMDB.Controllers
 {
     public class AssetTypeController : CMDBController
     {
-        private readonly static string sitePart = "Asset Type";
-        private readonly static string table = "assettype";
         private new readonly AssetTypeService service;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="env"></param>
         public AssetTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Asset Type";
+            Table = "assettype";
         }
         /// <summary>
         /// The Default view
@@ -26,15 +31,15 @@ namespace CMDB.Controllers
         /// <returns>View</returns>
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
-            var accounts = service.ListAllAssetTypes();
+            var accounts = await service.ListAllAssetTypes();
             ViewData["Title"] = "Assettype overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["actionUrl"] = @"\AssetType\Search";
             return View(accounts);
         }
@@ -45,18 +50,18 @@ namespace CMDB.Controllers
         /// <returns>View</returns>
         public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", SitePart);
             await BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
-                var accounts = service.ListAllAssetTypes(search);
+                var accounts = await service.ListAllAssetTypes(search);
                 ViewData["Title"] = "Assettype overview";
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
                 ViewData["actionUrl"] = @"\AssetType\Search";
                 return View(accounts);
             }
@@ -70,9 +75,9 @@ namespace CMDB.Controllers
         /// <returns>View</returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
-            log.Debug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create assettype";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             AssetType assetType = new();
             await BuildMenu();
             ViewBag.Catgories = service.ListActiveCategories();
@@ -92,7 +97,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewAssetType(assetType, table);
+                        await service.CreateNewAssetType(assetType, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -107,9 +112,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
-            log.Debug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit assettype";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -131,7 +136,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateAssetType(assetType, newVendor, newType, table);
+                        await service.UpdateAssetType(assetType, newVendor, newType, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -146,11 +151,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(int? id)
         {
-            log.Debug("Using details in {0}", table);
+            log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Assettype details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
@@ -159,14 +164,14 @@ namespace CMDB.Controllers
             AssetType assetType = assetTypes.FirstOrDefault();
             if (assetType == null)
                 return NotFound();
-            service.GetLogs(table, assetType.TypeID, assetType);
+            service.GetLogs(Table, assetType.TypeID, assetType);
             return View(assetType);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
-            log.Debug("Using Delete in {0}", table);
+            log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Assettype";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -183,7 +188,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.DeactivateAssetType(assetType, values["reason"].ToString(), table);
+                        await service.DeactivateAssetType(assetType, values["reason"].ToString(), Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -198,9 +203,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(int? id)
         {
-            log.Debug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Account";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -208,9 +213,9 @@ namespace CMDB.Controllers
             AssetType assetType = assetTypes.FirstOrDefault();
             if (assetType == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
             {
-                await service.ActivateAssetType(assetType, table);
+                await service.ActivateAssetType(assetType, Table);
                 return RedirectToAction(nameof(Index));
             }
             else

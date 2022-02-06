@@ -9,7 +9,7 @@ using Xunit;
 using Xunit.Extensions.Ordering;
 using helpers = CMDB.UI.Tests.Helpers;
 using entity = CMDB.Domain.Entities;
-using CMDB.Testing.Helpers;
+using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -80,6 +80,12 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public async void GivenAnIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin);
+        }
+        #region Update
+        [Order(5)]
+        [When(@"I want to update (.*) with (.*)")]
+        public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
+        {
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -88,12 +94,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
             overviewPage.Search(Identity.FirstName);
-        }
-        #region Update
-        [Order(5)]
-        [When(@"I want to update (.*) with (.*)")]
-        public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
-        {
             rndNr = rnd.Next();
             updateIdentity = overviewPage.Update();
             iden = new();
@@ -168,9 +168,14 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #region Deactivate
         [Order(7)]
         [Given(@"An acive Identity exisist in the system")]
-        public async void GivenAnAciveIdentityExisistInTheSystem()
+        public async Task GivenAnAciveIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin);
+        }
+        [Order(8)]
+        [When(@"I want to deactivete the identity whith the reason (.*)")]
+        public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
+        {
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -179,11 +184,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
             overviewPage.Search(Identity.FirstName);
-        }
-        [Order(8)]
-        [When(@"I want to deactivete the identity whith the reason (.*)")]
-        public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
-        {
             this.reason = reason;
             var deactivatepage = overviewPage.Deactivate();
             deactivatepage.Reason = reason;
@@ -205,9 +205,14 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #region Activate
         [Order(10)]
         [Given(@"An inactive Identity exisist in the system")]
-        public async void GivenAnInactiveIdentityExisistInTheSystem()
+        public async Task GivenAnInactiveIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin, false);
+        }
+        [Order(11)]
+        [When(@"I want to activate this identity")]
+        public void WhenIWantToActivateThisIdentity()
+        {
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -216,11 +221,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             overviewPage = main.IdentityOverview();
             overviewPage.Search(Identity.FirstName);
-        }
-        [Order(11)]
-        [When(@"I want to activate this identity")]
-        public void WhenIWantToActivateThisIdentity()
-        {
             overviewPage.Activate();
         }
         [Order(12)]
@@ -238,13 +238,21 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #endregion
         #region Assign Account
         [Given(@"an Account exist as well")]
-        public async void GivenAnAccountExistAsWell()
+        public async Task GivenAnAccountExistAsWell()
         {
             Account = await context.CreateAccount(admin);
         }
         [When(@"I assign the account to the identity")]
         public void WhenIAssignTheAccountToTheIdentity()
         {
+            Url = "https://localhost:44314/";
+            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            login = new LoginPage(ScenarioData.Driver);
+            login.EnterUserID(admin.Account.UserID);
+            login.EnterPassword("1234");
+            main = login.LogIn();
+            overviewPage = main.IdentityOverview();
+            overviewPage.Search(Identity.FirstName);
             assignAccount = overviewPage.AssignAccount();
             iden = new()
             {

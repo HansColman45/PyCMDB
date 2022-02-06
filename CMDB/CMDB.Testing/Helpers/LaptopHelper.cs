@@ -8,7 +8,7 @@ namespace CMDB.Testing.Helpers
 {
     public class LaptopHelper
     {
-        public static async Task<Laptop> CreateSimpleLaptop(CMDBContext context, Admin admin)
+        public static async Task<Laptop> CreateSimpleLaptop(CMDBContext context, Admin admin, bool active = true)
         {
             var cat = context.AssetCategories.Where(x => x.Category == "Laptop").SingleOrDefault();
             var AssetType = await AssetTypeHelper.CreateSimpleAssetType(context, cat, admin);
@@ -25,7 +25,11 @@ namespace CMDB.Testing.Helpers
                 );
             context.Laptops.Add(laptop);
             await context.SaveChangesAsync();
-
+            if (!active)
+            {
+                laptop.active = 0;
+                context.SaveChanges();
+            }
             return laptop;
         }
         public static async Task Delete(CMDBContext context, Laptop laptop)

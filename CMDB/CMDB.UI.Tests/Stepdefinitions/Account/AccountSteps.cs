@@ -1,7 +1,9 @@
-﻿using CMDB.UI.Tests.Helpers;
+﻿using helpers = CMDB.UI.Tests.Helpers;
+using entity = CMDB.Domain.Entities;
 using CMDB.UI.Tests.Hooks;
 using CMDB.UI.Tests.Pages;
 using System;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using Xunit;
@@ -18,7 +20,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
 
         private readonly Random rnd = new();
         private int rndNr;
-        private Account account;
+        private helpers.Account account;
+        private entity.Account Account;
         private string expectedlog, oldValue, newValue, changedField;
 
         public AccountSteps(ScenarioData scenarioData) : base(scenarioData)
@@ -27,7 +30,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Given(@"I want to create a Account with the following details")]
         public void GivenIWantToCreateAAccountWithTheFollowingDetails(Table table)
         {
-            account = table.CreateInstance<Account>();
+            account = table.CreateInstance<helpers.Account>();
             rndNr = rnd.Next();
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
@@ -57,8 +60,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         }
 
         [Given(@"There is an account existing")]
-        public void GivenThereIsAnAccountExisting()
+        public async Task GivenThereIsAnAccountExisting()
         {
+            Account = await context.CreateAccount(admin);
             rndNr = rnd.Next();
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
@@ -67,7 +71,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.AccountOverview();
-            overviewPage.Search("test");
+            overviewPage.Search(Account.UserID);
         }
         [When(@"I change the (.*) to (.*) and I save the changes")]
         public void WhenIChangeTheUserIdToTestjeAndISaveTheChanges(string field, string newValue)
@@ -104,11 +108,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     expectedlog = $"The UserId in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "Type":
-                    overviewPage.Search("Test");
+                    overviewPage.Search(Account.UserID);
                     expectedlog = $"The Type in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "Application":
-                    overviewPage.Search("Test");
+                    overviewPage.Search(Account.UserID);
                     expectedlog = $"The Application in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
             }
@@ -118,8 +122,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         }
 
         [Given(@"There is an active account existing")]
-        public void GivenThereIsAnActiveAccountExisting()
+        public async Task GivenThereIsAnActiveAccountExisting()
         {
+            Account = await context.CreateAccount(admin);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -127,7 +132,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.AccountOverview();
-            overviewPage.Search("test");
+            overviewPage.Search(Account.UserID);
         }
         [When(@"I deactivate the account with reason (.*)")]
         public void WhenIDeactivateTheAccountWithReasonTest(string reason)
@@ -140,18 +145,19 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"the account is inactive")]
         public void ThenTheAccountIsInactive()
         {
-            overviewPage.Search("Test");
+            overviewPage.Search(Account.UserID);
             var detail = overviewPage.Detail();
             var accId = detail.Id;
-            CMDB.Domain.Entities.Account account = context.GetAccount(accId);
+            entity.Account account = context.GetAccount(accId);
             expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is deleted due to {newValue} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
 
         [Given(@"There is an inactive account existing")]
-        public void GivenThereIsAnInactiveAccountExisting()
+        public async Task GivenThereIsAnInactiveAccountExisting()
         {
+            Account = await context.CreateAccount(admin, false);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -159,7 +165,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.AccountOverview();
-            overviewPage.Search("test");
+            overviewPage.Search(Account.UserID);
         }
         [When(@"I activate the account")]
         public void WhenIActivateTheAccount()
@@ -169,10 +175,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The account is active")]
         public void ThenTheAccountIsActive()
         {
-            overviewPage.Search("test");
+            overviewPage.Search(Account.UserID);
             var detail = overviewPage.Detail();
             var accId = detail.Id;
-            CMDB.Domain.Entities.Account account = context.GetAccount(accId);
+            entity.Account account = context.GetAccount(accId);
             expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);

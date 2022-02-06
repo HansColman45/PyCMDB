@@ -13,40 +13,40 @@ namespace CMDB.Controllers
 {
     public class TokenController : CMDBController
     {
-        private readonly static string sitePart = "Token";
-        private readonly static string table = "token";
         private new readonly DevicesService service;
         public TokenController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Token";
+            Table = "token";
         }
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Token overview";
             await BuildMenu();
-            var Desktops = service.ListAll("Token");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+            var Desktops = await service.ListAll("Token");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", SitePart);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Token overview";
                 await BuildMenu();
-                var Desktops = service.ListAll(sitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+                var Desktops = await service.ListAll(SitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
                 return View(Desktops);
             }
@@ -57,11 +57,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
-            log.Debug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Token";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             var tokens = await service.ListTokenByID(id);
             Token token = tokens.FirstOrDefault();
@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(token, values["reason"], table);
+                        await service.Deactivate(token, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -91,9 +91,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Token";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             if (id == null)
                 return NotFound();
             var tokens = await service.ListTokenByID(id);
@@ -101,9 +101,9 @@ namespace CMDB.Controllers
             if (token == null)
                 return NotFound();
             await BuildMenu();
-            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
             {
-                await service.Activate(token, table);
+                await service.Activate(token, Table);
                 return RedirectToAction(nameof(Index));
             }
             else

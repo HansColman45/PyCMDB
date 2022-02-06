@@ -13,22 +13,22 @@ namespace CMDB.Controllers
 {
     public class PermissionController : CMDBController
     {
-        private readonly static string sitePart = "Permission";
-        private readonly static string table = "permission";
         private new readonly PermissionService service;
         public PermissionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Permission";
+            Table = "permission";
         }
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using list all for {0}", sitePart);
+            log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
             ViewData["Title"] = "Permissiont overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["actionUrl"] = @"\Permission\Search";
             return View();
         }

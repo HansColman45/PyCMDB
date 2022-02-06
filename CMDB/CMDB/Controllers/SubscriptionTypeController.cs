@@ -7,10 +7,10 @@ namespace CMDB.Controllers
 {
     public class SubscriptionTypeController : CMDBController
     {
-        private readonly static string sitePart = "Subscription Type";
-        private readonly static string table = "subscriptiontype";
         public SubscriptionTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
+            SitePart = "Subscription Type";
+            Table = "subscriptiontype";
         }
         public IActionResult Index()
         {

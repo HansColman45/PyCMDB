@@ -13,41 +13,41 @@ namespace CMDB.Controllers
 {
     public class DockingController : CMDBController
     {
-        private readonly static string sitePart = "Docking station";
-        private readonly static string table = "docking";
         private new readonly DevicesService service;
 
         public DockingController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Docking station";
+            Table = "docking";
         }
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Docking overview";
             await BuildMenu();
-            var Desktops = service.ListAll(sitePart);
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+            var Desktops = await service.ListAll(SitePart);
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Docking\Search";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", SitePart);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Docking overview";
                 await BuildMenu();
-                var Desktops = service.ListAll(sitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+                var Desktops = await service.ListAll(SitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Docking\Search";
                 return View(Desktops);
             }
@@ -58,11 +58,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
-            log.Debug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Docking station";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -77,7 +77,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(docking, values["reason"], table);
+                        await service.Deactivate(docking, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -92,9 +92,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Docking station";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
             {
@@ -104,9 +104,9 @@ namespace CMDB.Controllers
             Docking docking = dockings.FirstOrDefault();
             if (docking == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
             {
-                await service.Activate(docking, table);
+                await service.Activate(docking, Table);
                 return RedirectToAction(nameof(Index));
             }
             else

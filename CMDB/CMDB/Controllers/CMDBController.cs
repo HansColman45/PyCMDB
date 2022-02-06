@@ -16,8 +16,8 @@ namespace CMDB.Controllers
         protected CMDBContext _context;
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected readonly IWebHostEnvironment _env;
-        protected string sitePart { get; set; }
-        protected string table { get; set; }
+        protected string SitePart { get; set; }
+        protected string Table { get; set; }
         public CMDBController(CMDBContext context, IWebHostEnvironment env)
         {
             _context = context;

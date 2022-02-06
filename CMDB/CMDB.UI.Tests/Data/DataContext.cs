@@ -91,9 +91,9 @@ namespace CMDB.UI.Tests.Data
         /// This will create an Account
         /// </summary>
         /// <returns>Account</returns>
-        public async Task<Account> CreateAccount(Admin admin)
+        public async Task<Account> CreateAccount(Admin admin, bool active = true)
         {
-            var Account = await AccountHelper.CreateSimpleAccountAsync(context, admin);
+            var Account = await AccountHelper.CreateSimpleAccountAsync(context, admin, active);
             return Account;
         }
         /// <summary>
@@ -164,7 +164,7 @@ namespace CMDB.UI.Tests.Data
         /// This function will create a new Laptop
         /// </summary>
         /// <returns>Laptop</returns>
-        public async Task<Laptop> CreateLaptop(Admin admin) => await LaptopHelper.CreateSimpleLaptop(context, admin);
+        public async Task<Laptop> CreateLaptop(Admin admin, bool active = true) => await LaptopHelper.CreateSimpleLaptop(context, admin, active);
         /// <summary>
         /// This function will return the RAM info
         /// </summary>

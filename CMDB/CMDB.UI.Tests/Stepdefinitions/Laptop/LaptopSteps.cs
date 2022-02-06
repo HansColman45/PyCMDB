@@ -6,6 +6,7 @@ using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using System;
 using Xunit;
+using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -66,9 +67,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
         }
 
         [Given(@"There is an Laptop existing")]
-        public async void GivenThereIsAnLaptopExisting()
+        public async Task GivenThereIsAnLaptopExisting()
         {
             Laptop = await context.CreateLaptop(admin);
+        }
+        [When(@"I update the (.*) with (.*) and I save")]
+        public void WhenIUpdateTheSerialnumberWithAndISave(string field, string value)
+        {
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -77,10 +82,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             overviewPage = main.LaptopOverview();
             overviewPage.Search(Laptop.AssetTag);
-        }
-        [When(@"I update the (.*) with (.*) and I save")]
-        public void WhenIUpdateTheSerialnumberWithAndISave(string field, string value)
-        {
             rndNr = rnd.Next();
             var updatepage = overviewPage.Update();
             laptop = new()
@@ -126,8 +127,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         }
 
         [Given(@"There is an active Laptop existing")]
-        public void GivenThereIsAnActiveLaptopExisting()
+        public async Task GivenThereIsAnActiveLaptopExisting()
         {
+            Laptop = await context.CreateLaptop(admin);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -135,7 +137,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.LaptopOverview();
-            overviewPage.Search("IND");
+            overviewPage.Search(Laptop.AssetTag);
         }
         [When(@"I deactivate the Laptop with reason (.*)")]
         public void WhenIDeactivateTheLaptopWithReasonTest(string reason)
@@ -148,16 +150,17 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The laptop is deactivated")]
         public void ThenTheLaptopIsDeactivated()
         {
-            overviewPage.Search("IND");
+            overviewPage.Search(Laptop.AssetTag);
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();
-            expectedlog = $"The Laptop with type Dell Latitude in table laptop is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Laptop with type {Laptop.Type} in table laptop is deleted due to {newValue} by {admin.Account.UserID}";
             Assert.Equal(log, expectedlog);
         }
 
         [Given(@"There is an inactive Laptop existing")]
-        public void GivenThereIsAnInactiveLaptopExisting()
+        public async Task GivenThereIsAnInactiveLaptopExisting()
         {
+            Laptop = await context.CreateLaptop(admin, false);
             Url = "https://localhost:44314/";
             ScenarioData.Driver.Navigate().GoToUrl(Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -165,7 +168,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.EnterPassword("1234");
             main = login.LogIn();
             overviewPage = main.LaptopOverview();
-            overviewPage.Search("IND");
+            overviewPage.Search(Laptop.AssetTag);
         }
         [When(@"I activate the Laptop")]
         public void WhenIActivateTheLaptop()
@@ -175,10 +178,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The laptop is active")]
         public void ThenTheLaptopIsActive()
         {
-            overviewPage.Search("IND");
+            overviewPage.Search(Laptop.AssetTag);
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();
-            expectedlog = $"The Laptop with type Dell Latitude in table laptop is activated by {admin.Account.UserID}";
+            expectedlog = $"The Laptop with type {Laptop.Type} in table laptop is activated by {admin.Account.UserID}";
             Assert.Equal(log, expectedlog);
         }
 

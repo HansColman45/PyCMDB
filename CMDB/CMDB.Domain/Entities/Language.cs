@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CMDB.Domain.Entities
 {
-    public class Language : Model
+    public class Language
     {
         [Key]
         public string Code { get; set; }

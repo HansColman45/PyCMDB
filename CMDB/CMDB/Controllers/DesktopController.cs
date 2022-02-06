@@ -13,40 +13,40 @@ namespace CMDB.Controllers
 {
     public class DesktopController : CMDBController
     {
-        private readonly static string sitePart = "Desktop";
-        private readonly static string table = "desktop";
         private new readonly DevicesService service;
         public DesktopController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Desktop";
+            Table = "desktop";
         }
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Desktop overview";
             await BuildMenu();
-            var Desktops = service.ListAll(sitePart);
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+            var Desktops = await service.ListAll(SitePart);
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Desktop\Search";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", SitePart);
             await BuildMenu();
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Desktop overview";
-                var Desktops = await service.ListAll(sitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
+                var Desktops = await service.ListAll(SitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Desktop\Search";
                 return View(Desktops);
             }
@@ -57,12 +57,12 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
-            log.Debug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Desktop";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             await BuildMenu();
             Desktop desktop = new();
-            ViewBag.Types = service.ListAssetTypes(sitePart);
+            ViewBag.Types = service.ListAssetTypes(SitePart);
             ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -83,7 +83,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDesktop(desktop, table);
+                        await service.CreateNewDesktop(desktop, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -98,9 +98,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
-            log.Debug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Desktop";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -108,7 +108,7 @@ namespace CMDB.Controllers
             Desktop desktop = desktops.FirstOrDefault();
             if (desktop == null)
                 return NotFound();
-            ViewBag.AssetTypes = service.ListAssetTypes(sitePart);
+            ViewBag.AssetTypes = service.ListAssetTypes(SitePart);
             ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -122,7 +122,7 @@ namespace CMDB.Controllers
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, table);
+                        await service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -138,14 +138,14 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            log.Debug("Using details in {0}", table);
+            log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Desktop details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, sitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (String.IsNullOrEmpty(id))
@@ -154,17 +154,17 @@ namespace CMDB.Controllers
             Desktop desktop = desktops.FirstOrDefault();
             if (desktop == null)
                 return NotFound();
-            service.GetLogs(table, desktop.AssetTag, desktop);
+            service.GetLogs(Table, desktop.AssetTag, desktop);
             service.GetAssignedIdentity(desktop);
             return View(desktop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
-            log.Debug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", SitePart);
             if (String.IsNullOrEmpty(id))
                 return NotFound();
             ViewData["Title"] = "Delete Desktop";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -179,7 +179,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(desktop, values["reason"], table);
+                        await service.Deactivate(desktop, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -194,9 +194,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -204,9 +204,9 @@ namespace CMDB.Controllers
             Desktop desktop = desktops.FirstOrDefault();
             if (desktop == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
             {
-                await service.Activate(desktop, table);
+                await service.Activate(desktop, Table);
                 return RedirectToAction(nameof(Index));
             }
             else

@@ -13,43 +13,43 @@ namespace CMDB.Controllers
 {
     public class LaptopController : CMDBController
     {
-        private readonly static string sitePart = "Laptop";
-        private readonly static string table = "laptop";
         private new readonly DevicesService service;
         public LaptopController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);
+            SitePart = "Laptop";
+            Table = "laptop";
         }
 
         public async Task<IActionResult> Index()
         {
-            log.Debug("Using List all in {0}", table);
+            log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Laptop overview";
             await BuildMenu();
-            var Desktops = service.ListAll(sitePart);
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            var Desktops = await service.ListAll(SitePart);
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Laptop\Search";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Using search for {0}", sitePart);
+            log.Debug("Using search for {0}", SitePart);
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Laptop overview";
                 await BuildMenu();
-                var Desktops = service.ListAll(sitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+                var Desktops = await service.ListAll(SitePart, search);
+                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Laptop\Search";
                 return View(Desktops);
             }
@@ -60,12 +60,12 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
-            log.Debug("Using Create in {0}", sitePart);
+            log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Laptop";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             await BuildMenu();
             Laptop laptop = new();
-            ViewBag.Types = service.ListAssetTypes(sitePart);
+            ViewBag.Types = service.ListAssetTypes(SitePart);
             ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -86,7 +86,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewLaptop(laptop, table);
+                        await service.CreateNewLaptop(laptop, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -101,9 +101,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
-            log.Debug("Using Edit in {0}", sitePart);
+            log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Laptop";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Update");
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -111,7 +111,7 @@ namespace CMDB.Controllers
             Laptop laptop = laptops.FirstOrDefault();
             if (laptop == null)
                 return NotFound();
-            ViewBag.AssetTypes = service.ListAssetTypes(sitePart);
+            ViewBag.AssetTypes = service.ListAssetTypes(SitePart);
             ViewBag.Rams = service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -125,7 +125,7 @@ namespace CMDB.Controllers
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, table);
+                        await service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -141,14 +141,14 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            log.Debug("Using details in {0}", table);
+            log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Laptop details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, sitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, sitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
@@ -157,17 +157,17 @@ namespace CMDB.Controllers
             Laptop laptop = laptops.FirstOrDefault();
             if (laptop == null)
                 return NotFound();
-            service.GetLogs(table, laptop.AssetTag, laptop);
+            service.GetLogs(Table, laptop.AssetTag, laptop);
             service.GetAssignedIdentity(laptop);
             return View(laptop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
-            log.Debug("Using Delete in {0}", sitePart);
+            log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Laptop";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Delete");
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -182,7 +182,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(laptop, values["reason"], table);
+                        await service.Deactivate(laptop, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -197,9 +197,9 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", table);
+            log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, sitePart, "Activate");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -207,9 +207,9 @@ namespace CMDB.Controllers
             Laptop laptop = laptops.FirstOrDefault();
             if (laptop == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, sitePart, "Activate"))
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
             {
-                await service.Activate(laptop, table);
+                await service.Activate(laptop, Table);
                 return RedirectToAction(nameof(Index));
             }
             else

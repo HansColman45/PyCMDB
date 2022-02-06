@@ -31,7 +31,12 @@ namespace CMDB.Testing.Helpers
 
             context.Identities.Add(identity);
             await context.SaveChangesAsync();
-
+            if (!active)
+            {
+                //For some reason the savechanges above changes the state
+                identity.active = 0;
+                context.SaveChanges();
+            }
             return identity;
         }
         public static async Task Delete(CMDBContext context, Identity identity)
