@@ -241,31 +241,31 @@ namespace CMDB.Services
             switch (table)
             {
                 case "laptop":
-                    var Laptop = _context.Laptops.Where(x => x.AssetTag == AssetTag).First();
+                    var Laptop = _context.Devices.OfType<Laptop>().Where(x => x.AssetTag == AssetTag).First();
                     log.Device = Laptop;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "desktop":
-                    var desktop = _context.Desktops.Where(x => x.AssetTag == AssetTag).First();
+                    var desktop = _context.Devices.OfType<Desktop>().Where(x => x.AssetTag == AssetTag).First();
                     log.Device = desktop;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "docking":
-                    var docking = _context.Dockings.Where(x => x.AssetTag == AssetTag).First();
+                    var docking = _context.Devices.OfType<Docking>().Where(x => x.AssetTag == AssetTag).First();
                     log.Device = docking;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "screen":
-                    var Screen = _context.Screens.Where(x => x.AssetTag == AssetTag).First();
+                    var Screen = _context.Devices.OfType<Screen>().Where(x => x.AssetTag == AssetTag).First();
                     log.Device = Screen;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
                 case "token":
-                    var Token = _context.Tokens.Where(x => x.AssetTag == AssetTag).First();
+                    var Token = _context.Devices.OfType<Token>().Where(x => x.AssetTag == AssetTag).First();
                     log.Device = Token;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();

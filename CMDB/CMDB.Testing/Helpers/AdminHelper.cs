@@ -1,6 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
+using CMDB.Testing.Helpers.Devices;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -90,7 +91,8 @@ namespace CMDB.Testing.Helpers
                 await IdentityTypeHelper.Delete(context, type);
             }
             //Laptop
-            var laptops = context.Laptops
+            var laptops = context.Devices
+                .OfType<Laptop>()
                 .Include(x => x.Logs)
                 .Where(x => x.LastModifiedAdminId == admin.AdminId)
                 .ToList();

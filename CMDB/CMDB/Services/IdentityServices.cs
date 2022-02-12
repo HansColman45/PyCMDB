@@ -65,7 +65,7 @@ namespace CMDB.Services
         {
             List<Device> devices = new();
 
-            var Laptops = await _context.Laptops
+            var Laptops = await _context.Devices.OfType<Laptop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.Identity == null)
@@ -75,7 +75,7 @@ namespace CMDB.Services
                 devices.Add(laptop);
             }
 
-            var Desktops = await _context.Desktops
+            var Desktops = await _context.Devices.OfType<Desktop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.Identity == null)

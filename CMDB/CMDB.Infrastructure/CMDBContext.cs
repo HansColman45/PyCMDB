@@ -16,12 +16,7 @@ namespace CMDB.Infrastructure
         public virtual DbSet<AssetCategory> AssetCategories { get; set; }
         public virtual DbSet<AssetType> AssetTypes { get; set; }
         public virtual DbSet<Device> Devices { get; set; }
-        public virtual DbSet<Laptop> Laptops { get; set; }
-        public virtual DbSet<Desktop> Desktops { get; set; }
-        public virtual DbSet<Screen> Screens { get; set; }
         public virtual DbSet<Mobile> Mobiles { get; set; }
-        public virtual DbSet<Docking> Dockings { get; set; }
-        public virtual DbSet<Token> Tokens { get; set; }
         public virtual DbSet<Identity> Identities { get; set; }
         public virtual DbSet<IdenAccount> IdenAccounts { get; set; }
         public virtual DbSet<IdentityType> IdentityTypes { get; set; }

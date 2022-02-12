@@ -20,23 +20,63 @@ namespace CMDB.Services
             switch (category)
             {
                 case "Laptop":
-                    var laptops = await _context.Laptops
+                    var laptops = await _context.Devices
+                        .OfType<Laptop>()
                         .Include(x => x.Category)
                         .Include(x => x.Identity)
+                        .Include(x => x.Type)
                         .ToListAsync();
                     foreach (var laptop in laptops)
                     {
                         devices.Add(laptop);
                     }
                     break;
-                case "Desktops":
-                    var dekstops = await _context.Desktops
-                       .Include(x => x.Category)
-                       .Include(x => x.Identity)
-                       .ToListAsync();
+                case "Desktop":
+                    var dekstops = await _context.Devices
+                        .OfType<Desktop>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .ToListAsync();
                     foreach (var desktop in dekstops)
                     {
                         devices.Add(desktop);
+                    }
+                    break;
+                case "Docking":
+                    var dockings = await _context.Devices
+                        .OfType<Docking>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .ToListAsync();
+                    foreach (var docking in dockings)
+                    {
+                        devices.Add(docking);
+                    }
+                    break;
+                case "Token":
+                    var tokens = await _context.Devices
+                        .OfType<Token>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .ToListAsync();
+                    foreach (var token in tokens)
+                    {
+                        devices.Add(token);
+                    }
+                    break;
+                case "Monitor":
+                    var screens = await _context.Devices
+                        .OfType<Screen>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .ToListAsync();
+                    foreach (var screen in screens)
+                    {
+                        devices.Add(screen);
                     }
                     break;
                 default:
@@ -51,7 +91,8 @@ namespace CMDB.Services
             switch (category)
             {
                 case "Laptop":
-                    var laptops = await _context.Laptops
+                    var laptops = await _context.Devices
+                        .OfType<Laptop>()
                         .Include(x => x.Category)
                         .Include(x => x.Identity)
                         .Include(x => x.Type)
@@ -62,8 +103,9 @@ namespace CMDB.Services
                         devices.Add(laptop);
                     }
                     break;
-                case "Desktops":
-                    var dekstops = await _context.Desktops
+                case "Desktop":
+                    var dekstops = await _context.Devices
+                        .OfType<Desktop>()
                        .Include(x => x.Category)
                        .Include(x => x.Identity)
                        .Include(x => x.Type)
@@ -72,6 +114,44 @@ namespace CMDB.Services
                     foreach (var desktop in dekstops)
                     {
                         devices.Add(desktop);
+                    }
+                    break;
+                case "Docking":
+                    var dockings = await _context.Devices
+                        .OfType<Docking>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                        .ToListAsync();
+                    foreach (var docking in dockings)
+                    {
+                        devices.Add(docking);
+                    }
+                    break;
+                case "Token":
+                    var tokens = await _context.Devices
+                        .OfType<Token>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                        .ToListAsync();
+                    foreach (var token in tokens)
+                    {
+                        devices.Add(token);
+                    }
+                    break;
+                case "Monitor":
+                    var screens = await _context.Devices
+                        .OfType<Screen>()
+                        .Include(x => x.Category)
+                        .Include(x => x.Identity)
+                        .Include(x => x.Type)
+                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                        .ToListAsync();
+                    foreach (var screen in screens)
+                    {
+                        devices.Add(screen);
                     }
                     break;
                 default:
@@ -92,7 +172,7 @@ namespace CMDB.Services
         public async Task CreateNewDesktop(Desktop desktop, string table)
         {
             desktop.LastModfiedAdmin = Admin;
-            _context.Desktops.Add(desktop);
+            _context.Devices.Add(desktop);
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
             await LogCreate(table, desktop.AssetTag, Value);
@@ -100,7 +180,7 @@ namespace CMDB.Services
         public async Task CreateNewLaptop(Laptop laptop, string table)
         {
             laptop.LastModfiedAdmin = Admin;
-            _context.Laptops.Add(laptop);
+            _context.Devices.Add(laptop);
             await _context.SaveChangesAsync();
             string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
             await LogCreate(table, laptop.AssetTag, Value);
@@ -191,7 +271,8 @@ namespace CMDB.Services
         }
         public async Task<List<Desktop>> ListDekstopByID(string assetTag)
         {
-            var desktops = await _context.Desktops
+            var desktops = await _context.Devices
+                .OfType<Desktop>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
@@ -200,7 +281,8 @@ namespace CMDB.Services
         }
         public async Task<List<Laptop>> ListLaptopByID(string assetTag)
         {
-            var laptops = await _context.Laptops
+            var laptops = await _context.Devices
+                .OfType<Laptop>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
@@ -209,7 +291,8 @@ namespace CMDB.Services
         }
         public async Task<List<Docking>> ListDockingByID(string assetTag)
         {
-            var dockings = await _context.Dockings
+            var dockings = await _context.Devices
+                .OfType<Docking>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
@@ -218,7 +301,8 @@ namespace CMDB.Services
         }
         public async Task<List<Screen>> ListScreensByID(string assetTag)
         {
-            var screens = await _context.Screens
+            var screens = await _context.Devices
+                .OfType<Screen>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
@@ -227,17 +311,18 @@ namespace CMDB.Services
         }
         public async Task<List<Token>> ListTokenByID(string assetTag)
         {
-            var tokens = await _context.Tokens
-                 .Include(x => x.Category)
-                 .Include(x => x.Identity)
-                 .Where(x => x.AssetTag == assetTag)
-                 .ToListAsync();
+            var tokens = await _context.Devices
+                .OfType<Token>()
+                .Include(x => x.Category)
+                .Include(x => x.Identity)
+                .Where(x => x.AssetTag == assetTag)
+                .ToListAsync();
             return tokens;
         }
         public bool IsLaptopExisting(Laptop device)
         {
             bool result = false;
-            var devices = _context.Laptops.Where(x => x.AssetTag == device.AssetTag).ToList();
+            var devices = _context.Devices.OfType<Laptop>().Where(x => x.AssetTag == device.AssetTag).ToList();
             if (devices.Count > 0)
                 result = true;
             return result;
@@ -245,7 +330,7 @@ namespace CMDB.Services
         public bool IsDesktopExisting(Desktop device)
         {
             bool result = false;
-            var devices = _context.Desktops.Where(x => x.AssetTag == device.AssetTag).ToList();
+            var devices = _context.Devices.OfType<Desktop>().Where(x => x.AssetTag == device.AssetTag).ToList();
             if (devices.Count > 0)
                 result = true;
             return result;
@@ -270,14 +355,14 @@ namespace CMDB.Services
         }
         public void GetAssignedIdentity(Laptop laptop)
         {
-            var Identity = _context.Laptops
+            var Identity = _context.Devices.OfType<Laptop>()
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == laptop.AssetTag)
                 .Select(x => x.Identity);
         }
         public void GetAssignedIdentity(Desktop desktop)
         {
-            var Identity = _context.Laptops
+            var Identity = _context.Devices.OfType<Desktop>()
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == desktop.AssetTag)
                 .Select(x => x.Identity);

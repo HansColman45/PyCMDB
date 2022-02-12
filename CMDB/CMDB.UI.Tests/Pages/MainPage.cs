@@ -58,13 +58,13 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             return new(driver);
         }
-        public void DesktopOverview()
+        public DesktopOverviewPage DesktopOverview()
         {
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Desktop13']");
             ClickElementByXpath("//a[@href='/Desktop']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void MonitorOverview()
         {

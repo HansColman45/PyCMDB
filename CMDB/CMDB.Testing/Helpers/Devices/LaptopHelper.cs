@@ -2,9 +2,10 @@
 using CMDB.Domain.Entities;
 using System.Linq;
 using CMDB.Testing.Builders.EntityBuilders;
+using CMDB.Testing.Builders.EntityBuilders.Devices;
 using System.Threading.Tasks;
 
-namespace CMDB.Testing.Helpers
+namespace CMDB.Testing.Helpers.Devices
 {
     public class LaptopHelper
     {
@@ -23,7 +24,7 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.LogText, $"The {cat.Category} with type {laptop.Type} is created by Automation in table laptop")
                 .Build()
                 );
-            context.Laptops.Add(laptop);
+            context.Devices.Add(laptop);
             await context.SaveChangesAsync();
             if (!active)
             {
@@ -35,7 +36,7 @@ namespace CMDB.Testing.Helpers
         public static async Task Delete(CMDBContext context, Laptop laptop)
         {
             context.RemoveRange(laptop.Logs);
-            context.Remove<Laptop>(laptop);
+            context.Remove(laptop);
             await context.SaveChangesAsync();
         }
     }

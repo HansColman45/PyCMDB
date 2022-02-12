@@ -11,6 +11,9 @@
     <Compile Update="Stepdefinitions\AssetType\AssetTypesSteps.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Stepdefinitions\Desktop\DesktopSteps.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Stepdefinitions\Identity\IdentitySteps.cs">
       <SubType>Code</SubType>
     </Compile>

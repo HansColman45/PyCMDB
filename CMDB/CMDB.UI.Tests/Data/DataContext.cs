@@ -1,6 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
+using CMDB.Testing.Helpers.Devices;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
@@ -155,7 +156,7 @@ namespace CMDB.UI.Tests.Data
         /// <returns></returns>
         public Laptop GetLaptop(string AssetTag)
         {
-            var Laptop = context.Laptops
+            var Laptop = context.Devices.OfType<Laptop>()
                 .Include(x => x.Type)
                 .Where(x => x.AssetTag == AssetTag).FirstOrDefault();
             return Laptop;
