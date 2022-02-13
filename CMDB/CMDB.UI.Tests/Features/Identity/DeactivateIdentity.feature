@@ -1,4 +1,4 @@
-﻿Feature: F_DeactivateIdentity
+﻿Feature: DeactivateIdentity
 
 Scenario:1 I want to deactivate an existing Identity
 	Given An acive Identity exisist in the system

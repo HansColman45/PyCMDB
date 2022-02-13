@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
 using CMDB.Testing.Helpers.Devices;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Identity = CMDB.Domain.Entities.Identity;
@@ -73,6 +74,17 @@ namespace CMDB.UI.Tests.Data
                 .Where(x => x.TypeID == AssetTypeID)
                 .FirstOrDefault();
             return assetType;
+        }
+        /// <summary>
+        /// This function will create a desktop
+        /// </summary>
+        /// <param name="admin">Tha admin that created the desktop</param>
+        /// <param name="active">bool</param>
+        /// <returns>Desktop</returns>
+        public async Task<Desktop> CreateDesktop(Admin admin, bool active = true)
+        {
+            Desktop desktop = await DesktopHelper.CreateSimpleDesktop(context, admin, active);
+            return desktop;
         }
         /// <summary>
         /// This will return the Account using the Id

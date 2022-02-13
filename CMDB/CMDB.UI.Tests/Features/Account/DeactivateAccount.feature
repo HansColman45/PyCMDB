@@ -1,4 +1,4 @@
-﻿Feature: F_DeactivateAccount
+﻿Feature: DeactivateAccount
 
 Scenario: 1 I want to deactivate an existing Account
 	Given There is an active account existing

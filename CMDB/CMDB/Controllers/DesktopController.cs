@@ -31,6 +31,7 @@ namespace CMDB.Controllers
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Desktop\Search";
             return View(Desktops);
         }
@@ -47,6 +48,7 @@ namespace CMDB.Controllers
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
                 ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Desktop\Search";
                 return View(Desktops);
             }

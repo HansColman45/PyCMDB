@@ -1,4 +1,4 @@
-﻿Feature: F_DeactivateLaptop
+﻿Feature: DeactivateLaptop
 
 Scenario: 1 I want to deactivate an existing Laptop
 	Given There is an active Laptop existing

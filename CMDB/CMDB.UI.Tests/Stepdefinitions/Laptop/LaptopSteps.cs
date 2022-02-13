@@ -22,6 +22,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private int rndNr;
         private helpers.Laptop laptop;
         private entity.Laptop Laptop;
+        private entity.Identity Identity;
         string expectedlog, updatedField, newValue;
         public LaptopSteps(ScenarioData scenarioData) : base(scenarioData)
         {
@@ -71,7 +72,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             Laptop = await context.CreateLaptop(admin);
         }
-        [When(@"I update the (.*) with (.*) and I save")]
+        [When(@"I update the (.*) with (.*) on my Laptop and I save")]
         public void WhenIUpdateTheSerialnumberWithAndISave(string field, string value)
         {
             Url = "https://localhost:44314/";
@@ -183,6 +184,22 @@ namespace CMDB.UI.Tests.Stepdefinitions
             string log = detail.GetLastLog();
             expectedlog = $"The Laptop with type {Laptop.Type} in table laptop is activated by {admin.Account.UserID}";
             Assert.Equal(log, expectedlog);
+        }
+
+        [Given(@"an Identy exist as well")]
+        public async Task GivenAnIdentyExistAsWell()
+        {
+            Identity = await context.CreateIdentity(admin);
+        }
+        [When(@"I assign the Laptop to the Identity")]
+        public void WhenIAssignTheLaptopToTheIdentity()
+        {
+
+        }
+        [Then(@"The Identity is assigned to the Laptop")]
+        public void ThenTheIdentityIsAssignedToTheLaptop()
+        {
+
         }
 
     }
