@@ -234,22 +234,18 @@ namespace CMDB.Controllers
             if (account == null)
                 NotFound();
             ViewBag.Account = account;
-            ViewBag.Identities = service.ListAllFreeIdentities();
-            if (accounts == null)
-            {
-                return NotFound();
-            }
+            ViewBag.Identities = await service.ListAllFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 int IdenID = Convert.ToInt32(values["Identity"]);
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
-                service.IsPeriodOverlapping(null, id, from, until);
+                service.IsPeriodOverlapping(id, from, until);
                 if (ModelState.IsValid)
                 {
                     await service.AssignIdentity2Account(account, IdenID, from, until, Table);
-                    return RedirectToAction("AssignFrom", "Account", new { id });
+                    return RedirectToAction("AssignForm", "Account", new { id });
                 }
             }
             return View();
@@ -297,7 +293,7 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public async Task<IActionResult> AssignFrom(IFormCollection values, int? id)
+        public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Form in {0}", Table);
             if (id == null)
@@ -313,7 +309,7 @@ namespace CMDB.Controllers
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";
-            ViewData["Action"] = "AssignFrom";
+            ViewData["Action"] = "AssignForm";
             ViewData["Name"] = accounts.First().Identities.First().Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -330,6 +326,7 @@ namespace CMDB.Controllers
                 };
                 PDFGenerator.SetAccontInfo(accounts.First().Identities.First());
                 PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
             }
             return View(accounts);
         }

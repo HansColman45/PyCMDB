@@ -31,7 +31,7 @@ namespace CMDB.Controllers
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["actionUrl"] = @"\AssetCategory\Search";
-            var Categories = service.ListAll();
+            var Categories = await service.ListAll();
             return View(Categories);
         }
         public async Task<IActionResult> Search(string search)

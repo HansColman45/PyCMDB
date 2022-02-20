@@ -17,16 +17,20 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private MainPage main;
         private AccountOverviewPage overviewPage;
         private CreateAccountPage createAccount;
+        private AssignFormPage AssignFom;
 
         private readonly Random rnd = new();
         private int rndNr;
         private helpers.Account account;
         private entity.Account Account;
+        private entity.Identity Identity;
+
         private string expectedlog, oldValue, newValue, changedField;
 
         public AccountSteps(ScenarioData scenarioData) : base(scenarioData)
         {
         }
+        #region Create
         [Given(@"I want to create a Account with the following details")]
         public void GivenIWantToCreateAAccountWithTheFollowingDetails(Table table)
         {
@@ -58,7 +62,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             expectedlog = $"The Account width UserID: {account.UserId + rndNr.ToString()} with type {account.Type} for application {account.Application} is created by {admin.Account.UserID} in table account";
             Assert.Equal(expectedlog, log);
         }
-
+        #endregion
         [Given(@"There is an account existing")]
         public async Task GivenThereIsAnAccountExisting()
         {
@@ -73,6 +77,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage = main.AccountOverview();
             overviewPage.Search(Account.UserID);
         }
+        #region update
         [When(@"I change the (.*) to (.*) and I save the changes")]
         public void WhenIChangeTheUserIdToTestjeAndISaveTheChanges(string field, string newValue)
         {
@@ -120,7 +125,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
-
+        #endregion
+        #region deactivate
         [Given(@"There is an active account existing")]
         public async Task GivenThereIsAnActiveAccountExisting()
         {
@@ -153,7 +159,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
-
+        #endregion
+        #region Activate
         [Given(@"There is an inactive account existing")]
         public async Task GivenThereIsAnInactiveAccountExisting()
         {
@@ -183,6 +190,37 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
-
+        #endregion
+        #region Assign iden to acc
+        [When(@"I assign the identity to my account")]
+        public void WhenIAssignTheIdentityToMyAccount()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            var assign = overviewPage.AssignIdentity();
+            assign.SelectIdentity(Identity);
+            DateTime validFrom = DateTime.Now.AddYears(-1);
+            DateTime validUntil = DateTime.Now.AddYears(+1);
+            assign.ValidFrom = validFrom.ToString("dd/MM/yyyy\tHH:mm\tt");
+            assign.ValidUntil = validUntil.ToString("dd/MM/yyyy\tHH:mm\tt");
+            AssignFom = assign.Assign();
+            Assert.False(AssignFom.IsVaidationErrorVisable());
+        }
+        [When(@"I fill in the assig form for my account")]
+        public void WhenIFillInTheAssigForm()
+        {
+            string naam = AssignFom.Name;
+            Assert.Equal(naam, AssignFom.Employee);
+            AssignFom.CreatePDF();
+        }
+        [Then(@"The identity is assigned to my account")]
+        public void ThenTheIdentityIsAssignedToMyAccount()
+        {
+            overviewPage.Search(Account.UserID);
+            var detail = overviewPage.Detail();
+            expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID}";
+            var log = detail.GetLastLog();
+            Assert.Equal(expectedlog, log);
+        }
+        #endregion
     }
 }

@@ -222,7 +222,7 @@ namespace CMDB.Services
             List<SelectListItem> accounts = new();
             var freeAccounts = await _context.Accounts
                 .Include(x => x.Application)
-                .Where(x => x.active == 1 && x.Application.Name == "CMDB")
+                .Where(x => x.active == 1)
                 .ToListAsync();
             var idenaccounts = await _context.IdenAccounts
                 .Include(x => x.Account)
@@ -238,36 +238,21 @@ namespace CMDB.Services
             }
             return accounts;
         }
-        public bool IsPeriodOverlapping(int? IdenID, int? AccID, DateTime ValidFrom, DateTime ValidUntil)
+        public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            if (IdenID == null && AccID == null)
-                throw new Exception("Missing required id's");
+            if (IdenID == null)
+                throw new Exception("Missing required id");
             else
             {
-                if (IdenID != null)
-                {
-                    var Identity = _context.IdenAccounts
+                var Identity = _context.IdenAccounts
                         .Include(x => x.Identity)
                         .Where(x => x.Identity.IdenId == IdenID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
                         .ToList();
-                    if (Identity.Count > 0)
-                        result = true;
-                    else
-                        result = false;
-                }
-                else if (AccID != null)
-                {
-                    var accounts = _context.IdenAccounts
-                        .Include(x => x.Account)
-                        .Where(x => x.Account.AccID == AccID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
-                        .ToList();
-                    if (accounts.Count > 0)
-                        result = true;
-                    else
-                        result = false;
-                }
-
+                if (Identity.Count > 0)
+                    result = true;
+                else
+                    result = false;
             }
             return result;
         }

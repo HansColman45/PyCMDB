@@ -271,12 +271,12 @@ namespace CMDB.Controllers
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 try
                 {
-                    if (service.IsPeriodOverlapping(id, null, from, until))
+                    if (service.IsPeriodOverlapping(id, from, until))
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
                         await service.AssignAccount2Idenity(identity, AccId, from, until, Table);
-                        return RedirectToAction("AssignFrom", "Identity", new { id });
+                        return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                 }
                 catch (Exception ex)
@@ -330,7 +330,7 @@ namespace CMDB.Controllers
             }
             return View();
         }
-        public async Task<IActionResult> AssignFrom(IFormCollection values, int? id)
+        public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id == null)
                 return NotFound();
@@ -345,7 +345,7 @@ namespace CMDB.Controllers
             service.GetAssignedAccounts(list.First());
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
-            ViewData["Action"] = "AssignFrom";
+            ViewData["Action"] = "AssignForm";
             ViewData["Name"] = list.First().Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             ViewData["LogDateFormat"] = service.LogDateFormat;

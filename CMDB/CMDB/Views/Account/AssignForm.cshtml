@@ -45,16 +45,17 @@
                 @foreach (CMDB.Domain.Entities.IdenAccount idenAccount in item.Identities)
                 {
                     <tr>
-                        <td class="small">@idenAccount.Identity.Name</td>
-                        <td class="small">@idenAccount.Identity.UserID</td>
-                        <td class="small">@idenAccount.Identity.EMail</td>
-                        <td class="small">@idenAccount.Identity.Language.Description</td>
-                        <td class="small">@idenAccount.Identity.Type.Type</td>
-                        <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
-                        <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
+                        <td id="Name" class="small">@idenAccount.Identity.Name</td>
+                        <td id="IdenityUserId" class="small">@idenAccount.Identity.UserID</td>
+                        <td id="EMail" class="small">@idenAccount.Identity.EMail</td>
+                        <td id="Language" class="small">@idenAccount.Identity.Language.Description</td>
+                        <td id="IdentityType" class="small">@idenAccount.Identity.Type.Type</td>
+                        <td id="ValidFrom" class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
+                        <td id="ValidUntil" class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
                     </tr>
                 }
             </tbody>
         </table>
     }
 }
+<partial name="_SignForm" />

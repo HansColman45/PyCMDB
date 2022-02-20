@@ -215,54 +215,35 @@ namespace CMDB.Services
             List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.TypeID == ID).ToList();
             return accountTypes;
         }
-        public List<SelectListItem> ListAllFreeIdentities()
+        public async Task<List<SelectListItem>> ListAllFreeIdentities()
         {
             List<SelectListItem> accounts = new();
-            var identities = _context.Identities
+            var identities = await _context.Identities
                 .Include(x => x.Accounts)
-                .Where(x => x.Active == "Active" && x.IdenId != 1)
-                .ToList();
+                .Where(x => x.active == 1 && x.IdenId != 1)
+                .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now))
+                .ToListAsync();
             foreach (var idenity in identities)
             {
-                foreach (var acc in idenity.Accounts)
-                {
-                    DateTime endDate = acc.ValidUntil;
-                    if (acc.ValidFrom <= DateTime.Now || DateTime.Now >= endDate)
-                        accounts.Add(new SelectListItem(idenity.UserID + " " + idenity.Name, idenity.IdenId.ToString()));
-                }
+                accounts.Add(new SelectListItem(idenity.UserID + " " + idenity.Name, idenity.IdenId.ToString()));
             }
             return accounts;
         }
-        public bool IsPeriodOverlapping(int? IdenID, int? AccID, DateTime ValidFrom, DateTime ValidUntil)
+        public bool IsPeriodOverlapping(int? AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            if (IdenID == null || AccID == null)
-                throw new Exception("Missing required id's");
+            if (AccID == null)
+                throw new Exception("Missing required id");
             else
             {
-                if (IdenID != null)
-                {
-                    var Identity = _context.IdenAccounts
-                        .Include(x => x.Identity)
-                        .Where(x => x.Identity.IdenId == IdenID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
-                        .ToList();
-                    if (Identity.Count > 0)
-                        result = true;
-                    else
-                        result = false;
-                }
-                else if (AccID != null)
-                {
-                    var accounts = _context.IdenAccounts
+                var accounts = _context.IdenAccounts
                         .Include(x => x.Account)
                         .Where(x => x.Account.AccID == AccID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
                         .ToList();
-                    if (accounts.Count > 0)
-                        result = true;
-                    else
-                        result = false;
-                }
-
+                if (accounts.Count > 0)
+                    result = true;
+                else
+                    result = false;
             }
             return result;
         }

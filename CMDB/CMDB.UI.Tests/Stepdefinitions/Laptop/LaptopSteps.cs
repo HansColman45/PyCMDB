@@ -190,6 +190,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public async Task GivenAnIdentyExistAsWell()
         {
             Identity = await context.CreateIdentity(admin);
+            TestData.Add("Identity", Identity);
         }
         [When(@"I assign the Laptop to the Identity")]
         public void WhenIAssignTheLaptopToTheIdentity()
