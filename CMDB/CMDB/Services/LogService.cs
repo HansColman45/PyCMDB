@@ -35,11 +35,11 @@ namespace CMDB.Services
             model.Logs = table switch
             {
                 "identity" => _context.Logs.Include(x => x.Identity).Where(x => x.Identity.IdenId == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "identitytype" => _context.Logs.Include(x => x.IdentityType).Where(x => x.IdentityType.TypeID == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "identitytype" => _context.Logs.Include(x => x.Type).Where(x => x.Type.TypeId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "account" => _context.Logs.Include(x => x.Account).Where(x => x.Account.AccID == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "accounttype" => _context.Logs.Include(x => x.AccountType).Where(x => x.AccountType.TypeID == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "accounttype" => _context.Logs.Include(x => x.Type).Where(x => x.Type.TypeId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "role" => _context.Logs.Include(x => x.Role).Where(x => x.Role.RoleId == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "roletype" => _context.Logs.Include(x => x.RoleType).Where(x => x.RoleType.TypeId == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "roletype" => _context.Logs.Include(x => x.Type).Where(x => x.Type.TypeId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "assettype" => _context.Logs.Include(x => x.AssetType).Where(x => x.AssetType.TypeID == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "menu" => _context.Logs.Include(x => x.Menu).Where(x => x.Menu.MenuId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "permissions" => _context.Logs.Include(x => x.Permission).Where(x => x.Permission.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
@@ -150,8 +150,8 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "identitytype":
-                    IdentityType identityType = _context.IdentityTypes.Where(x => x.TypeID == ID).First();
-                    log.IdentityType = identityType;
+                    IdentityType identityType = _context.Types.OfType<IdentityType>().Where(x => x.TypeId == ID).First();
+                    log.Type = identityType;
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
@@ -162,7 +162,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "accounttype":
-                    log.AccountType = _context.AccountTypes.Where(x => x.TypeID == ID).First();
+                    log.Type = _context.Types.OfType<AccountType>().Where(x => x.TypeId == ID).First();
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
@@ -172,7 +172,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "roletype":
-                    log.RoleType = _context.RoleTypes.Where(x => x.TypeId == ID).First();
+                    log.Type = _context.Types.OfType<RoleType>().Where(x => x.TypeId == ID).First();
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;

@@ -44,10 +44,10 @@ namespace CMDB.Services
         public List<SelectListItem> ListActiveIdentityTypes()
         {
             List<SelectListItem> identityTypes = new();
-            List<IdentityType> types = _context.IdentityTypes.Where(x => x.active == 1).ToList();
+            List<IdentityType> types = _context.Types.OfType<IdentityType>().Where(x => x.active == 1).ToList();
             foreach (var type in types)
             {
-                identityTypes.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeID.ToString()));
+                identityTypes.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeId.ToString()));
             }
             return identityTypes;
         }
@@ -165,7 +165,7 @@ namespace CMDB.Services
                 await LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID);
                 identity.UserID = UserID;
             }
-            if (identity.Type.TypeID != type)
+            if (identity.Type.TypeId != type)
             {
                 var Type = GetIdenityTypeByID(type);
                 IdentityType newType = Type.ElementAt<IdentityType>(0);
@@ -212,8 +212,9 @@ namespace CMDB.Services
         }
         public ICollection<IdentityType> GetIdenityTypeByID(int id)
         {
-            var types = _context.IdentityTypes
-                .Where(x => x.TypeID == id)
+            var types = _context.Types
+                .OfType<IdentityType>()
+                .Where(x => x.TypeId == id)
                 .ToList();
             return types;
         }

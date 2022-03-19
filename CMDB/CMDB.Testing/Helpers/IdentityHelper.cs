@@ -14,7 +14,7 @@ namespace CMDB.Testing.Helpers
         public static async Task<Identity> CreateSimpleIdentity(CMDBContext context, Admin admin, bool active = true)
         {
             var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
-            var identype = context.IdentityTypes.Where(x => x.Type == "Werknemer").FirstOrDefault();
+            var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").FirstOrDefault();
 
             var identity = new IdentityBuilder()
                 .With(x => x.Language, language)

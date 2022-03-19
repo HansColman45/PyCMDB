@@ -14,8 +14,8 @@ namespace CMDB.Testing.Helpers
         {
             var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
             var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
-            var identype = context.IdentityTypes.Where(x => x.Type == "Werknemer").FirstOrDefault();
-            var accounttype = context.AccountTypes.Where(x => x.Type == "Administrator").FirstOrDefault();
+            var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").FirstOrDefault();
+            var accounttype = context.Types.OfType<AccountType>().Where(x => x.Type == "Administrator").FirstOrDefault();
 
             var Account = new AccountBuilder()
                 .With(x => x.Application, app)
@@ -73,7 +73,8 @@ namespace CMDB.Testing.Helpers
         public static async Task DeleteCascading(CMDBContext context, Admin admin)
         {
             //AccountType
-            var accountType = context.AccountTypes
+            var accountType = context.Types
+                .OfType<AccountType>()
                 .Include(x => x.Logs)
                 .Where(x => x.LastModifiedAdminId == admin.AdminId)
                 .ToList();
@@ -82,7 +83,8 @@ namespace CMDB.Testing.Helpers
                 await AssetTypeHelper.Delete(context, type);
             }
             //IdentityTypes
-            var identypes = context.IdentityTypes
+            var identypes = context.Types
+                .OfType<IdentityType>()
                 .Include(x => x.Logs)
                 .Where(x => x.LastModifiedAdminId == admin.AdminId)
                 .ToList();

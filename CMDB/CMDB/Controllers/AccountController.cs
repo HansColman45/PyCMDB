@@ -120,7 +120,7 @@ namespace CMDB.Controllers
                 try
                 {
                     string NewUserID = values["UserID"];
-                    string Type = values["Type.TypeID"];
+                    string Type = values["Type.TypeId"];
                     string Application = values["Application.AppID"];
                     if (service.IsAccountExisting(account, NewUserID, Convert.ToInt32(Type)))
                         ModelState.AddModelError("", "Account alreaday exist");

@@ -15,7 +15,6 @@ namespace CMDB.Domain.Entities
             Subscriptions = new List<Subscription>();
             SubscriptionTypes = new List<SubscriptionType>();
             Identities = new List<Identity>();
-            IdentityTypes = new List<IdentityType>();
             IdenAccounts = new List<IdenAccount>();
             Admins = new List<Admin>();
             AssetCategories = new List<AssetCategory>();
@@ -24,8 +23,8 @@ namespace CMDB.Domain.Entities
             Applications = new List<Application>();
             RolePerms = new List<RolePerm>();
             Roles = new List<Role>();
-            RoleTypes = new List<RoleType>();
             Permissions = new List<Permission>();
+            Types = new List<GeneralType>();
         }
         [Column("Admin_id")]
         [Key]
@@ -44,7 +43,7 @@ namespace CMDB.Domain.Entities
         public virtual ICollection<Subscription> Subscriptions { get; set; }
         public virtual ICollection<SubscriptionType> SubscriptionTypes { get; set; }
         public virtual ICollection<Identity> Identities { get; set; }
-        public virtual ICollection<IdentityType> IdentityTypes { get; set; }
+        public virtual ICollection<GeneralType> Types { get; set; }
         public virtual ICollection<Account> Accounts { get; set; }
         public virtual ICollection<AccountType> AccountTypes { get; set; }
         public virtual ICollection<Admin> Admins { get; set; }
@@ -55,6 +54,5 @@ namespace CMDB.Domain.Entities
         public virtual ICollection<Permission> Permissions { get; set; }
         public virtual ICollection<RolePerm> RolePerms { get; set; }
         public virtual ICollection<Role> Roles { get; set; }
-        public virtual ICollection<RoleType> RoleTypes { get; set; }
     }
 }

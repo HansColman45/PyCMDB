@@ -11,7 +11,7 @@
                 <th>@Html.DisplayNameFor(model => model.Type)</th>
                 <th>@Html.DisplayNameFor(model => model.Description)</th>
                 <th>@Html.DisplayNameFor(model => model.Active)</th>
-                <th class="d-none">@Html.DisplayNameFor(model => model.TypeID)</th>
+                <th class="d-none">@Html.DisplayNameFor(model => model.TypeId)</th>
             </tr>
         </thead>
         <tbody>
@@ -21,7 +21,7 @@
                     <td id="Type">@Html.DisplayFor(modelItem => item.Type)</td>
                     <td id="Description">@Html.DisplayFor(modelItem => item.Description)</td>
                     <td id="State">@Html.DisplayFor(modelItem => item.Active)</td>
-                    <td id="Id" class="d-none">@Html.DisplayFor(modelItem => item.TypeID)</td>
+                    <td id="Id" class="d-none">@Html.DisplayFor(modelItem => item.TypeId)</td>
                 </tr>
             }
         </tbody>

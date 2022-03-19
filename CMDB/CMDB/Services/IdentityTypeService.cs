@@ -15,31 +15,35 @@ namespace CMDB.Services
         }
         public async Task<ICollection<IdentityType>> ListAll()
         {
-            var types = await _context.IdentityTypes.ToListAsync();
+            var types = await _context.Types
+                .OfType<IdentityType>()
+                .ToListAsync();
             return types;
         }
         public async Task<ICollection<IdentityType>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            var types = await _context.IdentityTypes
+            var types = await _context.Types
+                .OfType<IdentityType>()
                 .Where(x => EF.Functions.Like(x.Description, searhterm) || EF.Functions.Like(x.Type, searchString))
                 .ToListAsync();
             return types;
         }
         public async Task<ICollection<IdentityType>> GetByID(int id)
         {
-            var types = await _context.IdentityTypes
-                .Where(x => x.TypeID == id)
+            var types = await _context.Types
+                .OfType<IdentityType>()
+                .Where(x => x.TypeId == id)
                 .ToListAsync();
             return types;
         }
         public async Task Create(IdentityType identityType, string Table)
         {
             identityType.LastModfiedAdmin = Admin;
-            _context.IdentityTypes.Add(identityType);
+            _context.Types.Add(identityType);
             await _context.SaveChangesAsync();
             string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
-            await LogCreate(Table, identityType.TypeID, Value);
+            await LogCreate(Table, identityType.TypeId, Value);
         }
         public async Task Update(IdentityType identityType, string Type, string Description, string Table)
         {
@@ -48,13 +52,13 @@ namespace CMDB.Services
             {
                 identityType.Type = Type;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeID, "Type", identityType.Type, Type);
+                await LogUpdate(Table, identityType.TypeId, "Type", identityType.Type, Type);
             }
             if (String.Compare(identityType.Description, Description) != 0)
             {
                 identityType.Description = Description;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeID, "Description", identityType.Description, Description);
+                await LogUpdate(Table, identityType.TypeId, "Description", identityType.Description, Description);
             }
         }
         public async Task Deactivate(IdentityType identityType, string reason, string Table)
@@ -64,7 +68,7 @@ namespace CMDB.Services
             identityType.Active = "Inactive";
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
-            await LogDeactivate(Table, identityType.TypeID, Value, reason);
+            await LogDeactivate(Table, identityType.TypeId, Value, reason);
         }
         public async Task Activate(IdentityType identityType, string table)
         {
@@ -73,14 +77,15 @@ namespace CMDB.Services
             identityType.Active = "Active";
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
-            await LogActivate(table, identityType.TypeID, Value);
+            await LogActivate(table, identityType.TypeId, Value);
         }
         public bool IsExisting(IdentityType identityType, string Type = "", string Description = "")
         {
             bool result = false;
             if (String.IsNullOrEmpty(Type) && String.Compare(identityType.Type, Type) != 0)
             {
-                var identypes = _context.IdentityTypes
+                var identypes = _context.Types
+                    .OfType<IdentityType>()
                     .Where(x => x.Type == Type)
                     .ToList();
                 if (identypes.Count > 0)
@@ -88,7 +93,8 @@ namespace CMDB.Services
             }
             if (String.IsNullOrEmpty(Description) && String.Compare(identityType.Description, Description) != 0)
             {
-                var identypes = _context.IdentityTypes
+                var identypes = _context.Types
+                    .OfType<IdentityType>()
                     .Where(x => x.Description == Description)
                     .ToList();
                 if (identypes.Count > 0)

@@ -16,16 +16,16 @@ namespace CMDB.Services
         }
         public async Task<List<AccountType>> GetAccountTypeByID(int ID)
         {
-            List<AccountType> accountTypes = await _context.AccountTypes.Where(x => x.TypeID == ID).ToListAsync();
+            List<AccountType> accountTypes = await _context.Types.OfType<AccountType>().Where(x => x.TypeId == ID).ToListAsync();
             return accountTypes;
         }
         public async Task Create(AccountType accountType, string Table)
         {
             accountType.LastModfiedAdmin = Admin;
-            _context.AccountTypes.Add(accountType);
+            _context.Types.Add(accountType);
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogCreate(Table, accountType.TypeID, Value);
+            await LogCreate(Table, accountType.TypeId, Value);
         }
         public async Task Update(AccountType accountType, string Type, string Description, string Table)
         {
@@ -34,13 +34,13 @@ namespace CMDB.Services
             {
                 accountType.Type = Type;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeID, "Type", accountType.Type, Type);
+                await LogUpdate(Table, accountType.TypeId, "Type", accountType.Type, Type);
             }
             if (String.Compare(accountType.Description, Description) != 0)
             {
                 accountType.Description = Description;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeID, "Description", accountType.Description, Description);
+                await LogUpdate(Table, accountType.TypeId, "Description", accountType.Description, Description);
             }
         }
         public async Task Deactivate(AccountType accountType, string Reason, string Table)
@@ -50,7 +50,7 @@ namespace CMDB.Services
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogDeactivate(Table, accountType.TypeID, Value, Reason);
+            await LogDeactivate(Table, accountType.TypeId, Value, Reason);
         }
         public async Task Activate(AccountType accountType, string Table)
         {
@@ -59,17 +59,18 @@ namespace CMDB.Services
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogActivate(Table, accountType.TypeID, Value);
+            await LogActivate(Table, accountType.TypeId, Value);
         }
         public async Task<List<AccountType>> ListAll()
         {
-            List<AccountType> accountTypes = await _context.AccountTypes.ToListAsync();
+            List<AccountType> accountTypes = await _context.Types.OfType<AccountType>().ToListAsync();
             return accountTypes;
         }
         public async Task<List<AccountType>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            List<AccountType> accountTypes = await _context.AccountTypes
+            List<AccountType> accountTypes = await _context.Types
+                .OfType<AccountType>()
                 .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm)).ToListAsync();
             return accountTypes;
         }
@@ -78,25 +79,37 @@ namespace CMDB.Services
             bool result = false;
             if (String.IsNullOrEmpty(Type) && String.Compare(accountType.Type, Type) != 0)
             {
-                var accountTypes = _context.AccountTypes.Where(x => x.Type == Type).ToList();
+                var accountTypes = _context.Types
+                    .OfType<AccountType>()
+                    .Where(x => x.Type == Type)
+                    .ToList();
                 if (accountTypes.Count > 0)
                     result = true;
             }
             else
             {
-                var accountTypes = _context.AccountTypes.Where(x => x.Type == accountType.Type).ToList();
+                var accountTypes = _context.Types
+                    .OfType<AccountType>()
+                    .Where(x => x.Type == accountType.Type)
+                    .ToList();
                 if (accountTypes.Count > 0)
                     result = true;
             }
             if (String.IsNullOrEmpty(Description) && String.Compare(accountType.Description, Description) != 0)
             {
-                var accountTypes = _context.AccountTypes.Where(x => x.Description == Description).ToList();
+                var accountTypes = _context
+                    .Types.OfType<AccountType>()
+                    .Where(x => x.Description == Description)
+                    .ToList();
                 if (accountTypes.Count > 0)
                     result = true;
             }
             else
             {
-                var accountTypes = _context.AccountTypes.Where(x => x.Description == accountType.Description).ToList();
+                var accountTypes = _context
+                    .Types.OfType<AccountType>()
+                    .Where(x => x.Description == accountType.Description)
+                    .ToList();
                 if (accountTypes.Count > 0)
                     result = true;
             }

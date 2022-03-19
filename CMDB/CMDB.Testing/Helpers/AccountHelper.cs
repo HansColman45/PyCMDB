@@ -13,7 +13,7 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin, bool active = true)
         {
-            var accounttype = context.AccountTypes.Where(x => x.Type == "Normal User").FirstOrDefault();
+            var accounttype = context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").FirstOrDefault();
             var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
 
             Account Account = new AccountBuilder()

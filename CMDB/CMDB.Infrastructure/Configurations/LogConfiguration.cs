@@ -26,11 +26,11 @@ namespace CMDB.Infrastructure.Configuration
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Account");
 
-            builder.HasOne(e => e.AccountType)
+            builder.HasOne(e => e.Type)
                 .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.AccountTypeId)
+                .HasForeignKey(e => e.TypeId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_AccounType");
+                .HasConstraintName("FK_Log_Type");
 
             builder.HasOne(e => e.Admin)
                 .WithMany(d => d.Logs)
@@ -62,12 +62,6 @@ namespace CMDB.Infrastructure.Configuration
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Identity");
 
-            builder.HasOne(e => e.IdentityType)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.IdentityTypeId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_IdentityType");
-
             builder.HasOne(e => e.Kensington)
                 .WithMany(d => d.Logs)
                 .HasForeignKey(e => e.KensingtonId)
@@ -97,12 +91,6 @@ namespace CMDB.Infrastructure.Configuration
                 .HasForeignKey(e => e.RoleId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Role");
-
-            builder.HasOne(e => e.RoleType)
-                .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.RoleTypeId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Log_RoleType");
 
             builder.HasOne(e => e.Subscription)
                 .WithMany(d => d.Logs)

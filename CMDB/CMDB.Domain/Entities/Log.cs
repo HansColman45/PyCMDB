@@ -10,8 +10,8 @@ namespace CMDB.Domain.Entities
 
         public Account Account { get; set; }
         public int? AccountId { get; set; }
-        public AccountType AccountType { get; set; }
-        public int? AccountTypeId { get; set; }
+        public GeneralType Type { get; set; }
+        public int? TypeId { get; set; }
         public Admin Admin { get; set; }
         public int? AdminId { get; set; }
         public Application Application { get; set; }
@@ -24,8 +24,6 @@ namespace CMDB.Domain.Entities
         public string AssetTag { get; set; }
         public Identity Identity { get; set; }
         public int? IdentityId { get; set; }
-        public IdentityType IdentityType { get; set; }
-        public int? IdentityTypeId { get; set; }
         public Kensington Kensington { get; set; }
         public int? KensingtonId { get; set; }
         public Menu Menu { get; set; }
@@ -40,7 +38,5 @@ namespace CMDB.Domain.Entities
         public int? SubscriptionTypeId { get; set; }
         public Role Role { get; set; }
         public int? RoleId { get; set; }
-        public RoleType RoleType { get; set; }
-        public int? RoleTypeId { get; set; }
     }
 }

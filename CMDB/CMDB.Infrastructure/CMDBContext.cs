@@ -10,7 +10,6 @@ namespace CMDB.Infrastructure
         }
         public Admin Admin { get; set; }
         public virtual DbSet<Account> Accounts { get; set; }
-        public virtual DbSet<AccountType> AccountTypes { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Application> Applications { get; set; }
         public virtual DbSet<AssetCategory> AssetCategories { get; set; }
@@ -19,14 +18,13 @@ namespace CMDB.Infrastructure
         public virtual DbSet<Mobile> Mobiles { get; set; }
         public virtual DbSet<Identity> Identities { get; set; }
         public virtual DbSet<IdenAccount> IdenAccounts { get; set; }
-        public virtual DbSet<IdentityType> IdentityTypes { get; set; }
+        public virtual DbSet<GeneralType> Types { get; set; }
         public virtual DbSet<Kensington> Kensingtons { get; set; }
         public virtual DbSet<Language> Languages { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<Menu> Menus { get; set; }
         public virtual DbSet<Permission> Permissions { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<RoleType> RoleTypes { get; set; }
         public virtual DbSet<RolePerm> RolePerms { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }

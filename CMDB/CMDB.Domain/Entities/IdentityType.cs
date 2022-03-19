@@ -4,16 +4,8 @@ using System.Collections.Generic;
 
 namespace CMDB.Domain.Entities
 {
-    [Table("identitytype")]
-    public class IdentityType : Model
+    public class IdentityType : GeneralType
     {
-        [Key]
-        public int TypeID { get; set; }
-        [Required(ErrorMessage = "Please fill in a Type")]
-        public string Type { get; set; }
-        [Required(ErrorMessage = "Please fill in a Description")]
-        public string Description { get; set; }
-
         public virtual ICollection<Identity> Identities { get; set; }
     }
 }

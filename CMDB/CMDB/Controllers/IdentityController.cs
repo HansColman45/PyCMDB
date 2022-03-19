@@ -153,7 +153,7 @@ namespace CMDB.Controllers
                 string NewLastName = values["LastName"];
                 string NewUserID = values["UserID"];
                 string NewCompany = values["Company"];
-                string NewType = values["Type.TypeID"];
+                string NewType = values["Type.TypeId"];
                 string NewLanguage = values["Language.Code"];
                 string NewEMail = values["EMail"];
                 if (service.IsExisting(identity, NewUserID))

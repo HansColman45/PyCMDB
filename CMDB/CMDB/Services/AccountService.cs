@@ -69,7 +69,7 @@ namespace CMDB.Services
                 await LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
                 account.UserID = UserID;
             }
-            if (account.Type.TypeID != type)
+            if (account.Type.TypeId != type)
             {
                 await LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type);
                 account.Type = accountType;
@@ -121,10 +121,10 @@ namespace CMDB.Services
         public List<SelectListItem> ListActiveAccountTypes()
         {
             List<SelectListItem> accounts = new();
-            List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.active == 1).ToList();
+            List<AccountType> accountTypes = _context.Types.OfType<AccountType>().Where(x => x.active == 1).ToList();
             foreach (var accountType in accountTypes)
             {
-                accounts.Add(new SelectListItem(accountType.Type, accountType.TypeID.ToString()));
+                accounts.Add(new SelectListItem(accountType.Type, accountType.TypeId.ToString()));
             }
             return accounts;
         }
@@ -212,7 +212,7 @@ namespace CMDB.Services
         }
         public List<AccountType> GetAccountTypeByID(int ID)
         {
-            List<AccountType> accountTypes = _context.AccountTypes.Where(x => x.TypeID == ID).ToList();
+            List<AccountType> accountTypes = _context.Types.OfType<AccountType>().Where(x => x.TypeId == ID).ToList();
             return accountTypes;
         }
         public async Task<List<SelectListItem>> ListAllFreeIdentities()
