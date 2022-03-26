@@ -167,7 +167,7 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Delete Desktop";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["backUrl"] = "Admin";
+            ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var desktops = await service.ListDekstopByID(id);

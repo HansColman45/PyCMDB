@@ -2,6 +2,7 @@
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading;
 
@@ -259,7 +260,7 @@ namespace CMDB.UI.Tests.Pages
         {
             try
             {
-                object p = driver.Manage().Timeouts().ImplicitWait = new TimeSpan(15);
+                object p = driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
                 var element = driver.FindElement(by);
                 return element.Displayed && element.Enabled;
             }
@@ -286,6 +287,17 @@ namespace CMDB.UI.Tests.Pages
             fluentWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
             IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xpath)));
             return element.GetAttribute(property);
+        }
+        public void TakeScreenShot(string step)
+        {
+            ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
+            var screenshot = takesScreenshot.GetScreenshot();
+            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
+            string fileName = $"{step}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
+            string tempFileName = Path.Combine(path, @"../../../Screenshots/", fileName);
+
+            screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
+            log.Debug("Screenshot saved: {0}", tempFileName);
         }
         /// <summary>
         /// This function will scoll to an given ellemt 

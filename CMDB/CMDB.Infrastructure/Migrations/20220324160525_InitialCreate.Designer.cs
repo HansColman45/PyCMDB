@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMDB.Infrastructure.Migrations
 {
     [DbContext(typeof(CMDBContext))]
-    [Migration("20220312134701_InitialCreate")]
+    [Migration("20220324160525_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -899,11 +899,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
                     b.Property<string>("MAC")
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("MAC");
 
                     b.Property<string>("RAM")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("RAM");
 
                     b.ToTable("asset");
 
@@ -924,13 +928,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
                     b.Property<string>("MAC")
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("Laptop_MAC");
+                        .HasColumnName("MAC");
 
                     b.Property<string>("RAM")
                         .IsRequired()
+                        .ValueGeneratedOnUpdateSometimes()
                         .HasColumnType("varchar(255)")
-                        .HasColumnName("Laptop_RAM");
+                        .HasColumnName("RAM");
 
                     b.ToTable("asset");
 

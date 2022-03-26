@@ -31,7 +31,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private entity.Account Account;
         private entity.Identity Identity;
         private string updatedfield, newvalue, reason;
-        public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider) : base(scenarioData)
+        public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider, ScenarioContext context) : base(scenarioData, context)
         {
             _unitTestRuntimeProvider = unitTestRuntimeProvider;
         }

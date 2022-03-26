@@ -897,11 +897,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
                     b.Property<string>("MAC")
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("MAC");
 
                     b.Property<string>("RAM")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("RAM");
 
                     b.ToTable("asset");
 
@@ -922,11 +926,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
                     b.Property<string>("MAC")
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("MAC");
 
                     b.Property<string>("RAM")
                         .IsRequired()
-                        .HasColumnType("varchar(255)");
+                        .ValueGeneratedOnUpdateSometimes()
+                        .HasColumnType("varchar(255)")
+                        .HasColumnName("RAM");
 
                     b.ToTable("asset");
 

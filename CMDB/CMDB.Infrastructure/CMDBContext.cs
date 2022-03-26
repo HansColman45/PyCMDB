@@ -35,6 +35,6 @@ namespace CMDB.Infrastructure
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CMDBContext).Assembly);
         }
-        // protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n", b => b.MigrationsAssembly("CMDB"));
+        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n");
     }
 }

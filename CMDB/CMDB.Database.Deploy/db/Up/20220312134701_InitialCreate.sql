@@ -502,7 +502,7 @@ ALTER TABLE [Admin] ADD CONSTRAINT [FK_Admin_Account] FOREIGN KEY ([AccountId]) 
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20220312134701_InitialCreate', N'5.0.10');
+VALUES (N'20220324160525_InitialCreate', N'5.0.10');
 GO
 
 COMMIT;

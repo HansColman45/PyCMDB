@@ -6,6 +6,7 @@ using CMDB.UI.Tests.Data;
 using System.IO;
 using System;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace CMDB.UI.Tests.Hooks
 {
@@ -72,6 +73,11 @@ namespace CMDB.UI.Tests.Hooks
             scenarioData.Driver.Close();
             scenarioData.Driver.Quit();
             scenarioData.Context = null;
+            Process[] procs = Process.GetProcessesByName("chromedriver");
+            foreach (var proc in procs)
+            {
+                proc.Kill();
+            }
         }
         /// <summary>
         /// This function will run after each step

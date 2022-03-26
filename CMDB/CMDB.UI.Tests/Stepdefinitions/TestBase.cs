@@ -2,6 +2,7 @@
 using CMDB.UI.Tests.Data;
 using CMDB.UI.Tests.Hooks;
 using System;
+using TechTalk.SpecFlow;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -13,6 +14,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         /// </summary>
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected ScenarioData ScenarioData { get; set; }
+        protected ScenarioContext ScenarioContext { get; set; }
         /// <summary>
         /// The connection to the database
         /// </summary>
@@ -25,12 +27,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
         /// Constructor
         /// </summary>
         /// <param name="scenarioData"></param>
-        public TestBase(ScenarioData scenarioData)
+        public TestBase(ScenarioData scenarioData, ScenarioContext scenarioContext)
         {
             ScenarioData = scenarioData;
             context = scenarioData.Context;
             admin = scenarioData.Admin;
             ScenarioData.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            ScenarioContext = scenarioContext; 
         }
     }
 }

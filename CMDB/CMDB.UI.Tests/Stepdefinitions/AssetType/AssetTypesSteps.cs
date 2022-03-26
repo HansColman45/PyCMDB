@@ -17,7 +17,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         private readonly Random rnd = new();
         private int rndNr;
         private string vendor, type, newtype, reason;
-        public AssetTypesSteps(ScenarioData scenarioData) : base(scenarioData)
+        public AssetTypesSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
         }
         [Given(@"I want to create a new (.*) with (.*) and (.*)")]

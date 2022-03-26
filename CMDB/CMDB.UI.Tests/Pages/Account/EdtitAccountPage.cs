@@ -19,7 +19,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public string Type
         {
-            set => SelectTektInDropDownByXpath("//select[@id='Type_TypeID']", value);
+            set => SelectTektInDropDownByXpath("//select[@id='Type_TypeId']", value);
         }
         public string Application
         {

@@ -11,10 +11,12 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasBaseType<Device>();
 
             builder.Property(e => e.MAC)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .HasColumnName("MAC");
 
             builder.Property(e => e.RAM)
-                .HasColumnType("varchar(255)");
+                .HasColumnType("varchar(255)")
+                .HasColumnName("RAM");
         }
     }
 }

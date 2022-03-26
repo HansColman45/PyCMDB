@@ -24,7 +24,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private entity.Laptop Laptop;
         private entity.Identity Identity;
         string expectedlog, updatedField, newValue;
-        public LaptopSteps(ScenarioData scenarioData) : base(scenarioData)
+        public LaptopSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
 
         }

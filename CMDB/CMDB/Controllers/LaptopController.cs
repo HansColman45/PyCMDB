@@ -168,7 +168,7 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Delete Laptop";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["backUrl"] = "Admin";
+            ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var laptops = await service.ListLaptopByID(id);

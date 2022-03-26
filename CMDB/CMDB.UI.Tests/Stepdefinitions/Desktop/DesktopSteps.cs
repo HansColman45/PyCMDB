@@ -23,7 +23,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         private helpers.Desktop desktop;
         private entity.Desktop Desktop;
         string expectedlog, updatedField, newValue;
-        public DesktopSteps(ScenarioData scenarioData) : base(scenarioData)
+        public DesktopSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
         }
         [Given(@"I want to create a new Desktop with these details")]

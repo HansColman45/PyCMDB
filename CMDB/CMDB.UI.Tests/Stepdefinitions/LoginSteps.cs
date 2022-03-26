@@ -10,7 +10,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
     {
         private LoginPage login;
         private MainPage main;
-        public LoginSteps(ScenarioData scenarioData) : base(scenarioData)
+        public LoginSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
         }
 
