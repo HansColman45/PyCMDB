@@ -1,0 +1,38 @@
+﻿@model CMDB.Domain.Entities.Docking
+@{
+    Layout = "_Layout";
+}
+<h2>@ViewData["Title"]</h2>
+@if ((bool)ViewData["AddAccess"])
+{
+    <form class="form-horizontal" action="/Docking/Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="AssetTag" class="control-label">AssetTag <span style="color:red;">*</span></label>
+            <input asp-for="AssetTag" class="form-control" placeholder="DOC0001">
+            <span class="text-danger field-validation-valid" asp-validation-for="AssetTag" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="SerialNumber" class="control-label">Serial number <span style="color:red;">*</span></label>
+            <input asp-for="SerialNumber" class="form-control" placeholder="Serialnumber">
+            <span class="text-danger field-validation-valid" asp-validation-for="AssetTag" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label">Type <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Type, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Type" data-valmsg-replace="true"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Create</button>
+            <a class="btn" asp-area="" asp-controller="@ViewData["backUrl"]" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+}
+else
+{
+    <p>You do not access to this page</p>
+}

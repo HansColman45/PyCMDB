@@ -34,7 +34,7 @@ namespace CMDB.UI.Tests.Hooks
         /// </summary>
         /// <param name="context"></param>
         [AfterScenario]
-        public void AfterScenario(ScenarioContext context, ScenarioData scenarioData)
+        public void AfterScenario(ScenarioContext context)
         {
             log.Debug("Scenario {0} stoped", context.ScenarioInfo.Title);
         }

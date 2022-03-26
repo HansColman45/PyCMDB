@@ -74,13 +74,13 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             //return new(driver);
         }
-        public void DockingStationOverview()
+        public DockingOverviewPage DockingStationOverview()
         {
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Docking station17']");
             ClickElementByXpath("//a[@href='/Docking']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void TokenOverview()
         {

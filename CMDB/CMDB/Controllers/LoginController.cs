@@ -7,6 +7,7 @@ using CMDB.Domain.Entities;
 using System;
 using CMDB.Services;
 using Microsoft.AspNetCore.Identity;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -19,13 +20,13 @@ namespace CMDB.Controllers
         {
             return View();
         }
-        public IActionResult Login(IFormCollection values)
+        public async Task<IActionResult> Login(IFormCollection values)
         {
             log.Debug("Using Login in {0}", "Login");
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
             Admin admin;
-            admin = service.Login(UserID, Pwd);
+            admin = await service.Login(UserID, Pwd);
             if (admin == null)
             {
                 ModelState.AddModelError("", "User or password is incorrect");

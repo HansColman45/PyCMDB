@@ -7,6 +7,7 @@ using TechTalk.SpecFlow.Assist;
 using System;
 using Xunit;
 using System.Threading.Tasks;
+using CMDB.Testing.Helpers;
 
 namespace CMDB.UI.Tests.Stepdefinitions.Desktop
 {
@@ -31,8 +32,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         {
             desktop = table.CreateInstance<helpers.Desktop>();
             rndNr = rnd.Next();
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -69,8 +69,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         public async Task GivenThereIsAnDesktopExisting()
         {
             Desktop = await context.CreateDesktop(admin);
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -129,8 +128,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         public async Task GivenThereIsAnActiveLaptopExisting()
         {
             Desktop = await context.CreateDesktop(admin);
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -160,8 +158,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         public async Task GivenThereIsAnInactiveLaptopExisting()
         {
             Desktop = await context.CreateDesktop(admin, false);
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");

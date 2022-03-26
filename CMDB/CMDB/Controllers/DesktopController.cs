@@ -75,14 +75,12 @@ namespace CMDB.Controllers
                     desktop.SerialNumber = values["SerialNumber"];
                     desktop.RAM = values["RAM"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    desktop.Type = AssetType.ElementAt<AssetType>(0);
-                    desktop.Category = AssetType.ElementAt<AssetType>(0).Category;
+                    var AssetType = service.ListAssetTypeById(Type).First();
+                    desktop.Type = AssetType;
+                    desktop.Category = AssetType.Category;
                     desktop.MAC = values["MAC"];
-                    if (service.IsDesktopExisting(desktop))
-                    {
+                    if (service.IsDeviceExisting(desktop))
                         ModelState.AddModelError("", "Asset already exist");
-                    }
                     if (ModelState.IsValid)
                     {
                         await service.CreateNewDesktop(desktop, Table);

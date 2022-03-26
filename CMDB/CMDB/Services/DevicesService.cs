@@ -43,7 +43,7 @@ namespace CMDB.Services
                         devices.Add(desktop);
                     }
                     break;
-                case "Docking":
+                case "Docking station":
                     var dockings = await _context.Devices
                         .OfType<Docking>()
                         .Include(x => x.Category)
@@ -116,7 +116,7 @@ namespace CMDB.Services
                         devices.Add(desktop);
                     }
                     break;
-                case "Docking":
+                case "Docking station":
                     var dockings = await _context.Devices
                         .OfType<Docking>()
                         .Include(x => x.Category)
@@ -174,7 +174,7 @@ namespace CMDB.Services
             desktop.LastModfiedAdmin = Admin;
             _context.Devices.Add(desktop);
             await _context.SaveChangesAsync();
-            string Value = String.Format("{0} with type {1}", desktop.Category.Category, desktop.Type.Vendor + " " + desktop.Type.Type);
+            string Value = $"{desktop.Category.Category} with type {desktop.Type}";
             await LogCreate(table, desktop.AssetTag, Value);
         }
         public async Task CreateNewLaptop(Laptop laptop, string table)
@@ -182,8 +182,16 @@ namespace CMDB.Services
             laptop.LastModfiedAdmin = Admin;
             _context.Devices.Add(laptop);
             await _context.SaveChangesAsync();
-            string Value = String.Format("{0} with type {1}", laptop.Category.Category, laptop.Type.Vendor + " " + laptop.Type.Type);
+            string Value = $"{laptop.Category.Category} with type {laptop.Type}";
             await LogCreate(table, laptop.AssetTag, Value);
+        }
+        public async Task CreateNewDocking(Docking docking, string table)
+        {
+            docking.LastModfiedAdmin = Admin;
+            _context.Devices.Add(docking);
+            await _context.SaveChangesAsync();
+            string value = $"{docking.Category.Category} with type {docking.Type}";
+            await LogCreate(table,docking.AssetTag, value);
         }
         public async Task UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
@@ -319,18 +327,10 @@ namespace CMDB.Services
                 .ToListAsync();
             return tokens;
         }
-        public bool IsLaptopExisting(Laptop device)
+        public bool IsDeviceExisting(Device device) 
         {
             bool result = false;
-            var devices = _context.Devices.OfType<Laptop>().Where(x => x.AssetTag == device.AssetTag).ToList();
-            if (devices.Count > 0)
-                result = true;
-            return result;
-        }
-        public bool IsDesktopExisting(Desktop device)
-        {
-            bool result = false;
-            var devices = _context.Devices.OfType<Desktop>().Where(x => x.AssetTag == device.AssetTag).ToList();
+            var devices = _context.Devices.Where(x => x.AssetTag == device.AssetTag).ToList();
             if (devices.Count > 0)
                 result = true;
             return result;
@@ -353,18 +353,11 @@ namespace CMDB.Services
                 .ToList();
             return devices;
         }
-        public void GetAssignedIdentity(Laptop laptop)
+        public void GetAssignedIdentity(Device device)
         {
             var Identity = _context.Devices.OfType<Laptop>()
                 .Include(x => x.Identity)
-                .Where(x => x.AssetTag == laptop.AssetTag)
-                .Select(x => x.Identity);
-        }
-        public void GetAssignedIdentity(Desktop desktop)
-        {
-            var Identity = _context.Devices.OfType<Desktop>()
-                .Include(x => x.Identity)
-                .Where(x => x.AssetTag == desktop.AssetTag)
+                .Where(x => x.AssetTag == device.AssetTag)
                 .Select(x => x.Identity);
         }
     }

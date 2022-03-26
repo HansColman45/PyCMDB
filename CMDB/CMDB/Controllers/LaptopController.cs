@@ -80,7 +80,7 @@ namespace CMDB.Controllers
                     laptop.Type = AssetType.ElementAt<AssetType>(0);
                     laptop.Category = AssetType.ElementAt<AssetType>(0).Category;
                     laptop.MAC = values["MAC"];
-                    if (service.IsLaptopExisting(laptop))
+                    if (service.IsDeviceExisting(laptop))
                     {
                         ModelState.AddModelError("", "Asset already exist");
                     }

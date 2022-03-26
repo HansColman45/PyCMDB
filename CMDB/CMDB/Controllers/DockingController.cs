@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -24,7 +23,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
-            ViewData["Title"] = "Docking overview";
+            ViewData["Title"] = "Docking station overview";
             await BuildMenu();
             var Desktops = await service.ListAll(SitePart);
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
@@ -40,7 +39,8 @@ namespace CMDB.Controllers
             log.Debug("Using search for {0}", SitePart);
             if (!String.IsNullOrEmpty(search))
             {
-                ViewData["Title"] = "Docking overview";
+                ViewData["search"] = search;
+                ViewData["Title"] = "Docking station overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
                 ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
@@ -61,9 +61,9 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
-            ViewData["Title"] = "Delete Docking station";
+            ViewData["Title"] = "Delete docking station";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["backUrl"] = "Admin";
+            ViewData["backUrl"] = "Docking";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var dockings = await service.ListDockingByID(id);
@@ -93,13 +93,11 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Docking station";
+            ViewData["Title"] = "Activate docking station";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
-            {
                 return NotFound();
-            }
             var dockings = await service.ListDockingByID(id);
             Docking docking = dockings.FirstOrDefault();
             if (docking == null)
@@ -114,6 +112,65 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             }
             return View();
+        }
+        public async Task<IActionResult> Details(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var dockings = await service.ListDockingByID(id);
+            if (dockings == null)
+                return NotFound();
+            Docking docking = dockings.FirstOrDefault();
+            log.Debug("Using details in {0}", Table);
+            ViewData["Title"] = "Docking station details";
+            await BuildMenu();
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            service.GetLogs(Table, docking.AssetTag, docking);
+            service.GetAssignedIdentity(docking);
+            return View(docking);
+        }
+        public async Task<IActionResult> Create(IFormCollection values)
+        {
+            log.Debug("Using Create in {0}", SitePart);
+            ViewData["Title"] = "Create docking station";
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            await BuildMenu();
+            Docking docking = new();
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["backUrl"] = "Desktop";
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    docking.AssetTag = values["AssetTag"];
+                    docking.SerialNumber = values["SerialNumber"];
+                    int Type = Convert.ToInt32(values["Type"]);
+                    var AssetType = service.ListAssetTypeById(Type).First();
+                    docking.Type = AssetType;
+                    docking.Category = AssetType.Category;
+                    if (service.IsDeviceExisting(docking))
+                        ModelState.AddModelError("", "Asset already exist");
+                    if (ModelState.IsValid)
+                    {
+                        await service.CreateNewDocking(docking, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(docking);
         }
     }
 }

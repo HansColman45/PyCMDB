@@ -74,12 +74,12 @@ namespace CMDB.Services
         }
         #endregion
 
-        public Admin Login(string userID, string pwd)
+        public async Task<Admin> Login(string userID, string pwd)
         {
-            Admin admin = _context.Admins
+            Admin admin = await _context.Admins
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
-                .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == userID).FirstOrDefault();
+                .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == userID).FirstOrDefaultAsync();
 
             if (String.Equals(admin.Password, new PasswordHasher().EncryptPassword(pwd)))
             {
@@ -89,26 +89,6 @@ namespace CMDB.Services
             {
                 return null;
             }
-        }
-        protected static string MD5Hash(string text)
-        {
-            MD5 md5 = new MD5CryptoServiceProvider();
-
-            //compute hash from the bytes of text  
-            md5.ComputeHash(ASCIIEncoding.ASCII.GetBytes(text));
-
-            //get hash result after compute it  
-            byte[] result = md5.Hash;
-
-            StringBuilder strBuilder = new();
-            for (int i = 0; i < result.Length; i++)
-            {
-                //change it into 2 hexadecimal digits  
-                //for each byte  
-                strBuilder.Append(result[i].ToString("x2"));
-            }
-
-            return strBuilder.ToString();
         }
         #region generic menu
         public async Task<ICollection<Menu>> ListFirstMenuLevel()

@@ -38,4 +38,7 @@ namespace CMDB.UI.Tests.Helpers
         public string MAC { get; set; }
         public string RAM { get; set; }
     }
+    public class DockingStation : Device 
+    {
+    }
 }
