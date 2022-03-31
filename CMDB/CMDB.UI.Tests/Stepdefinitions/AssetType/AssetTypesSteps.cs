@@ -1,4 +1,5 @@
-﻿using CMDB.UI.Tests.Hooks;
+﻿using CMDB.Testing.Helpers;
+using CMDB.UI.Tests.Hooks;
 using CMDB.UI.Tests.Pages;
 using System;
 using TechTalk.SpecFlow;
@@ -24,8 +25,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         public void GivenIWantToCreateANewKensingtonWithKensingtonAndBlack(string category, string vendor, string type)
         {
             rndNr = rnd.Next();
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -56,8 +56,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         [Given(@"There is an AssetType existing")]
         public void GivenThereIsAnAssetTypeExisting()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -89,8 +88,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         [Given(@"There is an active AssetType existing")]
         public void GivenThereIsAnActiveAssetTypeExisting()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -121,8 +119,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         [Given(@"There is an Inactive AssetType existing")]
         public void GivenThereIsAnInactiveAssetTypeExisting()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");

@@ -1,4 +1,5 @@
 ﻿using CMDB.Domain.Entities;
+using CMDB.Testing.Helpers;
 using CMDB.UI.Tests.Data;
 using CMDB.UI.Tests.Hooks;
 using System;
@@ -13,7 +14,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
         /// The Nlog logger
         /// </summary>
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// The ScenarioData
+        /// </summary>
         protected ScenarioData ScenarioData { get; set; }
+        /// <summary>
+        /// The ScenatioContext
+        /// </summary>
         protected ScenarioContext ScenarioContext { get; set; }
         /// <summary>
         /// The connection to the database
@@ -27,6 +34,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         /// Constructor
         /// </summary>
         /// <param name="scenarioData"></param>
+        /// <param name="scenarioContext"></param>
         public TestBase(ScenarioData scenarioData, ScenarioContext scenarioContext)
         {
             ScenarioData = scenarioData;

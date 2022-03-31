@@ -172,5 +172,30 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        public async Task<IActionResult> Edit(string id, IFormCollection values)
+        {
+            log.Debug("Using Edit in {0}", SitePart);
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var dockings = await service.ListDockingByID(id);
+            if (dockings == null)
+                return NotFound();
+            Docking docking = dockings.FirstOrDefault();
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["backUrl"] = "Desktop";
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string newSerial = values["AssetTag"];
+                int Type = Convert.ToInt32(values["Type"]);
+                var AssetType = service.ListAssetTypeById(Type).First();
+                if (ModelState.IsValid)
+                {
+                    await service.UpdateDocking(docking, newSerial, AssetType, Table);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(docking);
+        }
     }
 }

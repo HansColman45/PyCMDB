@@ -87,6 +87,17 @@ namespace CMDB.UI.Tests.Data
             return desktop;
         }
         /// <summary>
+        /// This function will create a new Docking
+        /// </summary>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">bool</param>
+        /// <returns></returns>
+        public async Task<Docking> CreateDocking(Admin admin, bool active = true)
+        {
+            Docking docking = await DockingHelpers.CreateSimpleDocking(context, admin, active);
+            return docking;
+        }
+        /// <summary>
         /// This will return the Account using the Id
         /// </summary>
         /// <param name="AccountId">The AccountId</param>

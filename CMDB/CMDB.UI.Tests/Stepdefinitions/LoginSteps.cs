@@ -1,4 +1,5 @@
-﻿using CMDB.UI.Tests.Hooks;
+﻿using CMDB.Testing.Helpers;
+using CMDB.UI.Tests.Hooks;
 using CMDB.UI.Tests.Pages;
 using TechTalk.SpecFlow;
 using Xunit;
@@ -17,22 +18,29 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Given(@"I open the home page")]
         public void GivenIOpenTheHomePage()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
         }
 
         [When(@"I logon with a valid user and password")]
         public void WhenILogonWithAValidUserAndPassword()
         {
             login.EnterUserID(admin.Account.UserID);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
             login.EnterPassword("1234");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EneterPWD");
         }
 
         [Then(@"I can logon")]
         public void ThenICanLogon()
         {
             main = login.LogIn();
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
             Assert.True(main.LoggedIn(), "user is not logged in");
         }
 

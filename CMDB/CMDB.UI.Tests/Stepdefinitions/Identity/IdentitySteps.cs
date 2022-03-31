@@ -10,6 +10,7 @@ using Xunit.Extensions.Ordering;
 using helpers = CMDB.UI.Tests.Helpers;
 using entity = CMDB.Domain.Entities;
 using System.Threading.Tasks;
+using CMDB.Testing.Helpers;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -42,8 +43,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             rndNr = rnd.Next();
             iden = table.CreateInstance<Identity>();
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -86,8 +86,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I want to update (.*) with (.*)")]
         public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -176,8 +175,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I want to deactivete the identity whith the reason (.*)")]
         public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -213,8 +211,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I want to activate this identity")]
         public void WhenIWantToActivateThisIdentity()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");
@@ -245,8 +242,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I assign the account to the identity")]
         public void WhenIAssignTheAccountToTheIdentity()
         {
-            Url = "https://localhost:44314/";
-            ScenarioData.Driver.Navigate().GoToUrl(Url);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.EnterUserID(admin.Account.UserID);
             login.EnterPassword("1234");

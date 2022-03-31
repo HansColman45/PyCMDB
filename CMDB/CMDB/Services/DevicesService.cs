@@ -259,6 +259,25 @@ namespace CMDB.Services
                 await LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
             }
         }
+        public async Task UpdateDocking(Docking docking, string newSerialNumber, AssetType newAssetType, string Table)
+        {
+            docking.LastModfiedAdmin = Admin;
+            string oldSerial;
+            oldSerial = docking.SerialNumber;
+            AssetType oldType = docking.Type;
+            if (String.Compare(docking.SerialNumber, newSerialNumber) != 0)
+            {
+                docking.SerialNumber = newSerialNumber;
+                await _context.SaveChangesAsync();
+                await LogUpdate(Table, docking.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
+            }
+            if (docking.Type.TypeID != newAssetType.TypeID)
+            {
+                docking.Type = newAssetType;
+                await _context.SaveChangesAsync();
+                await LogUpdate(Table, docking.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
+            }
+        }
         public async Task Deactivate(Device device, string Reason, string table)
         {
             device.LastModfiedAdmin = Admin;

@@ -39,39 +39,52 @@ namespace CMDB.UI.Tests.Stepdefinitions
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AccountOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
             createAccount = overviewPage.New();
-            createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ClickNew");
+            if (Settings.TakeScreenShot)
+                createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ClickNew");
             createAccount.UserId = account.UserId + rndNr.ToString();
-            createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
+            if (Settings.TakeScreenShot)
+                createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
             createAccount.Type = account.Type;
-            createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectType");
+            if (Settings.TakeScreenShot)
+                createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectType");
             createAccount.Application = account.Application;
-            createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectAppliction");
+            if (Settings.TakeScreenShot)
+                createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectAppliction");
         }
         [When(@"I save the account")]
         public void WhenISaveTheAccount()
         {
             createAccount.Create();
-            createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
+            if (Settings.TakeScreenShot)
+                createAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
         }
         [Then(@"The account is saved")]
         public void ThenTheAccountIsSaved()
         {
             overviewPage.Search(account.UserId + rndNr.ToString());
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
-            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var log = detail.GetLastLog();
-            expectedlog = $"The Account width UserID: {account.UserId + rndNr.ToString()} with type {account.Type} for application {account.Application} is created by {admin.Account.UserID} in table account";
+            if (Settings.TakeScreenShot)
+                expectedlog = $"The Account width UserID: {account.UserId + rndNr.ToString()} with type {account.Type} for application {account.Application} is created by {admin.Account.UserID} in table account";
             Assert.Equal(expectedlog, log);
         }
         #endregion
@@ -82,24 +95,31 @@ namespace CMDB.UI.Tests.Stepdefinitions
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AccountOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         #region update
         [When(@"I change the (.*) to (.*) and I save the changes")]
         public void WhenIChangeTheUserIdToTestjeAndISaveTheChanges(string field, string newValue)
         {
             var editPage = overviewPage.Edit();
-            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditAccount");
+            if (Settings.TakeScreenShot)
+                editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditAccount");
             changedField = field;
             switch (field)
             {
@@ -107,23 +127,27 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     oldValue = editPage.UserId;
                     this.newValue = newValue + rndNr.ToString();
                     editPage.UserId = this.newValue;
-                    editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedUserId");
+                    if (Settings.TakeScreenShot)
+                        editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedUserId");
                     break;
                 case "Type":
                     oldValue = "Normal User";
                     this.newValue = newValue;
                     editPage.Type = newValue;
-                    editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedType");
+                    if (Settings.TakeScreenShot)
+                        editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedType");
                     break;
                 case "Application":
                     oldValue = "CMDB";
                     this.newValue = newValue;
                     editPage.Application = newValue;
-                    editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedApplication");
+                    if (Settings.TakeScreenShot)
+                        editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ChangedApplication");
                     break;
             }
             editPage.Edit();
-            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Changed");
+            if (Settings.TakeScreenShot)
+                editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Changed");
         }
         [Then(@"The changes in account are saved")]
         public void ThenTheChangesInAccountAreSaved()
@@ -132,20 +156,25 @@ namespace CMDB.UI.Tests.Stepdefinitions
             {
                 case "UserId":
                     overviewPage.Search(newValue);
-                    expectedlog = $"The UserId in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    if (Settings.TakeScreenShot)
+                        expectedlog = $"The UserId in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "Type":
                     overviewPage.Search(Account.UserID);
-                    expectedlog = $"The Type in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    if (Settings.TakeScreenShot)
+                        expectedlog = $"The Type in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
                 case "Application":
                     overviewPage.Search(Account.UserID);
-                    expectedlog = $"The Application in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    if (Settings.TakeScreenShot)
+                        expectedlog = $"The Application in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
                     break;
             }
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
-            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
@@ -157,36 +186,47 @@ namespace CMDB.UI.Tests.Stepdefinitions
             Account = await context.CreateAccount(admin);
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
-            login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            login.EnterUserID(admin.Account.UserID); 
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AccountOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         [When(@"I deactivate the account with reason (.*)")]
         public void WhenIDeactivateTheAccountWithReasonTest(string reason)
         {
             var deactivatepage = overviewPage.Deactivate();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivate");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivate");
             deactivatepage.Reason = reason;
             newValue = reason;
-            deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterReason");
+            if (Settings.TakeScreenShot)
+                deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterReason");
             deactivatepage.Delete();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivated");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivated");
         }
         [Then(@"the account is inactive")]
         public void ThenTheAccountIsInactive()
         {
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
-            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var accId = detail.Id;
             entity.Account account = context.GetAccount(accId);
             expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is deleted due to {newValue} by {admin.Account.UserID}";
@@ -201,34 +241,44 @@ namespace CMDB.UI.Tests.Stepdefinitions
             Account = await context.CreateAccount(admin, false);
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AccountOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountOverview");
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         [When(@"I activate the account")]
         public void WhenIActivateTheAccount()
         {
             overviewPage.Activate();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
         }
         [Then(@"The account is active")]
         public void ThenTheAccountIsActive()
         {
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
-            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var accId = detail.Id;
             entity.Account account = context.GetAccount(accId);
-            expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is activated by {admin.Account.UserID}";
+            if (Settings.TakeScreenShot)
+                expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
@@ -239,17 +289,22 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             Identity = (entity.Identity)TestData.Get("Identity");
             var assign = overviewPage.AssignIdentity();
-            assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentity");
+            if (Settings.TakeScreenShot)
+                assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentity");
             assign.SelectIdentity(Identity);
-            assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectIdentity");
+            if (Settings.TakeScreenShot)
+                assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectIdentity");
             DateTime validFrom = DateTime.Now.AddYears(-1);
             DateTime validUntil = DateTime.Now.AddYears(+1);
             assign.ValidFrom = validFrom.ToString("dd/MM/yyyy\tHH:mm\tt");
-            assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterValidFrom");
+            if (Settings.TakeScreenShot)
+                assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterValidFrom");
             assign.ValidUntil = validUntil.ToString("dd/MM/yyyy\tHH:mm\tt");
-            assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterValidEnt");
+            if (Settings.TakeScreenShot)
+                assign.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterValidEnt");
             AssignFom = assign.Assign();
-            AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
+            if (Settings.TakeScreenShot)
+                AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
             Assert.False(AssignFom.IsVaidationErrorVisable());
         }
         [When(@"I fill in the assig form for my account")]
@@ -258,16 +313,20 @@ namespace CMDB.UI.Tests.Stepdefinitions
             string naam = AssignFom.Name;
             Assert.Equal(naam, AssignFom.Employee);
             AssignFom.CreatePDF();
-            AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+            if (Settings.TakeScreenShot)
+                AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
         }
         [Then(@"The identity is assigned to my account")]
         public void ThenTheIdentityIsAssignedToMyAccount()
         {
             overviewPage.Search(Account.UserID);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
-            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID}";
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            if (Settings.TakeScreenShot)
+                expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             Assert.Equal(expectedlog, log);
         }
