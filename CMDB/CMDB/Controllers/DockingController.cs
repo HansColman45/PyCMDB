@@ -180,6 +180,9 @@ namespace CMDB.Controllers
             var dockings = await service.ListDockingByID(id);
             if (dockings == null)
                 return NotFound();
+            await BuildMenu();
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["Title"] = "Edit docking station";
             Docking docking = dockings.FirstOrDefault();
             ViewBag.Types = service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Desktop";
@@ -187,7 +190,7 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["AssetTag"];
-                int Type = Convert.ToInt32(values["Type"]);
+                int Type = Convert.ToInt32(values["Type.TypeID"]);
                 var AssetType = service.ListAssetTypeById(Type).First();
                 if (ModelState.IsValid)
                 {

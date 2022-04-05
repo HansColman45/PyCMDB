@@ -24,7 +24,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='Type_TypeID']", "7");
+            set => SelectValueInDropDownByXpath("//select[@id='Type_TypeID']", value);
             get => GetSelectedValueFromDropDownByXpath("//select[@id='Type_TypeID']");
         }
         public string RAM

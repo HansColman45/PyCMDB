@@ -22,10 +22,10 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(InfoXpath);
             return new(driver);
         }
-        public void Update()
+        public UpdateDockingPage Update()
         {
             ClickElementByXpath(EditXpath);
-            //return new(driver);
+            return new(driver);
         }
         public void Deactivate()
         {

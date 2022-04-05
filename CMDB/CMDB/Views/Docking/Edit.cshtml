@@ -5,11 +5,11 @@
 <h2>@ViewData["Title"]</h2>
 @if ((bool)ViewData["UpdateAccess"])
 {
-    <form class="form-horizontal" action="/Docking/Edit" method="post">
+    <form class="form-horizontal" asp-action="Edit" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="AssetTag" class="control-label">AssetTag <span style="color:red;">*</span></label>
-            <input asp-for="AssetTag" class="form-control" placeholder="DOC0001">
+            <input asp-for="AssetTag" class="form-control" placeholder="DOC0001" disabled>
             <span class="text-danger field-validation-valid" asp-validation-for="AssetTag" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">

@@ -115,20 +115,52 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         {
             updatedField = field;
             rndNr = rnd.Next();
+            entity.AssetCategory category = context.GetAssetCategory("Docking station");
+            string Vendor, Type, assetType;
+            var updatePage = overviewPage.Update();
             switch (updatedField)
             {
                 case "SerialNumber":
+                    updatePage.SerialNumber = value + rndNr.ToString();
+                    newValue = value + rndNr.ToString();
+                    if (Settings.TakeScreenShot)
+                        updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterSerial");
                     break;
                 case "Type":
+                    assetType = value;
+                    Vendor = assetType.Split(" ")[0];
+                    Type = assetType.Split(" ")[1];
+                    entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
+                    updatePage.Type = AssetType.TypeID.ToString();
+                    newValue = AssetType.ToString();
+                    if (Settings.TakeScreenShot)
+                        updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterSerial");
                     break;
             }
+            updatePage.Edit();
+            if (Settings.TakeScreenShot)
+                updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Edited");
         }
         [Then(@"Then The Docking is saved")]
         public void ThenThenTheDockingIsSaved()
         {
-
+            overviewPage.Search(Docking.AssetTag);
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            switch (updatedField)
+            {
+                case "SerialNumber":
+                    expectedlog = $"The SerialNumber in table docking has been changed from {Docking.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    break;
+                case "Type":
+                    expectedlog = $"The Type in table docking has been changed from {Docking.Type} to {newValue} by {admin.Account.UserID}";
+                    break;
+            }
+            var detail = overviewPage.Detail();
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
+            string log = detail.GetLastLog();
+            Assert.Equal(log, expectedlog);
         }
-
-
     }
 }
