@@ -30,6 +30,7 @@ namespace CMDB.Controllers
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Docking\Search";
             return View(Desktops);
@@ -47,6 +48,7 @@ namespace CMDB.Controllers
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Docking\Search";
                 return View(Desktops);
@@ -137,7 +139,7 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
-            log.Debug("Using Create in {0}", SitePart);
+            log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create docking station";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             await BuildMenu();
@@ -159,7 +161,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDocking(docking, Table);
+                        await service.CreateNewDevice(docking, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }

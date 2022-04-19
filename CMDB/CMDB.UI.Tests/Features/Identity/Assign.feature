@@ -1,4 +1,4 @@
-﻿Feature: G_Assign
+﻿Feature: Assign
 
 Scenario: I want to assign an Account to an existing Identity
 	Given An Identity exisist in the system

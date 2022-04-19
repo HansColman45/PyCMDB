@@ -83,7 +83,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDesktop(desktop, Table);
+                        await service.CreateNewDevice(desktop, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }

@@ -169,101 +169,84 @@ namespace CMDB.Services
             }
             return assettypes;
         }
-        public async Task CreateNewDesktop(Desktop desktop, string table)
+        public async Task CreateNewDevice(Device device, string table)
         {
-            desktop.LastModfiedAdmin = Admin;
-            _context.Devices.Add(desktop);
+            device.LastModfiedAdmin = Admin;
+            _context.Devices.Add(device);
             await _context.SaveChangesAsync();
-            string Value = $"{desktop.Category.Category} with type {desktop.Type}";
-            await LogCreate(table, desktop.AssetTag, Value);
-        }
-        public async Task CreateNewLaptop(Laptop laptop, string table)
-        {
-            laptop.LastModfiedAdmin = Admin;
-            _context.Devices.Add(laptop);
-            await _context.SaveChangesAsync();
-            string Value = $"{laptop.Category.Category} with type {laptop.Type}";
-            await LogCreate(table, laptop.AssetTag, Value);
-        }
-        public async Task CreateNewDocking(Docking docking, string table)
-        {
-            docking.LastModfiedAdmin = Admin;
-            _context.Devices.Add(docking);
-            await _context.SaveChangesAsync();
-            string value = $"{docking.Category.Category} with type {docking.Type}";
-            await LogCreate(table,docking.AssetTag, value);
+            string value = $"{device.Category.Category} with type {device.Type}";
+            await LogCreate(table,device.AssetTag,value);
         }
         public async Task UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             desktop.LastModfiedAdmin = Admin;
-            string OldRam, OldMac, OldSerial, OldType;
-            OldMac = desktop.MAC;
-            OldRam = desktop.RAM;
-            OldSerial = desktop.SerialNumber;
-            OldType = desktop.Type.Vendor + " " + desktop.Type.Type;
+            string oldRam, oldMac, oldSerial;
+            oldMac = desktop.MAC;
+            oldRam = desktop.RAM;
+            oldSerial = desktop.SerialNumber;
+            AssetType oldType = desktop.Type;
             if (String.Compare(desktop.RAM, newRam) != 0)
             {
                 desktop.RAM = newRam;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, desktop.AssetTag, "RAM", OldRam, newRam);
+                await LogUpdate(Table, desktop.AssetTag, "RAM", oldRam, newRam);
             }
             if (String.Compare(desktop.MAC, newMAC) != 0)
             {
                 desktop.MAC = newMAC;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, desktop.AssetTag, "MAC", OldMac, newMAC);
+                await LogUpdate(Table, desktop.AssetTag, "MAC", oldMac, newMAC);
             }
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, desktop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
+                await LogUpdate(Table, desktop.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
             }
             if (desktop.Type.TypeID != newAssetType.TypeID)
             {
                 desktop.Type = newAssetType;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, desktop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
+                await LogUpdate(Table, desktop.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
             }
         }
         public async Task UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
             laptop.LastModfiedAdmin = Admin;
-            string OldRam, OldMac, OldSerial, OldType;
-            OldMac = laptop.MAC;
-            OldRam = laptop.RAM;
-            OldSerial = laptop.SerialNumber;
-            OldType = laptop.Type.Vendor + " " + laptop.Type.Type;
+            string oldRam, oldMac, oldSerial;
+            oldMac = laptop.MAC;
+            oldRam = laptop.RAM;
+            oldSerial = laptop.SerialNumber;
+            AssetType oldType = laptop.Type;
             if (String.Compare(laptop.RAM, newRam) != 0)
             {
                 laptop.RAM = newRam;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, laptop.AssetTag, "RAM", OldRam, newRam);
+                await LogUpdate(Table, laptop.AssetTag, "RAM", oldRam, newRam);
             }
             if (String.Compare(laptop.MAC, newMAC) != 0)
             {
                 laptop.MAC = newMAC;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, laptop.AssetTag, "MAC", OldMac, newMAC);
+                await LogUpdate(Table, laptop.AssetTag, "MAC", oldMac, newMAC);
             }
             if (String.Compare(laptop.SerialNumber, newSerialNumber) != 0)
             {
                 laptop.SerialNumber = newSerialNumber;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, laptop.AssetTag, "SerialNumber", OldSerial, newSerialNumber);
+                await LogUpdate(Table, laptop.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
             }
             if (laptop.Type.TypeID != newAssetType.TypeID)
             {
                 laptop.Type = newAssetType;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, laptop.AssetTag, "Type", OldType, newAssetType.Vendor + " " + newAssetType.Type);
+                await LogUpdate(Table, laptop.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
             }
         }
         public async Task UpdateDocking(Docking docking, string newSerialNumber, AssetType newAssetType, string Table)
         {
             docking.LastModfiedAdmin = Admin;
-            string oldSerial;
-            oldSerial = docking.SerialNumber;
+            string oldSerial = docking.SerialNumber;
             AssetType oldType = docking.Type;
             if (String.Compare(docking.SerialNumber, newSerialNumber) != 0)
             {
@@ -278,13 +261,31 @@ namespace CMDB.Services
                 await LogUpdate(Table, docking.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
             }
         }
+        public async Task UpdateToken(Token token, string newSerialNumber, AssetType newAssetType,string table)
+        {
+            token.LastModfiedAdmin = Admin;
+            string oldSerial = token.SerialNumber;
+            AssetType oldType = token.Type;
+            if (String.Compare(token.SerialNumber, newSerialNumber) != 0)
+            {
+                token.SerialNumber = newSerialNumber;
+                await _context.SaveChangesAsync();
+                await LogUpdate(table, token.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
+            }
+            if (token.Type.TypeID != newAssetType.TypeID)
+            {
+                token.Type = newAssetType;
+                await _context.SaveChangesAsync();
+                await LogUpdate(table, token.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
+            }
+        }
         public async Task Deactivate(Device device, string Reason, string table)
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
             device.Active = "Inactive";
             await _context.SaveChangesAsync();
-            string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
+            string Value = $"{device.Category.Category} with type {device.Type}";
             await LogDeactivated(table, device.AssetTag, Value, Reason);
         }
         public async Task Activate(Device device, string table)
@@ -293,7 +294,7 @@ namespace CMDB.Services
             device.DeactivateReason = "";
             device.Active = "Active";
             await _context.SaveChangesAsync();
-            string Value = String.Format("{0} with type {1}", device.Category.Category, device.Type.Vendor + " " + device.Type.Type);
+            string Value = $"{device.Category.Category} with type {device.Type}";
             await LogActivate(table, device.AssetTag, Value);
         }
         public async Task<List<Desktop>> ListDekstopByID(string assetTag)

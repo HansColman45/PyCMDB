@@ -27,10 +27,10 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(EditXpath);
             return new(driver);
         }
-        public void Deactivate()
+        public DeactivateDockingPage Deactivate()
         {
             ClickElementByXpath(DeactivateXpath);
-            //return new(driver);
+            return new(driver);
         }
         public void Activate()
         {

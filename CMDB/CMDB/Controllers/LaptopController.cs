@@ -86,7 +86,7 @@ namespace CMDB.Controllers
                     }
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewLaptop(laptop, Table);
+                        await service.CreateNewDevice(laptop, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }

@@ -30,6 +30,7 @@ namespace CMDB.Controllers
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
             return View(Desktops);
@@ -39,6 +40,7 @@ namespace CMDB.Controllers
             log.Debug("Using search for {0}", SitePart);
             if (!String.IsNullOrEmpty(search))
             {
+                ViewData["search"] = search;
                 ViewData["Title"] = "Token overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
@@ -46,6 +48,7 @@ namespace CMDB.Controllers
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
                 return View(Desktops);
@@ -111,6 +114,64 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             }
             return View();
+        }
+        public async Task<IActionResult> Details(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            log.Debug($"Using details in {Table}");
+            ViewData["Title"] = "Token details";
+            await BuildMenu();
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            service.GetLogs(Table, token.AssetTag, token);
+            service.GetAssignedIdentity(token);
+            return View(token);
+        }
+        public async Task<IActionResult> Create(IFormCollection values)
+        {
+            log.Debug($"Using Create in {SitePart}");
+            ViewData["Title"] = "Create token";
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            await BuildMenu();
+            Token token= new();
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["backUrl"] = "Desktop";
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    token.AssetTag = values["AssetTag"];
+                    token.SerialNumber = values["SerialNumber"];
+                    int Type = Convert.ToInt32(values["Type"]);
+                    var AssetType = service.ListAssetTypeById(Type).First();
+                    token.Type = AssetType;
+                    if (service.IsDeviceExisting(token))
+                        ModelState.AddModelError("", "Asset already exist");
+                    if (ModelState.IsValid)
+                    {
+                        await service.CreateNewDevice(token, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(token);
         }
     }
 }

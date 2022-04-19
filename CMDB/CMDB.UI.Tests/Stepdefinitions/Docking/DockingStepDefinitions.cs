@@ -162,5 +162,96 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             string log = detail.GetLastLog();
             Assert.Equal(log, expectedlog);
         }
+        [Given(@"There is an active Docking existing")]
+        public async Task GivenThereIsAnActiveDockingExisting()
+        {
+            Docking = await context.CreateDocking(admin);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
+            login = new LoginPage(ScenarioData.Driver);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            login.EnterUserID(admin.Account.UserID);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            login.EnterPassword("1234");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            main = login.LogIn();
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            overviewPage = main.DockingStationOverview();
+            overviewPage.Search(Docking.AssetTag);
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+        }
+        [When(@"I deactivate the Docking with reason (.*)")]
+        public void WhenIDeactivateTheDockingWithReasonTest(string reason)
+        {
+            var deactivatepage = overviewPage.Deactivate();
+            deactivatepage.Reason = reason;
+            newValue = reason;
+            if (Settings.TakeScreenShot)
+                deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterReason");
+            deactivatepage.Delete();
+            if (Settings.TakeScreenShot)
+                deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivated");
+        }
+        [Then(@"The Docking is deactivated")]
+        public void ThenTheDockingIsDeactivated()
+        {
+            expectedlog = $"The Docking station with type {Docking.Type} in table docking is deleted due to {newValue} by {admin.Account.UserID}";
+            overviewPage.Search(Docking.AssetTag);
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            var detail = overviewPage.Detail();
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
+            string log = detail.GetLastLog();
+            Assert.Equal(log, expectedlog);
+        }
+
+        [Given(@"There is an inactve Docking existing")]
+        public async Task GivenThereIsAnInactveDockingExisting()
+        {
+            Docking = await context.CreateDocking(admin,false);
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
+            login = new LoginPage(ScenarioData.Driver);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            login.EnterUserID(admin.Account.UserID);
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            login.EnterPassword("1234");
+            if (Settings.TakeScreenShot)
+                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            main = login.LogIn();
+            if (Settings.TakeScreenShot)
+                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            overviewPage = main.DockingStationOverview();
+            overviewPage.Search(Docking.AssetTag);
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+        }
+        [When(@"I activate the docking station")]
+        public void WhenIActivateTheDockingStation()
+        {
+            overviewPage.Activate();
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
+        }
+        [Then(@"The docking station is activated")]
+        public void ThenTheDockingStationIsActivated()
+        {
+            expectedlog = $"The Docking station with type {Docking.Type} in table docking is activated by {admin.Account.UserID}";
+            overviewPage.Search(Docking.AssetTag);
+            if (Settings.TakeScreenShot)
+                overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            var detail = overviewPage.Detail();
+            if (Settings.TakeScreenShot)
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
+            string log = detail.GetLastLog();
+            Assert.Equal(log, expectedlog);
+        }
+
     }
 }
