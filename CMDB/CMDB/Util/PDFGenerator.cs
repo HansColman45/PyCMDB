@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Aspose.Html;
-using Aspose.Html.Saving;
+﻿using Aspose.Html;
 using CMDB.Domain.Entities;
-using CMDB.Models;
+using IronPdf;
 using Microsoft.AspNetCore.Hosting;
+using System;
+using System.Collections.Generic;
 
 namespace CMDB.Util
 {
@@ -32,20 +27,22 @@ namespace CMDB.Util
             }
             get => _type;
         }
-        public string Language;
-        public string Receiver;
-        public string UserID;
-        public string Singer;
-        public string ITEmployee;
+        public string Language { get; set; }
+        public string Receiver { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string UserID { get; set; }
+        public string Singer { get; set; }
+        public string ITEmployee { get; set; }
 
         public PDFGenerator()
         {
-            this.HTML = "<HTML>";
-            this.HTML += "<head>";
-            this.HTML += "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\" crossorigin=\"anonymous\" />";
-            this.HTML += "<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\"></script>";
-            this.HTML += "</head>";
-            this.HTML += "<body>";
+            HTML = "<HTML>";
+            HTML += "<head>";
+            HTML += "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\" crossorigin=\"anonymous\" />";
+            HTML += "<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\"></script>";
+            HTML += "</head>";
+            HTML += "<body>";
         }
         public void SetAssetInfo(Device device)
         {
@@ -65,13 +62,13 @@ namespace CMDB.Util
                 switch (this.Language)
                 {
                     case "NL":
-                        this.HTML += "<p>Beste " + this.Receiver + " Gelieve te teken voor het terug geven van het volgende materiaal:</p>";
+                        HTML += "<p>Beste " + this.Receiver + " Gelieve te teken voor het terug geven van het volgende materiaal:</p>";
                         break;
                     case "EN":
-                        this.HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
+                        HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
                         break;
                     case "FR":
-                        this.HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
+                        HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
                         break;
                 }
             }
@@ -79,41 +76,69 @@ namespace CMDB.Util
             {
                 path = _env.WebRootPath + @"\PDF-Files\Assign_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
             }
+            switch (Language)
+            {
+                case "NL":
+                    HTML += "<h3>Gegevens van de employee</h3>";
+                    break;
+                case "EN":
+                    HTML += "<h3>Info from the employee</h3>";
+                    break;
+                case "FR":
+                    HTML += "<h3>Info from the employee</h3>";
+                    break;
+            }
+            HTML += "<table class=\"table table-striped table-bordered\">";
+            HTML += "<thead>";
+            HTML += "<tr>";
+            HTML += "<th>FirstName</th>";
+            HTML += "<th>LastName</th>";
+            HTML += "<th>UserId</th>";
+            HTML += "</tr>";
+            HTML += "</thead>";
+            HTML += "<tbody>";
+            HTML += "<tr>";
+            HTML += $"<td>{FirstName}</td>";
+            HTML += $"<td>{LastName}</td>";
+            HTML += $"<td>{UserID}</td>";
+            HTML += "</tr>";
+            HTML += "</tbody>";
+            HTML += "</table>";
             if (accounts.Count > 0)
             {
-                switch (this.Language)
+                switch (Language)
                 {
                     case "NL":
-                        this.HTML += "<h3>Gegevens van de account</h3>";
+                        HTML += "<h3>Gegevens van de account</h3>";
                         break;
                     case "EN":
-                        this.HTML += "<h3>Info of the account</h3>";
+                        HTML += "<h3>Info of the account</h3>";
                         break;
                     case "FR":
-                        this.HTML += "<h3>Info of the account</h3>";
+                        HTML += "<h3>Info of the account</h3>";
                         break;
                 }
-                this.HTML += "<table class=\"table table-striped table-bordered\">";
-                this.HTML += "<thead>";
-                this.HTML += "<tr>";
-                this.HTML += "<th>UserID</th>";
-                this.HTML += "<th>Application</th>";
-                this.HTML += "<th>From</th>";
-                this.HTML += "<th>Until</th>";
-                this.HTML += "</tr>";
-                this.HTML += "</thead>";
-                this.HTML += "<tbody>";
+                HTML += "<table class=\"table table-striped table-bordered\">";
+                HTML += "<thead>";
+                HTML += "<tr>";
+                HTML += "<th>UserID</th>";
+                HTML += "<th>Application</th>";
+                HTML += "<th>From</th>";
+                HTML += "<th>Until</th>";
+                HTML += "</tr>";
+                HTML += "</thead>";
+                HTML += "<tbody>";
                 foreach (IdenAccount a in accounts)
                 {
-                    this.HTML += "<tr>";
-                    this.HTML += "<td>" + a.Account.UserID + "</td>";
-                    this.HTML += "<td>" + a.Account.Application.Name + "</td>";
-                    this.HTML += "<td>" + a.ValidFrom.ToString("dd/MM/yyyy") + "</td>";
-                    this.HTML += "<td>" + a.ValidUntil.ToString("dd/MM/yyyy") + "</td>";
-                    this.HTML += "</tr>";
+                    HTML += "<tr>";
+                    HTML += "<td>" + a.Account.UserID + "</td>";
+                    HTML += "<td>" + a.Account.Application.Name + "</td>";
+                    HTML += "<td>" + a.ValidFrom.ToString("dd/MM/yyyy") + "</td>";
+                    HTML += "<td>" + a.ValidUntil.ToString("dd/MM/yyyy") + "</td>";
+                    HTML += "</tr>";
                 }
-                this.HTML += "</tbody>";
-                this.HTML += "</table>";
+                HTML += "</tbody>";
+                HTML += "</table>";
             }
             if (devices.Count > 0)
             {
@@ -206,11 +231,9 @@ namespace CMDB.Util
             this.HTML += "</div>";
             this.HTML += "</body>";
             this.HTML += "</html>";
-            //MemoryStream stringInMemoryStream =
-            //   new MemoryStream(ASCIIEncoding.Default.GetBytes(HTML));
-            var document = new HTMLDocument(HTML, ".");
-            //Aspose.Html.Converters.Converter.ConvertHTML(document, new PdfSaveOptions(), path);
-            document.Save(path);
+            var converter = new ChromePdfRenderer();
+            var PDF = converter.RenderHTMLFileAsPdf(HTML);
+            PDF.SaveAs(path);
         }
     }
 }

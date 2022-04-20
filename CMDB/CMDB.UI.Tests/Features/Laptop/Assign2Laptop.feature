@@ -1,5 +1,4 @@
-﻿Feature: AssignLaptop
-	Simple calculator for adding two numbers
+﻿Feature: Assign2Laptop
 
 Scenario: I want to assign an existing Identiy to my Laptop
 	Given There is an Laptop existing

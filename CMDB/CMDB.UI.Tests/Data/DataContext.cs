@@ -199,5 +199,20 @@ namespace CMDB.UI.Tests.Data
             var ram = context.RAMs.Where(x => x.Display == display).FirstOrDefault();
             return ram;
         }
+        public async Task AssignIden2Account(Identity identity,Account account, Admin admin)
+        {
+            identity.LastModfiedAdmin = admin;
+            account.LastModfiedAdmin = admin;
+            context.IdenAccounts.Add(new()
+            {
+                Identity = identity,
+                Account = account,
+                ValidFrom = DateTime.Now.AddDays(-1),
+                ValidUntil = DateTime.Now.AddYears(1),
+                LastModifiedAdmin = admin
+            });
+
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -331,5 +331,29 @@ namespace CMDB.UI.Tests.Stepdefinitions
             Assert.Equal(expectedlog, log);
         }
         #endregion
+        #region release account
+        [Given(@"There is an Identity assigned")]
+        public async Task GivenThereIsAnIdentityAssigned()
+        {
+            Identity = await context.CreateIdentity(admin);
+            await context.AssignIden2Account(Identity, Account, admin);
+        }
+        [When(@"I release the Identity")]
+        public void WhenIReleaseTheIdentity()
+        {
+            var detailPage = overviewPage.Detail();
+            if (Settings.TakeScreenShot)
+                detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+        }
+        [When(@"I fill in the release form")]
+        public void WhenIFillInTheReleaseForm()
+        {
+
+        }
+        [Then(@"The identity is released from my account")]
+        public void ThenTheIdentityIsReleasedFromMyAccount()
+        {
+        }
+        #endregion
     }
 }

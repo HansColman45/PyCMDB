@@ -246,6 +246,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
+
             }
             return View(list);
         }
@@ -294,16 +295,17 @@ namespace CMDB.Controllers
             if (id == 0)
                 return NotFound();
             ViewData["Title"] = "Release Account";
-            var idenAccount = await service.GetIdenAccountByID(id);
-            if (idenAccount.FirstOrDefault() == null)
+            var idenAccounts = await service.GetIdenAccountByID(id);
+            IdenAccount idenAccount = idenAccounts.FirstOrDefault();
+            if (idenAccount == null)
                 return NotFound();
-            ViewBag.Identity = idenAccount.First().Identity;
-            ViewBag.Account = idenAccount.First().Account;
+            ViewBag.Identity = idenAccount.Identity;
+            ViewBag.Account = idenAccount.Account;
             ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseAccount");
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseAccount";
-            ViewData["Name"] = idenAccount.First().Identity.Name;
+            ViewData["Name"] = idenAccount.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -312,18 +314,19 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseAccount4Identity(idenAccount.ElementAt<IdenAccount>(0).Identity, idenAccount.ElementAt<IdenAccount>(0).Account, id, Table);
-                    idenAccount = await service.GetIdenAccountByID(id);
+                    await service.ReleaseAccount4Identity(idenAccount.Identity, idenAccount.Account, id, Table);
                     PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
-                        UserID = idenAccount.First().Identity.UserID,
-                        Language = idenAccount.First().Identity.Language.Code,
-                        Receiver = idenAccount.First().Identity.Name,
+                        UserID = idenAccount.Identity.UserID,
+                        FirstName = idenAccount.Identity.FirstName,
+                        LastName = idenAccount.Identity.LastName,
+                        Language = idenAccount.Identity.Language.Code,
+                        Receiver = idenAccount.Identity.Name,
                         Type = "Release"
                     };
-                    PDFGenerator.SetAccontInfo(idenAccount.ElementAt<IdenAccount>(0));
+                    PDFGenerator.SetAccontInfo(idenAccount);
                     PDFGenerator.GeneratePDF(_env);
                     return RedirectToAction(nameof(Index));
                 }
@@ -339,7 +342,8 @@ namespace CMDB.Controllers
             ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
             var list = await service.GetByID((int)id);
-            if (list.FirstOrDefault() == null)
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
                 return NotFound();
             service.GetAssingedDevices(list.First());
             service.GetAssignedAccounts(list.First());
@@ -359,9 +363,11 @@ namespace CMDB.Controllers
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
-                    UserID = list.First().UserID,
-                    Language = list.First().Language.Code,
-                    Receiver = list.First().Name
+                    UserID = identity.UserID,
+                    FirstName = identity.FirstName,
+                    LastName = identity.LastName,
+                    Language = identity.Language.Code,
+                    Receiver = identity.Name
                 };
                 if (list.First().Accounts.Count > 0)
                     PDFGenerator.SetAccontInfo(list.First().Accounts.First());

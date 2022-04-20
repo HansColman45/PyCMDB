@@ -229,22 +229,17 @@ namespace CMDB.Services
             }
             return accounts;
         }
-        public bool IsPeriodOverlapping(int? AccID, DateTime ValidFrom, DateTime ValidUntil)
+        public bool IsPeriodOverlapping(int AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            if (AccID == null)
-                throw new Exception("Missing required id");
+            var accounts = _context.IdenAccounts
+                    .Include(x => x.Account)
+                    .Where(x => x.Account.AccID == AccID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
+                    .ToList();
+            if (accounts.Count > 0)
+                result = true;
             else
-            {
-                var accounts = _context.IdenAccounts
-                        .Include(x => x.Account)
-                        .Where(x => x.Account.AccID == AccID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
-                        .ToList();
-                if (accounts.Count > 0)
-                    result = true;
-                else
-                    result = false;
-            }
+                result = false;
             return result;
         }
         public async Task<List<Identity>> GetIdentityByID(int id)

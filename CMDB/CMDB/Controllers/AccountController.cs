@@ -241,7 +241,7 @@ namespace CMDB.Controllers
                 int IdenID = Convert.ToInt32(values["Identity"]);
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
-                service.IsPeriodOverlapping(id, from, until);
+                service.IsPeriodOverlapping((int)id, from, until);
                 if (ModelState.IsValid)
                 {
                     await service.AssignIdentity2Account(account, IdenID, from, until, Table);
@@ -254,18 +254,18 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign Identity in {0}", Table);
             ViewData["Title"] = "Release Identity";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             await BuildMenu();
             if (id == null)
-            {
                 return NotFound();
-            }
-            var idenAccount = await service.GetIdenAccountByID((int)id);
+            var idenAccounts = await service.GetIdenAccountByID((int)id);
+            IdenAccount idenAccount = idenAccounts.FirstOrDefault();
+            if (idenAccount == null)
+                return NotFound();
             ViewData["backUrl"] = "Account";
             ViewData["Action"] = "ReleaseIdentity";
-            ViewBag.Identity = idenAccount.First().Identity;
-            ViewBag.Account = idenAccount.First().Account;
-            ViewData["Name"] = idenAccount.First().Identity.Name;
+            ViewBag.Identity = idenAccount.Identity;
+            ViewBag.Account = idenAccount.Account;
+            ViewData["Name"] = idenAccount.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
             string FormSubmit = values["form-submitted"];
@@ -275,18 +275,20 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseIdentity4Acount(idenAccount.First().Account, idenAccount.First().Identity, (int)id, Table);
-                    idenAccount = await service.GetIdenAccountByID((int)id);
+                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table);
+                    idenAccounts = await service.GetIdenAccountByID((int)id);
                     PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
-                        UserID = idenAccount.First().Identity.UserID,
-                        Language = idenAccount.First().Identity.Language.Code,
-                        Receiver = idenAccount.First().Identity.Name,
+                        UserID = idenAccount.Identity.UserID,
+                        FirstName = idenAccount.Identity.FirstName,
+                        LastName = idenAccount.Identity.LastName,
+                        Language = idenAccount.Identity.Language.Code,
+                        Receiver = idenAccount.Identity.Name,
                         Type = "Release"
                     };
-                    PDFGenerator.SetAccontInfo(idenAccount.First());
+                    PDFGenerator.SetAccontInfo(idenAccounts.First());
                     PDFGenerator.GeneratePDF(_env);
                     return RedirectToAction(nameof(Index));
                 }
@@ -304,13 +306,14 @@ namespace CMDB.Controllers
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var accounts = await service.GetByID((int)id);
-            service.GetLogs(Table, (int)id, accounts.First());
-            service.GetAssignedIdentitiesForAccount(accounts.First());
+            Account account = accounts.First();
+            service.GetLogs(Table, (int)id, account);
+            service.GetAssignedIdentitiesForAccount(account);
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";
             ViewData["Action"] = "AssignForm";
-            ViewData["Name"] = accounts.First().Identities.First().Identity.Name;
+            ViewData["Name"] = account.Identities.First().Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -320,11 +323,13 @@ namespace CMDB.Controllers
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
-                    UserID = accounts.First().UserID,
-                    Language = accounts.First().Identities.First().Identity.Language.Code,
-                    Receiver = accounts.First().Identities.First().Identity.Name
+                    UserID = account.Identities.First().Identity.UserID,
+                    FirstName = account.Identities.First().Identity.FirstName,
+                    LastName = account.Identities.First().Identity.LastName,
+                    Language = account.Identities.First().Identity.Language.Code,
+                    Receiver = account.Identities.First().Identity.Name
                 };
-                PDFGenerator.SetAccontInfo(accounts.First().Identities.First());
+                PDFGenerator.SetAccontInfo(account.Identities.First());
                 PDFGenerator.GeneratePDF(_env);
                 return RedirectToAction(nameof(Index));
             }
