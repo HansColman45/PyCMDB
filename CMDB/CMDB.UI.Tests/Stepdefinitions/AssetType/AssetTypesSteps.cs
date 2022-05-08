@@ -27,20 +27,25 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            this.vendor = vendor + rndNr.ToString();
+            this.type = type + rndNr.ToString();
             overviewPage = main.AssetTypeOverview();
             createAssetTypePage = overviewPage.New();
             createAssetTypePage.Category = category;
-            createAssetTypePage.Vendor = vendor + rndNr.ToString();
-            createAssetTypePage.Type = type + rndNr.ToString();
-            this.vendor = vendor + rndNr.ToString();
-            this.type = type + rndNr.ToString();
+            createAssetTypePage.Vendor = this.vendor;
+            createAssetTypePage.Type = this.type;
         }
         [When(@"I create that (.*)")]
         public void WhenICreateThatKensington(string category)
         {
+            log.Debug($"Gooing to create a {category} type");
             createAssetTypePage.Create();
         }
         [Then(@"The (.*) is created")]
@@ -58,9 +63,13 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AssetTypeOverview();
             overviewPage.Search("kensington");
         }
@@ -90,9 +99,13 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AssetTypeOverview();
             overviewPage.Search("kensington");
         }
@@ -121,9 +134,13 @@ namespace CMDB.UI.Tests.Stepdefinitions.AssetType
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AssetTypeOverview();
             overviewPage.Search("kensington");
         }

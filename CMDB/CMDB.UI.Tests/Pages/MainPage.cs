@@ -28,6 +28,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public IdentityOverviewPage IdentityOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Identity']");
             ClickElementByXpath("//a[@id='Identity']");
             ClickElementByXpath("//a[@id='Identity2']");
             ClickElementByXpath("//a[@href='/Identity']");
@@ -36,6 +37,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public AccountOverviewPage AccountOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Account']");
             ClickElementByXpath("//a[@id='Account']");
             ClickElementByXpath("//a[@id='Account5']");
             ClickElementByXpath("//a[@href='/Account']");
@@ -44,6 +46,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void RoleOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Role']");
             ClickElementByXpath("//a[@id='Role']");
             ClickElementByXpath("//a[@id='Role8']");
             ClickElementByXpath("//a[@href='/Role']");
@@ -52,6 +55,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public LaptopOverviewPage LaptopOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Laptop11']");
             ClickElementByXpath("//a[@href='/Laptop']");
@@ -60,6 +64,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public DesktopOverviewPage DesktopOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Desktop13']");
             ClickElementByXpath("//a[@href='/Desktop']");
@@ -68,6 +73,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void MonitorOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Monitor15']");
             ClickElementByXpath("//a[@href='/Monitor']");
@@ -76,6 +82,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public DockingOverviewPage DockingStationOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Docking station17']");
             ClickElementByXpath("//a[@href='/Docking']");
@@ -84,6 +91,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void TokenOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Token19']");
             ClickElementByXpath("//a[@href='/Token']");
@@ -92,6 +100,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void KensingtonOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Kensington21']");
             ClickElementByXpath("//a[@href='/Kensington']");
@@ -100,6 +109,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void MobileOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Mobile23']");
             ClickElementByXpath("//a[@href='/Mobile']");
@@ -108,6 +118,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void SubscriptionOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Subscription25']");
             ClickElementByXpath("//a[@href='/Subscription']");
@@ -116,6 +127,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public AssetTypeOverviewPage AssetTypeOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Asset Type28']");
             ClickElementByXpath("//a[@href='/AssetType']");
@@ -124,6 +136,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void AssetCategoryOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Asset Category30']");
             ClickElementByXpath("//a[@href='/AssetCategory']");
@@ -132,6 +145,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void IdentityTypeOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Identity Type32']");
             ClickElementByXpath("//a[@href='/IdentityType']");
@@ -140,6 +154,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void AccountTypeyOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Account Type34']");
             ClickElementByXpath("//a[@href='/AccountType']");
@@ -148,6 +163,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void RoleTypeOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Role Type36']");
             ClickElementByXpath("//a[@href='/RoleType']");
@@ -156,6 +172,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void SubscriptionTypeOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Subscription Type38']");
             ClickElementByXpath("//a[@id='Subscription Type38']");
             ClickElementByXpath("//a[@id='Subscription Type38']");
             ClickElementByXpath("//a[@href='/SubscriptionType']");
@@ -164,6 +181,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void SystemOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='System']");
             ClickElementByXpath("//a[@id='System']");
             ClickElementByXpath("//a[@id='System41']");
             ClickElementByXpath("//a[@href='/System']");
@@ -172,6 +190,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void ApplicationOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Application']");
             ClickElementByXpath("//a[@id='Application']");
             ClickElementByXpath("//a[@id='Application44']");
             ClickElementByXpath("//a[@href='/Application']");
@@ -180,6 +199,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void AdminOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Admin']");
             ClickElementByXpath("//a[@id='Admin']");
             ClickElementByXpath("//a[@id='Admin47']");
             ClickElementByXpath("//a[@href='/Admin']");
@@ -188,6 +208,7 @@ namespace CMDB.UI.Tests.Pages
         }
         public void PermissionOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Admin']");
             ClickElementByXpath("//a[@id='Admin']");
             ClickElementByXpath("//a[@id='Permissions49']");
             ClickElementByXpath("//a[@href='/Permission']");

@@ -239,6 +239,7 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 int IdenID = Convert.ToInt32(values["Identity"]);
+                string validF = values["ValidFrom"];
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 service.IsPeriodOverlapping((int)id, from, until);
@@ -276,7 +277,6 @@ namespace CMDB.Controllers
                 if (ModelState.IsValid)
                 {
                     await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table);
-                    idenAccounts = await service.GetIdenAccountByID((int)id);
                     PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
@@ -288,7 +288,7 @@ namespace CMDB.Controllers
                         Receiver = idenAccount.Identity.Name,
                         Type = "Release"
                     };
-                    PDFGenerator.SetAccontInfo(idenAccounts.First());
+                    PDFGenerator.SetAccontInfo(idenAccount);
                     PDFGenerator.GeneratePDF(_env);
                     return RedirectToAction(nameof(Index));
                 }

@@ -17,13 +17,13 @@ namespace CMDB.UI.Tests.Pages
         {
             SelectValueInDropDownByXpath("//select[@id='Identity']", identity.IdenId.ToString());
         }
-        public string ValidFrom
+        public DateTime ValidFrom
         {
-            set => EnterInTextboxByXPath("//input[@id='ValidFrom']", value);
+            set => EnterDateTimeByXPath("//input[@id='ValidFrom']", value);
         }
-        public string ValidUntil
+        public DateTime ValidUntil
         {
-            set => EnterInTextboxByXPath("//input[@id='ValidUntil']", value);
+            set => EnterDateTimeByXPath("//input[@id='ValidUntil']", value);
         }
         public AssignFormPage Assign()
         {

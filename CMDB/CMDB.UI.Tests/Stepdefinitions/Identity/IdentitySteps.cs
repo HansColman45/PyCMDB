@@ -261,8 +261,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
             assignAccount.SelectAccount(Account);
             DateTime validFrom = DateTime.Now.AddYears(-1);
             DateTime validUntil = DateTime.Now.AddYears(+1);
-            assignAccount.ValidFrom = validFrom.ToString("dd/MM/yyyy\tHH:mm\tt");
-            assignAccount.ValidUntil = validUntil.ToString("dd/MM/yyyy\tHH:mm\tt");
+            assignAccount.ValidFrom = validFrom;
+            assignAccount.ValidUntil = validUntil;
             AssignFom = assignAccount.Assign();
             Assert.False(assignAccount.IsVaidationErrorVisable());
         }

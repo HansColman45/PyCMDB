@@ -20,23 +20,47 @@ namespace CMDB.UI.Tests.Hooks
         /// The Nlog logger
         /// </summary>
         private readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        
         /// <summary>
         /// This function will run before evry scenario
         /// </summary>
         /// <param name="context">The Scenario context</param>
         [BeforeScenario]
-        public void BeforeScenario(ScenarioContext context)
+        public void BeforeScenario(ScenarioContext context, ScenarioData scenarioData)
         {
             log.Debug("Scenario {0} started", context.ScenarioInfo.Title);
+            var options = new FirefoxOptions
+            {
+                AcceptInsecureCertificates = true
+            };
+            //options.AddArgument("-headless");
+            options.AddArgument("-disable-extensions");
+            options.AddArgument("-disable-dev-shm-usage");
+            options.AddArgument("-no-sandbox");
+            IWebDriver webDriver = new FirefoxDriver(options);
+            scenarioData.Driver = webDriver;
+            scenarioData.Driver.Manage().Window.Maximize();
         }
         /// <summary>
         /// This funtion will runn after evry scenario
         /// </summary>
         /// <param name="context"></param>
         [AfterScenario]
-        public void AfterScenario(ScenarioContext context)
+        public void AfterScenario(ScenarioContext context, ScenarioData scenarioData)
         {
             log.Debug("Scenario {0} stoped", context.ScenarioInfo.Title);
+            scenarioData.Driver.Close();
+            scenarioData.Driver.Quit();
+            Process[] procs = Process.GetProcessesByName("chromedriver");
+            foreach (var proc in procs)
+            {
+                proc.Kill();
+            }
+            procs = Process.GetProcessesByName("geckodriver");
+            foreach (var proc in procs)
+            {
+                proc.Kill();
+            }
         }
         /// <summary>
         /// This function will run before each Feature
@@ -45,22 +69,18 @@ namespace CMDB.UI.Tests.Hooks
         [BeforeFeature]
         public static async Task BeforeFeature(ScenarioData scenarioData)
         {
+            Process[] procs = Process.GetProcessesByName("chromedriver");
+            foreach (var proc in procs)
+            {
+                proc.Kill();
+            }
+            procs = Process.GetProcessesByName("geckodriver");
+            foreach (var proc in procs)
+            {
+                proc.Kill();
+            }
             scenarioData.Context = new DataContext();
             scenarioData.Admin = await scenarioData.Context.CreateNewAdmin();
-            /*var options = new FirefoxOptions
-            {
-                AcceptInsecureCertificates = true
-            };
-            //options.AddArgument("-headless");
-            IWebDriver webDriver = new FirefoxDriver(options);*/
-            var options = new ChromeOptions()
-            {
-                AcceptInsecureCertificates = true
-            };
-            options.AddArgument("--allow-file-access-from-files");
-            IWebDriver webDriver = new ChromeDriver(options);
-            scenarioData.Driver = webDriver;
-            scenarioData.Driver.Manage().Window.Maximize();
         }
         /// <summary>
         /// This function will runn after each feature
@@ -70,14 +90,7 @@ namespace CMDB.UI.Tests.Hooks
         public static async void AfterFeature(ScenarioData scenarioData)
         {
             await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
-            scenarioData.Driver.Close();
-            scenarioData.Driver.Quit();
             scenarioData.Context = null;
-            Process[] procs = Process.GetProcessesByName("chromedriver");
-            foreach (var proc in procs)
-            {
-                proc.Kill();
-            }
         }
         /// <summary>
         /// This function will run after each step

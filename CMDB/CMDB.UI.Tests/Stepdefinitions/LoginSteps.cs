@@ -20,7 +20,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            if (Settings.TakeScreenShot)
+            
                 login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
         }
 
@@ -28,10 +28,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public void WhenILogonWithAValidUserAndPassword()
         {
             login.EnterUserID(admin.Account.UserID);
-            if (Settings.TakeScreenShot)
+            
                 login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
             login.EnterPassword("1234");
-            if (Settings.TakeScreenShot)
+            
                 login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EneterPWD");
         }
 
@@ -39,7 +39,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public void ThenICanLogon()
         {
             main = login.LogIn();
-            if (Settings.TakeScreenShot)
+            
                 main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
             Assert.True(main.LoggedIn(), "user is not logged in");
         }

@@ -20,6 +20,11 @@ namespace CMDB.UI.Tests.Pages
                 return Int32.Parse(id);
             }
         }
+        public ReleaseIdentityPage ReleaseIdentity()
+        {
+            ClickElementByXpath("//a[@id='ReleaseIdentity']");
+            return new(driver);
+        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));

@@ -173,5 +173,41 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        public async Task<IActionResult> Edit(IFormCollection values, string id)
+        {
+            log.Debug("Using Edit in {0}", SitePart);
+            ViewData["Title"] = "Edit Desktop";
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            await BuildMenu();
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            ViewBag.AssetTypes = service.ListAssetTypes(SitePart);
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    string newSerialNumber = values["SerialNumber"];
+                    int Type = Convert.ToInt32(values["Type.TypeID"]);
+                    var newAssetType = service.ListAssetTypeById(Type).First();
+                    if (ModelState.IsValid)
+                    {
+                        await service.UpdateToken(token, newSerialNumber, newAssetType, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch(Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(token);
+        }
     }
 }

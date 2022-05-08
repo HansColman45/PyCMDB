@@ -189,8 +189,8 @@ namespace CMDB.Services
             IdenAccount.LastModifiedAdmin = Admin;
             IdenAccount.ValidUntil = DateTime.Now.AddDays(-1);
             _context.IdenAccounts.Update(IdenAccount);
-            await LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
-            await LogReleaseIdentity4Account("identity", account.AccID, identity, account);
+            await LogReleaseAccountFromIdentity("identity", identity.IdenId, identity, account);
+            await LogReleaseIdentity4Account(Table, account.AccID, identity, account);
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();

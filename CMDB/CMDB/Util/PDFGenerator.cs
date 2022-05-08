@@ -19,11 +19,11 @@ namespace CMDB.Util
             {
                 if (!String.IsNullOrEmpty(value))
                 {
-                    this.HTML += "<H1>Release Form</h1>";
+                    HTML += "<H1>Release Form</h1>";
                     _type = value;
                 }
                 else
-                    this.HTML += "<H1>Release Form</h1>";
+                    HTML += "<H1>Release Form</h1>";
             }
             get => _type;
         }
@@ -56,25 +56,25 @@ namespace CMDB.Util
         {
             string path;
             DateTime date = DateTime.Now;
-            if (!String.IsNullOrEmpty(this.Type))
+            if (!String.IsNullOrEmpty(Type))
             {
-                path = _env.WebRootPath + @"\PDF-Files\release_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
-                switch (this.Language)
+                path = _env.WebRootPath + @"\PDF-Files\release_" + UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
+                switch (Language)
                 {
                     case "NL":
-                        HTML += "<p>Beste " + this.Receiver + " Gelieve te teken voor het terug geven van het volgende materiaal:</p>";
+                        HTML += "<p>Beste " + Receiver + " Gelieve te teken voor het terug geven van het volgende materiaal:</p>";
                         break;
                     case "EN":
-                        HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
+                        HTML += "<p>Dear " + Receiver + " please sing for the recievment of the following material:</p>";
                         break;
                     case "FR":
-                        HTML += "<p>Dear " + this.Receiver + " please sing for the recievment of the following material:</p>";
+                        HTML += "<p>Dear " + Receiver + " please sing for the recievment of the following material:</p>";
                         break;
                 }
             }
             else
             {
-                path = _env.WebRootPath + @"\PDF-Files\Assign_" + this.UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
+                path = _env.WebRootPath + @"\PDF-Files\Assign_" + UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
             }
             switch (Language)
             {
@@ -142,97 +142,97 @@ namespace CMDB.Util
             }
             if (devices.Count > 0)
             {
-                if (!String.IsNullOrEmpty(this.Type))
+                if (!String.IsNullOrEmpty(Type))
                 {
-                    switch (this.Language)
+                    switch (Language)
                     {
                         case "NL":
-                            this.HTML += "<h3>Gegevens van het terug gebracht matteriaal</h3>";
+                            HTML += "<h3>Gegevens van het terug gebracht matteriaal</h3>";
                             break;
                         case "EN":
-                            this.HTML += "<h3>Info of the returned device</h3>";
+                            HTML += "<h3>Info of the returned device</h3>";
                             break;
                         case "FR":
-                            this.HTML += "<h3>Info of the returned device</h3>";
+                            HTML += "<h3>Info of the returned device</h3>";
                             break;
                     }
                 }
                 else
                 {
-                    switch (this.Language)
+                    switch (Language)
                     {
                         case "NL":
-                            this.HTML += "<h3>Gegevens van het ontvangen matteriaal</h3>";
+                            HTML += "<h3>Gegevens van het ontvangen matteriaal</h3>";
                             break;
                         case "EN":
-                            this.HTML += "<h3>Info about the received device</h3>";
+                            HTML += "<h3>Info about the received device</h3>";
                             break;
                         case "FR":
-                            this.HTML += "<h3>Info about the received device</h3>";
+                            HTML += "<h3>Info about the received device</h3>";
                             break;
                     }
                 }
-                this.HTML += "<table class=\"table table-striped table-bordered\">";
-                this.HTML += "<thead>";
-                this.HTML += "<tr>";
-                this.HTML += "<th>Category</th>";
-                this.HTML += "<th>Asset Type</th>";
-                this.HTML += "<th>AssetTag</th>";
-                this.HTML += "<th>SerialNumber</th>";
-                this.HTML += "</tr>";
-                this.HTML += "</thead>";
-                this.HTML += "<tbody>";
+                HTML += "<table class=\"table table-striped table-bordered\">";
+                HTML += "<thead>";
+                HTML += "<tr>";
+                HTML += "<th>Category</th>";
+                HTML += "<th>Asset Type</th>";
+                HTML += "<th>AssetTag</th>";
+                HTML += "<th>SerialNumber</th>";
+                HTML += "</tr>";
+                HTML += "</thead>";
+                HTML += "<tbody>";
                 foreach (Device d in devices)
                 {
-                    this.HTML += "<tr>";
-                    this.HTML += "<td>" + d.Category.Category + "</td>";
-                    this.HTML += "<td>" + d.Type.Vendor + " " + d.Type.Type + "</td>";
-                    this.HTML += "<td>" + d.AssetTag + "</td>";
-                    this.HTML += "<td>" + d.SerialNumber + "</td>";
-                    this.HTML += "</tr>";
+                    HTML += "<tr>";
+                    HTML += "<td>" + d.Category.Category + "</td>";
+                    HTML += "<td>" + d.Type.Vendor + " " + d.Type.Type + "</td>";
+                    HTML += "<td>" + d.AssetTag + "</td>";
+                    HTML += "<td>" + d.SerialNumber + "</td>";
+                    HTML += "</tr>";
                 }
-                this.HTML += "</tbody>";
-                this.HTML += "</table>";
+                HTML += "</tbody>";
+                HTML += "</table>";
             }
-            if (!String.IsNullOrEmpty(this.Singer) && !String.IsNullOrEmpty(this.ITEmployee))
+            if (!String.IsNullOrEmpty(Singer) && !String.IsNullOrEmpty(ITEmployee))
             {
-                switch (this.Language)
+                switch (Language)
                 {
                     case "NL":
-                        this.HTML += "<h3>Info van wie er tekent</h3>";
+                        HTML += "<h3>Info van wie er tekent</h3>";
                         break;
                     case "EN":
-                        this.HTML += "<h3>EN</h3>";
+                        HTML += "<h3>EN</h3>";
                         break;
                     case "FR":
-                        this.HTML += "<h3>FR</h3>";
+                        HTML += "<h3>FR</h3>";
                         break;
                 }
-                this.HTML += "Please sing here: <br>";
-                this.HTML += "<table class=\"table table-striped table-bordered\">";
-                this.HTML += "<thead>";
-                this.HTML += "<tr>";
-                this.HTML += "<th>Employee Info</th>";
-                this.HTML += "<th>IT Employee Info</th>";
-                this.HTML += "</tr>";
-                this.HTML += "</thead>";
-                this.HTML += "<tbody>";
-                this.HTML += "<tr>";
-                this.HTML += "<td>" + this.Singer + "</td>";
-                this.HTML += "<td>" + this.ITEmployee + "</td>";
-                this.HTML += "</tr>";
-                this.HTML += "<tr>";
-                this.HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
-                this.HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
-                this.HTML += "</tr>";
-                this.HTML += "</tbody>";
-                this.HTML += "</table>";
+                HTML += "Please sing here: <br>";
+                HTML += "<table class=\"table table-striped table-bordered\">";
+                HTML += "<thead>";
+                HTML += "<tr>";
+                HTML += "<th>Employee Info</th>";
+                HTML += "<th>IT Employee Info</th>";
+                HTML += "</tr>";
+                HTML += "</thead>";
+                HTML += "<tbody>";
+                HTML += "<tr>";
+                HTML += "<td>" + Singer + "</td>";
+                HTML += "<td>" + ITEmployee + "</td>";
+                HTML += "</tr>";
+                HTML += "<tr>";
+                HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
+                HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
+                HTML += "</tr>";
+                HTML += "</tbody>";
+                HTML += "</table>";
             }
-            this.HTML += "</div>";
-            this.HTML += "</body>";
-            this.HTML += "</html>";
+            HTML += "</div>";
+            HTML += "</body>";
+            HTML += "</html>";
             var converter = new ChromePdfRenderer();
-            var PDF = converter.RenderHTMLFileAsPdf(HTML);
+            var PDF = converter.RenderHtmlAsPdf(HTML);
             PDF.SaveAs(path);
         }
     }

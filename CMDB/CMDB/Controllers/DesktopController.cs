@@ -118,7 +118,7 @@ namespace CMDB.Controllers
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type).ElementAt<AssetType>(0);
+                    var newAssetType = service.ListAssetTypeById(Type).First();
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {

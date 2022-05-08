@@ -5,7 +5,7 @@
 <h2>@ViewData["Title"]</h2>
 @if ((bool)ViewData["AddAccess"])
 {
-    <form class="form-horizontal" action="/Account/Create" method="post">
+    <form class="form-horizontal" asp-action="Create" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="UserID" class="control-label">UserID <span style="color:red;">*</span></label>

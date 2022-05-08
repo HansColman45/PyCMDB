@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using CMDB.Testing.Helpers;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
 using System;
@@ -98,6 +99,28 @@ namespace CMDB.UI.Tests.Pages
                 element.SendKeys(textToEnter);
                 Thread.Sleep(500);
             }
+        }
+        protected void EnterDateTimeByXPath(string xPath, DateTime dateTime)
+        {
+            Thread.Sleep(500);
+            var fluentWait = new WebDriverWait(driver, TimeSpan.FromSeconds(100))
+            {
+                PollingInterval = TimeSpan.FromMilliseconds(150)
+            };
+            fluentWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            fluentWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
+            IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xPath)));
+            element.Click();
+            element.Clear();
+            element.SendKeys(dateTime.ToString("ddMMyyyy"));
+            SendTab(By.XPath(xPath));
+            element.SendKeys(dateTime.ToString("hh:mm"));
+            element.SendKeys(dateTime.ToString("tt"));
+        }
+        protected void SendTab(By by)
+        {
+            IWebElement element = driver.FindElement(by);
+            element.SendKeys(Keys.Tab);
         }
         /// <summary>
         /// This function will select an option from a dropdown using the value
@@ -290,14 +313,16 @@ namespace CMDB.UI.Tests.Pages
         }
         public void TakeScreenShot(string step)
         {
-            ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
-            var screenshot = takesScreenshot.GetScreenshot();
-            var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
-            string fileName = $"{step}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
-            string tempFileName = Path.Combine(path, @"../../../Screenshots/", fileName);
+            if (Settings.TakeScreenShot) { 
+                ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
+                var screenshot = takesScreenshot.GetScreenshot();
+                var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
+                string fileName = $"{step}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
+                string tempFileName = Path.Combine(path, @"../../../Screenshots/", fileName);
 
-            screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
-            log.Debug("Screenshot saved: {0}", tempFileName);
+                screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
+                log.Debug("Screenshot saved: {0}", tempFileName);
+            }
         }
         /// <summary>
         /// This function will scoll to an given ellemt 

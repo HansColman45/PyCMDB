@@ -40,7 +40,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             ScenarioData = scenarioData;
             context = scenarioData.Context;
             admin = scenarioData.Admin;
-            ScenarioData.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            //ScenarioData.Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             ScenarioContext = scenarioContext; 
         }
     }
