@@ -41,4 +41,10 @@ namespace CMDB.UI.Tests.Helpers
     public class DockingStation : Device 
     {
     }
+    public class Monitor : Device
+    {
+    }
+    public class Token : Device
+    {
+    }
 }

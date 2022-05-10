@@ -112,5 +112,92 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        public async Task<IActionResult> Create(IFormCollection values)
+        {
+            log.Debug($"Using Create in {SitePart}");
+            ViewData["Title"] = "Create monitor";
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            await BuildMenu();
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["backUrl"] = "Desktop";
+            Screen screen = new();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    screen.AssetTag = values["AssetTag"];
+                    screen.SerialNumber = values["SerialNumber"];
+                    int Type = Convert.ToInt32(values["Type"]);
+                    var AssetType = service.ListAssetTypeById(Type).First();
+                    screen.Type = AssetType;
+                    screen.Category = AssetType.Category;
+                    if (service.IsDeviceExisting(screen))
+                        ModelState.AddModelError("", "Asset already exist");
+                    if (ModelState.IsValid)
+                    {
+                        await service.CreateNewDevice(screen, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(screen);
+        }
+        public async Task<IActionResult> Details(string id)
+        {
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var screens = await service.ListScreensByID(id);
+            if (screens == null)
+                return NotFound();
+            Screen screen = screens.FirstOrDefault();
+            log.Debug("Using details in {0}", Table);
+            ViewData["Title"] = "Monitor details";
+            await BuildMenu();
+            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
+            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            service.GetLogs(Table, screen.AssetTag, screen);
+            service.GetAssignedIdentity(screen);
+            return View(screen);
+        }
+        public async Task<IActionResult> Edit(string id, IFormCollection values)
+        {
+            log.Debug("Using Edit in {0}", SitePart);
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var screens = await service.ListScreensByID(id);
+            if (screens == null)
+                return NotFound();
+            await BuildMenu();
+            Screen screen = screens.FirstOrDefault();
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["Title"] = "Edit monitor";
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["backUrl"] = "Monitor";
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string newSerial = values["AssetTag"];
+                int Type = Convert.ToInt32(values["Type.TypeID"]);
+                var AssetType = service.ListAssetTypeById(Type).First();
+                if (ModelState.IsValid)
+                {
+                    await service.UpdateScreen(screen, newSerial, AssetType, Table);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(screen);
+        }
     }
 }

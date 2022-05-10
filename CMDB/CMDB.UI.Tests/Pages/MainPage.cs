@@ -71,14 +71,14 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             return new(driver);
         }
-        public void MonitorOverview()
+        public MonitorOverviewPage MonitorOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Monitor15']");
             ClickElementByXpath("//a[@href='/Monitor']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public DockingOverviewPage DockingStationOverview()
         {

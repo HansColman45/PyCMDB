@@ -63,7 +63,7 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
-            ViewData["Title"] = "Delete Token";
+            ViewData["Title"] = "Delete token";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             var tokens = await service.ListTokenByID(id);
@@ -95,7 +95,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Token";
+            ViewData["Title"] = "Activate token";
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             if (id == null)
                 return NotFound();
@@ -145,7 +145,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             Token token= new();
             ViewBag.Types = service.ListAssetTypes(SitePart);
-            ViewData["backUrl"] = "Desktop";
+            ViewData["backUrl"] = "Token";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -176,8 +176,9 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            ViewData["Title"] = "Edit Desktop";
+            ViewData["Title"] = "Edit token";
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["backUrl"] = "Token";
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();

@@ -145,7 +145,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             Docking docking = new();
             ViewBag.Types = service.ListAssetTypes(SitePart);
-            ViewData["backUrl"] = "Desktop";
+            ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -187,7 +187,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit docking station";
             Docking docking = dockings.FirstOrDefault();
             ViewBag.Types = service.ListAssetTypes(SitePart);
-            ViewData["backUrl"] = "Desktop";
+            ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

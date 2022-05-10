@@ -243,6 +243,25 @@ namespace CMDB.Services
                 await LogUpdate(Table, laptop.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
             }
         }
+        public async Task UpdateScreen(Screen screen, string newSerialNumber, AssetType newAssetType, string Table)
+        {
+            screen.LastModfiedAdmin = Admin;
+            string oldSerial = screen.SerialNumber;
+            AssetType oldType = screen.Type;
+            if (String.Compare(screen.SerialNumber, newSerialNumber) != 0)
+            {
+                screen.SerialNumber = newSerialNumber;
+                await _context.SaveChangesAsync();
+                await LogUpdate(Table, screen.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
+            }
+            if (screen.Type.TypeID != newAssetType.TypeID)
+            {
+                screen.Type = newAssetType;
+                await _context.SaveChangesAsync();
+                await LogUpdate(Table, screen.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
+            }
+        }
+
         public async Task UpdateDocking(Docking docking, string newSerialNumber, AssetType newAssetType, string Table)
         {
             docking.LastModfiedAdmin = Admin;

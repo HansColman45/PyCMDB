@@ -97,6 +97,7 @@ namespace CMDB.UI.Tests.Data
             Docking docking = await DockingHelpers.CreateSimpleDocking(context, admin, active);
             return docking;
         }
+
         /// <summary>
         /// This will return the Account using the Id
         /// </summary>
@@ -199,6 +200,13 @@ namespace CMDB.UI.Tests.Data
             var ram = context.RAMs.Where(x => x.Display == display).FirstOrDefault();
             return ram;
         }
+        /// <summary>
+        /// This function will assign an Idenity to an Account
+        /// </summary>
+        /// <param name="identity">Identity</param>
+        /// <param name="account">Account</param>
+        /// <param name="admin">Admin</param>
+        /// <returns></returns>
         public async Task AssignIden2Account(Identity identity,Account account, Admin admin)
         {
             identity.LastModfiedAdmin = admin;
@@ -213,6 +221,11 @@ namespace CMDB.UI.Tests.Data
             });
 
             await context.SaveChangesAsync();
+        }
+        public async Task<Screen> CreateMonitor(Admin admin, bool active = true)
+        {
+            Screen screen = await ScreenHelper.CreateScreen(context, admin, active);
+            return screen;
         }
     }
 }
