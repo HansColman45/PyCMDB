@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class DeactivateMonitorPage : MainPage
+    public class DeactivateTokenPage : MainPage
     {
-        public DeactivateMonitorPage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateTokenPage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public string Reason

@@ -191,7 +191,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-                string newSerial = values["AssetTag"];
+                string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["Type.TypeID"]);
                 var AssetType = service.ListAssetTypeById(Type).First();
                 if (ModelState.IsValid)

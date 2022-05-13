@@ -31,6 +31,7 @@ namespace CMDB.Controllers
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Monitor\Search";
             return View(Desktops);
         }
@@ -47,6 +48,7 @@ namespace CMDB.Controllers
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
                 ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Monitor\Search";
                 return View(Desktops);
             }
@@ -188,7 +190,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-                string newSerial = values["AssetTag"];
+                string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["Type.TypeID"]);
                 var AssetType = service.ListAssetTypeById(Type).First();
                 if (ModelState.IsValid)

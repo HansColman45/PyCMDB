@@ -222,10 +222,21 @@ namespace CMDB.UI.Tests.Data
 
             await context.SaveChangesAsync();
         }
+        /// <summary>
+        /// This function will create a new screen
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="active"></param>
+        /// <returns></returns>
         public async Task<Screen> CreateMonitor(Admin admin, bool active = true)
         {
             Screen screen = await ScreenHelper.CreateScreen(context, admin, active);
             return screen;
+        }
+        public async Task<Token> CreateToken(Admin admin, bool active = true)
+        {
+            Token token = await TokenHelper.CreateNewToken(context,admin, active);
+            return token;
         }
     }
 }
