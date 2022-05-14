@@ -156,6 +156,7 @@ namespace CMDB.Controllers
                     int Type = Convert.ToInt32(values["Type"]);
                     var AssetType = service.ListAssetTypeById(Type).First();
                     token.Type = AssetType;
+                    token.Category = AssetType.Category;
                     if (service.IsDeviceExisting(token))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)

@@ -218,5 +218,20 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using details in {0}", Table);
+            ViewData["Title"] = "Assign identity to Laptop";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            return View(laptop);
+        }
     }
 }

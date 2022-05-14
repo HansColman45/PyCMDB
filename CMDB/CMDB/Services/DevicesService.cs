@@ -384,6 +384,20 @@ namespace CMDB.Services
             }
             return assettypes;
         }
+        public List<SelectListItem> ListFreeIdentities()
+        {
+            List<SelectListItem> identites = new();
+            var idens = _context.Identities
+                .Include(x => x.Devices)
+                .Where(x => !x.Devices.Any())
+                .Where(x => x.IdenId != 1)
+                .ToList();
+            foreach (var identity in idens)
+            {
+                identites.Add(new(identity.Name + " "+ identity.UserID, identity.IdenId.ToString()));
+            }
+            return identites;
+        }
         public List<AssetType> ListAssetTypeById(int id)
         {
             var devices = _context.AssetTypes

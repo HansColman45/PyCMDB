@@ -89,14 +89,14 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             return new(driver);
         }
-        public void TokenOverview()
+        public TokenOverviewPage TokenOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Token19']");
             ClickElementByXpath("//a[@href='/Token']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void KensingtonOverview()
         {

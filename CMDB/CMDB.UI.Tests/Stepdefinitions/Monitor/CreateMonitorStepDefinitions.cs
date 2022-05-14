@@ -50,7 +50,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage = main.MonitorOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             createPage = overviewPage.New();
-            createPage.TakeScreenShot("${ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Create");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Create");
             createPage.AssetTag = monitor.AssetTag + rndNr.ToString();
             entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
             createPage.Type = AssetType.TypeID.ToString();

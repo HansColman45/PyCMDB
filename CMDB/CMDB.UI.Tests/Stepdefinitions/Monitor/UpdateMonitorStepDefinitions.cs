@@ -20,7 +20,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
 
         private readonly Random rnd = new();
         private int rndNr;
-        helpers.Monitor monitor;
         entity.Screen screen;
         string expectedlog, updatedField, newValue;
 
