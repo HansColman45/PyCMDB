@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -199,6 +200,78 @@ namespace CMDB.Controllers
                     await service.UpdateDocking(docking, newSerial, AssetType, Table);
                     return RedirectToAction(nameof(Index));
                 }
+            }
+            return View(docking);
+        }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign identity in {0}", Table);
+            ViewData["Title"] = "Assign identity to Docking";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Laptop";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var dockings = await service.ListDockingByID(id);
+            Docking docking = dockings.FirstOrDefault();
+            if (docking == null)
+                return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Device(identity, docking, Table);
+                        return RedirectToAction("AssignForm", "Docking", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(docking);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var dockings = await service.ListDockingByID(id);
+            Docking docking = dockings.FirstOrDefault();
+            if (docking == null)
+                return NotFound();
+            service.GetAssignedIdentity(docking);
+            ViewData["Name"] = docking.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = docking.Identity.UserID,
+                    FirstName = docking.Identity.FirstName,
+                    LastName = docking.Identity.LastName,
+                    Language = docking.Identity.Language.Code,
+                    Receiver = docking.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(docking);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
             }
             return View(docking);
         }

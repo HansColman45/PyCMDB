@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -200,6 +201,77 @@ namespace CMDB.Controllers
                 }
             }
             return View(screen);
+        }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign identity in {0}", Table);
+            ViewData["Title"] = "Assign identity to Monitor";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Monitor";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var monitors = await service.ListScreensByID(id);
+            Screen moniror = monitors.FirstOrDefault();
+            if (moniror == null)
+                return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Device(identity, moniror, Table);
+                        return RedirectToAction("AssignForm", "Monitor", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(moniror);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var monitors = await service.ListScreensByID(id);
+            Screen moniror = monitors.FirstOrDefault();
+            if (moniror == null)
+                return NotFound();
+            ViewData["Name"] = moniror.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = moniror.Identity.UserID,
+                    FirstName = moniror.Identity.FirstName,
+                    LastName = moniror.Identity.LastName,
+                    Language = moniror.Identity.Language.Code,
+                    Receiver = moniror.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(moniror);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(moniror);
         }
     }
 }

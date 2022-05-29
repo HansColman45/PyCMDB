@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -208,6 +209,78 @@ namespace CMDB.Controllers
                     ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
                         "see your system administrator.");
                 }
+            }
+            return View(token);
+        }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign identity in {0}", Table);
+            ViewData["Title"] = "Assign identity to Token";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Token";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Device(identity, token, Table);
+                        return RedirectToAction("AssignForm", "Token", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(token);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Token";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            service.GetAssignedIdentity(token);
+            ViewData["Name"] = token.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = token.Identity.UserID,
+                    FirstName = token.Identity.FirstName,
+                    LastName = token.Identity.LastName,
+                    Language = token.Identity.Language.Code,
+                    Receiver = token.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(token);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
             }
             return View(token);
         }

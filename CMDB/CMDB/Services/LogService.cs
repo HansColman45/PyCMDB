@@ -133,6 +133,16 @@ namespace CMDB.Services
             LogText = $"The Account with UserID {account.UserID} in table {table} is released from Identity width name: {identity.Name} by {Admin.Account.UserID}";
             await DoLog(table, AccId);
         }
+        protected async Task LogAssignDevice2Identity(string table, Device device, Identity identity)
+        {
+            LogText = $"The Identity width name: {identity.Name} is assigned to {device.Category.Category} with {device.AssetTag} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, identity.IdenId);
+        }
+        protected async Task LogAssignIdenity2Device(string table, Identity identity, Device device)
+        {
+            LogText = $"The {device.Category.Category} with {device.AssetTag} is assigned to Identity width name: {identity.Name} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, device.AssetTag);
+        }
         private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;

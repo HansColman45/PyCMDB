@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -168,7 +169,7 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Delete Laptop";
             ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["backUrl"] = "Desktop";
+            ViewData["backUrl"] = "Laptop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var laptops = await service.ListLaptopByID(id);
@@ -220,9 +221,10 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
-            log.Debug("Using details in {0}", Table);
+            log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to Laptop";
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Laptop";
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -231,6 +233,62 @@ namespace CMDB.Controllers
             if (laptop == null)
                 return NotFound();
             ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Device(identity,laptop,Table);
+                        return RedirectToAction("AssignForm", "Laptop", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(laptop);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Laptop";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var laptops = await service.ListLaptopByID(id);
+            Laptop laptop = laptops.FirstOrDefault();
+            if (laptop == null)
+                return NotFound();
+            service.GetAssignedIdentity(laptop);
+            ViewData["Name"] = laptop.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = laptop.Identity.UserID,
+                    FirstName = laptop.Identity.FirstName,
+                    LastName = laptop.Identity.LastName,
+                    Language = laptop.Identity.Language.Code,
+                    Receiver = laptop.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(laptop);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
             return View(laptop);
         }
     }

@@ -307,7 +307,6 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             var accounts = await service.GetByID((int)id);
             Account account = accounts.First();
-            service.GetLogs(Table, (int)id, account);
             service.GetAssignedIdentitiesForAccount(account);
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;

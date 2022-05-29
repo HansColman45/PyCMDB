@@ -369,9 +369,12 @@ namespace CMDB.Controllers
                     Language = identity.Language.Code,
                     Receiver = identity.Name
                 };
-                if (list.First().Accounts.Count > 0)
-                    PDFGenerator.SetAccontInfo(list.First().Accounts.First());
-                else if (list.First().Devices.Count > 0)
+                if (identity.Accounts.Count > 0)
+                {
+                    foreach (var account in identity.Accounts)
+                        PDFGenerator.SetAccontInfo(account);
+                }
+                else if (identity.Devices.Count > 0)
                 {
                     foreach (Device d in list.First().Devices)
                         PDFGenerator.SetAssetInfo(d);

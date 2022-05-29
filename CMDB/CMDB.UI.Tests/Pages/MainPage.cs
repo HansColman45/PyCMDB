@@ -12,6 +12,7 @@ namespace CMDB.UI.Tests.Pages
         public MainPage(IWebDriver webDriver) : base(webDriver)
         {
         }
+        public string Title => GetAttributeFromXpath("//h2", "innerHTML");
         public bool IsVaidationErrorVisable()
         {
             return IsElementVisable(By.XPath("//div[@class='text-danger validation-summary-errors']"));
@@ -21,6 +22,7 @@ namespace CMDB.UI.Tests.Pages
         protected static string DeactivateXpath => "//a[@title='Deactivate']";
         protected static string InfoXpath => "//a[@title='Info']";
         protected static string ActivateXpath => "//a[@title='Activate']";
+        protected static string AssignIdenityXpath => "//a[@title='Assign Identity']";
 
         public bool LoggedIn()
         {

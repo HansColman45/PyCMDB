@@ -408,10 +408,25 @@ namespace CMDB.Services
         }
         public void GetAssignedIdentity(Device device)
         {
-            var Identity = _context.Devices.OfType<Laptop>()
+            device.Identity =  _context.Devices
                 .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
                 .Where(x => x.AssetTag == device.AssetTag)
-                .Select(x => x.Identity);
+                .Select(x => x.Identity).First();
+        }
+        public Identity GetAssignedIdentity(int idenId)
+        {
+            Identity identity = _context.Identities.FirstOrDefault(x => x.IdenId == idenId);
+            return identity;
+        }
+        public async Task AssignIdentity2Device(Identity identity, Device device,string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            device.LastModfiedAdmin = Admin;
+            identity.Devices.Add(device);
+            await _context.SaveChangesAsync();
+            await LogAssignIdenity2Device(table, identity, device);
+            await LogAssignDevice2Identity("identity", device, identity);
         }
     }
 }

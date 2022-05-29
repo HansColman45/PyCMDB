@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -214,6 +215,78 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             }
             return View();
+        }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign identity in {0}", Table);
+            ViewData["Title"] = "Assign identity to Desktop";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Desktop";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var desktops = await service.ListDekstopByID(id);
+            Desktop desktop = desktops.FirstOrDefault();
+            if (desktop == null)
+                return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Device(identity, desktop, Table);
+                        return RedirectToAction("AssignForm", "Desktop", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(desktop);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var desktops = await service.ListDekstopByID(id);
+            Desktop desktop = desktops.FirstOrDefault();
+            if (desktop == null)
+                return NotFound();
+            service.GetAssignedIdentity(desktop);
+            ViewData["Name"] = desktop.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = desktop.Identity.UserID,
+                    FirstName = desktop.Identity.FirstName,
+                    LastName = desktop.Identity.LastName,
+                    Language = desktop.Identity.Language.Code,
+                    Receiver = desktop.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(desktop);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(desktop);
         }
     }
 }
