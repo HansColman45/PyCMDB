@@ -316,10 +316,11 @@ namespace CMDB.UI.Tests.Pages
             if (Settings.TakeScreenShot) { 
                 ITakesScreenshot takesScreenshot = (ITakesScreenshot)driver;
                 var screenshot = takesScreenshot.GetScreenshot();
+                string folder = step.Split("_")[0];
                 var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
-                string fileName = $"{step}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
-                string tempFileName = Path.Combine(path, @"../../../Screenshots/", fileName);
-
+                Directory.CreateDirectory(Path.Combine(path, @"../../../Screenshots/", folder));
+                string fileName = $"{step.Split("_")[1]}_{step.Split("_")[2]}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
+                string tempFileName = Path.Combine(path, @$"../../../Screenshots/{folder}/", fileName);
                 screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
                 log.Debug("Screenshot saved: {0}", tempFileName);
             }

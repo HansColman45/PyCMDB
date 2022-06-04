@@ -34,6 +34,12 @@ namespace CMDB.Testing.Helpers.Devices
                 context.SaveChanges();
             }
             return docking;
-        } 
+        }
+        public static async Task Delete(CMDBContext context, Docking docking)
+        {
+            context.RemoveRange(docking.Logs);
+            context.Remove(docking);
+            await context.SaveChangesAsync();
+        }
     }
 }

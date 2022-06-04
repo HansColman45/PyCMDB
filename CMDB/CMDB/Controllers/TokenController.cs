@@ -188,7 +188,7 @@ namespace CMDB.Controllers
             Token token = tokens.FirstOrDefault();
             if (token == null)
                 return NotFound();
-            ViewBag.AssetTypes = service.ListAssetTypes(SitePart);
+            ViewBag.Types = service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

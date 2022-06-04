@@ -31,12 +31,12 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public void GivenIWantToCreateAMonitorWithTheFolowingDetails(Table table)
         {
             monitor = table.CreateInstance<helpers.Monitor>();
-            createPage.SerialNumber = monitor.SerialNumber + rndNr.ToString();
             entity.AssetCategory category = context.GetAssetCategory("Monitor");
             string Vendor, Type, assetType;
             assetType = monitor.Type;
             Vendor = assetType.Split(" ")[0];
             Type = assetType.Split(" ")[1];
+            entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -50,10 +50,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage = main.MonitorOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             createPage = overviewPage.New();
-            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Create");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_New");
             createPage.AssetTag = monitor.AssetTag + rndNr.ToString();
-            entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssetTag");
+            createPage.SerialNumber = monitor.SerialNumber + rndNr.ToString();
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
             createPage.Type = AssetType.TypeID.ToString();
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
         }
         [When(@"I save the monitor")]
         public void WhenISaveTheMonitor()
@@ -66,7 +69,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             expectedlog = $"The Monitor with type {monitor.Type} is created by {admin.Account.UserID} in table screen";
             overviewPage.Search(monitor.AssetTag + rndNr.ToString());
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }

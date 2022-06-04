@@ -35,5 +35,11 @@ namespace CMDB.Testing.Helpers.Devices
             }
             return desktop;
         }
+        public static async Task Delete(CMDBContext context, Desktop desktop)
+        {
+            context.RemoveRange(desktop.Logs);
+            context.Remove(desktop);
+            await context.SaveChangesAsync();
+        }
     }
 }

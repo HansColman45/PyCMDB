@@ -252,6 +252,7 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Name"] = moniror.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
+            service.GetAssignedIdentity(moniror);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

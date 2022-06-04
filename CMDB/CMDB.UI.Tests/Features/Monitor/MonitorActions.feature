@@ -10,3 +10,9 @@ Scenario: I want to activate an inactive monitor
 	When I activate the monitor
 	Then The monitor is active
 
+Scenario: I want to assign an existing Identiy to my Laptop
+	Given There is an monitor existing
+	And an Identy exist as well
+	When I assign the montitor to the Identity
+	And I fill in the assign form for my montitor
+	Then The Identity is assigned to the montitor

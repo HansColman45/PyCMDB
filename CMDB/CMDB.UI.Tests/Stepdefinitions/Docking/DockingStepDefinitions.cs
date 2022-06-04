@@ -19,11 +19,13 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         private MainPage main;
         private DockingOverviewPage overviewPage;
         private CreateDockingPage CreatePage;
+        private AssignDocking2IdentityPage AssignPage;
 
         private readonly Random rnd = new();
         private int rndNr;
         private helpers.DockingStation dockingStation;
         private entity.Docking Docking;
+        private entity.Identity Identity;
         string expectedlog, updatedField, newValue;
         public DockingStepDefinitions(ScenarioData scenarioData, ScenarioContext scenarioContext) : base(scenarioData, scenarioContext)
         {
@@ -32,6 +34,12 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         public void GivenIWantToCreateANewDockingstationWithTheseDetails(Table table)
         {
             dockingStation = table.CreateInstance<helpers.DockingStation>();
+            entity.AssetCategory category = context.GetAssetCategory("Docking station");
+            string Vendor, Type, assetType;
+            assetType = dockingStation.Type;
+            Vendor = assetType.Split(" ")[0];
+            Type = assetType.Split(" ")[1];
+            entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -48,12 +56,6 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             CreatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreateDocking");
             CreatePage.AssetTag = dockingStation.AssetTag + rndNr.ToString();
             CreatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SetAssetTag");
-            entity.AssetCategory category = context.GetAssetCategory("Docking station");
-            string Vendor, Type, assetType;
-            assetType= dockingStation.Type;
-            Vendor = assetType.Split(" ")[0];
-            Type = assetType.Split(" ")[1];
-            entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
             CreatePage.Type = AssetType.TypeID.ToString();
             CreatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SetType");
             CreatePage.SerialNumber = dockingStation.SerialNumber + rndNr.ToString();
@@ -101,6 +103,14 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             rndNr = rnd.Next();
             entity.AssetCategory category = context.GetAssetCategory("Docking station");
             string Vendor, Type, assetType;
+            entity.AssetType AssetType = new();
+            if (updatedField == "Type")
+            {
+                assetType = value;
+                Vendor = assetType.Split(" ")[0];
+                Type = assetType.Split(" ")[1];
+                AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
+            }
             var updatePage = overviewPage.Update();
             switch (updatedField)
             {
@@ -110,18 +120,13 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterSerial");
                     break;
                 case "Type":
-                    assetType = value;
-                    Vendor = assetType.Split(" ")[0];
-                    Type = assetType.Split(" ")[1];
-                    entity.AssetType AssetType = context.GetOrCreateAssetType(Vendor, Type, category);
-                    updatePage.Type = AssetType.TypeID.ToString();
                     newValue = AssetType.ToString();
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterSerial");
+                    updatePage.Type = AssetType.TypeID.ToString();
                     break;
             }
             updatePage.Edit();
-            
-                updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Edited");
+            updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Edited");
         }
         [Then(@"Then The Docking is saved")]
         public void ThenThenTheDockingIsSaved()
@@ -214,6 +219,40 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             string log = detail.GetLastLog();
             Assert.Equal(log, expectedlog);
+        }
+
+        [When(@"I assign the Docking to the Identity")]
+        public void WhenIAssignTheDockingToTheIdentity()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            AssignPage = overviewPage.AssignIdentity();
+            AssignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignPage");
+            AssignPage.Title.Should().BeEquivalentTo("Assign identity to docking", "Title should be correct");
+            AssignPage.SelectIdentity(Identity);
+            AssignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_IdentitySelected");
+        }
+
+        [When(@"I fill in the assign form for my Docking")]
+        public void WhenIFillInTheAssignFormForMyDocking()
+        {
+            var assignForm = AssignPage.Assign();
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
+            assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            assignForm.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            assignForm.CreatePDF();
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+
+        [Then(@"The Identity is assigned to the Docking")]
+        public void ThenTheIdentityIsAssignedToTheDocking()
+        {
+            overviewPage.Search(Docking.AssetTag);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
+            expectedlog = $"The Docking station with {Docking.AssetTag} is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID} in table docking";
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
 
     }

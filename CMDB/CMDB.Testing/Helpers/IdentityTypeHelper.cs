@@ -1,5 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
+using CMDB.Testing.Builders.EntityBuilders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,27 @@ namespace CMDB.Testing.Helpers
 {
     public class IdentityTypeHelper
     {
+        public static async Task<IdentityType> CreateSimpleIdentityType(CMDBContext context, Admin admin,bool active = true)
+        {
+            IdentityType identityType = new IdentityTypeBuilder()
+                .With(x => x.LastModfiedAdmin, admin)
+                .Build();
+            context.Types.Add(identityType);
+
+            identityType.Logs.Add(new LogBuilder()
+                .With(x => x.Type, identityType)
+                .With(x => x.LogText, $"The IdentityType with type: {identityType.Type} and description: {identityType.Description} is created by Automation in table identitytype")
+                .Build()
+            );
+
+            await context.SaveChangesAsync();
+            if (!active)
+            {
+                identityType.active = 0;
+                await context.SaveChangesAsync();
+            }
+            return identityType;
+        }
         public static async Task Delete(CMDBContext context, IdentityType identityType)
         {
             context.RemoveRange(identityType.Logs);

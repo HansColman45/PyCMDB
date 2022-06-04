@@ -3,7 +3,7 @@
     Layout = "_Layout";
 }
 <h2>@ViewData["Title"]</h2>
-@if ((bool)ViewData["AddAccess"])
+@if ((bool)ViewData["UpdateAccess"])
 {
     <form class="form-horizontal" asp-action="Edit" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>

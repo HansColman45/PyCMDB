@@ -7,6 +7,12 @@ using System.IO;
 using System;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
+using CMDB.Domain.Entities;
+using CMDB.Testing.Helpers;
+using CMDB.UI.Tests.Pages;
+using System.Linq;
+using System.Reflection;
 
 namespace CMDB.UI.Tests.Hooks
 {
@@ -19,7 +25,7 @@ namespace CMDB.UI.Tests.Hooks
         /// <summary>
         /// The Nlog logger
         /// </summary>
-        private readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        private static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         
         /// <summary>
         /// This function will run before evry scenario
@@ -51,13 +57,8 @@ namespace CMDB.UI.Tests.Hooks
             log.Debug("Scenario {0} stoped", context.ScenarioInfo.Title);
             scenarioData.Driver.Close();
             scenarioData.Driver.Quit();
-            Process[] procs = Process.GetProcessesByName("chromedriver");
-            foreach (var proc in procs)
-            {
-                proc.Kill();
-            }
-            procs = Process.GetProcessesByName("geckodriver");
-            foreach (var proc in procs)
+            List<Process> processes = Process.GetProcesses().Where(p => p.ProcessName == "chromedriver" && p.ProcessName == "geckodriver").ToList();
+            foreach (var proc in processes)
             {
                 proc.Kill();
             }
@@ -69,13 +70,8 @@ namespace CMDB.UI.Tests.Hooks
         [BeforeFeature]
         public static async Task BeforeFeature(ScenarioData scenarioData)
         {
-            Process[] procs = Process.GetProcessesByName("chromedriver");
-            foreach (var proc in procs)
-            {
-                proc.Kill();
-            }
-            procs = Process.GetProcessesByName("geckodriver");
-            foreach (var proc in procs)
+            List<Process> processes = Process.GetProcesses().Where(p => p.ProcessName == "chromedriver" && p.ProcessName == "geckodriver").ToList();
+            foreach (var proc in processes)
             {
                 proc.Kill();
             }
@@ -89,8 +85,14 @@ namespace CMDB.UI.Tests.Hooks
         [AfterFeature]
         public static async void AfterFeature(ScenarioData scenarioData)
         {
-            await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
-            scenarioData.Context = null;
+            try
+            {
+                await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
+            }
+            catch (Exception ex)
+            {
+                log.Error($"DB exception {ex}");
+            }
         }
         /// <summary>
         /// This function will run after each step
@@ -103,16 +105,20 @@ namespace CMDB.UI.Tests.Hooks
             var result = context.StepContext.Status;
             if (result == ScenarioExecutionStatus.TestError)
             {
-                log.Error("The scenario {0} ended with {1}", context.ScenarioInfo.Title, result);
-                //there was an error lets take a screenshot
+                log.Error("The scenario {0} on step {2} ended with {1}", context.ScenarioInfo.Title, result, context.CurrentScenarioBlock);
                 ITakesScreenshot takesScreenshot = (ITakesScreenshot)scenarioData.Driver;
                 var screenshot = takesScreenshot.GetScreenshot();
-                var path = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
-                string fileName = $"{context.ScenarioInfo.Title}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
-                string tempFileName = Path.Combine(path, @"../../../Screenshots/", fileName);
-
+                var path = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase).Replace("file:\\", "");
+                string fileName = $"{context.CurrentScenarioBlock}_Error_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
+                Directory.CreateDirectory(Path.Combine(path, @"../../../Screenshots/", context.ScenarioInfo.Title));
+                string tempFileName = Path.Combine(path, @$"../../../Screenshots/{context.ScenarioInfo.Title}/", fileName);
                 screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
                 log.Debug("Screenshot saved: {0}", tempFileName);
+                List<Process> processes = Process.GetProcesses().Where(p => p.ProcessName == "chromedriver" && p.ProcessName == "geckodriver").ToList();
+                foreach (var proc in processes)
+                {
+                    proc.Kill();
+                }
             }
         }
     }

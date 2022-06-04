@@ -206,7 +206,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to Docking";
+            ViewData["Title"] = "Assign identity to docking";
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Laptop";
             await BuildMenu();

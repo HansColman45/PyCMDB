@@ -11,6 +11,7 @@ using helpers = CMDB.UI.Tests.Helpers;
 using entity = CMDB.Domain.Entities;
 using System.Threading.Tasks;
 using CMDB.Testing.Helpers;
+using FluentAssertions;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -77,7 +78,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #endregion
         [Order(4)]
         [Given(@"An Identity exisist in the system")]
-        public async void GivenAnIdentityExisistInTheSystem()
+        public async Task GivenAnIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin);
         }
@@ -280,9 +281,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             int Id = detail.Id;
             entity.Identity identity = context.GetIdentity(Id);
-            string expectedlog = $"The Identity width name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID {Account.UserID} by {admin.Account.UserID}";
+            string expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog,"The log should match");
         }
         #endregion
         #region Assign Devices

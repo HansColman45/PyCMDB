@@ -4,6 +4,7 @@ using CMDB.Testing.Helpers;
 using CMDB.Testing.Helpers.Devices;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Identity = CMDB.Domain.Entities.Identity;
@@ -35,9 +36,9 @@ namespace CMDB.UI.Tests.Data
         /// This will delete all Created or update entities the Admin has done
         /// </summary>
         /// <param name="admin">The Admin</param>
-        public async Task DeleteAllCreatedOrUpdated(Admin admin)
+        public async Task<Dictionary<string, Object>> DeleteAllCreatedOrUpdated(Admin admin)
         {
-            await AdminHelper.DeleteCascading(context, admin);
+            return await AdminHelper.DeleteCascading(context, admin);
         }
         /// <summary>
         /// This function will return an Identity using the Id
@@ -237,6 +238,12 @@ namespace CMDB.UI.Tests.Data
         {
             Token token = await TokenHelper.CreateNewToken(context,admin, active);
             return token;
+        }
+        public async Task<AssetType> CreateAssetType(Admin admin, bool active = true)
+        {
+            AssetCategory category= context.AssetCategories.FirstOrDefault();
+            AssetType assetType = await AssetTypeHelper.CreateSimpleAssetType(context, category,admin, active);
+            return assetType;   
         }
     }
 }

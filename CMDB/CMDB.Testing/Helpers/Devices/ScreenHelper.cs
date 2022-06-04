@@ -34,5 +34,11 @@ namespace CMDB.Testing.Helpers.Devices
             }
             return screen;
         }
+        public static async Task Delete(CMDBContext context, Screen screen)
+        {
+            context.RemoveRange(screen.Logs);
+            context.Remove(screen);
+            await context.SaveChangesAsync();
+        }
     }
 }

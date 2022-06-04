@@ -33,5 +33,11 @@ namespace CMDB.Testing.Helpers.Devices
             }
             return token;
         }
+        public static async Task Delete(CMDBContext context, Token token)
+        {
+            context.RemoveRange(token.Logs);
+            context.Remove(token);
+            await context.SaveChangesAsync();
+        }
     }
 }

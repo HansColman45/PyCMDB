@@ -1,6 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,8 +14,9 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin, bool active = true)
         {
-            var accounttype = context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").FirstOrDefault();
-            var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
+            var accounttypes = await context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").ToListAsync();
+            var accounttype = accounttypes.FirstOrDefault();
+            var app = await context.Applications.Where(x => x.Name == "CMDB").FirstOrDefaultAsync();
 
             Account Account = new AccountBuilder()
                 .With(x => x.Application, app)

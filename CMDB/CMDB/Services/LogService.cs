@@ -115,32 +115,32 @@ namespace CMDB.Services
         }
         protected async Task LogAssignIden2Account(string table, int ID, Identity identity, Account account)
         {
-            LogText = $"The Identity width name: {identity.Name} in table {table} is assigned to Account width UserID: {account.UserID} by {Admin.Account.UserID}";
+            LogText = $"The Identity with name: {identity.Name} in table {table} is assigned to Account with UserID: {account.UserID} by {Admin.Account.UserID}";
             await DoLog(table, ID);
         }
         protected async Task LogAssignAccount2Identity(string table, int ID, Account account, Identity identity)
         {
-            LogText = $"The Account with UserID {account.UserID} in table {table} is assigned to Identity width name: {identity.Name} by {Admin.Account.UserID}";
+            LogText = $"The Account with UserID {account.UserID} in table {table} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID}";
             await DoLog(table, ID);
         }
         protected async Task LogReleaseAccountFromIdentity(string table, int IdenId, Identity identity, Account account)
         {
-            LogText = $"Identity with Name {identity.Name} in table {table} is released from Account width UserID: {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID}";
+            LogText = $"Identity with Name {identity.Name} in table {table} is released from Account with UserID: {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID}";
             await DoLog(table, IdenId);
         }
         protected async Task LogReleaseIdentity4Account(string table, int AccId, Identity identity, Account account)
         {
-            LogText = $"The Account with UserID {account.UserID} in table {table} is released from Identity width name: {identity.Name} by {Admin.Account.UserID}";
+            LogText = $"The Account with UserID {account.UserID} in table {table} is released from Identity with name: {identity.Name} by {Admin.Account.UserID}";
             await DoLog(table, AccId);
         }
         protected async Task LogAssignDevice2Identity(string table, Device device, Identity identity)
         {
-            LogText = $"The Identity width name: {identity.Name} is assigned to {device.Category.Category} with {device.AssetTag} by {Admin.Account.UserID} in table {table}";
+            LogText = $"The Identity with name: {identity.Name} is assigned to {device.Category.Category} with {device.AssetTag} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, identity.IdenId);
         }
         protected async Task LogAssignIdenity2Device(string table, Identity identity, Device device)
         {
-            LogText = $"The {device.Category.Category} with {device.AssetTag} is assigned to Identity width name: {identity.Name} by {Admin.Account.UserID} in table {table}";
+            LogText = $"The {device.Category.Category} with {device.AssetTag} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, device.AssetTag);
         }
         private async Task DoLog(string table, int ID)

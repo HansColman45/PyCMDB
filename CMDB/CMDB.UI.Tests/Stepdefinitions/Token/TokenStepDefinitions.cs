@@ -19,11 +19,13 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private TokenOverviewPage overviewPage;
         private CreateTokenPage createPage;
         private UpdateTokenPage updatePage;
+        private AssignToken2IdentityPage AssignPage;
 
         private readonly Random rnd = new();
         private int rndNr;
         private helpers.Token token;
         private entity.Token Token;
+        private entity.Identity Identity;
         string expectedlog, updatedField, newValue;
 
         public TokenStepDefinitions(ScenarioData scenarioData, ScenarioContext scenarioContext) : base(scenarioData, scenarioContext)
@@ -103,7 +105,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             updatedField = field;
             string Vendor, Type, assetType;
             entity.AssetType AssetType = new();
-            if (field.Contains("Type"))
+            if (field == "Type")
             {
                 entity.AssetCategory category = context.GetAssetCategory("Token");
                 assetType = value;
@@ -215,6 +217,38 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log is not as expected");
+        }
+
+        [When(@"I assign the Token to the Identity")]
+        public void WhenIAssignTheTokenToTheIdentity()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            AssignPage = overviewPage.AssignIdentity();
+            AssignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignPage");
+            AssignPage.Title.Should().BeEquivalentTo("Assign identity to Token", "Title should be correct");
+            AssignPage.SelectIdentity(Identity);
+            AssignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_IdentitySelected");
+        }
+        [When(@"I fill in the assign form for my Token")]
+        public void WhenIFillInTheAssignFormForMyToken()
+        {
+            var assignForm = AssignPage.Assign();
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
+            assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            assignForm.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            assignForm.CreatePDF();
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+        [Then(@"The Identity is assigned to the Token")]
+        public void ThenTheIdentityIsAssignedToTheToken()
+        {
+            overviewPage.Search(Token.AssetTag);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
+            expectedlog = $"The Token with {Token.AssetTag} is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID} in table token";
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
 
     }
