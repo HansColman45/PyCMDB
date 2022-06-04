@@ -428,5 +428,15 @@ namespace CMDB.Services
             await LogAssignIdenity2Device(table, identity, device);
             await LogAssignDevice2Identity("identity", device, identity);
         }
+        public async Task ReleaseIdenity(Device device, Identity identity, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            device.LastModfiedAdmin = Admin;
+            identity.Devices.Remove(device);
+            device.Identity = null;
+            await _context.SaveChangesAsync();
+            await LogReleaseIdentityFromDevice(table, identity, device);
+            await LogReleaseDeviceFromIdenity("identity", device, identity);
+        }
     }
 }

@@ -143,6 +143,16 @@ namespace CMDB.Services
             LogText = $"The {device.Category.Category} with {device.AssetTag} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, device.AssetTag);
         }
+        protected async Task LogReleaseDeviceFromIdenity(string table, Device device, Identity identity)
+        {
+            LogText = $"The Identity with name: {identity.Name} is released from {device.Category.Category} with {device.AssetTag} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, identity.IdenId);
+        }
+        protected async Task LogReleaseIdentityFromDevice(string table, Identity identity, Device device)
+        {
+            LogText = $"The {device.Category.Category} with {device.AssetTag} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, device.AssetTag);
+        }
         private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;
