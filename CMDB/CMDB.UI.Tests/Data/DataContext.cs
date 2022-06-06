@@ -92,13 +92,12 @@ namespace CMDB.UI.Tests.Data
         /// </summary>
         /// <param name="admin">The admin</param>
         /// <param name="active">bool</param>
-        /// <returns></returns>
+        /// <returns>Docking</returns>
         public async Task<Docking> CreateDocking(Admin admin, bool active = true)
         {
             Docking docking = await DockingHelpers.CreateSimpleDocking(context, admin, active);
             return docking;
         }
-
         /// <summary>
         /// This will return the Account using the Id
         /// </summary>
@@ -138,7 +137,7 @@ namespace CMDB.UI.Tests.Data
         /// This will return an AssetCategory using the Id
         /// </summary>
         /// <param name="CatId">The Category Id</param>
-        /// <returns></returns>
+        /// <returns>AssetCategory</returns>
         public AssetCategory GetAssetCategory(int CatId)
         {
             var Category = context.AssetCategories
@@ -178,7 +177,7 @@ namespace CMDB.UI.Tests.Data
         /// This will return a laptop using the Asset Tag
         /// </summary>
         /// <param name="AssetTag">AssetTag</param>
-        /// <returns></returns>
+        /// <returns>Laptop</returns>
         public Laptop GetLaptop(string AssetTag)
         {
             var Laptop = context.Devices.OfType<Laptop>()
@@ -228,22 +227,48 @@ namespace CMDB.UI.Tests.Data
         /// </summary>
         /// <param name="admin"></param>
         /// <param name="active"></param>
-        /// <returns></returns>
+        /// <returns>Screen</returns>
         public async Task<Screen> CreateMonitor(Admin admin, bool active = true)
         {
             Screen screen = await ScreenHelper.CreateScreen(context, admin, active);
             return screen;
         }
+        /// <summary>
+        /// This function will create a new token
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="active"></param>
+        /// <returns></returns>
         public async Task<Token> CreateToken(Admin admin, bool active = true)
         {
             Token token = await TokenHelper.CreateNewToken(context,admin, active);
             return token;
         }
+        /// <summary>
+        /// This function will create a new AssetType
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="active"></param>
+        /// <returns>AssetType</returns>
         public async Task<AssetType> CreateAssetType(Admin admin, bool active = true)
         {
             AssetCategory category= context.AssetCategories.FirstOrDefault();
             AssetType assetType = await AssetTypeHelper.CreateSimpleAssetType(context, category,admin, active);
             return assetType;   
+        }
+        /// <summary>
+        /// This function will assign a given Identity to a given device
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="device"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public async Task AssignIdentity2Device(Admin admin, Device device, Identity identity)
+        {
+            identity.LastModfiedAdmin = admin;
+            device.LastModfiedAdmin = admin;
+            identity.Devices.Add(device);
+            await context.SaveChangesAsync();
         }
     }
 }

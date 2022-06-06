@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class ReleaseIdentityPage : MainPage
+    public class DockingReleaseIdentityPage : MainPage
     {
+        public DockingReleaseIdentityPage(IWebDriver webDriver) : base(webDriver)
+        {
+        }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");
         public string Type => GetAttributeFromXpath("//td[@id='Type']", "innerHTML");
         public string Application => GetAttributeFromXpath("//td[@Application]", "innerHTML");
@@ -25,9 +28,6 @@ namespace CMDB.UI.Tests.Pages
         {
             set => EnterInTextboxByXPath("//input[@id='ITEmp']", value);
             get => TekstFromTextBox("//input[@id='ITEmp']");
-        }
-        public ReleaseIdentityPage(IWebDriver webDriver) : base(webDriver)
-        {
         }
         public void CreatePDF()
         {

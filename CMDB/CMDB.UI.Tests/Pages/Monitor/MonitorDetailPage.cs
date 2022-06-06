@@ -12,6 +12,11 @@ namespace CMDB.UI.Tests.Pages
         public MonitorDetailPage(IWebDriver webDriver) : base(webDriver)
         {
         }
+        public MonitorReleaseIdentityPage ReleaseIdentityPage()
+        {
+            ClickElementByXpath(ReleaseIdenityXpath);
+            return new(driver);
+        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));

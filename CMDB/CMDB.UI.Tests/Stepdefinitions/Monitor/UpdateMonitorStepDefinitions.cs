@@ -16,7 +16,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private MainPage main;
         private MonitorOverviewPage overviewPage;
         private UpdateMonitorPage updatePage;
-        private AssignMonitor2IdentityPage assignPage;
+        private MonitorAssignIdentityPage assignPage;
 
         private readonly Random rnd = new();
         private int rndNr;

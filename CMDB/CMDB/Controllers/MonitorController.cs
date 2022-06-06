@@ -274,5 +274,42 @@ namespace CMDB.Controllers
             }
             return View(moniror);
         }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Release identity in {0}", Table);
+            ViewData["Title"] = "Release identity from Monitor";
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var monitors = await service.ListScreensByID(id);
+            Screen moniror = monitors.FirstOrDefault();
+            if (moniror == null)
+                return NotFound();
+            ViewData["Name"] = moniror.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = moniror.Identity.UserID,
+                    FirstName = moniror.Identity.FirstName,
+                    LastName = moniror.Identity.LastName,
+                    Language = moniror.Identity.Language.Code,
+                    Receiver = moniror.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(moniror);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(moniror);
+        }
     }
 }

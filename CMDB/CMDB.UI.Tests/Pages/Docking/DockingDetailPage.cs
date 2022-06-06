@@ -7,10 +7,15 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class DockingStationDetailPage : MainPage
+    public class DockingDetailPage : MainPage
     {
-        public DockingStationDetailPage(IWebDriver webDriver) : base(webDriver)
+        public DockingDetailPage(IWebDriver webDriver) : base(webDriver)
         {
+        }
+        public DockingReleaseIdentityPage ReleaseIdentity()
+        {
+            ClickElementByXpath(ReleaseIdenityXpath);
+            return new(driver);
         }
         public string GetLastLog()
         {

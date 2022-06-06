@@ -288,5 +288,49 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Release identity in {0}", Table);
+            ViewData["Title"] = "Release identity from Desktop";
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var desktops = await service.ListDekstopByID(id);
+            Desktop desktop = desktops.FirstOrDefault();
+            if (desktop == null)
+                return NotFound();
+            service.GetAssignedIdentity(desktop);
+            Identity identity = desktop.Identity;
+            ViewData["Name"] = identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid)
+                {
+                    await service.ReleaseIdenity(desktop, desktop.Identity, Table);
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = identity.UserID,
+                        FirstName = identity.FirstName,
+                        LastName = identity.LastName,
+                        Language = identity.Language.Code,
+                        Receiver = identity.Name,
+                        Type = "Release"
+                    };
+                    PDFGenerator.SetAssetInfo(desktop);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(desktop);
+        }
     }
 }

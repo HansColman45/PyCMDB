@@ -20,7 +20,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private AccountOverviewPage overviewPage;
         private CreateAccountPage createAccount;
         private AssignFormPage AssignFom;
-        private ReleaseIdentityPage releaseIdentity;
+        private AccountReleaseIdentityPage releaseIdentity;
 
         private readonly Random rnd = new();
         private int rndNr;

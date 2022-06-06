@@ -19,7 +19,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private TokenOverviewPage overviewPage;
         private CreateTokenPage createPage;
         private UpdateTokenPage updatePage;
-        private AssignToken2IdentityPage AssignPage;
+        private TokenAssignIdentityPage AssignPage;
+        private TokenReleaseIdentityPage releaseIdenity;
 
         private readonly Random rnd = new();
         private int rndNr;
@@ -247,6 +248,41 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
             expectedlog = $"The Token with {Token.AssetTag} is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID} in table token";
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
+        }
+
+        [Given(@"that Identity is assigned to my token")]
+        public async Task GivenThatIdentityIsAssignedToMyToken()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            await context.AssignIdentity2Device(admin, Token, Identity);
+        }
+        [When(@"I release that identity from my token")]
+        public void WhenIReleaseThatIdentityFromMyToken()
+        {
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+            releaseIdenity = detail.ReleaseIdentity();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+        }
+        [When(@"I fill in the release form for my token")]
+        public void WhenIFillInTheReleaseFormForMyToken()
+        {
+            releaseIdenity.Title.Should().BeEquivalentTo("Release identity from Token", "Title should be correct");
+            releaseIdenity.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            releaseIdenity.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            releaseIdenity.CreatePDF();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+        [Then(@"The identity is released from my token")]
+        public void ThenTheIdentityIsReleasedFromMyToken()
+        {
+            overviewPage.Search(Token.AssetTag);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
+            expectedlog = $"The Token with {Token.AssetTag} is released from Identity with name: {Identity.Name} by {admin.Account.UserID} in table token";
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }

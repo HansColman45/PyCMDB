@@ -20,7 +20,7 @@ namespace CMDB.UI.Tests.Pages
                 return Int32.Parse(id);
             }
         }
-        public ReleaseIdentityPage ReleaseIdentity()
+        public AccountReleaseIdentityPage ReleaseIdentity()
         {
             ClickElementByXpath("//a[@id='ReleaseIdentity']");
             return new(driver);

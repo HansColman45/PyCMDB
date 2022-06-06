@@ -257,7 +257,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity to Laptop";
+            ViewData["Title"] = "Release identity from Laptop";
             ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Laptop";
             ViewData["Action"] = "ReleaseIdentity";

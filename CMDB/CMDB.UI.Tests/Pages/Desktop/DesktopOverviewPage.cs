@@ -37,7 +37,7 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(ActivateXpath);
             WaitUntilElmentVisableByXpath(NewXpath);
         }
-        public AssignDesktop2IdentityPage AssignIdentity()
+        public DesktopAssignIdentityPage AssignIdentity()
         {
             ClickElementByXpath(AssignIdenityXpath);
             WaitUntilElmentVisableByXpath("//button[@type='submit']");

@@ -19,7 +19,8 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         private MainPage main;
         private DesktopOverviewPage overviewPage;
         private CreateDesktopPage CreateDesktop;
-        private AssignDesktop2IdentityPage AssignPage;
+        private DesktopAssignIdentityPage AssignPage;
+        private DesktopReleaseIdentityPage releaseIdenity;
 
         private readonly Random rnd = new();
         private int rndNr;
@@ -256,6 +257,41 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
             expectedlog = $"The Desktop with {Desktop.AssetTag} is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID} in table desktop";
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
+        }
+
+        [Given(@"that Identity is assigned to my Desktop")]
+        public async Task GivenThatIdentityIsAssignedToMyDesktop()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            await context.AssignIdentity2Device(admin, Desktop, Identity);
+        }
+        [When(@"I release that identity from my Desktop")]
+        public void WhenIReleaseThatIdentityFromMyDesktop()
+        {
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+            releaseIdenity = detail.ReleaseIdentity();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+        }
+        [When(@"I fill in the release form for my Desktop")]
+        public void WhenIFillInTheReleaseFormForMyDesktop()
+        {
+            releaseIdenity.Title.Should().BeEquivalentTo("Release identity from Desktop", "Title should be correct");
+            releaseIdenity.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            releaseIdenity.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            releaseIdenity.CreatePDF();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+        [Then(@"The identity is released from my Desktop")]
+        public void ThenTheIdentityIsReleasedFromMyDesktop()
+        {
+            overviewPage.Search(Desktop.AssetTag);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
+            expectedlog = $"The Desktop with {Desktop.AssetTag} is released from Identity with name: {Identity.Name} by {admin.Account.UserID} in table desktop";
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }

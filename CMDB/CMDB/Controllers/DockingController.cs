@@ -275,5 +275,43 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Release identity in {0}", Table);
+            ViewData["Title"] = "Release identity from Docking";
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var dockings = await service.ListDockingByID(id);
+            Docking docking = dockings.FirstOrDefault();
+            if (docking == null)
+                return NotFound();
+            service.GetAssignedIdentity(docking);
+            ViewData["Name"] = docking.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = docking.Identity.UserID,
+                    FirstName = docking.Identity.FirstName,
+                    LastName = docking.Identity.LastName,
+                    Language = docking.Identity.Language.Code,
+                    Receiver = docking.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(docking);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(docking);
+        }
     }
 }

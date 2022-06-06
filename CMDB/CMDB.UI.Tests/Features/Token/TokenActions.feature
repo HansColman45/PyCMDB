@@ -12,7 +12,15 @@ Scenario: I want to activate an inactive token
 
 Scenario: I want to assign an existing Identiy to my Token
 	Given There is an token existing
-	And an Identy exist as well
+	And an Identity exist as well
 	When I assign the Token to the Identity
 	And I fill in the assign form for my Token
 	Then The Identity is assigned to the Token
+
+Scenario: I want to release an assigned identity from my Token
+	Given There is an token existing
+	And an Identity exist as well
+	And that Identity is assigned to my token
+	When I release that identity from my token
+	And I fill in the release form for my token
+	Then The identity is released from my token

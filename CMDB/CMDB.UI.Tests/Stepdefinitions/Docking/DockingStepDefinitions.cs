@@ -19,7 +19,8 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         private MainPage main;
         private DockingOverviewPage overviewPage;
         private CreateDockingPage CreatePage;
-        private AssignDocking2IdentityPage AssignPage;
+        private DockingAssignIdentityPage AssignPage;
+        private DockingReleaseIdentityPage releaseIdenity;
 
         private readonly Random rnd = new();
         private int rndNr;
@@ -251,6 +252,41 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
             expectedlog = $"The Docking station with {Docking.AssetTag} is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID} in table docking";
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
+        }
+
+        [Given(@"that Identity is assigned to my Docking")]
+        public async Task GivenThatIdentityIsAssignedToMyDocking()
+        {
+            Identity = (entity.Identity)TestData.Get("Identity");
+            await context.AssignIdentity2Device(admin, Docking, Identity);
+        }
+        [When(@"I release that identity from my Docking")]
+        public void WhenIReleaseThatIdentityFromMyDocking()
+        {
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+            releaseIdenity = detail.ReleaseIdentity();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+        }
+        [When(@"I fill in the release form for my Docking")]
+        public void WhenIFillInTheReleaseFormForMyDocking()
+        {
+            releaseIdenity.Title.Should().BeEquivalentTo("Release identity from Docking", "Title should be correct");
+            releaseIdenity.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            releaseIdenity.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            releaseIdenity.CreatePDF();
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+        [Then(@"The identity is released from my Docking")]
+        public void ThenTheIdentityIsReleasedFromMyDocking()
+        {
+            overviewPage.Search(Docking.AssetTag);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
+            expectedlog = $"The Docking station with {Docking.AssetTag} is released from Identity with name: {Identity.Name} by {admin.Account.UserID} in table docking";
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }

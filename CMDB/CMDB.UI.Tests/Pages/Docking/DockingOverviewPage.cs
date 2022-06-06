@@ -17,7 +17,7 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(NewXpath);
             return new(driver);
         }
-        public DockingStationDetailPage Detail()
+        public DockingDetailPage Detail()
         {
             ClickElementByXpath(InfoXpath);
             return new(driver);
@@ -37,7 +37,7 @@ namespace CMDB.UI.Tests.Pages
             ClickElementByXpath(ActivateXpath);
             WaitUntilElmentVisableByXpath(NewXpath);
         }
-        public AssignDocking2IdentityPage AssignIdentity()
+        public DockingAssignIdentityPage AssignIdentity()
         {
             ClickElementByXpath(AssignIdenityXpath);
             WaitUntilElmentVisableByXpath("//button[@type='submit']");

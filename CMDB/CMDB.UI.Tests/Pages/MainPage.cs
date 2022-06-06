@@ -23,6 +23,7 @@ namespace CMDB.UI.Tests.Pages
         protected static string InfoXpath => "//a[@title='Info']";
         protected static string ActivateXpath => "//a[@title='Activate']";
         protected static string AssignIdenityXpath => "//a[@title='Assign Identity']";
+        protected static string ReleaseIdenityXpath => "//a[@title='Release Identity']";
 
         public bool LoggedIn()
         {

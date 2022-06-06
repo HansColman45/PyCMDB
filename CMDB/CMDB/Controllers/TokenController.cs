@@ -284,5 +284,43 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
+        {
+            log.Debug("Using Release identity in {0}", Table);
+            ViewData["Title"] = "Release identity from Token";
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Token";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var tokens = await service.ListTokenByID(id);
+            Token token = tokens.FirstOrDefault();
+            if (token == null)
+                return NotFound();
+            service.GetAssignedIdentity(token);
+            ViewData["Name"] = token.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = token.Identity.UserID,
+                    FirstName = token.Identity.FirstName,
+                    LastName = token.Identity.LastName,
+                    Language = token.Identity.Language.Code,
+                    Receiver = token.Identity.Name
+                };
+                PDFGenerator.SetAssetInfo(token);
+                PDFGenerator.GeneratePDF(_env);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(token);
+        }
     }
 }

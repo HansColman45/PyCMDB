@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class AssignLaptop2IdentityPage : MainPage
+    public class LaptopAssignIdentityPage : MainPage
     {
-        public AssignLaptop2IdentityPage(IWebDriver webDriver) : base(webDriver)
+        public LaptopAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public void SelectIdentity(Identity identity)
