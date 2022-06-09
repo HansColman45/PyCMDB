@@ -78,13 +78,11 @@ namespace CMDB.Controllers
                     laptop.RAM = values["RAM"];
                     int Type = Convert.ToInt32(values["Type"]);
                     var AssetType = service.ListAssetTypeById(Type);
-                    laptop.Type = AssetType.ElementAt<AssetType>(0);
-                    laptop.Category = AssetType.ElementAt<AssetType>(0).Category;
+                    laptop.Type = AssetType;
+                    laptop.Category = AssetType.Category;
                     laptop.MAC = values["MAC"];
                     if (service.IsDeviceExisting(laptop))
-                    {
                         ModelState.AddModelError("", "Asset already exist");
-                    }
                     if (ModelState.IsValid)
                     {
                         await service.CreateNewDevice(laptop, Table);
@@ -122,7 +120,7 @@ namespace CMDB.Controllers
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type).ElementAt<AssetType>(0);
+                    var newAssetType = service.ListAssetTypeById(Type);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
@@ -238,6 +236,8 @@ namespace CMDB.Controllers
             {
                 try
                 {
+                    if (!service.IsDeviceFree(laptop))
+                        ModelState.AddModelError("", "Laptop can not be assigned to another user");
                     Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {

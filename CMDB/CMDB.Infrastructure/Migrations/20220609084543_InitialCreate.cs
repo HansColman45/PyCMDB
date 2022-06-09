@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
+#nullable disable
+
 namespace CMDB.Infrastructure.Migrations
 {
     public partial class InitialCreate : Migration
@@ -70,6 +72,24 @@ namespace CMDB.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Account",
+                columns: table => new
+                {
+                    AccID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TypeId = table.Column<int>(type: "int", nullable: false),
+                    ApplicationId = table.Column<int>(type: "int", nullable: false),
+                    UserID = table.Column<string>(type: "varchar(255)", nullable: false),
+                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
+                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
+                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Account", x => x.AccID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Admin",
                 columns: table => new
                 {
@@ -86,6 +106,12 @@ namespace CMDB.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Admin", x => x.Admin_id);
+                    table.ForeignKey(
+                        name: "FK_Admin_Account",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "AccID",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Admin_LastModiefiedAdmin",
                         column: x => x.LastModifiedAdminId,
@@ -181,8 +207,7 @@ namespace CMDB.Infrastructure.Migrations
                         name: "FK_Type_Admin_AdminId",
                         column: x => x.AdminId,
                         principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Admin_id");
                     table.ForeignKey(
                         name: "FK_Type_LastModifiedAdmin",
                         column: x => x.LastModifiedAdminId,
@@ -283,42 +308,6 @@ namespace CMDB.Infrastructure.Migrations
                         column: x => x.PermissionId,
                         principalTable: "Permission",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Account",
-                columns: table => new
-                {
-                    AccID = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TypeId = table.Column<int>(type: "int", nullable: false),
-                    ApplicationId = table.Column<int>(type: "int", nullable: false),
-                    UserID = table.Column<string>(type: "varchar(255)", nullable: false),
-                    active = table.Column<int>(type: "int", maxLength: 1, nullable: false, defaultValue: 1),
-                    Deactivate_reason = table.Column<string>(type: "varchar(255)", nullable: true),
-                    LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Account", x => x.AccID);
-                    table.ForeignKey(
-                        name: "FK_Account_Application",
-                        column: x => x.ApplicationId,
-                        principalTable: "Application",
-                        principalColumn: "AppID",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Account_LastModifiedAdmin",
-                        column: x => x.LastModifiedAdminId,
-                        principalTable: "Admin",
-                        principalColumn: "Admin_id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_Account_Type",
-                        column: x => x.TypeId,
-                        principalTable: "Type",
-                        principalColumn: "TypeId",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -444,7 +433,7 @@ namespace CMDB.Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ValidFrom = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
                     ValidUntil = table.Column<DateTime>(type: "datetime2(0)", nullable: false),
-                    IdentityId = table.Column<int>(type: "int", nullable: true),
+                    IdentityId = table.Column<int>(type: "int", nullable: false),
                     AccountId = table.Column<int>(type: "int", nullable: false),
                     LastModifiedAdminId = table.Column<int>(type: "int", nullable: true)
                 },
@@ -475,8 +464,9 @@ namespace CMDB.Infrastructure.Migrations
                 name: "Mobile",
                 columns: table => new
                 {
-                    IMEI = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    IMEI = table.Column<int>(type: "int", nullable: false),
                     TypeId = table.Column<int>(type: "int", nullable: true),
                     IdentityId = table.Column<int>(type: "int", nullable: true),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
@@ -486,7 +476,7 @@ namespace CMDB.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Mobile", x => x.IMEI);
+                    table.PrimaryKey("PK_Mobile", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Mobile_Category",
                         column: x => x.CategoryId,
@@ -598,7 +588,7 @@ namespace CMDB.Infrastructure.Migrations
                         name: "FK_Subscription_Mobile",
                         column: x => x.MobileId,
                         principalTable: "Mobile",
-                        principalColumn: "IMEI",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Subscription_Type",
@@ -693,7 +683,7 @@ namespace CMDB.Infrastructure.Migrations
                         name: "FK_Log_Mobile",
                         column: x => x.MobileId,
                         principalTable: "Mobile",
-                        principalColumn: "IMEI",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Log_Permission",
@@ -796,8 +786,7 @@ namespace CMDB.Infrastructure.Migrations
                 name: "IX_IdenAccount_AccountId_IdentityId_ValidFrom_ValidUntil",
                 table: "IdenAccount",
                 columns: new[] { "AccountId", "IdentityId", "ValidFrom", "ValidUntil" },
-                unique: true,
-                filter: "[IdentityId] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_IdenAccount_IdentityId",
@@ -935,6 +924,12 @@ namespace CMDB.Infrastructure.Migrations
                 column: "IdentityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Mobile_IMEI",
+                table: "Mobile",
+                column: "IMEI",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Mobile_LastModifiedAdminId",
                 table: "Mobile",
                 column: "LastModifiedAdminId");
@@ -1020,11 +1015,27 @@ namespace CMDB.Infrastructure.Migrations
                 column: "LastModifiedAdminId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Admin_Account",
-                table: "Admin",
-                column: "AccountId",
-                principalTable: "Account",
-                principalColumn: "AccID",
+                name: "FK_Account_Application",
+                table: "Account",
+                column: "ApplicationId",
+                principalTable: "Application",
+                principalColumn: "AppID",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Account_LastModifiedAdmin",
+                table: "Account",
+                column: "LastModifiedAdminId",
+                principalTable: "Admin",
+                principalColumn: "Admin_id",
+                onDelete: ReferentialAction.SetNull);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Account_Type",
+                table: "Account",
+                column: "TypeId",
+                principalTable: "Type",
+                principalColumn: "TypeId",
                 onDelete: ReferentialAction.Restrict);
         }
 

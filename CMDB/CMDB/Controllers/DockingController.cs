@@ -155,7 +155,7 @@ namespace CMDB.Controllers
                     docking.AssetTag = values["AssetTag"];
                     docking.SerialNumber = values["SerialNumber"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type).First();
+                    var AssetType = service.ListAssetTypeById(Type);
                     docking.Type = AssetType;
                     docking.Category = AssetType.Category;
                     if (service.IsDeviceExisting(docking))
@@ -194,7 +194,7 @@ namespace CMDB.Controllers
             {
                 string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["Type.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type).First();
+                var AssetType = service.ListAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {
                     await service.UpdateDocking(docking, newSerial, AssetType, Table);
@@ -222,6 +222,8 @@ namespace CMDB.Controllers
             {
                 try
                 {
+                    if (!service.IsDeviceFree(docking))
+                        ModelState.AddModelError("", "Docking station can not be assigned to another user");
                     Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {

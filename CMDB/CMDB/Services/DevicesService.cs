@@ -374,15 +374,13 @@ namespace CMDB.Services
                 result = true;
             return result;
         }
-        public List<SelectListItem> ListAssetTypes(string category)
+        public bool IsDeviceFree(Device device)
         {
-            List<SelectListItem> assettypes = new();
-            var types = _context.AssetTypes.Include(x => x.Category).Where(x => x.Category.Category == category).ToList();
-            foreach (var type in types)
-            {
-                assettypes.Add(new(type.Vendor + " " + type.Type, type.TypeID.ToString()));
-            }
-            return assettypes;
+            bool result = false;
+            var devices = _context.Devices.Where(x => x.AssetTag == device.AssetTag).First();
+            if (devices.Identity is null)
+                result = true;
+            return result;
         }
         public List<SelectListItem> ListFreeIdentities()
         {
@@ -398,13 +396,13 @@ namespace CMDB.Services
             }
             return identites;
         }
-        public List<AssetType> ListAssetTypeById(int id)
+        public AssetType ListAssetTypeById(int id)
         {
-            var devices = _context.AssetTypes
+            var assettype = _context.AssetTypes
                 .Include(x => x.Category)
                 .Where(x => x.TypeID == id)
-                .ToList();
-            return devices;
+                .First();
+            return assettype;
         }
         public void GetAssignedIdentity(Device device)
         {

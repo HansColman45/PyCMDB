@@ -132,7 +132,7 @@ namespace CMDB.Controllers
                     screen.AssetTag = values["AssetTag"];
                     screen.SerialNumber = values["SerialNumber"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type).First();
+                    var AssetType = service.ListAssetTypeById(Type);
                     screen.Type = AssetType;
                     screen.Category = AssetType.Category;
                     if (service.IsDeviceExisting(screen))
@@ -193,7 +193,7 @@ namespace CMDB.Controllers
             {
                 string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["Type.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type).First();
+                var AssetType = service.ListAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {
                     await service.UpdateScreen(screen, newSerial, AssetType, Table);
@@ -220,7 +220,9 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
-                {
+                {   
+                    if (!service.IsDeviceFree(moniror))
+                        ModelState.AddModelError("", "Monitor can not be assigned to another user");
                     Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {

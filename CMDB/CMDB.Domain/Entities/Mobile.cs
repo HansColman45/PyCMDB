@@ -6,6 +6,7 @@ namespace CMDB.Domain.Entities
     public class Mobile : Model
     {
         [Key]
+        public int Id { get; set; }
         [Required]
         public int IMEI { get; set; }
         [Required]

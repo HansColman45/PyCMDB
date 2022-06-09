@@ -155,7 +155,7 @@ namespace CMDB.Controllers
                     token.AssetTag = values["AssetTag"];
                     token.SerialNumber = values["SerialNumber"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type).First();
+                    var AssetType = service.ListAssetTypeById(Type);
                     token.Type = AssetType;
                     token.Category = AssetType.Category;
                     if (service.IsDeviceExisting(token))
@@ -196,7 +196,7 @@ namespace CMDB.Controllers
                 {
                     string newSerialNumber = values["SerialNumber"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type).First();
+                    var newAssetType = service.ListAssetTypeById(Type);
                     if (ModelState.IsValid)
                     {
                         await service.UpdateToken(token, newSerialNumber, newAssetType, Table);
@@ -231,6 +231,8 @@ namespace CMDB.Controllers
             {
                 try
                 {
+                    if (!service.IsDeviceFree(token))
+                        ModelState.AddModelError("", "Desktop can not be assigned to another user");
                     Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {

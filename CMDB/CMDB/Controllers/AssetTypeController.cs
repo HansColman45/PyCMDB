@@ -90,7 +90,7 @@ namespace CMDB.Controllers
                     assetType.Type = values["Type"];
                     int id = Convert.ToInt32(values["Category"]);
                     var category = service.ListAssetCategoryByID(id);
-                    assetType.Category = category.ElementAt<AssetCategory>(0);
+                    assetType.Category = category.First();
                     if (service.IsAssetTypeExisting(assetType))
                     {
                         ModelState.AddModelError("", "Asset type already exist");

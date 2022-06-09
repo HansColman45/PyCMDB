@@ -50,11 +50,11 @@ INSERT INTO configuration (CODE,SubCode,CFN_Tekst,Description) values
 ('General','LogDateFormat','dd/MM/yyyy HH:mm:ss','This is the data format used in the application'),
 ('General','Company','Brightest','This is the company for who the Website is build for');
 -- Account
-INSERT INTO account (UserID,TypeId,ApplicationId) VALUES ('Root',2,2);
+INSERT INTO account (UserID,TypeId,ApplicationId) VALUES ('Root',(select TypeId from [Type] where Discriminator = 'AccountType' and Type='Administrator'),2);
 --Identity
-Insert into [Identity] (Name,LanguageCode,EMail,Company,UserID,TypeId) Values('Stock','NL','root@cmdb.com','CMDB','ROOT',1);
+Insert into [Identity] (Name,LanguageCode,EMail,Company,UserID,TypeId) Values('Stock','NL','root@cmdb.com','CMDB','ROOT',(select TypeId from [Type] where Discriminator = 'IdentityType' and Type='Werknemer'));
 --role
-insert into role (Name, Description, TypeId) VALUES ('Administrator','The administrator of the Application',1);
+insert into role (Name, Description, TypeId) VALUES ('Administrator','The administrator of the Application',(select TypeId from [Type] where Discriminator = 'RoleType' and Type='Application'));
 -- idenaccount
 insert into IdenAccount (IdentityId,AccountId,ValidFrom,ValidUntil) values
 (1,1,'2012-01-01 00:00:00','9999-12-31 23:59:00');

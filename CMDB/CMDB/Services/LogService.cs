@@ -6,6 +6,8 @@ using System.Security.Cryptography;
 using System;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
 
 namespace CMDB.Services
 {
@@ -295,5 +297,15 @@ namespace CMDB.Services
             }
         }
         #endregion
+        public List<SelectListItem> ListAssetTypes(string category)
+        {
+            List<SelectListItem> assettypes = new();
+            var types = _context.AssetTypes.Include(x => x.Category).Where(x => x.Category.Category == category).ToList();
+            foreach (var type in types)
+            {
+                assettypes.Add(new(type.Vendor + " " + type.Type, type.TypeID.ToString()));
+            }
+            return assettypes;
+        }
     }
 }

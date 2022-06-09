@@ -47,6 +47,18 @@ CREATE TABLE [RAM] (
 );
 GO
 
+CREATE TABLE [Account] (
+    [AccID] int NOT NULL IDENTITY,
+    [TypeId] int NOT NULL,
+    [ApplicationId] int NOT NULL,
+    [UserID] varchar(255) NOT NULL,
+    [active] int NOT NULL DEFAULT 1,
+    [Deactivate_reason] varchar(255) NULL,
+    [LastModifiedAdminId] int NULL,
+    CONSTRAINT [PK_Account] PRIMARY KEY ([AccID])
+);
+GO
+
 CREATE TABLE [Admin] (
     [Admin_id] int NOT NULL IDENTITY,
     [AccountId] int NOT NULL,
@@ -57,6 +69,7 @@ CREATE TABLE [Admin] (
     [Deactivate_reason] varchar(255) NULL,
     [LastModifiedAdminId] int NULL,
     CONSTRAINT [PK_Admin] PRIMARY KEY ([Admin_id]),
+    CONSTRAINT [FK_Admin_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account] ([AccID]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Admin_LastModiefiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE NO ACTION
 );
 GO
@@ -104,7 +117,7 @@ CREATE TABLE [Type] (
     [Deactivate_reason] varchar(255) NULL,
     [LastModifiedAdminId] int NULL,
     CONSTRAINT [PK_Type] PRIMARY KEY ([TypeId]),
-    CONSTRAINT [FK_Type_Admin_AdminId] FOREIGN KEY ([AdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Type_Admin_AdminId] FOREIGN KEY ([AdminId]) REFERENCES [Admin] ([Admin_id]),
     CONSTRAINT [FK_Type_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL
 );
 GO
@@ -148,21 +161,6 @@ CREATE TABLE [RolePerm] (
     CONSTRAINT [FK_RolePerm_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL,
     CONSTRAINT [FK_RolePerm_Menu] FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([MenuId]) ON DELETE NO ACTION,
     CONSTRAINT [FK_RolePerm_Permission] FOREIGN KEY ([PermissionId]) REFERENCES [Permission] ([Id]) ON DELETE NO ACTION
-);
-GO
-
-CREATE TABLE [Account] (
-    [AccID] int NOT NULL IDENTITY,
-    [TypeId] int NOT NULL,
-    [ApplicationId] int NOT NULL,
-    [UserID] varchar(255) NOT NULL,
-    [active] int NOT NULL DEFAULT 1,
-    [Deactivate_reason] varchar(255) NULL,
-    [LastModifiedAdminId] int NULL,
-    CONSTRAINT [PK_Account] PRIMARY KEY ([AccID]),
-    CONSTRAINT [FK_Account_Application] FOREIGN KEY ([ApplicationId]) REFERENCES [Application] ([AppID]) ON DELETE NO ACTION,
-    CONSTRAINT [FK_Account_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL,
-    CONSTRAINT [FK_Account_Type] FOREIGN KEY ([TypeId]) REFERENCES [Type] ([TypeId]) ON DELETE NO ACTION
 );
 GO
 
@@ -222,7 +220,7 @@ CREATE TABLE [IdenAccount] (
     [ID] int NOT NULL IDENTITY,
     [ValidFrom] datetime2(0) NOT NULL,
     [ValidUntil] datetime2(0) NOT NULL,
-    [IdentityId] int NULL,
+    [IdentityId] int NOT NULL,
     [AccountId] int NOT NULL,
     [LastModifiedAdminId] int NULL,
     CONSTRAINT [PK_IdenAccount] PRIMARY KEY ([ID]),
@@ -233,14 +231,15 @@ CREATE TABLE [IdenAccount] (
 GO
 
 CREATE TABLE [Mobile] (
-    [IMEI] int NOT NULL IDENTITY,
+    [Id] int NOT NULL IDENTITY,
+    [IMEI] int NOT NULL,
     [TypeId] int NULL,
     [IdentityId] int NULL,
     [CategoryId] int NOT NULL,
     [active] int NOT NULL DEFAULT 1,
     [Deactivate_reason] varchar(255) NULL,
     [LastModifiedAdminId] int NULL,
-    CONSTRAINT [PK_Mobile] PRIMARY KEY ([IMEI]),
+    CONSTRAINT [PK_Mobile] PRIMARY KEY ([Id]),
     CONSTRAINT [FK_Mobile_Category] FOREIGN KEY ([CategoryId]) REFERENCES [category] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Mobile_Identity] FOREIGN KEY ([IdentityId]) REFERENCES [Identity] ([IdenId]) ON DELETE SET NULL,
     CONSTRAINT [FK_Mobile_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL,
@@ -281,7 +280,7 @@ CREATE TABLE [Subscription] (
     CONSTRAINT [FK_Subscription_Category] FOREIGN KEY ([AssetCategoryId]) REFERENCES [category] ([Id]) ON DELETE NO ACTION,
     CONSTRAINT [FK_Subscription_Identity] FOREIGN KEY ([IdentityId]) REFERENCES [Identity] ([IdenId]) ON DELETE SET NULL,
     CONSTRAINT [FK_Subscription_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL,
-    CONSTRAINT [FK_Subscription_Mobile] FOREIGN KEY ([MobileId]) REFERENCES [Mobile] ([IMEI]) ON DELETE SET NULL,
+    CONSTRAINT [FK_Subscription_Mobile] FOREIGN KEY ([MobileId]) REFERENCES [Mobile] ([Id]) ON DELETE SET NULL,
     CONSTRAINT [FK_Subscription_Type] FOREIGN KEY ([SubsctiptionTypeId]) REFERENCES [SubscriptionType] ([Id]) ON DELETE NO ACTION
 );
 GO
@@ -315,7 +314,7 @@ CREATE TABLE [Log] (
     CONSTRAINT [FK_Log_Identity] FOREIGN KEY ([IdentityId]) REFERENCES [Identity] ([IdenId]) ON DELETE SET NULL,
     CONSTRAINT [FK_Log_KensingTone] FOREIGN KEY ([KensingtonId]) REFERENCES [Kensington] ([KeyID]) ON DELETE SET NULL,
     CONSTRAINT [FK_Log_Menu] FOREIGN KEY ([MenuId]) REFERENCES [Menu] ([MenuId]) ON DELETE SET NULL,
-    CONSTRAINT [FK_Log_Mobile] FOREIGN KEY ([MobileId]) REFERENCES [Mobile] ([IMEI]) ON DELETE SET NULL,
+    CONSTRAINT [FK_Log_Mobile] FOREIGN KEY ([MobileId]) REFERENCES [Mobile] ([Id]) ON DELETE SET NULL,
     CONSTRAINT [FK_Log_Permission] FOREIGN KEY ([PermissionId]) REFERENCES [Permission] ([Id]) ON DELETE SET NULL,
     CONSTRAINT [FK_Log_Role] FOREIGN KEY ([RoleId]) REFERENCES [Role] ([RoleId]) ON DELETE SET NULL,
     CONSTRAINT [FK_Log_Subscription] FOREIGN KEY ([SubsriptionId]) REFERENCES [Subscription] ([Id]) ON DELETE SET NULL,
@@ -363,7 +362,7 @@ GO
 CREATE INDEX [IX_category_LastModifiedAdminId] ON [category] ([LastModifiedAdminId]);
 GO
 
-CREATE UNIQUE INDEX [IX_IdenAccount_AccountId_IdentityId_ValidFrom_ValidUntil] ON [IdenAccount] ([AccountId], [IdentityId], [ValidFrom], [ValidUntil]) WHERE [IdentityId] IS NOT NULL;
+CREATE UNIQUE INDEX [IX_IdenAccount_AccountId_IdentityId_ValidFrom_ValidUntil] ON [IdenAccount] ([AccountId], [IdentityId], [ValidFrom], [ValidUntil]);
 GO
 
 CREATE INDEX [IX_IdenAccount_IdentityId] ON [IdenAccount] ([IdentityId]);
@@ -447,6 +446,9 @@ GO
 CREATE INDEX [IX_Mobile_IdentityId] ON [Mobile] ([IdentityId]);
 GO
 
+CREATE UNIQUE INDEX [IX_Mobile_IMEI] ON [Mobile] ([IMEI]);
+GO
+
 CREATE INDEX [IX_Mobile_LastModifiedAdminId] ON [Mobile] ([LastModifiedAdminId]);
 GO
 
@@ -498,11 +500,17 @@ GO
 CREATE INDEX [IX_Type_LastModifiedAdminId] ON [Type] ([LastModifiedAdminId]);
 GO
 
-ALTER TABLE [Admin] ADD CONSTRAINT [FK_Admin_Account] FOREIGN KEY ([AccountId]) REFERENCES [Account] ([AccID]) ON DELETE NO ACTION;
+ALTER TABLE [Account] ADD CONSTRAINT [FK_Account_Application] FOREIGN KEY ([ApplicationId]) REFERENCES [Application] ([AppID]) ON DELETE NO ACTION;
+GO
+
+ALTER TABLE [Account] ADD CONSTRAINT [FK_Account_LastModifiedAdmin] FOREIGN KEY ([LastModifiedAdminId]) REFERENCES [Admin] ([Admin_id]) ON DELETE SET NULL;
+GO
+
+ALTER TABLE [Account] ADD CONSTRAINT [FK_Account_Type] FOREIGN KEY ([TypeId]) REFERENCES [Type] ([TypeId]) ON DELETE NO ACTION;
 GO
 
 INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
-VALUES (N'20220324160525_InitialCreate', N'5.0.10');
+VALUES (N'20220609084543_InitialCreate', N'6.0.3');
 GO
 
 COMMIT;

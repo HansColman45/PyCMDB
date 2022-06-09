@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                     desktop.SerialNumber = values["SerialNumber"];
                     desktop.RAM = values["RAM"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type).First();
+                    var AssetType = service.ListAssetTypeById(Type);
                     desktop.Type = AssetType;
                     desktop.Category = AssetType.Category;
                     desktop.MAC = values["MAC"];
@@ -119,7 +119,7 @@ namespace CMDB.Controllers
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type).First();
+                    var newAssetType = service.ListAssetTypeById(Type);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
@@ -235,6 +235,8 @@ namespace CMDB.Controllers
             {
                 try
                 {
+                    if (!service.IsDeviceFree(desktop))
+                        ModelState.AddModelError("", "Desktop can not be assigned to another user");
                     Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {

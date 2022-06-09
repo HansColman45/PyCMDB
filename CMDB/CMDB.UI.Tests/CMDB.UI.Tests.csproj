@@ -41,7 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Token\" />
     <Folder Include="Screenshots\" />
     <Folder Include="TestExecution\" />
   </ItemGroup>

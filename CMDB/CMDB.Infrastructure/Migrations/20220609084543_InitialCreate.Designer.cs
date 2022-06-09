@@ -7,26 +7,30 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
+#nullable disable
+
 namespace CMDB.Infrastructure.Migrations
 {
     [DbContext(typeof(CMDBContext))]
-    [Migration("20220324160525_InitialCreate")]
+    [Migration("20220609084543_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.10")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("CMDB.Domain.Entities.Account", b =>
                 {
                     b.Property<int>("AccID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccID"), 1L, 1);
 
                     b.Property<int?>("ApplicationId")
                         .IsRequired()
@@ -63,7 +67,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Account");
+                    b.ToTable("Account", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Admin", b =>
@@ -71,8 +75,9 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<int>("AdminId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("Admin_id")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnName("Admin_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AdminId"), 1L, 1);
 
                     b.Property<int?>("AccountId")
                         .IsRequired()
@@ -109,15 +114,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("Admin");
+                    b.ToTable("Admin", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Application", b =>
                 {
                     b.Property<int>("AppID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AppID"), 1L, 1);
 
                     b.Property<string>("DeactivateReason")
                         .HasColumnType("varchar(255)")
@@ -142,15 +148,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("Application");
+                    b.ToTable("Application", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.AssetCategory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Category")
                         .IsRequired()
@@ -178,15 +185,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("category");
+                    b.ToTable("category", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.AssetType", b =>
                 {
                     b.Property<int>("TypeID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeID"), 1L, 1);
 
                     b.Property<int?>("CategoryId")
                         .IsRequired()
@@ -221,7 +229,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("AssetType");
+                    b.ToTable("AssetType", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Configuration", b =>
@@ -246,7 +254,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasKey("Code", "SubCode");
 
-                    b.ToTable("Configuration");
+                    b.ToTable("Configuration", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Device", b =>
@@ -297,7 +305,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("asset");
+                    b.ToTable("asset", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Device");
                 });
@@ -306,8 +314,9 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.Property<int>("TypeId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TypeId"), 1L, 1);
 
                     b.Property<string>("DeactivateReason")
                         .HasColumnType("varchar(255)")
@@ -340,7 +349,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("Type");
+                    b.ToTable("Type", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("GeneralType");
                 });
@@ -349,14 +358,16 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<int?>("AccountId")
                         .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("IdentityId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("LastModifiedAdminId")
@@ -377,18 +388,18 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasIndex("LastModifiedAdminId");
 
                     b.HasIndex("AccountId", "IdentityId", "ValidFrom", "ValidUntil")
-                        .IsUnique()
-                        .HasFilter("[IdentityId] IS NOT NULL");
+                        .IsUnique();
 
-                    b.ToTable("IdenAccount");
+                    b.ToTable("IdenAccount", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Identity", b =>
                 {
                     b.Property<int>("IdenId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdenId"), 1L, 1);
 
                     b.Property<string>("Company")
                         .IsRequired()
@@ -437,15 +448,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Identity");
+                    b.ToTable("Identity", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Kensington", b =>
                 {
                     b.Property<int>("KeyID")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("KeyID"), 1L, 1);
 
                     b.Property<int>("AmountOfKeys")
                         .HasColumnType("int");
@@ -493,7 +505,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Kensington");
+                    b.ToTable("Kensington", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Language", b =>
@@ -508,15 +520,16 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasKey("Code")
                         .HasName("PK_Language");
 
-                    b.ToTable("Language");
+                    b.ToTable("Language", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Log", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("AccountId")
                         .HasColumnType("int");
@@ -603,15 +616,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Log");
+                    b.ToTable("Log", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Menu", b =>
                 {
                     b.Property<int>("MenuId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MenuId"), 1L, 1);
 
                     b.Property<string>("Label")
                         .IsRequired()
@@ -629,15 +643,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("ParentId");
 
-                    b.ToTable("Menu");
+                    b.ToTable("Menu", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Mobile", b =>
                 {
-                    b.Property<int>("IMEI")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("CategoryId")
                         .IsRequired()
@@ -646,6 +661,9 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<string>("DeactivateReason")
                         .HasColumnType("varchar(255)")
                         .HasColumnName("Deactivate_reason");
+
+                    b.Property<int>("IMEI")
+                        .HasColumnType("int");
 
                     b.Property<int?>("IdentityId")
                         .HasColumnType("int");
@@ -662,10 +680,14 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("int")
                         .HasDefaultValue(1);
 
-                    b.HasKey("IMEI")
-                        .HasName("PK_Mobile");
+                    b.HasKey("Id")
+                        .HasName("PK_Mobile")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("IMEI")
+                        .IsUnique();
 
                     b.HasIndex("IdentityId");
 
@@ -673,15 +695,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Mobile");
+                    b.ToTable("Mobile", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Permission", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
                         .HasColumnType("varchar(255)");
@@ -698,15 +721,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("Permission");
+                    b.ToTable("Permission", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.RAM", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Display")
                         .IsRequired()
@@ -719,15 +743,16 @@ namespace CMDB.Infrastructure.Migrations
                         .HasName("PK_RAM")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.ToTable("RAM");
+                    b.ToTable("RAM", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Role", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RoleId"), 1L, 1);
 
                     b.Property<string>("DeactivateReason")
                         .HasColumnType("varchar(255)")
@@ -761,15 +786,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("TypeId");
 
-                    b.ToTable("Role");
+                    b.ToTable("Role", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.RolePerm", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("LastModifiedAdminId")
                         .HasColumnType("int");
@@ -795,15 +821,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("RolePerm");
+                    b.ToTable("RolePerm", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Subscription", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("AssetCategoryId")
                         .IsRequired()
@@ -848,15 +875,16 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("SubsctiptionTypeId");
 
-                    b.ToTable("Subscription");
+                    b.ToTable("Subscription", (string)null);
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.SubscriptionType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int?>("AssetCategoryId")
                         .IsRequired()
@@ -891,7 +919,19 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.HasIndex("LastModifiedAdminId");
 
-                    b.ToTable("SubscriptionType");
+                    b.ToTable("SubscriptionType", (string)null);
+                });
+
+            modelBuilder.Entity("CMDB.Domain.Entities.AccountType", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
+
+                    b.Property<int?>("AdminId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("AdminId");
+
+                    b.HasDiscriminator().HasValue("AccountType");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Desktop", b =>
@@ -923,6 +963,13 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Docking");
                 });
 
+            modelBuilder.Entity("CMDB.Domain.Entities.IdentityType", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
+
+                    b.HasDiscriminator().HasValue("IdentityType");
+                });
+
             modelBuilder.Entity("CMDB.Domain.Entities.Laptop", b =>
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
@@ -943,6 +990,13 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Laptop");
                 });
 
+            modelBuilder.Entity("CMDB.Domain.Entities.RoleType", b =>
+                {
+                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
+
+                    b.HasDiscriminator().HasValue("RoleType");
+                });
+
             modelBuilder.Entity("CMDB.Domain.Entities.Screen", b =>
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
@@ -961,53 +1015,27 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("Token");
                 });
 
-            modelBuilder.Entity("CMDB.Domain.Entities.AccountType", b =>
-                {
-                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
-
-                    b.Property<int?>("AdminId")
-                        .HasColumnType("int");
-
-                    b.HasIndex("AdminId");
-
-                    b.HasDiscriminator().HasValue("AccountType");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.IdentityType", b =>
-                {
-                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
-
-                    b.HasDiscriminator().HasValue("IdentityType");
-                });
-
-            modelBuilder.Entity("CMDB.Domain.Entities.RoleType", b =>
-                {
-                    b.HasBaseType("CMDB.Domain.Entities.GeneralType");
-
-                    b.HasDiscriminator().HasValue("RoleType");
-                });
-
             modelBuilder.Entity("CMDB.Domain.Entities.Account", b =>
                 {
                     b.HasOne("CMDB.Domain.Entities.Application", "Application")
                         .WithMany("Accounts")
                         .HasForeignKey("ApplicationId")
-                        .HasConstraintName("FK_Account_Application")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Account_Application");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Accounts")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Account_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Account_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.AccountType", "Type")
                         .WithMany("Accounts")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Account_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Account_Type");
 
                     b.Navigation("Application");
 
@@ -1021,15 +1049,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Account", "Account")
                         .WithMany("Admins")
                         .HasForeignKey("AccountId")
-                        .HasConstraintName("FK_Admin_Account")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Admin_Account");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Admins")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Admin_LastModiefiedAdmin")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("FK_Admin_LastModiefiedAdmin");
 
                     b.Navigation("Account");
 
@@ -1041,8 +1069,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Applications")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Application_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Application_LastModifiedAdmin");
 
                     b.Navigation("LastModfiedAdmin");
                 });
@@ -1052,8 +1080,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("AssetCategories")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_AssetCategory_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_AssetCategory_LastModifiedAdmin");
 
                     b.Navigation("LastModfiedAdmin");
                 });
@@ -1069,8 +1097,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("AssetTypes")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_AssetType_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_AssetType_LastModifiedAdmin");
 
                     b.Navigation("Category");
 
@@ -1082,28 +1110,28 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Devices")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Device_Category")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Device_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
                         .WithMany("Devices")
                         .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Device_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Device_Identity");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Devices")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Device_LastModfiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Device_LastModfiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
                         .WithMany("Devices")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Device_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Device_Type");
 
                     b.Navigation("Category");
 
@@ -1119,8 +1147,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Types")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Type_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Type_LastModifiedAdmin");
 
                     b.Navigation("LastModfiedAdmin");
                 });
@@ -1142,8 +1170,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModifiedAdmin")
                         .WithMany("IdenAccounts")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_IdenAccount_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_IdenAccount_LastModifiedAdmin");
 
                     b.Navigation("Account");
 
@@ -1157,22 +1185,22 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Language", "Language")
                         .WithMany("Identities")
                         .HasForeignKey("LanguageCode")
-                        .HasConstraintName("FK_Identity_Language")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Identity_Language");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Identities")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Identity_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Identity_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.IdentityType", "Type")
                         .WithMany("Identities")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Identity_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Identity_Type");
 
                     b.Navigation("Language");
 
@@ -1186,28 +1214,28 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Kensingtons")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Kensington_Category")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Kensington_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Device", "Device")
                         .WithMany("Keys")
                         .HasForeignKey("DeviceAssetTag")
-                        .HasConstraintName("FK_Key_Device")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Key_Device");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Kensingtons")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Kensington_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Kensington_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "Type")
                         .WithMany("Kensingtons")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Kensington_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Kensington_Type");
 
                     b.Navigation("Category");
 
@@ -1223,92 +1251,92 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Account", "Account")
                         .WithMany("Logs")
                         .HasForeignKey("AccountId")
-                        .HasConstraintName("FK_Log_Account")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Account");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "Admin")
                         .WithMany("Logs")
                         .HasForeignKey("AdminId")
-                        .HasConstraintName("FK_Log_Admin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Admin");
 
                     b.HasOne("CMDB.Domain.Entities.Application", "Application")
                         .WithMany("Logs")
                         .HasForeignKey("ApplicationId")
-                        .HasConstraintName("FK_Log_Application")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Application");
 
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Logs")
                         .HasForeignKey("AssetCategoryId")
-                        .HasConstraintName("FK_Log_Category")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Device", "Device")
                         .WithMany("Logs")
                         .HasForeignKey("AssetTag")
-                        .HasConstraintName("FK_Device_Asset")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Device_Asset");
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "AssetType")
                         .WithMany("Logs")
                         .HasForeignKey("AssetTypeId")
-                        .HasConstraintName("FK_Log_AssetType")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_AssetType");
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
                         .WithMany("Logs")
                         .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Log_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Identity");
 
                     b.HasOne("CMDB.Domain.Entities.Kensington", "Kensington")
                         .WithMany("Logs")
                         .HasForeignKey("KensingtonId")
-                        .HasConstraintName("FK_Log_KensingTone")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_KensingTone");
 
                     b.HasOne("CMDB.Domain.Entities.Menu", "Menu")
                         .WithMany("Logs")
                         .HasForeignKey("MenuId")
-                        .HasConstraintName("FK_Log_Menu")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Menu");
 
                     b.HasOne("CMDB.Domain.Entities.Mobile", "Mobile")
                         .WithMany("Logs")
                         .HasForeignKey("MobileId")
-                        .HasConstraintName("FK_Log_Mobile")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Mobile");
 
                     b.HasOne("CMDB.Domain.Entities.Permission", "Permission")
                         .WithMany("Logs")
                         .HasForeignKey("PermissionId")
-                        .HasConstraintName("FK_Log_Permission")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Permission");
 
                     b.HasOne("CMDB.Domain.Entities.Role", "Role")
                         .WithMany("Logs")
                         .HasForeignKey("RoleId")
-                        .HasConstraintName("FK_Log_Role")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Role");
 
                     b.HasOne("CMDB.Domain.Entities.SubscriptionType", "SubscriptionType")
                         .WithMany("Logs")
                         .HasForeignKey("SubscriptionTypeId")
-                        .HasConstraintName("FK_Log_SubscriptionType")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_SubscriptionType");
 
                     b.HasOne("CMDB.Domain.Entities.Subscription", "Subscription")
                         .WithMany("Logs")
                         .HasForeignKey("SubsriptionId")
-                        .HasConstraintName("FK_Log_Subscription")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Subscription");
 
                     b.HasOne("CMDB.Domain.Entities.GeneralType", "Type")
                         .WithMany("Logs")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Log_Type")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Log_Type");
 
                     b.Navigation("Account");
 
@@ -1346,8 +1374,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Menu", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
-                        .HasConstraintName("FK_Menu_Menu")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .HasConstraintName("FK_Menu_Menu");
 
                     b.Navigation("Parent");
                 });
@@ -1357,28 +1385,28 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Mobiles")
                         .HasForeignKey("CategoryId")
-                        .HasConstraintName("FK_Mobile_Category")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Mobile_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
                         .WithMany("Mobiles")
                         .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Mobile_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Mobile_Identity");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Mobiles")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Mobile_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Mobile_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.AssetType", "MobileType")
                         .WithMany("Mobiles")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Mobile_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Mobile_Type");
 
                     b.Navigation("Category");
 
@@ -1394,8 +1422,8 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModifiedAdmin")
                         .WithMany("Permissions")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Permission_CreatedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Permission_CreatedAdmin");
 
                     b.Navigation("LastModifiedAdmin");
                 });
@@ -1405,15 +1433,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Roles")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Role_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Role_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.RoleType", "Type")
                         .WithMany("Roles")
                         .HasForeignKey("TypeId")
-                        .HasConstraintName("FK_Role_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Role_Type");
 
                     b.Navigation("LastModfiedAdmin");
 
@@ -1425,22 +1453,22 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModifiedAdmin")
                         .WithMany("RolePerms")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_RolePerm_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_RolePerm_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.Menu", "Menu")
                         .WithMany("Permissions")
                         .HasForeignKey("MenuId")
-                        .HasConstraintName("FK_RolePerm_Menu")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_RolePerm_Menu");
 
                     b.HasOne("CMDB.Domain.Entities.Permission", "Permission")
                         .WithMany("Roles")
                         .HasForeignKey("PermissionId")
-                        .HasConstraintName("FK_RolePerm_Permission")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_RolePerm_Permission");
 
                     b.Navigation("LastModifiedAdmin");
 
@@ -1454,34 +1482,34 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Subscriptions")
                         .HasForeignKey("AssetCategoryId")
-                        .HasConstraintName("FK_Subscription_Category")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Subscription_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Identity", "Identity")
                         .WithMany("Subscriptions")
                         .HasForeignKey("IdentityId")
-                        .HasConstraintName("FK_Subscription_Identity")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Subscription_Identity");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("Subscriptions")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_Subscription_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Subscription_LastModifiedAdmin");
 
                     b.HasOne("CMDB.Domain.Entities.Mobile", "Mobile")
                         .WithMany("Subscriptions")
                         .HasForeignKey("MobileId")
-                        .HasConstraintName("FK_Subscription_Mobile")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_Subscription_Mobile");
 
                     b.HasOne("CMDB.Domain.Entities.SubscriptionType", "SubscriptionType")
                         .WithMany("Subscriptions")
                         .HasForeignKey("SubsctiptionTypeId")
-                        .HasConstraintName("FK_Subscription_Type")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_Subscription_Type");
 
                     b.Navigation("Category");
 
@@ -1499,15 +1527,15 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("SubscriptionTypes")
                         .HasForeignKey("AssetCategoryId")
-                        .HasConstraintName("FK_AssetType_Category")
                         .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .IsRequired()
+                        .HasConstraintName("FK_AssetType_Category");
 
                     b.HasOne("CMDB.Domain.Entities.Admin", "LastModfiedAdmin")
                         .WithMany("SubscriptionTypes")
                         .HasForeignKey("LastModifiedAdminId")
-                        .HasConstraintName("FK_SubscriptionType_LastModifiedAdmin")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("FK_SubscriptionType_LastModifiedAdmin");
 
                     b.Navigation("Category");
 
@@ -1532,9 +1560,9 @@ namespace CMDB.Infrastructure.Migrations
 
             modelBuilder.Entity("CMDB.Domain.Entities.Admin", b =>
                 {
-                    b.Navigation("Accounts");
-
                     b.Navigation("AccountTypes");
+
+                    b.Navigation("Accounts");
 
                     b.Navigation("Admins");
 
@@ -1562,9 +1590,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("Roles");
 
-                    b.Navigation("Subscriptions");
-
                     b.Navigation("SubscriptionTypes");
+
+                    b.Navigation("Subscriptions");
 
                     b.Navigation("Types");
                 });
@@ -1586,9 +1614,9 @@ namespace CMDB.Infrastructure.Migrations
 
                     b.Navigation("Mobiles");
 
-                    b.Navigation("Subscriptions");
-
                     b.Navigation("SubscriptionTypes");
+
+                    b.Navigation("Subscriptions");
 
                     b.Navigation("Types");
                 });

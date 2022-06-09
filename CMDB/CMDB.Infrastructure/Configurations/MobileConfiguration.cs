@@ -1,5 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CMDB.Infrastructure.Configuration
@@ -10,8 +11,12 @@ namespace CMDB.Infrastructure.Configuration
         {
             builder.ToTable(nameof(Mobile));
 
-            builder.HasKey(e => e.IMEI)
-                .HasName("PK_Mobile");
+            builder.HasKey(e => e.Id)
+                .HasName("PK_Mobile")
+                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            builder.Property(e => e.IMEI)
+                .IsRequired();
 
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Mobiles)
@@ -46,6 +51,8 @@ namespace CMDB.Infrastructure.Configuration
 
             builder.Property(e => e.DeactivateReason)
                 .HasColumnType("varchar(255)");
+
+            builder.HasIndex(e => e.IMEI).IsUnique();
         }
     }
 }

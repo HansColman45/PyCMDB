@@ -168,7 +168,7 @@ namespace CMDB.Services
             if (identity.Type.TypeId != type)
             {
                 var Type = GetIdenityTypeByID(type);
-                IdentityType newType = Type.ElementAt<IdentityType>(0);
+                IdentityType newType = Type.First();
                 await LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type);
                 identity.Type = newType;
             }
