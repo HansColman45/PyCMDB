@@ -66,7 +66,7 @@ namespace CMDB.Services
         public async Task Deactivate(AssetCategory category, string Reason, string Table)
         {
             category.LastModfiedAdmin = Admin;
-            category.Active = "Inactive";
+            category.Active = State.Inactive;
             category.DeactivateReason = Reason;
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();
@@ -76,7 +76,7 @@ namespace CMDB.Services
         public async Task Activate(AssetCategory category, string Table)
         {
             category.LastModfiedAdmin = Admin;
-            category.Active = "Active";
+            category.Active = State.Active;
             category.DeactivateReason = "";
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();

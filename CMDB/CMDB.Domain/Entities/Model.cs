@@ -13,24 +13,23 @@ namespace CMDB.Domain.Entities
         }
         public virtual ICollection<Log> Logs { get; set; }
         [NotMapped]
-        public virtual string Active
+        public virtual State Active
         {
             get
             {
                 return active switch
                 {
-                    1 => "Active",
-                    0 => "Inactive",
-                    _ => "",
+                    1 => State.Active,
+                    0 => State.Inactive,
+                    _ => State.Unknown
                 };
-                ;
             }
             set
             {
                 active = value switch
                 {
-                    "Active" => 1,
-                    "Inactive" => 0,
+                    State.Active => 1,
+                    State.Inactive => 0,
                     _ => 1,
                 };
             }
@@ -39,5 +38,11 @@ namespace CMDB.Domain.Entities
         public string DeactivateReason { get; set; }
         public Admin LastModfiedAdmin { get; set; }
         public int? LastModifiedAdminId { get; set; }
+    }
+    public enum State
+    {
+        Inactive,
+        Active,
+        Unknown
     }
 }

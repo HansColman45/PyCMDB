@@ -1,0 +1,27 @@
+﻿@model CMDB.Domain.Entities.Mobile
+@{
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["DeleteAccess"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.IMEI)</th>
+                <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="AssetTag">@Html.DisplayFor(model => model.IMEI)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.MobileType.Vendor) @Html.DisplayFor(model => model.MobileType.Type)</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_deleteForm" />
+}
+else
+{
+    <p>You do not access to this page</p>
+}

@@ -45,7 +45,7 @@ namespace CMDB.Services
         }
         public async Task Deactivate(AccountType accountType, string Reason, string Table)
         {
-            accountType.Active = "Inactive";
+            accountType.Active = State.Inactive;
             accountType.DeactivateReason = Reason;
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
@@ -54,7 +54,7 @@ namespace CMDB.Services
         }
         public async Task Activate(AccountType accountType, string Table)
         {
-            accountType.Active = "Active";
+            accountType.Active = State.Active;
             accountType.DeactivateReason = "";
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();

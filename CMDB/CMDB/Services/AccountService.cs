@@ -86,7 +86,7 @@ namespace CMDB.Services
         public async Task Deactivate(Account account, string Reason, string Table)
         {
             account.DeactivateReason = Reason;
-            account.Active = "Inactive";
+            account.Active = State.Inactive;
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             await LogDeactivate(Table, account.AccID, value, Reason);
             account.LastModfiedAdmin = Admin;
@@ -96,7 +96,7 @@ namespace CMDB.Services
         public async Task Activate(Account account, string Table)
         {
             account.DeactivateReason = null;
-            account.Active = "Active";
+            account.Active = State.Active;
             string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
             await LogActivate(Table, account.AccID, value);
             account.LastModfiedAdmin = Admin;

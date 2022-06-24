@@ -42,7 +42,7 @@ namespace CMDB.Services
             identityType.LastModfiedAdmin = Admin;
             _context.Types.Add(identityType);
             await _context.SaveChangesAsync();
-            string Value = "Identitytype created with type: " + identityType.Type + " and description: " + identityType.Description;
+            string Value = $"Identitytype created with type: {identityType.Type} and description: {identityType.Description}";
             await LogCreate(Table, identityType.TypeId, Value);
         }
         public async Task Update(IdentityType identityType, string Type, string Description, string Table)
@@ -65,7 +65,7 @@ namespace CMDB.Services
         {
             identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = reason;
-            identityType.Active = "Inactive";
+            identityType.Active = State.Inactive;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
             await LogDeactivate(Table, identityType.TypeId, Value, reason);
@@ -74,7 +74,7 @@ namespace CMDB.Services
         {
             identityType.LastModfiedAdmin = Admin;
             identityType.DeactivateReason = "";
-            identityType.Active = "Active";
+            identityType.Active = State.Active;
             await _context.SaveChangesAsync();
             string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
             await LogActivate(table, identityType.TypeId, Value);

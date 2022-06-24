@@ -27,7 +27,7 @@
                         {
                             <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Edit"><span class="@ViewBag.EditIcon"></span></a>
                         }
-                        @if (item.Active == "Active" && (bool)ViewData["DeleteAccess"])
+                        @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["DeleteAccess"])
                         {
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Deactivate"><span class="@ViewBag.DeactivateIcon"></span></a>
                         }

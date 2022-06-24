@@ -72,7 +72,7 @@ namespace CMDB.Services
         }
         public async Task DeactivateAssetType(AssetType assetType, string reason, string Table)
         {
-            assetType.Active = "Inactive";
+            assetType.Active = State.Inactive;
             assetType.DeactivateReason = reason;
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);
@@ -82,7 +82,7 @@ namespace CMDB.Services
         }
         public async Task ActivateAssetType(AssetType assetType, string Table)
         {
-            assetType.Active = "Active";
+            assetType.Active = State.Active;
             assetType.DeactivateReason = "";
             assetType.LastModfiedAdmin = Admin;
             _context.AssetTypes.Update(assetType);

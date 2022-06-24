@@ -48,7 +48,7 @@ namespace CMDB.Services
                 "application" => _context.Logs.Include(x => x.Application).Where(x => x.Application.AppID == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "kensington" => _context.Logs.Include(x => x.Kensington).Where(x => x.Kensington.KeyID == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "admin" => _context.Logs.Include(x => x.Admin).Where(x => x.Admin.AdminId == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "mobile" => _context.Logs.Include(x => x.Mobile).Where(x => x.Mobile.IMEI == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "mobile" => _context.Logs.Include(x => x.Mobile).Where(x => x.Mobile.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "subscriptiontype" => _context.Logs.Include(x => x.SubscriptionType).Where(x => x.SubscriptionType.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "subscription" => _context.Logs.Include(x => x.Subscription).Where(x => x.Subscription.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "assetcategory" => _context.Logs.Include(x => x.Category).Where(x => x.Category.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
@@ -229,7 +229,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "mobile":
-                    log.Mobile = _context.Mobiles.Where(x => x.IMEI == ID).First();
+                    log.Mobile = _context.Mobiles.Where(x => x.Id == ID).First();
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;

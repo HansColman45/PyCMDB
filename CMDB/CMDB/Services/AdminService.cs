@@ -87,7 +87,7 @@ namespace CMDB.Services
         }
         public async Task Deactivate(Admin admin, string reason, string table)
         {
-            admin.Active = "Inactive";
+            admin.Active = State.Inactive;
             admin.DeactivateReason = reason;
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
@@ -96,7 +96,7 @@ namespace CMDB.Services
         }
         public async Task Activate(Admin admin, string table)
         {
-            admin.Active = "Active";
+            admin.Active = State.Active;
             admin.DeactivateReason = "";
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();

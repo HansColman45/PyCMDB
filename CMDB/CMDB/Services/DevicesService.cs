@@ -302,7 +302,7 @@ namespace CMDB.Services
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
-            device.Active = "Inactive";
+            device.Active = State.Inactive;
             await _context.SaveChangesAsync();
             string Value = $"{device.Category.Category} with type {device.Type}";
             await LogDeactivated(table, device.AssetTag, Value, Reason);
@@ -311,7 +311,7 @@ namespace CMDB.Services
         {
             device.LastModfiedAdmin = Admin;
             device.DeactivateReason = "";
-            device.Active = "Active";
+            device.Active = State.Active;
             await _context.SaveChangesAsync();
             string Value = $"{device.Category.Category} with type {device.Type}";
             await LogActivate(table, device.AssetTag, Value);

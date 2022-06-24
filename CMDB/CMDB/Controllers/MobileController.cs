@@ -76,7 +76,7 @@ namespace CMDB.Controllers
                     mobile.MobileType = AssetType;
                     mobile.Category = AssetType.Category;
                     if(service.IsMobileExisting(mobile))
-                        ModelState.AddModelError("", "Asset already exist");
+                        ModelState.AddModelError("", "Mobile already exist");
                     if (ModelState.IsValid)
                     {
                         await service.CreateNew(mobile,Table);
@@ -92,9 +92,9 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
-        public async Task<IActionResult> Details(int imei)
+        public async Task<IActionResult> Details(int? id)
         {
-            log.Debug("Using details in {0}", Table);
+            log.Debug($"Using details in {Table}");
             ViewData["Title"] = "Mobile details";
             await BuildMenu();
             ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
@@ -107,14 +107,166 @@ namespace CMDB.Controllers
             ViewData["ReleaseSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseSubscription");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (imei == 0)
+            if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById(imei);
+            var mobiles = service.GetMobileById((int)id);
             Mobile mobile = mobiles.FirstOrDefault();
             if (mobile == null)
                 return NotFound();
-            service.GetLogs(Table, imei, mobile);
+            service.GetLogs(Table, (int)id, mobile);
             service.GetAssignedIdentity(mobile);
+            service.GetAssignedSubscription(mobile);
+            return View(mobile);
+        }
+        public async Task<IActionResult> Edit(IFormCollection values, int? id)
+        {
+
+            log.Debug("Using Edit in {0}", Table);
+            ViewData["Title"] = "Edit mobile";
+            await BuildMenu();
+            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewBag.Types = service.ListAssetTypes(SitePart);
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                int newImei = Convert.ToInt32(values["IMEI"]);
+                int Type = Convert.ToInt32(values["MobileType.TypeID"]);
+                var AssetType = service.ListAssetTypeById(Type);
+                mobile.MobileType = AssetType;
+                mobile.Category = AssetType.Category;
+                if (service.IsMobileExisting(mobile, newImei))
+                    ModelState.AddModelError("", "Mobile already exist");
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        await service.Update(mobile, newImei, AssetType, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(mobile);
+        }
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
+        {
+            log.Debug("Using Delete in {0}", Table);
+            ViewData["Title"] = "Deactivate Mobile";
+            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["backUrl"] = "Mobile";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    string reason = values["reason"];
+                    if (ModelState.IsValid)
+                    {
+                        await service.Deactivate(mobile, reason, Table);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(mobile);
+        }
+        public async Task<IActionResult> Activate(int? id)
+        {
+            log.Debug("Using Activate in {0}", Table);
+            ViewData["Title"] = "Activate Mobile";
+            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            {
+                try
+                {
+                    await service.Activate(mobile, Table);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            else
+                RedirectToAction(nameof(Index));
+            return View();
+        }
+        public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
+        {
+            log.Debug("Using Assign identity in {0}", Table);
+            ViewData["Title"] = "Assign identity to Mobile";
+            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Mobile";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            return View(mobile);
+        }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id)
+        {
+            log.Debug("Using Release identity in {0}", Table);
+            ViewData["Title"] = "Release identity from Mobile";
+            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Mobile";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            return View(mobile);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
+        {
+            log.Debug("Using Assign form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Mobile";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
             return View(mobile);
         }
     }

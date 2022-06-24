@@ -47,4 +47,19 @@ namespace CMDB.UI.Tests.Helpers
     public class Token : Device
     {
     }
+    public class IdentiyType
+    {
+        public string Type { get; set; }
+        public string Description { get; set; }
+    }
+    public class RoleType
+    {
+        public string Type { get; set; }
+        public string Description { get; set; }
+    }
+    public class AccountType
+    {
+        public string Type { get; set; }
+        public string Description { get; set; }
+    }
 }

@@ -146,32 +146,32 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             //return new(driver);
         }
-        public void IdentityTypeOverview()
+        public TypeOverviewPage IdentityTypeOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Identity Type32']");
             ClickElementByXpath("//a[@href='/IdentityType']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
-        public void AccountTypeyOverview()
+        public TypeOverviewPage AccountTypeyOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Account Type34']");
             ClickElementByXpath("//a[@href='/AccountType']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
-        public void RoleTypeOverview()
+        public TypeOverviewPage RoleTypeOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Types']");
             ClickElementByXpath("//a[@id='Role Type36']");
             ClickElementByXpath("//a[@href='/RoleType']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void SubscriptionTypeOverview()
         {

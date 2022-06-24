@@ -179,7 +179,7 @@ namespace CMDB.Services
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = Reason;
-            identity.Active = "Inactive";
+            identity.Active = State.Inactive;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
@@ -189,7 +189,7 @@ namespace CMDB.Services
         {
             identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = null;
-            identity.Active = "Active";
+            identity.Active = State.Active;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";

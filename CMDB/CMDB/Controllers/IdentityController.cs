@@ -224,9 +224,7 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
             else
-            {
                 RedirectToAction(nameof(Index));
-            }
             return View();
         }
         public async Task<IActionResult> AssignDevice(IFormCollection values, int? id)
