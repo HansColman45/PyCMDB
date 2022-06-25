@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class TypeDetailPage : MainPage
+    public class MobileDetailPage : MainPage
     {
-        public TypeDetailPage(IWebDriver webDriver) : base(webDriver)
+        public MobileDetailPage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));
-            return TekstFromElementByXpath("//td[contains(text(),'identitytype')]");
+            return TekstFromElementByXpath("//td[contains(text(),'mobile')]");
         }
     }
 }

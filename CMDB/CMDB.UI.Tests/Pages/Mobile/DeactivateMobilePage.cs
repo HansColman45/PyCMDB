@@ -7,12 +7,11 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    public class DeactivateTypePage : MainPage
+    public class DeactivateMobilePage : MainPage
     {
-        public DeactivateTypePage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateMobilePage(IWebDriver webDriver) : base(webDriver)
         {
         }
-
         public string Reason
         {
             set => EnterInTextboxByXPath("//input[@id='reason']", value);

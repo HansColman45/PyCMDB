@@ -270,5 +270,10 @@ namespace CMDB.UI.Tests.Data
             identity.Devices.Add(device);
             await context.SaveChangesAsync();
         }
+        public async Task<IdentityType> CreateIdentityType(Admin admin, bool active = true)
+        {
+            IdentityType type = await IdentityTypeHelper.CreateSimpleIdentityType(context, admin, active);
+            return type;
+        }
     }
 }

@@ -62,4 +62,9 @@ namespace CMDB.UI.Tests.Helpers
         public string Type { get; set; }
         public string Description { get; set; }
     }
+    public class Mobile
+    {
+        public string IMEI { get; set; }
+        public string Type { get; set; }
+    }
 }

@@ -12,5 +12,17 @@ namespace CMDB.UI.Tests.Pages
         public UpdateTypePage(IWebDriver webDriver) : base(webDriver)
         {
         }
+        public string Type
+        {
+            set => EnterInTextboxByXPath("//input[@id='Type']", value);
+        }
+        public string Description
+        {
+            set => EnterInTextboxByXPath("//input[@id='Description']", value);
+        }
+        public void Edit()
+        {
+            ClickElementByXpath("//button[.='Edit']");
+        }
     }
 }

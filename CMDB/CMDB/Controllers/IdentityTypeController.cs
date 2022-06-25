@@ -52,9 +52,7 @@ namespace CMDB.Controllers
                 return View(list);
             }
             else
-            {
                 return RedirectToAction(nameof(Index));
-            }
         }
         public async Task<IActionResult> Details(int? id)
         {
@@ -132,7 +130,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        _ = service.Update(idenType, newTpe, newDescription, Table);
+                        await service.Update(idenType, newTpe, newDescription, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -166,7 +164,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        _ = service.Deactivate(idenType, values["reason"], Table);
+                        await service.Deactivate(idenType, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }

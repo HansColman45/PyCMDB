@@ -305,7 +305,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Account with UserID {Account.UserID} in table account is released from Identity width name: {Identity.Name} by {admin.Account.UserID}";
+            expectedlog = $"The Account with UserID {Account.UserID} in table account is released from Identity with name: {Identity.Name} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }

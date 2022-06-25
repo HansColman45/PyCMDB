@@ -47,18 +47,20 @@ namespace CMDB.Services
         }
         public async Task Update(IdentityType identityType, string Type, string Description, string Table)
         {
+            string oldType = identityType.Type;
+            string oldDescription = identityType.Description;
             identityType.LastModfiedAdmin = Admin;
             if (String.Compare(identityType.Type, Type) != 0)
             {
                 identityType.Type = Type;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeId, "Type", identityType.Type, Type);
+                await LogUpdate(Table, identityType.TypeId, "Type", oldType, Type);
             }
             if (String.Compare(identityType.Description, Description) != 0)
             {
                 identityType.Description = Description;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeId, "Description", identityType.Description, Description);
+                await LogUpdate(Table, identityType.TypeId, "Description", oldDescription, Description);
             }
         }
         public async Task Deactivate(IdentityType identityType, string reason, string Table)
@@ -67,7 +69,7 @@ namespace CMDB.Services
             identityType.DeactivateReason = reason;
             identityType.Active = State.Inactive;
             await _context.SaveChangesAsync();
-            string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
+            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
             await LogDeactivate(Table, identityType.TypeId, Value, reason);
         }
         public async Task Activate(IdentityType identityType, string table)
@@ -76,7 +78,7 @@ namespace CMDB.Services
             identityType.DeactivateReason = "";
             identityType.Active = State.Active;
             await _context.SaveChangesAsync();
-            string Value = "Account type created with type: " + identityType.Type + " and description: " + identityType.Description;
+            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
             await LogActivate(table, identityType.TypeId, Value);
         }
         public bool IsExisting(IdentityType identityType, string Type = "", string Description = "")

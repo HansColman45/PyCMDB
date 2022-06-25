@@ -110,14 +110,14 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             //return new(driver);
         }
-        public void MobileOverview()
+        public MobileOverviewPage MobileOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Mobile23']");
             ClickElementByXpath("//a[@href='/Mobile']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void SubscriptionOverview()
         {
