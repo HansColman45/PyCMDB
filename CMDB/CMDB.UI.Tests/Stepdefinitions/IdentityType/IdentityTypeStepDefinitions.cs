@@ -1,7 +1,6 @@
 using System;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
-using System;
 using Xunit;
 using System.Threading.Tasks;
 using helpers = CMDB.UI.Tests.Helpers;

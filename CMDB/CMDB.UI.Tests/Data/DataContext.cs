@@ -270,10 +270,27 @@ namespace CMDB.UI.Tests.Data
             identity.Devices.Add(device);
             await context.SaveChangesAsync();
         }
+        /// <summary>
+        /// This will create a IdenityType
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="active"></param>
+        /// <returns>IdentityType</returns>
         public async Task<IdentityType> CreateIdentityType(Admin admin, bool active = true)
         {
             IdentityType type = await IdentityTypeHelper.CreateSimpleIdentityType(context, admin, active);
             return type;
+        }
+        /// <summary>
+        /// This will create a new Mobile
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="active"></param>
+        /// <returns></returns>
+        public async Task<Mobile> CreateMobile(Admin admin, bool active = true)
+        {
+            Mobile mobile = await MobileHelper.CreateSimpleMobile(context, admin, active);
+            return mobile;
         }
     }
 }

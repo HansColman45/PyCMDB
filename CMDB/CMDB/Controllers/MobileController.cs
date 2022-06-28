@@ -47,7 +47,7 @@ namespace CMDB.Controllers
                 ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
                 ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Laptop\Search";
                 return View(mobiles);
@@ -60,7 +60,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
-            ViewData["Title"] = "Create Laptop";
+            ViewData["Title"] = "Create Mobile";
             ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             await BuildMenu();
             Mobile mobile = new();
@@ -70,7 +70,8 @@ namespace CMDB.Controllers
             {
                 try
                 {
-                    mobile.IMEI = Convert.ToInt32(values["IMEI"]);
+                    string imei = values["IMEI"];
+                    mobile.IMEI = Convert.ToInt64(values["IMEI"]);
                     int Type = Convert.ToInt32(values["MobileType"]);
                     var AssetType = service.ListAssetTypeById(Type);
                     mobile.MobileType = AssetType;
@@ -135,7 +136,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
-                int newImei = Convert.ToInt32(values["IMEI"]);
+                long newImei = Convert.ToInt64(values["IMEI"]);
                 int Type = Convert.ToInt32(values["MobileType.TypeID"]);
                 var AssetType = service.ListAssetTypeById(Type);
                 mobile.MobileType = AssetType;

@@ -49,6 +49,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I update the (.*) with (.*) on my monitor and I save")]
         public void WhenIUpdateTheSerialNumberWithOnMyMonitorAndISave(string field, string newValue)
         {
+            rndNr = rnd.Next();
             string Vendor, Type, assetType;
             AssetType AssetType = new();
             if(field == "Type")

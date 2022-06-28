@@ -43,7 +43,7 @@ namespace CMDB.Services
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
             await LogCreate(table, mobile.Id, value);
         }
-        public async Task Update(Mobile mobile, int newImei, AssetType newAssetType, string table)
+        public async Task Update(Mobile mobile, long newImei, AssetType newAssetType, string table)
         {
             if(mobile.IMEI != newImei)
             {
@@ -87,15 +87,17 @@ namespace CMDB.Services
                 .FirstOrDefault();
             return devices;
         }
-        public bool IsMobileExisting(Mobile mobile, int imei = 0)
+        public bool IsMobileExisting(Mobile mobile, long? imei = null)
         {
             bool result = false;
-            if (imei != 0 && mobile.IMEI != imei)
+            if (imei != null && mobile.IMEI != imei)
             {
                 var mobiles = _context.Mobiles.Where(x => x.IMEI == imei).ToList();
                 if (mobiles.Count > 0)
                     result = true;
             }
+            else if (imei != null && mobile.IMEI == imei)
+                result = false;
             else
             {
                 var mobiles = _context.Mobiles.Where(x => x.IMEI == mobile.IMEI).ToList();
