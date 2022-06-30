@@ -15,7 +15,7 @@ namespace CMDB.Controllers
 {
     public class IdentityController : CMDBController
     {
-        private new readonly IdentityServices service;
+        private new readonly IdentityService service;
         public IdentityController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
         {
             service = new(context);

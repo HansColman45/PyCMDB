@@ -270,19 +270,21 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = token.Identity.UserID,
-                    FirstName = token.Identity.FirstName,
-                    LastName = token.Identity.LastName,
-                    Language = token.Identity.Language.Code,
-                    Receiver = token.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(token);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid) { 
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = token.Identity.UserID,
+                        FirstName = token.Identity.FirstName,
+                        LastName = token.Identity.LastName,
+                        Language = token.Identity.Language.Code,
+                        Receiver = token.Identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(token);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(token);
         }
@@ -308,19 +310,23 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = token.Identity.UserID,
-                    FirstName = token.Identity.FirstName,
-                    LastName = token.Identity.LastName,
-                    Language = token.Identity.Language.Code,
-                    Receiver = token.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(token);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                Identity identity = token.Identity;
+                if (ModelState.IsValid) {
+                    await service.ReleaseIdenity(token, identity, Table);
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = identity.UserID,
+                        FirstName = identity.FirstName,
+                        LastName = identity.LastName,
+                        Language = identity.Language.Code,
+                        Receiver = identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(token);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(token);
         }

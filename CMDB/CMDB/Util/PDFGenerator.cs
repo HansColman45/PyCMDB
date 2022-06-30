@@ -12,6 +12,7 @@ namespace CMDB.Util
         private string HTML;
         private string _type;
         private readonly List<Device> devices = new();
+        private readonly List<Mobile> mobiles = new();
         private readonly List<IdenAccount> accounts = new();
         public string Type
         {
@@ -48,6 +49,10 @@ namespace CMDB.Util
         {
             devices.Add(device);
         }
+        public void SetMobileInfo(Mobile mobile)
+        {
+            mobiles.Add(mobile);
+        }
         public void SetAccontInfo(IdenAccount idenaccount)
         {
             accounts.Add(idenaccount);
@@ -58,7 +63,7 @@ namespace CMDB.Util
             DateTime date = DateTime.Now;
             if (!String.IsNullOrEmpty(Type))
             {
-                path = _env.WebRootPath + @"\PDF-Files\release_" + UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
+                path = _env.WebRootPath + @$"\PDF-Files\release_{UserID}_{date:dd-MM-yyyy-HH-mm-ss}.pdf";
                 switch (Language)
                 {
                     case "NL":
@@ -74,7 +79,7 @@ namespace CMDB.Util
             }
             else
             {
-                path = _env.WebRootPath + @"\PDF-Files\Assign_" + UserID + "_" + date.ToString("dd-MM-yyyy-HH-mm-ss") + ".pdf";
+                path = _env.WebRootPath + @$"\PDF-Files\Assign_{UserID}_{date:dd-MM-yyyy-HH-mm-ss}.pdf";
             }
             switch (Language)
             {
@@ -131,10 +136,10 @@ namespace CMDB.Util
                 foreach (IdenAccount a in accounts)
                 {
                     HTML += "<tr>";
-                    HTML += "<td>" + a.Account.UserID + "</td>";
-                    HTML += "<td>" + a.Account.Application.Name + "</td>";
-                    HTML += "<td>" + a.ValidFrom.ToString("dd/MM/yyyy") + "</td>";
-                    HTML += "<td>" + a.ValidUntil.ToString("dd/MM/yyyy") + "</td>";
+                    HTML += $"<td>{a.Account.UserID}</td>";
+                    HTML += $"<td>{a.Account.Application.Name}</td>";
+                    HTML += $"<td>{a.ValidFrom:dd/MM/yyyy}</td>";
+                    HTML += $"<td>{a.ValidUntil:dd/MM/yyyy}</td>";
                     HTML += "</tr>";
                 }
                 HTML += "</tbody>";
@@ -185,10 +190,62 @@ namespace CMDB.Util
                 foreach (Device d in devices)
                 {
                     HTML += "<tr>";
-                    HTML += "<td>" + d.Category.Category + "</td>";
-                    HTML += "<td>" + d.Type.Vendor + " " + d.Type.Type + "</td>";
-                    HTML += "<td>" + d.AssetTag + "</td>";
-                    HTML += "<td>" + d.SerialNumber + "</td>";
+                    HTML += $"<td>{d.Category.Category}</td>";
+                    HTML += $"<td>{d.Type}</td>";
+                    HTML += $"<td>{d.AssetTag}</td>";
+                    HTML += $"<td>{d.SerialNumber}</td>";
+                    HTML += "</tr>";
+                }
+                HTML += "</tbody>";
+                HTML += "</table>";
+            }
+            if (mobiles.Count > 0)
+            {
+                if (!String.IsNullOrEmpty(Type))
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            HTML += "<h3>Gegevens van het terug gebracht matteriaal</h3>";
+                            break;
+                        case "EN":
+                            HTML += "<h3>Info of the returned device</h3>";
+                            break;
+                        case "FR":
+                            HTML += "<h3>Info of the returned device</h3>";
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            HTML += "<h3>Gegevens van de ontvangen GSM</h3>";
+                            break;
+                        case "EN":
+                            HTML += "<h3>Info about the received mobile</h3>";
+                            break;
+                        case "FR":
+                            HTML += "<h3>Info about the received mobile</h3>";
+                            break;
+                    }
+                }
+                HTML += "<table class=\"table table-striped table-bordered\">";
+                HTML += "<thead>";
+                HTML += "<tr>";
+                HTML += "<th>Category</th>";
+                HTML += "<th>Asset Type</th>";
+                HTML += "<th>IMEI</th>";
+                HTML += "</tr>";
+                HTML += "</thead>";
+                HTML += "<tbody>";
+                foreach (Mobile d in mobiles)
+                {
+                    HTML += "<tr>";
+                    HTML += $"<td>{d.Category.Category}</td>";
+                    HTML += $"<td>{d.MobileType}</td>";
+                    HTML += $"<td>{d.IMEI}</td>";
                     HTML += "</tr>";
                 }
                 HTML += "</tbody>";
@@ -218,8 +275,8 @@ namespace CMDB.Util
                 HTML += "</thead>";
                 HTML += "<tbody>";
                 HTML += "<tr>";
-                HTML += "<td>" + Singer + "</td>";
-                HTML += "<td>" + ITEmployee + "</td>";
+                HTML += $"<td>{Singer}</td>";
+                HTML += $"<td>{ITEmployee}</td>";
                 HTML += "</tr>";
                 HTML += "<tr>";
                 HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";

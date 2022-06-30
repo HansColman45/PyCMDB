@@ -20,27 +20,23 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
-            
-                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
         }
 
         [When(@"I logon with a valid user and password")]
         public void WhenILogonWithAValidUserAndPassword()
         {
             login.EnterUserID(admin.Account.UserID);
-            
-                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
             login.EnterPassword("1234");
-            
-                login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EneterPWD");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EneterPWD");
         }
 
         [Then(@"I can logon")]
         public void ThenICanLogon()
         {
             main = login.LogIn();
-            
-                main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
             Assert.True(main.LoggedIn(), "user is not logged in");
         }
 

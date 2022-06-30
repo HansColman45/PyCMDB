@@ -74,7 +74,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var log = detail.GetLastLog();
             expectedlog = $"The Account width UserID: {account.UserId + rndNr.ToString()} with type {account.Type} for application {account.Application} is created by {admin.Account.UserID} in table account";
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         [Given(@"There is an account existing")]
@@ -126,8 +126,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     break;
             }
             editPage.Edit();
-            
-                editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Changed");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Changed");
         }
         [Then(@"The changes in account are saved")]
         public void ThenTheChangesInAccountAreSaved()
@@ -151,7 +150,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region deactivate
@@ -195,7 +194,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             entity.Account account = context.GetAccount(accId);
             expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is deleted due to {newValue} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region Activate
@@ -234,7 +233,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             entity.Account account = context.GetAccount(accId);
             expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region Assign iden to acc
@@ -271,9 +270,9 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID}";
+            expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
         #endregion
         #region release account

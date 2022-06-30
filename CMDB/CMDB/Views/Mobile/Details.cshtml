@@ -42,7 +42,7 @@
                         <td class="small">@Model.Identity.UserID</td>
                         @if ((bool)ViewData["ReleaseIdentity"] && Model.Identity.IdenId > 1)
                         {
-                            <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.IMEI" asp-route-idenid="@Model.Identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                            <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.Id" asp-route-idenid="@Model.Identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                         }
                     </tr>
                 </tbody>

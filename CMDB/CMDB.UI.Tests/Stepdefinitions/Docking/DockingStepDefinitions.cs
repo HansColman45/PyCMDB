@@ -251,7 +251,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
-            expectedlog = $"The Docking station with {Docking.AssetTag} is assigned to Identity width name: {Identity.Name} by {admin.Account.UserID} in table docking";
+            expectedlog = $"The Docking station with {Docking.AssetTag} is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID} in table docking";
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
@@ -268,7 +268,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
             releaseIdenity = detail.ReleaseIdentity();
-            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
+            releaseIdenity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleasePage");
         }
         [When(@"I fill in the release form for my Docking")]
         public void WhenIFillInTheReleaseFormForMyDocking()

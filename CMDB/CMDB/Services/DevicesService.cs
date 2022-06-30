@@ -200,6 +200,7 @@ namespace CMDB.Services
             if (String.Compare(desktop.SerialNumber, newSerialNumber) != 0)
             {
                 desktop.SerialNumber = newSerialNumber;
+                _context.Update(desktop);
                 await _context.SaveChangesAsync();
                 await LogUpdate(Table, desktop.AssetTag, "SerialNumber", oldSerial, newSerialNumber);
             }
@@ -423,7 +424,7 @@ namespace CMDB.Services
             device.LastModfiedAdmin = Admin;
             identity.Devices.Add(device);
             await _context.SaveChangesAsync();
-            await LogAssignIdenity2Device(table, identity, device);
+            await LogAssignIdentity2Device(table, identity, device);
             await LogAssignDevice2Identity("identity", device, identity);
         }
         public async Task ReleaseIdenity(Device device, Identity identity, string table)

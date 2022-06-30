@@ -18,9 +18,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private MainPage main;
         private MobileOverviewPage overviewPage;
         private CreateMobilePage createPage;
+        private AssignFormPage assignForm;
 
         private helpers.Mobile mobile;
         private entity.Mobile Mobile;
+        private entity.Identity identity;
         private readonly Random rnd = new();
         private int rndNr;
         private string expectedlog, newValue, changedField;
@@ -205,5 +207,38 @@ namespace CMDB.UI.Tests.Stepdefinitions
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
+
+        [When(@"I assign the identity to my mobile")]
+        public void WhenIAssignTheIdentityToMyMobile()
+        {
+            identity = (entity.Identity)TestData.Get("Identity");
+            var assignPage = overviewPage.AssignIdentity();
+            assignPage.Title.Should().BeEquivalentTo("Assign identity to docking", "Title should be correct");
+            assignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignPage");
+            assignPage.SelectIdentity(identity);
+            assignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectIdentity");
+            assignForm = assignPage.Assign();
+        }
+        [When(@"I fill in the assign form for my mobile")]
+        public void FillAssignForm()
+        {
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
+            assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
+            assignForm.CreatePDF();
+            assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDFCreated");
+        }
+        [Then(@"The identity is assigned to my mobile")]
+        public void ThenTheIdentityIsAssignedToMyMobile()
+        {
+            expectedlog = $"The mobile with type {Mobile.MobileType} is assigned to Identity width name: {identity.Name} by {admin.Account.UserID} in table mobile ";
+            overviewPage.Search(Mobile.IMEI.ToString());
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
+            string log = detail.GetLastLog();
+            log.Should().BeEquivalentTo(expectedlog);
+        }
+
     }
 }

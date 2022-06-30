@@ -261,19 +261,22 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                if (ModelState.IsValid)
                 {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = docking.Identity.UserID,
-                    FirstName = docking.Identity.FirstName,
-                    LastName = docking.Identity.LastName,
-                    Language = docking.Identity.Language.Code,
-                    Receiver = docking.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(docking);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = docking.Identity.UserID,
+                        FirstName = docking.Identity.FirstName,
+                        LastName = docking.Identity.LastName,
+                        Language = docking.Identity.Language.Code,
+                        Receiver = docking.Identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(docking);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(docking);
         }
@@ -299,19 +302,24 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                Identity identity = docking.Identity;
+                if (ModelState.IsValid)
                 {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = docking.Identity.UserID,
-                    FirstName = docking.Identity.FirstName,
-                    LastName = docking.Identity.LastName,
-                    Language = docking.Identity.Language.Code,
-                    Receiver = docking.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(docking);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                    await service.ReleaseIdenity(docking, identity, Table);
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = identity.UserID,
+                        FirstName = identity.FirstName,
+                        LastName = identity.LastName,
+                        Language = identity.Language.Code,
+                        Receiver = identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(docking);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(docking);
         }

@@ -1,0 +1,37 @@
+﻿@model CMDB.Domain.Entities.Mobile
+@{
+    Layout =  "_Layout";
+}
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.IMEI)</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="AssetTag">@Html.DisplayFor(model => model.IMEI)</td>
+            <td id="AssetType">@Html.DisplayFor(model => model.MobileType.Vendor) @Html.DisplayFor(model => model.MobileType.Type)</td>
+        </tr>
+    </tbody>
+</table>
+<H3>Identity overview</H3>
+<table class="table table-striped table-bordered">
+    <thead class="thead-light">
+        <tr>
+            <th>Name</th>
+            <th>UserID</th>
+            <th>E Mail</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td id="Name" class="small">@Model.Identity.Name</td>
+            <td id="IdenityUserId" class="small">@Model.Identity.UserID</td>
+            <td id="EMail" class="small">@Model.Identity.EMail</td>
+        </tr>
+    </tbody>
+</table>
+<partial name="_SignForm" />

@@ -10,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class IdentityServices : LogService
+    public class IdentityService : LogService
     {
-        public IdentityServices(CMDBContext context) : base(context)
+        public IdentityService(CMDBContext context) : base(context)
         {
         }
         public async Task<ICollection<Identity>> ListAll()

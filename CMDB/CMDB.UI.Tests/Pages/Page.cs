@@ -112,10 +112,10 @@ namespace CMDB.UI.Tests.Pages
             IWebElement element = fluentWait.Until(x => x.FindElement(By.XPath(xPath)));
             element.Click();
             element.Clear();
-            element.SendKeys(dateTime.ToString("ddMMyyyy"));
+            element.SendKeys($"{dateTime:MMddyyyy}");
             SendTab(By.XPath(xPath));
-            element.SendKeys(dateTime.ToString("hh:mm"));
-            element.SendKeys(dateTime.ToString("tt"));
+            element.SendKeys($"{dateTime:hh:mm}");
+            element.SendKeys($"{dateTime:tt}");
         }
         protected void SendTab(By by)
         {
@@ -283,7 +283,7 @@ namespace CMDB.UI.Tests.Pages
         {
             try
             {
-                object p = driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+                object p = driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                 var element = driver.FindElement(by);
                 return element.Displayed && element.Enabled;
             }

@@ -8,6 +8,7 @@ using System;
 using CMDB.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
+using CMDB.Util;
 
 namespace CMDB.Controllers
 {
@@ -227,7 +228,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to Mobile";
+            ViewData["Title"] = "Assign identity to mobile";
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Mobile";
             await BuildMenu();
@@ -237,6 +238,28 @@ namespace CMDB.Controllers
             Mobile mobile = mobiles.FirstOrDefault();
             if (mobile == null)
                 return NotFound();
+            ViewBag.Identities = service.ListFreeIdentities();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit)) 
+            {
+                try
+                {
+                    if (!service.IsDeviceFree(mobile))
+                        ModelState.AddModelError("", "Mobile can not be assigned to another user");
+                    Identity identity = await service.GetIdentity(Int32.Parse(values["Identity"]));
+                    if (ModelState.IsValid)
+                    {
+                        await service.AssignIdentity2Mobile(identity, mobile, Table);
+                        return RedirectToAction("AssignForm", "Mobile", new { id });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
             return View(mobile);
         }
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id)
@@ -253,6 +276,43 @@ namespace CMDB.Controllers
             Mobile mobile = mobiles.FirstOrDefault();
             if (mobile == null)
                 return NotFound();
+            service.GetAssignedIdentity(mobile);
+            Identity identity = mobile.Identity;
+            ViewData["Name"] = identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        await service.ReleaseIdenity(mobile, identity, Table);
+                        PDFGenerator PDFGenerator = new()
+                        {
+                            ITEmployee = ITPerson,
+                            Singer = Employee,
+                            UserID = identity.UserID,
+                            FirstName = identity.FirstName,
+                            LastName = identity.LastName,
+                            Language = identity.Language.Code,
+                            Receiver = identity.Name,
+                            Type = "Release"
+                        };
+                        PDFGenerator.SetMobileInfo(mobile);
+                        PDFGenerator.GeneratePDF(_env);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
             return View(mobile);
         }
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
@@ -268,6 +328,30 @@ namespace CMDB.Controllers
             Mobile mobile = mobiles.FirstOrDefault();
             if (mobile == null)
                 return NotFound();
+            service.GetAssignedIdentity(mobile);
+            ViewData["Name"] = mobile.Identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid) { 
+                    PDFGenerator _PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = mobile.Identity.UserID,
+                        FirstName = mobile.Identity.FirstName,
+                        LastName = mobile.Identity.LastName,
+                        Language = mobile.Identity.Language.Code,
+                        Receiver = mobile.Identity.Name
+                    };
+                    _PDFGenerator.SetMobileInfo(mobile);
+                    _PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
             return View(mobile);
         }
     }

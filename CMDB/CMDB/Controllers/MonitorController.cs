@@ -260,19 +260,21 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = moniror.Identity.UserID,
-                    FirstName = moniror.Identity.FirstName,
-                    LastName = moniror.Identity.LastName,
-                    Language = moniror.Identity.Language.Code,
-                    Receiver = moniror.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(moniror);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid) {
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = moniror.Identity.UserID,
+                        FirstName = moniror.Identity.FirstName,
+                        LastName = moniror.Identity.LastName,
+                        Language = moniror.Identity.Language.Code,
+                        Receiver = moniror.Identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(moniror);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(moniror);
         }
@@ -287,31 +289,35 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
-            if (moniror == null)
+            Screen monitor = monitors.FirstOrDefault();
+            if (monitor == null)
                 return NotFound();
-            ViewData["Name"] = moniror.Identity.Name;
+            ViewData["Name"] = monitor.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = moniror.Identity.UserID,
-                    FirstName = moniror.Identity.FirstName,
-                    LastName = moniror.Identity.LastName,
-                    Language = moniror.Identity.Language.Code,
-                    Receiver = moniror.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(moniror);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                Identity identity = monitor.Identity;
+                if (ModelState.IsValid) {
+                    await service.ReleaseIdenity(monitor, identity, Table);
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = identity.UserID,
+                        FirstName = identity.FirstName,
+                        LastName = identity.LastName,
+                        Language = identity.Language.Code,
+                        Receiver = identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(monitor);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
-            return View(moniror);
+            return View(monitor);
         }
     }
 }

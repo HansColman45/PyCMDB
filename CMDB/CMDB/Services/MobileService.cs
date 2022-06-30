@@ -7,6 +7,7 @@ using System;
 using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CMDB.Services
 {
@@ -132,5 +133,54 @@ namespace CMDB.Services
                 .Where(x => x.Mobile.Id == mobile.Id)
                 .ToList();
         }
+        public List<SelectListItem> ListFreeIdentities()
+        {
+            List<SelectListItem> identites = new();
+            var idens = _context.Identities
+                .Include(x => x.Mobiles)
+                .Where(x => !x.Mobiles.Any())
+                .Where(x => x.IdenId != 1)
+                .ToList();
+            foreach (var identity in idens)
+            {
+                identites.Add(new(identity.Name + " " + identity.UserID, identity.IdenId.ToString()));
+            }
+            return identites;
+        }
+        public async Task<Identity> GetIdentity(int IdenId) 
+        {
+            IdentityService identityService = new IdentityService(_context);
+            var idenitities = await identityService.GetByID(IdenId);
+            return idenitities.FirstOrDefault();
+        }
+        public bool IsDeviceFree(Mobile mobile)
+        {
+            bool result = false;
+            var mobiles = _context.Mobiles.Where(x => x.Id == mobile.Id).First();
+            if (mobile.Identity is null)
+                result = true;
+            return result;
+        }
+        public async Task AssignIdentity2Mobile(Identity identity, Mobile mobile, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            mobile.LastModfiedAdmin = Admin;
+            identity.Mobiles.Add(mobile);
+            await _context.SaveChangesAsync();
+            await LogAssignMobile2Identity(table,mobile,identity);
+            await LogAssignIdentity2Mobile("identity", identity, mobile);
+        }
+        public async Task ReleaseIdenity(Mobile mobile, Identity identity, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            mobile.LastModfiedAdmin = Admin;
+            identity.Mobiles.Remove(mobile);
+            mobile.Identity = null;
+            await _context.SaveChangesAsync();
+            await LogReleaseMobileFromIdenity(table,mobile,identity);
+            await LogReleaseIdentityFromMobile("identity", identity, mobile);
+        }
+
+        
     }
 }

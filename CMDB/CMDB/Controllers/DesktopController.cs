@@ -274,19 +274,22 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                if (ModelState.IsValid)
                 {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = desktop.Identity.UserID,
-                    FirstName = desktop.Identity.FirstName,
-                    LastName = desktop.Identity.LastName,
-                    Language = desktop.Identity.Language.Code,
-                    Receiver = desktop.Identity.Name
-                };
-                PDFGenerator.SetAssetInfo(desktop);
-                PDFGenerator.GeneratePDF(_env);
-                return RedirectToAction(nameof(Index));
+                    PDFGenerator PDFGenerator = new()
+                    {
+                        ITEmployee = ITPerson,
+                        Singer = Employee,
+                        UserID = desktop.Identity.UserID,
+                        FirstName = desktop.Identity.FirstName,
+                        LastName = desktop.Identity.LastName,
+                        Language = desktop.Identity.Language.Code,
+                        Receiver = desktop.Identity.Name
+                    };
+                    PDFGenerator.SetAssetInfo(desktop);
+                    PDFGenerator.GeneratePDF(_env);
+                    return RedirectToAction(nameof(Index));
+                }
             }
             return View(desktop);
         }

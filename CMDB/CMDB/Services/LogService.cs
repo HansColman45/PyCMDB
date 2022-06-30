@@ -140,10 +140,20 @@ namespace CMDB.Services
             LogText = $"The Identity with name: {identity.Name} is assigned to {device.Category.Category} with {device.AssetTag} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, identity.IdenId);
         }
-        protected async Task LogAssignIdenity2Device(string table, Identity identity, Device device)
+        protected async Task LogAssignMobile2Identity(string table, Mobile mobile, Identity identity)
+        {
+            LogText = $"The Identity with name: {identity.Name} is assigned to {mobile.Category.Category} with {mobile.IMEI} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, identity.IdenId);
+        }
+        protected async Task LogAssignIdentity2Device(string table, Identity identity, Device device)
         {
             LogText = $"The {device.Category.Category} with {device.AssetTag} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, device.AssetTag);
+        }
+        protected async Task LogAssignIdentity2Mobile(string table, Identity identity, Mobile mobile)
+        {
+            LogText = $"The {mobile.Category.Category} with {mobile.IMEI} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, mobile.Id);
         }
         protected async Task LogReleaseDeviceFromIdenity(string table, Device device, Identity identity)
         {
@@ -154,6 +164,16 @@ namespace CMDB.Services
         {
             LogText = $"The {device.Category.Category} with {device.AssetTag} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, device.AssetTag);
+        }
+        protected async Task LogReleaseMobileFromIdenity(string table, Mobile mobile, Identity identity)
+        {
+            LogText = $"The Idenity with name {identity.Name} is released from {mobile.Category.Category} with {mobile.MobileType} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table,mobile.Id);
+        }
+        protected async Task LogReleaseIdentityFromMobile(string table, Identity identity, Mobile mobile)
+        {
+            LogText = $"The {mobile.Category.Category} with {mobile.MobileType} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, identity.IdenId);
         }
         private async Task DoLog(string table, int ID)
         {
