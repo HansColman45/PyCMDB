@@ -40,5 +40,11 @@ namespace CMDB.UI.Tests.Pages
             WaitUntilElmentVisableByXpath("//button[@type='submit']");
             return new(driver);
         }
+        public AssignDevicePage AssignDevice()
+        {
+            ClickElementByXpath("//a[@title='Assign Device']");
+            WaitUntilElmentVisableByXpath("//button[@type='submit']");
+            return new(driver);
+        }
     }
 }

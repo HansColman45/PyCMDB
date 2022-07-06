@@ -51,6 +51,11 @@ namespace CMDB
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "ReleaseDevice",
+                    pattern: "{controller}/{action}/{id?}/{AssetTag}",
+                    new { controller = "Identity", action = "ReleaseDevice" }
+                    );
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");
             });

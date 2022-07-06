@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace CMDB.Controllers
 {
@@ -236,17 +237,37 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             string FormSubmit = values["form-submitted"];
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            var List = await service.GetByID((int)id);
+            Identity identity = List.FirstOrDefault();
             if (identity == null)
                 return NotFound();
             ViewBag.Devices = await service.ListAllFreeDevices();
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-
+                List<Device> devicesToAdd = new();
+                var devices = await service.ListAllFreeDevices();
+                foreach (var device in devices)
+                {
+                    if (!String.IsNullOrEmpty(values[device.AssetTag]))
+                        devicesToAdd.Add(device);
+                }
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await service.AssignDevice(identity, devicesToAdd, Table);
+                        return RedirectToAction("AssignForm", "Identity", new { id });
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("DB error: {0}", ex.ToString());
+                        ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                            "see your system administrator.");
+                    }
+                }
             }
-            return View(list);
+            return View(List);
         }
         public async Task<IActionResult> AssignAccount(IFormCollection values, int? id)
         {
@@ -374,13 +395,60 @@ namespace CMDB.Controllers
                 }
                 else if (identity.Devices.Count > 0)
                 {
-                    foreach (Device d in list.First().Devices)
+                    foreach (Device d in identity.Devices)
                         PDFGenerator.SetAssetInfo(d);
+                }
+                else if(identity.Mobiles.Count > 0) 
+                {
+                    foreach (Mobile mobile in identity.Mobiles)
+                        PDFGenerator.SetMobileInfo(mobile);
                 }
                 PDFGenerator.GeneratePDF(_env);
                 return RedirectToAction(nameof(Index));
             }
             return View(list);
+        }
+        public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
+        {
+            if (id == null)
+                return NotFound();
+            log.Debug("Using Assign Form in {0}", Table);
+            ViewData["Title"] = "Release device";
+            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            await BuildMenu();
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
+                return NotFound();
+            Device device = await service.GetDevice(AssetTag);
+            if (device == null) 
+                return NotFound();
+            ViewBag.Device = device;
+            string FormSubmit = values["form-submitted"];
+            if (String.IsNullOrEmpty(FormSubmit))
+            {
+                List<Device> devices2Remove = new()
+                {
+                    device
+                };
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = identity.UserID,
+                    FirstName = identity.FirstName,
+                    LastName = identity.LastName,
+                    Language = identity.Language.Code,
+                    Receiver = identity.Name
+                };
+                PDFGenerator.SetAssetInfo(device);
+                PDFGenerator.GeneratePDF(_env);
+                await service.ReleaseDevices(identity, devices2Remove, Table);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(identity);
         }
     }
 }

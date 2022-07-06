@@ -32,6 +32,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private helpers.Identity iden;
         private entity.Account Account;
         private entity.Identity Identity;
+        private entity.Device device;
         private string updatedfield, newvalue, reason;
         public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider, ScenarioContext context) : base(scenarioData, context)
         {
@@ -46,34 +47,50 @@ namespace CMDB.UI.Tests.Stepdefinitions
             iden = table.CreateInstance<Identity>();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             createIdentity = overviewPage.New();
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             createIdentity.FirstName = iden.FirstName + rndNr.ToString();
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_FirstName");
             createIdentity.LastName = iden.LastName + rndNr.ToString();
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LastName");
             createIdentity.Email = iden.Email;
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Email");
             createIdentity.Company = iden.Company;
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Company");
             createIdentity.UserId = iden.UserId + rndNr.ToString();
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UserId");
             createIdentity.Type = iden.Type;
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             createIdentity.Language = iden.Language;
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
         }
         [Order(2)]
         [When(@"I save")]
         public void WhenISave()
         {
             createIdentity.Create();
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
         }
         [Order(3)]
         [Then(@"I can find the newly created Identity back")]
         public void ThenICanFindTheNewlyCreatedIdenotyBack()
         {
             overviewPage.Search(iden.FirstName + rndNr.ToString());
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             var log = detail.GetLastLog();
             string expectedlog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         [Order(4)]
@@ -89,13 +106,20 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             rndNr = rnd.Next();
             updateIdentity = overviewPage.Update();
+            updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UpdatePage");
             iden = new();
             iden.FirstName = updateIdentity.FirstName.Trim();
             iden.LastName = updateIdentity.LastName.Trim();
@@ -108,29 +132,35 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     updatedfield = field;
                     newvalue = value + rndNr.ToString();
                     updateIdentity.FirstName = newvalue;
+                    updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_FirstName");
                     break;
                 case "LastName":
                     updatedfield = field;
                     newvalue = value + rndNr.ToString();
                     updateIdentity.LastName = newvalue;
+                    updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LastName");
                     break;
                 case "Company":
                     updatedfield = field;
                     newvalue = value + rndNr.ToString();
                     updateIdentity.Company = newvalue;
+                    updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Company");
                     break;
                 case "UserID":
                     updatedfield = field;
                     newvalue = value + rndNr.ToString();
                     updateIdentity.UserId = newvalue;
+                    updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UserID");
                     break;
                 case "Email":
                     updatedfield = field;
                     newvalue = value;
                     updateIdentity.Email = newvalue;
+                    updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EMail");
                     break;
             }
             updateIdentity.Update();
+            updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Updated");
         }
         [Order(6)]
         [Then(@"The identity is updated")]
@@ -160,9 +190,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     overviewPage.Search(iden.FirstName);
                     break;
             }
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region Deactivate
@@ -178,27 +210,36 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
-            overviewPage = main.IdentityOverview();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             this.reason = reason;
             var deactivatepage = overviewPage.Deactivate();
+            deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             deactivatepage.Reason = reason;
+            deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");
             deactivatepage.Delete();
+            deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deleted");
         }
         [Order(9)]
         [Then(@"The Idenetity is inactive")]
         public void ThenTheIdenetityIsInactive()
         {
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity iden = context.GetIdentity(Id);
-            string expectedlog = $"The Identity width name: {iden.FirstName} , {iden.LastName} in table identity is deleted due to {reason} by {admin.Account.UserID}";
+            string expectedlog = $"The Identity width name: {iden.Name} in table identity is deleted due to {reason} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region Activate
@@ -214,24 +255,31 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             overviewPage.Activate();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
         }
         [Order(12)]
         [Then(@"The Identity is active")]
         public void ThenTheIdentityIsActive()
         {
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
-            int Id = detail.Id;
-            entity.Identity iden = context.GetIdentity(Id);
-            string expectedlog = $"The Identity width name: {iden.FirstName} , {iden.LastName} in table identity is activated by {admin.Account.UserID}";
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
+            string expectedlog = $"The Identity width name: {Identity.Name} in table identity is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
-            Assert.Equal(expectedlog, log);
+            log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
         #region Assign Account
@@ -245,12 +293,19 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
             login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
             login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             assignAccount = overviewPage.AssignAccount();
+            assignAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignAccount");
             iden = new()
             {
                 UserId = assignAccount.UserId,
@@ -260,11 +315,15 @@ namespace CMDB.UI.Tests.Stepdefinitions
                 LastName = assignAccount.Name.Split(",")[0]
             };
             assignAccount.SelectAccount(Account);
+            assignAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectIdentity");
             DateTime validFrom = DateTime.Now.AddYears(-1);
             DateTime validUntil = DateTime.Now.AddYears(+1);
             assignAccount.ValidFrom = validFrom;
+            assignAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ValidFrom");
             assignAccount.ValidUntil = validUntil;
+            assignAccount.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ValidUntil");
             AssignFom = assignAccount.Assign();
+            AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
             Assert.False(assignAccount.IsVaidationErrorVisable());
         }
         [When(@"I fill in the assig form")]
@@ -273,12 +332,15 @@ namespace CMDB.UI.Tests.Stepdefinitions
             string naam = AssignFom.Name;
             Assert.Equal(naam, AssignFom.Employee);
             AssignFom.CreatePDF();
+            AssignFom.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePDF");
         }
         [Then(@"The account is assigned to the idenity")]
         public void ThenTheAccountIsAssignedToTheIdenity()
         {
             overviewPage.Search(iden.UserId);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity identity = context.GetIdentity(Id);
             string expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID}";
@@ -288,34 +350,60 @@ namespace CMDB.UI.Tests.Stepdefinitions
         #endregion
         #region Assign Devices
         [Given(@"a (.*) exist as well")]
-        public void GivenALaptopExistAsWell(string category)
+        public async void GivenALaptopExistAsWell(string category)
         {
-            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
-            /*switch (category)
+            switch (category)
             {
                 case "Laptop":
+                    device = await context.CreateLaptop(admin);
                     break;
-            }*/
+                case "Desktop":
+                    device = await context.CreateDesktop(admin);
+                    break;
+                case "Token":
+                    device = await context.CreateToken(admin);
+                    break;
+                case "Monitor":
+                    device = await context.CreateMonitor(admin);
+                    break;
+                case "Docking":
+                    device = await context.CreateDocking(admin);
+                    break;
+            }
         }
         [When(@"I assign that (.*) to the identity")]
         public void WhenIAssignThatLaptopToTheIdentity(string category)
         {
-            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
-            /*switch (category)
-            {
-                case "Laptop":
-                    break;
-            }*/
+            log.Debug($"Assing device of type: {category}");
+            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
+            login = new LoginPage(ScenarioData.Driver);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
+            login.EnterUserID(admin.Account.UserID);
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
+            login.EnterPassword("1234");
+            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
+            main = login.LogIn();
+            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            overviewPage = main.IdentityOverview();
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
+            overviewPage.Search(Identity.FirstName);
+            var assignPage = overviewPage.AssignDevice();
+            assignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevice");
+            assignPage.ClickDevice(device);
+            AssignFom = assignPage.Assign();
         }
         [Then(@"The (.*) is assigned")]
         public void ThenTheLaptopIsAssigned(string category)
         {
-            _unitTestRuntimeProvider.TestIgnore($"The test to assign {category} is not implemented yet");
-            /*switch (category)
-            {
-                case "Laptop":
-                    break;
-            }*/
+            log.Debug($"Check if device of type: {category} is assigned");
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
+            string expectedlog = $"The Identity with name: {Identity.FirstName}, {Identity.LastName} is assigned to {device.Category.Category} " +
+                        $"with {device.AssetTag} by {admin.Account.UserID} in table identity";
+            var GetLastlog = detail.GetLastLog();
+            GetLastlog.Should().BeEquivalentTo(expectedlog, "The log should match");
         }
         #endregion
     }

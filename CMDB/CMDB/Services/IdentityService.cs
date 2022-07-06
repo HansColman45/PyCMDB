@@ -84,19 +84,57 @@ namespace CMDB.Services
             {
                 devices.Add(desktop);
             }
+            var screens = await _context.Devices.OfType<Screen>()
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.Identity == null)
+                .ToListAsync();
+            foreach (var screen in screens)
+            {
+                devices.Add(screen);
+            }
+            var dockings = await _context.Devices.OfType<Docking>()
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.Identity == null)
+                .ToListAsync();
+            foreach(var docking in dockings)
+            {
+                devices.Add(docking);
+            }
+            var tokens = await _context.Devices.OfType<Token>()
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.Identity == null)
+                .ToListAsync();
+            foreach (var token in tokens)
+            {
+                devices.Add(token);
+            }
             return devices;
         }
         public void GetAssingedDevices(Identity identity)
         {
-            var laptops = _context.Identities
+            identity.Devices = _context.Identities
                 .Include(x => x.Devices)
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Devices)
+                .ThenInclude(x => x.Type)
                 .Where(x => x.IdenId == identity.IdenId)
                 .SelectMany(x => x.Devices)
                 .ToList();
-            var mobiles = _context.Identities
+            identity.Mobiles = _context.Identities
                 .Include(x => x.Mobiles)
+                .ThenInclude(x => x.Subscriptions)
+                .Include(x => x.Mobiles)
+                .ThenInclude(x => x.MobileType)
                 .Where(x => x.IdenId == identity.IdenId)
                 .SelectMany(x => x.Mobiles)
+                .ToList();
+            identity.Subscriptions = _context.Subscriptions
+                .Include(x => x.SubscriptionType)
+                .Include(x => x.Category)
+                .Where(x => x.IdentityId == identity.IdenId)
                 .ToList();
         }
         public void GetAssignedAccounts(Identity identity)
@@ -182,7 +220,7 @@ namespace CMDB.Services
             identity.Active = State.Inactive;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
-            string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
+            string value = $"Identity width name: {identity.Name}";
             await LogDeactivate(Table, identity.IdenId, value, Reason);
         }
         public async Task Activate(Identity identity, string Table)
@@ -192,7 +230,7 @@ namespace CMDB.Services
             identity.Active = State.Active;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
-            string value = $"Identity width name: {identity.FirstName} , {identity.LastName}";
+            string value = $"Identity width name: {identity.Name}";
             await LogActivate(Table, identity.IdenId, value);
         }
         public bool IsExisting(Identity identity, string UserID = "")
@@ -217,6 +255,36 @@ namespace CMDB.Services
                 .Where(x => x.TypeId == id)
                 .ToList();
             return types;
+        }
+        public async Task ReleaseDevices(Identity identity, List<Device> devices, string table)
+        {
+            foreach (Device device in devices)
+            {
+                device.Identity = null;
+                identity.Devices.Remove(device);
+                await _context.SaveChangesAsync();
+                switch (device.Category.Category)
+                {
+                    case "Laptop":
+                        await LogReleaseIdentityFromDevice("laptop", identity, device);
+                        break;
+                    case "Desktop":
+                        await LogReleaseIdentityFromDevice("desktop", identity, device);
+                        break;
+                    case "Token":
+                        await LogReleaseIdentityFromDevice("token", identity, device);
+                        break;
+                    case "Docking station":
+                        await LogReleaseIdentityFromDevice("docking", identity, device);
+                        break;
+                    case "Monitor":
+                        await LogReleaseIdentityFromDevice("screen", identity, device);
+                        break;
+                    default:
+                        throw new Exception("Category not know");
+                }
+                await LogReleaseDeviceFromIdenity(table, device,identity);
+            }
         }
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
@@ -274,6 +342,37 @@ namespace CMDB.Services
             await LogAssignIden2Account(Table, identity.IdenId, identity, Account);
             await LogAssignAccount2Identity("account", AccID, Account, identity);
         }
+        public async Task AssignDevice(Identity identity, List<Device> devicesToAdd, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            identity.Devices = devicesToAdd;
+            foreach (var device in devicesToAdd)
+            {
+                device.LastModfiedAdmin = Admin;
+                switch (device.Category.Category)
+                {
+                    case "Laptop":
+                        await LogAssignIdentity2Device("laptop", identity, device);
+                        break;
+                    case "Desktop":
+                        await LogAssignIdentity2Device("desktop", identity, device);
+                        break;
+                    case "Token":
+                        await LogAssignIdentity2Device("token", identity, device);
+                        break;
+                    case "Docking station":
+                        await LogAssignIdentity2Device("docking", identity, device);
+                        break;
+                    case "Monitor":
+                        await LogAssignIdentity2Device("screen", identity, device);
+                        break;
+                    default:
+                        throw new Exception("Category not know");
+                }
+                await LogAssignDevice2Identity(table, device, identity);
+            }
+            await _context.SaveChangesAsync();
+        }
         public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
             var idenAccount = _context.IdenAccounts.
@@ -309,6 +408,15 @@ namespace CMDB.Services
                 .Where(x => x.ID == id)
                 .ToListAsync();
             return idenAccounts;
+        }
+        public async Task<Device> GetDevice(string assetTag)
+        {
+            Device device = await _context.Devices
+                .Include(x => x.Category)
+                .Include(x => x.Type)
+                .Where(x => x.AssetTag == assetTag)
+                .FirstOrDefaultAsync();
+            return device;
         }
     }
 }

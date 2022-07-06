@@ -31,13 +31,15 @@
             }
         </tbody>
     </table>
-    <p></p>
-    <form role="form" class="form-horizontal" asp-action="AssignAccount" method="post">
+    <p>
+        <h3>Please selet a device</h3>
+    </p>
+    <form role="form" class="form-horizontal" asp-action="AssignDevice" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         @foreach (var device in devices)
         {
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="@device.AssetTag" id="@device.AssetTag">
+                <input class="form-check-input" type="checkbox" value="1" name="@device.AssetTag" id="@device.AssetTag">
                 <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.Type.Vendor @device.Type.Type AssetTag: @device.AssetTag</label>
             </div>
         }

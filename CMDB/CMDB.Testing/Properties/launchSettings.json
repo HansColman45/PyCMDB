@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "CMDB.Testing": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:51925;http://localhost:51927"
+    }
+  }
+}
