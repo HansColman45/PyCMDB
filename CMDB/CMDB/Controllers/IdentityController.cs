@@ -369,7 +369,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "AssignForm";
-            ViewData["Name"] = list.First().Name;
+            ViewData["Name"] = identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
@@ -424,8 +424,12 @@ namespace CMDB.Controllers
             if (device == null) 
                 return NotFound();
             ViewBag.Device = device;
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "ReleaseDevice";
+            ViewData["Name"] = identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (String.IsNullOrEmpty(FormSubmit))
+            if (!String.IsNullOrEmpty(FormSubmit))
             {
                 List<Device> devices2Remove = new()
                 {

@@ -172,6 +172,7 @@ namespace CMDB.Services
         public async Task CreateNewDevice(Device device, string table)
         {
             device.LastModfiedAdmin = Admin;
+            device.IdentityId = 1;
             _context.Devices.Add(device);
             await _context.SaveChangesAsync();
             string value = $"{device.Category.Category} with type {device.Type}";
@@ -432,7 +433,7 @@ namespace CMDB.Services
             identity.LastModfiedAdmin = Admin;
             device.LastModfiedAdmin = Admin;
             identity.Devices.Remove(device);
-            device.Identity = null;
+            device.IdentityId = 1;
             await _context.SaveChangesAsync();
             await LogReleaseIdentityFromDevice(table, identity, device);
             await LogReleaseDeviceFromIdenity("identity", device, identity);

@@ -41,11 +41,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Screenshots\" />
-    <Folder Include="TestExecution\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="AssemblyInfo.cs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>

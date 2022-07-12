@@ -68,7 +68,7 @@ namespace CMDB.Services
             var Laptops = await _context.Devices.OfType<Laptop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
-                .Where(x => x.Identity == null)
+                .Where(x => x.IdentityId == 1)
                 .ToListAsync();
             foreach (var laptop in Laptops)
             {
@@ -78,7 +78,7 @@ namespace CMDB.Services
             var Desktops = await _context.Devices.OfType<Desktop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
-                .Where(x => x.Identity == null)
+                .Where(x => x.IdentityId == 1)
                 .ToListAsync();
             foreach (var desktop in Desktops)
             {
@@ -87,7 +87,7 @@ namespace CMDB.Services
             var screens = await _context.Devices.OfType<Screen>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
-                .Where(x => x.Identity == null)
+                .Where(x => x.IdentityId == 1)
                 .ToListAsync();
             foreach (var screen in screens)
             {
@@ -96,7 +96,7 @@ namespace CMDB.Services
             var dockings = await _context.Devices.OfType<Docking>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
-                .Where(x => x.Identity == null)
+                .Where(x => x.IdentityId == 1)
                 .ToListAsync();
             foreach(var docking in dockings)
             {
@@ -105,7 +105,7 @@ namespace CMDB.Services
             var tokens = await _context.Devices.OfType<Token>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
-                .Where(x => x.Identity == null)
+                .Where(x => x.IdentityId == 1)
                 .ToListAsync();
             foreach (var token in tokens)
             {
@@ -260,7 +260,7 @@ namespace CMDB.Services
         {
             foreach (Device device in devices)
             {
-                device.Identity = null;
+                device.IdentityId = 1;
                 identity.Devices.Remove(device);
                 await _context.SaveChangesAsync();
                 switch (device.Category.Category)

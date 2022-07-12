@@ -39,6 +39,7 @@ namespace CMDB.Services
         public async Task CreateNew(Mobile mobile, string table)
         {
             mobile.LastModfiedAdmin = Admin;
+            mobile.IdentityId = 1;
             _context.Mobiles.Add(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
