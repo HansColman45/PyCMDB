@@ -18,6 +18,7 @@ namespace CMDB.Testing.Helpers.Devices
                 .With(x => x.Category, cat)
                 .With(x => x.Type, AssetType)
                 .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.IdentityId, 1)
                 .Build();
             laptop.Logs.Add(new LogBuilder()
                 .With(x => x.Device, laptop)

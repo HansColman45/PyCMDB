@@ -19,6 +19,7 @@ namespace CMDB.Testing.Helpers.Devices
             Token token = new TokenBuilder()
                 .With(x => x.Category,cat)
                 .With(x => x.Type, AssetType)
+                .With(x => x.IdentityId, 1)
                 .Build();
             token.Logs.Add(new LogBuilder().With(x => x.Device, token)
                 .With(x => x.LogText, $"The {cat.Category} with type {token.Type} is created by Automation in table token")

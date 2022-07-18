@@ -209,7 +209,6 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             overviewPage.Search(Desktop.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
-
         }
         [When(@"I activate the Desktop")]
         public void WhenIActivateTheLaptop()

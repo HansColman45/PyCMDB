@@ -20,6 +20,7 @@ namespace CMDB.Testing.Helpers.Devices
                 .With(x => x.Category, cat)
                 .With(x => x.LastModfiedAdmin, admin)
                 .With(x => x.Type, AssetType)
+                .With(x => x.IdentityId, 1)
                 .Build();
             screen.Logs.Add(new LogBuilder().With(x => x.Device, screen)
                 .With(x => x.LogText, $"The {cat.Category} with type {screen.Type} is created by Automation in table screen")

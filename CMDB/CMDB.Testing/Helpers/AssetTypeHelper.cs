@@ -23,11 +23,16 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.LogText, $"The {category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} is created by Automation in table assettype")
                 .Build()
             );
-
             context.AssetTypes.Add(assetType);
-            
-            await context.SaveChangesAsync();
-
+            try
+            {
+                await context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                ex.ToString();
+                throw;
+            }
             if (!active)
             {
                 assetType.active = 0;

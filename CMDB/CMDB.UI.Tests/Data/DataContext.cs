@@ -189,7 +189,10 @@ namespace CMDB.UI.Tests.Data
         /// This function will create a new Laptop
         /// </summary>
         /// <returns>Laptop</returns>
-        public async Task<Laptop> CreateLaptop(Admin admin, bool active = true) => await LaptopHelper.CreateSimpleLaptop(context, admin, active);
+        public async Task<Laptop> CreateLaptop(Admin admin, bool active = true)
+        {
+            return await LaptopHelper.CreateSimpleLaptop(context, admin, active);
+        }
         /// <summary>
         /// This function will return the RAM info
         /// </summary>

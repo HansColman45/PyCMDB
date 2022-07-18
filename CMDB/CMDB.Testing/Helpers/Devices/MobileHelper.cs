@@ -20,6 +20,7 @@ namespace CMDB.Testing.Helpers.Devices
                 .With(x => x.Category, cat)
                 .With(x => x.MobileType, AssetType)
                 .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.IdentityId, 1)
                 .Build();
             context.Mobiles.Add(mobile);
             await context.SaveChangesAsync();

@@ -33,7 +33,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private entity.Account Account;
         private entity.Identity Identity;
         private entity.Device device;
-        private string updatedfield, newvalue, reason;
+        private string updatedfield, newvalue, reason, expectedlog;
         public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider, ScenarioContext context) : base(scenarioData, context)
         {
             _unitTestRuntimeProvider = unitTestRuntimeProvider;
@@ -89,7 +89,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             var log = detail.GetLastLog();
-            string expectedlog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
+            expectedlog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
             log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
@@ -98,12 +98,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public async Task GivenAnIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin);
-        }
-        #region Update
-        [Order(5)]
-        [When(@"I want to update (.*) with (.*)")]
-        public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
-        {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
@@ -114,18 +108,26 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
+        }
+        #region Update
+        [Order(5)]
+        [When(@"I want to update (.*) with (.*)")]
+        public void WhenIWantToUpdateFirstNameWithTestje(string field, string value)
+        {
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             rndNr = rnd.Next();
             updateIdentity = overviewPage.Update();
             updateIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UpdatePage");
-            iden = new();
-            iden.FirstName = updateIdentity.FirstName.Trim();
-            iden.LastName = updateIdentity.LastName.Trim();
-            iden.Company = updateIdentity.Company.Trim();
-            iden.UserId = updateIdentity.UserId.Trim();
-            iden.Email = updateIdentity.Email.Trim();
+            iden = new()
+            {
+                FirstName = updateIdentity.FirstName.Trim(),
+                LastName = updateIdentity.LastName.Trim(),
+                Company = updateIdentity.Company.Trim(),
+                UserId = updateIdentity.UserId.Trim(),
+                Email = updateIdentity.Email.Trim()
+            };
             switch (field)
             {
                 case "FirstName":
@@ -166,7 +168,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The identity is updated")]
         public void ThenTheIdentityIsUpdated()
         {
-            string expectedlog = "";
             switch (updatedfield)
             {
                 case "FirstName":
@@ -203,11 +204,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public async Task GivenAnAciveIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin);
-        }
-        [Order(8)]
-        [When(@"I want to deactivete the identity whith the reason (.*)")]
-        public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
-        {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
@@ -217,6 +213,12 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
+            overviewPage = main.IdentityOverview();
+        }
+        [Order(8)]
+        [When(@"I want to deactivete the identity whith the reason (.*)")]
+        public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
+        {
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             this.reason = reason;
@@ -237,7 +239,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity iden = context.GetIdentity(Id);
-            string expectedlog = $"The Identity width name: {iden.Name} in table identity is deleted due to {reason} by {admin.Account.UserID}";
+            expectedlog = $"The Identity width name: {iden.Name} in table identity is deleted due to {reason} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
@@ -248,11 +250,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public async Task GivenAnInactiveIdentityExisistInTheSystem()
         {
             Identity = await context.CreateIdentity(admin, false);
-        }
-        [Order(11)]
-        [When(@"I want to activate this identity")]
-        public void WhenIWantToActivateThisIdentity()
-        {
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
@@ -263,7 +260,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.IdentityOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
+        }
+        [Order(11)]
+        [When(@"I want to activate this identity")]
+        public void WhenIWantToActivateThisIdentity()
+        {
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             overviewPage.Activate();
@@ -273,11 +274,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The Identity is active")]
         public void ThenTheIdentityIsActive()
         {
-            overviewPage.Search(Identity.FirstName);
+            overviewPage.Search(Identity.LastName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string expectedlog = $"The Identity width name: {Identity.Name} in table identity is activated by {admin.Account.UserID}";
+            expectedlog = $"The Identity width name: {Identity.Name} in table identity is activated by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
@@ -291,17 +292,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [When(@"I assign the account to the identity")]
         public void WhenIAssignTheAccountToTheIdentity()
         {
-            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
-            login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
-            login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
-            login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
-            main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
-            overviewPage = main.IdentityOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             assignAccount = overviewPage.AssignAccount();
@@ -343,12 +333,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity identity = context.GetIdentity(Id);
-            string expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID}";
+            expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID}";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog,"The log should match");
         }
         #endregion
-        #region Assign Devices
         [Given(@"a (.*) exist as well")]
         public async void GivenALaptopExistAsWell(string category)
         {
@@ -370,22 +359,12 @@ namespace CMDB.UI.Tests.Stepdefinitions
                     device = await context.CreateDocking(admin);
                     break;
             }
+            TestData.Add("device", device);
         }
+        #region Assign Devices
         [When(@"I assign that (.*) to the identity")]
         public void WhenIAssignThatLaptopToTheIdentity(string category)
         {
-            log.Debug($"Assing device of type: {category}");
-            ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
-            login = new LoginPage(ScenarioData.Driver);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
-            login.EnterUserID(admin.Account.UserID);
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectUser");
-            login.EnterPassword("1234");
-            login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
-            main = login.LogIn();
-            main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
-            overviewPage = main.IdentityOverview();
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             overviewPage.Search(Identity.FirstName);
             var assignPage = overviewPage.AssignDevice();
             assignPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevice");
@@ -402,6 +381,46 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             string expectedlog = $"The Identity with name: {Identity.FirstName}, {Identity.LastName} is assigned to {device.Category.Category} " +
                         $"with {device.AssetTag} by {admin.Account.UserID} in table identity";
+            var GetLastlog = detail.GetLastLog();
+            GetLastlog.Should().BeEquivalentTo(expectedlog, "The log should match");
+        }
+        #endregion
+        #region Release device
+        [Given(@"The (.*) is assigned to the Identity")]
+        public async Task AssignDevice2Identity(string category)
+        {
+            device = (entity.Device)TestData.Get("device");
+            log.Debug($"Assign device of type: {category} to my idenity {Identity.Name}");
+            await context.AssignIdentity2Device(admin, device, Identity);
+        }
+        [When(@"I release the (.*) from the Identity")]
+        public void ReleaseDevice(string category)
+        {
+            log.Debug($"Release device of type: {category} is assigned");
+            overviewPage.Search(Identity.FirstName);
+        }
+        [When(@"I fill in the release form for my Identity")]
+        public void FillinReleaseForm()
+        {
+            IdentityDetailPage detailPage = overviewPage.Detail();
+            detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deatil");
+            ReleaseDevicePage releasePage = detailPage.ReleaseDevice();
+            releasePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleasePage");
+            releasePage.Title.Should().BeEquivalentTo("Release device from Identity", "Title should be correct");
+            releasePage.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            releasePage.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            releasePage.CreatePDF();
+            releasePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDF Created");
+        }
+        [Then(@"The (.*) is released from the Identity")]
+        public void CheckReleased(string category)
+        {
+            log.Debug($"Check if device of type: {category} is Released");
+            expectedlog = $"The identity with name: {Identity.Name}  is released from {device.Category.Category} with {device.AssetTag} by {admin.Account.UserID} in table identity";
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             var GetLastlog = detail.GetLastLog();
             GetLastlog.Should().BeEquivalentTo(expectedlog, "The log should match");
         }

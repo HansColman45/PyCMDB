@@ -20,6 +20,11 @@ namespace CMDB.UI.Tests.Pages
                 return Int32.Parse(id);
             }
         }
+        public ReleaseDevicePage ReleaseDevice()
+        {
+            ClickElementByXpath(ReleaseDeviceXPath);
+            return new(driver);
+        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));
