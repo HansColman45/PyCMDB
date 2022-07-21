@@ -7,6 +7,7 @@ using System;
 using System.Threading.Tasks;
 using TechTalk.SpecFlow;
 using Xunit;
+using Xunit.Extensions.Ordering;
 
 namespace CMDB.UI.Tests.Stepdefinitions
 {
@@ -25,6 +26,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public AssetTypesSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
         }
+        [Order(1)]
         [Given(@"I want to create a new (.*) with (.*) and (.*)")]
         public void GivenIWantToCreateANewKensingtonWithKensingtonAndBlack(string category, string vendor, string type)
         {
@@ -46,12 +48,14 @@ namespace CMDB.UI.Tests.Stepdefinitions
             createAssetTypePage.Vendor = this.vendor;
             createAssetTypePage.Type = this.type;
         }
+        [Order(2)]
         [When(@"I create that (.*)")]
         public void WhenICreateThatKensington(string category)
         {
             log.Debug($"Gooing to create a {category} type");
             createAssetTypePage.Create();
         }
+        [Order(3)]
         [Then(@"The (.*) is created")]
         public void ThenTheIsCreated(string category)
         {
@@ -61,7 +65,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var log = detail.GetLastLog();
             expectedlog.Should().BeEquivalentTo(log);
         }
-
+        [Order(4)]
         [Given(@"There is an AssetType existing")]
         public async Task GivenThereIsAnAssetTypeExisting()
         {
@@ -80,6 +84,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.Search(assetType.Vendor);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
         }
+        [Order(5)]
         [When(@"I change the Type and save the changes")]
         public void WhenIChangeTheTypeAndSaveTheChanges()
         {
@@ -94,18 +99,19 @@ namespace CMDB.UI.Tests.Stepdefinitions
             editPage.Edit();
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Edited");
         }
+        [Order(6)]
         [Then(@"The changes are saved")]
         public void ThenTheChangesAreSaved()
         {
             overviewPage.Search(assetType.Vendor);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
-            string expectedlog = $"The Type in table assettype has been changed from {type} to {newtype} by {admin.Account.UserID}";
+            string expectedlog = $"The Type has been changed from {type} to {newtype} by {admin.Account.UserID} in table assettype";
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var log = detail.GetLastLog();
             expectedlog.Should().BeEquivalentTo(log);
         }
-
+        [Order(7)]
         [Given(@"There is an active AssetType existing")]
         public async Task GivenThereIsAnActiveAssetTypeExisting()
         {
@@ -120,9 +126,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.AssetTypeOverview();
-            overviewPage.Search(assetType.Vendor);
+            overviewPage.Search(assetType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
+        [Order(8)]
         [When(@"I want to deactivate the assettype with reason (.*)")]
         public void WhenIWantToDeactivateTheAssettypeWithReasonTest(string reason)
         {
@@ -134,18 +141,19 @@ namespace CMDB.UI.Tests.Stepdefinitions
             deactivatepage.Delete();
             deactivatepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivated");
         }
+        [Order(9)]
         [Then(@"the assettype has been deactiveted")]
         public void ThenTheAssettypeHasBeenDeactiveted()
         {
-            overviewPage.Search(assetType.Vendor);
+            overviewPage.Search(assetType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string expectedlog = $"The {assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} in table assettype is deleted due to {reason} by {admin.Account.UserID}";
+            string expectedlog = $"The {assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} is deleted due to {reason} by {admin.Account.UserID} in table assettype";
             var log = detail.GetLastLog();
             expectedlog.Should().BeEquivalentTo(log);
         }
-
+        [Order(10)]
         [Given(@"There is an Inactive AssetType existing")]
         public async Task GivenThereIsAnInactiveAssetTypeExisting()
         {
@@ -163,19 +171,21 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.Search(assetType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
+        [Order(11)]
         [When(@"I want to activate the assettype")]
         public void WhenIWantToActivateTheAssettype()
         {
             overviewPage.Activate();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
         }
+        [Order(12)]
         [Then(@"the assettype has been activeted")]
         public void ThenTheAssettypeHasBeenActiveted()
         {
             overviewPage.Search(assetType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
-            string expectedlog = $"The {assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} in table assettype is activated by {admin.Account.UserID}";
+            string expectedlog = $"The {assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} is activated by {admin.Account.UserID} in table assettype";
             var log = detail.GetLastLog();
             expectedlog.Should().BeEquivalentTo(log);
         }

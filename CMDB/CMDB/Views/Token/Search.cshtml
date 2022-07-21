@@ -37,7 +37,7 @@
                         {
                             <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.AssetTag" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
-                        @if (item.Active == CMDB.Domain.Entities.State.Active && item.Identity is null && item.Identity is null && (bool)ViewData["AssignIdentityAccess"])
+                        @if (item.Active == CMDB.Domain.Entities.State.Active && (item.Identity is null || item.IdentityId == 1) && (bool)ViewData["AssignIdentityAccess"])
                         {
                             <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@item.AssetTag" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
                         }

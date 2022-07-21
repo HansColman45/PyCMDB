@@ -413,7 +413,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
-            ViewData["Title"] = "Release device from ";
+            ViewData["Title"] = "Release device from identity";
             ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
             await BuildMenu();
             var list = await service.GetByID((int)id);

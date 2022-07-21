@@ -20,6 +20,11 @@ namespace CMDB.UI.Tests.Pages
                 return Int32.Parse(id);
             }
         }
+        public ReleaseAccountPage ReleaseAccount()
+        {
+            ClickElementByXpath(ReleaseAccountXPath);
+            return new(driver);
+        }
         public ReleaseDevicePage ReleaseDevice()
         {
             ClickElementByXpath(ReleaseDeviceXPath);

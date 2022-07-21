@@ -88,10 +88,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedField)
             {
                 case "SerialNumber":
-                    expectedlog = $"The {updatedField} in table screen has been changed from {screen.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedField} has been changed from {screen.SerialNumber} to {newValue} by {admin.Account.UserID} in table screen";
                     break;
                 case "Type":
-                    expectedlog = $"The {updatedField} in table screen has been changed from {screen.Type} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedField} has been changed from {screen.Type} to {newValue} by {admin.Account.UserID} in table screen";
                     break;
             }
             overviewPage.Search(screen.AssetTag);
@@ -130,7 +130,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The monitor is deactivated")]
         public void ThenTheMonitorIsDeactivated()
         {
-            expectedlog = $"The Monitor with type {screen.Type} in table screen is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Monitor with type {screen.Type} is deleted due to {newValue} by {admin.Account.UserID} in table screen";
             overviewPage.Search(screen.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
@@ -166,7 +166,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The monitor is active")]
         public void ThenTheMonitorIsActive()
         {
-            expectedlog = $"The Monitor with type {screen.Type} in table screen is activated by {admin.Account.UserID}";
+            expectedlog = $"The Monitor with type {screen.Type} is activated by {admin.Account.UserID} in table screen";
             overviewPage.Search(screen.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
@@ -202,7 +202,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Details");
-            expectedlog = $"The Monitor with {screen.AssetTag} is assigned to Identity width name: {identity.Name} by {admin.Account.UserID} in table screen";
+            expectedlog = $"The Monitor with {screen.AssetTag} is assigned to Identity with name: {identity.Name} by {admin.Account.UserID} in table screen";
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }

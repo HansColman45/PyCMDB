@@ -136,10 +136,10 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedField)
             {
                 case "SerialNumber":
-                    expectedlog = $"The {updatedField} in table token has been changed from {Token.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedField} has been changed from {Token.SerialNumber} to {newValue} by {admin.Account.UserID} in table token";
                     break;
                 case "Type":
-                    expectedlog = $"The {updatedField} in table token has been changed from {Token.Type} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedField} has been changed from {Token.Type} to {newValue} by {admin.Account.UserID} in table token";
                     break;
             }
             overviewPage.Search(Token.AssetTag);
@@ -179,7 +179,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"the token is deactivated")]
         public void ThenTheTokenIsDeactivated()
         {
-            expectedlog = $"The Token with type {Token.Type} in table token is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Token with type {Token.Type} is deleted due to {newValue} by {admin.Account.UserID} in table token";
             overviewPage.Search(Token.AssetTag);
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();
@@ -213,7 +213,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The token is active")]
         public void ThenTheTokenIsActive()
         {
-            expectedlog = $"The Token with type {Token.Type} in table token is activated by {admin.Account.UserID}";
+            expectedlog = $"The Token with type {Token.Type} is activated by {admin.Account.UserID}in table token";
             overviewPage.Search(Token.AssetTag);
             var detail = overviewPage.Detail();
             string log = detail.GetLastLog();

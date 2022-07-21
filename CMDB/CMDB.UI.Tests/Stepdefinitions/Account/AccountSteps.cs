@@ -135,15 +135,15 @@ namespace CMDB.UI.Tests.Stepdefinitions
             {
                 case "UserId":
                     overviewPage.Search(newValue);
-                    expectedlog = $"The UserId in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The UserId has been changed from {oldValue} to {newValue} by {admin.Account.UserID} in table account";
                     break;
                 case "Type":
                     overviewPage.Search(Account.UserID);
-                    expectedlog = $"The Type in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The Type has been changed from {oldValue} to {newValue} by {admin.Account.UserID} in table account";
                     break;
                 case "Application":
                     overviewPage.Search(Account.UserID);
-                    expectedlog = $"The Application in table account has been changed from {oldValue} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The Application has been changed from {oldValue} to {newValue} by {admin.Account.UserID} in table account";
                     break;
             }
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
@@ -192,7 +192,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var accId = detail.Id;
             entity.Account account = context.GetAccount(accId);
-            expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {newValue} by {admin.Account.UserID} in table account";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
@@ -231,7 +231,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             var accId = detail.Id;
             entity.Account account = context.GetAccount(accId);
-            expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} in table account is activated by {admin.Account.UserID}";
+            expectedlog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is activated by {admin.Account.UserID} in table account";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
@@ -270,7 +270,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Account with UserID {Account.UserID} in table account is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID}";
+            expectedlog = $"The Account with UserID: {Account.UserID} is assigned to Identity with name: {Identity.Name} by {admin.Account.UserID} in table account";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
@@ -304,7 +304,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Account with UserID {Account.UserID} in table account is released from Identity with name: {Identity.Name} by {admin.Account.UserID}";
+            expectedlog = $"The Account with UserID: {Account.UserID} is released from Identity with name: {Identity.Name} by {admin.Account.UserID} in table account";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }

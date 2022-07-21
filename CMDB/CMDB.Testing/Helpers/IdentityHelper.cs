@@ -35,7 +35,7 @@ namespace CMDB.Testing.Helpers
             {
                 //For some reason the savechanges above changes the state
                 identity.active = 0;
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
             return identity;
         }

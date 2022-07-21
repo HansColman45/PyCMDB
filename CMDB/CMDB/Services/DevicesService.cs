@@ -379,8 +379,8 @@ namespace CMDB.Services
         public bool IsDeviceFree(Device device)
         {
             bool result = false;
-            var devices = _context.Devices.Where(x => x.AssetTag == device.AssetTag).First();
-            if (devices.Identity is null)
+            var _device = _context.Devices.Where(x => x.AssetTag == device.AssetTag).First();
+            if (_device.Identity is null || _device.IdentityId == 1)
                 result = true;
             return result;
         }

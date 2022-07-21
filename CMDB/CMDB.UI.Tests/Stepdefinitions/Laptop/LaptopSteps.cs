@@ -145,12 +145,12 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedField)
             {
                 case "Serialnumber":
-                    expectedlog = $"The SerialNumber in table laptop has been changed from {laptop.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The SerialNumber has been changed from {laptop.SerialNumber} to {newValue} by {admin.Account.UserID} in table laptop";
                     break;
                 case "RAM":
                     var oldRam = context.GetRAM(laptop.RAM);
                     var newRam = context.GetRAM(newValue);
-                    expectedlog = $"The RAM in table laptop has been changed from {oldRam.Value} to {newRam.Value} by {admin.Account.UserID}";
+                    expectedlog = $"The RAM has been changed from {oldRam.Value} to {newRam.Value} by {admin.Account.UserID} in table laptop";
                     break;
             }
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
@@ -195,7 +195,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
             string log = detail.GetLastLog();
-            expectedlog = $"The Laptop with type {Laptop.Type} in table laptop is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Laptop with type {Laptop.Type} is deleted due to {newValue} by {admin.Account.UserID} in table laptop";
             Assert.Equal(log, expectedlog);
         }
         #endregion
@@ -232,7 +232,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeatilPage");
             string log = detail.GetLastLog();
-            expectedlog = $"The Laptop with type {Laptop.Type} in table laptop is activated by {admin.Account.UserID}";
+            expectedlog = $"The Laptop with type {Laptop.Type} is activated by {admin.Account.UserID} in table laptop";
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
         #endregion

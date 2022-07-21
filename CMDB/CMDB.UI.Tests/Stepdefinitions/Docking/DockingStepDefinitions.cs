@@ -137,10 +137,10 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
             switch (updatedField)
             {
                 case "SerialNumber":
-                    expectedlog = $"The SerialNumber in table docking has been changed from {Docking.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The SerialNumber has been changed from {Docking.SerialNumber} to {newValue} by {admin.Account.UserID} in table docking";
                     break;
                 case "Type":
-                    expectedlog = $"The Type in table docking has been changed from {Docking.Type} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The Type has been changed from {Docking.Type} to {newValue} by {admin.Account.UserID} in table docking";
                     break;
             }
             var detail = overviewPage.Detail();
@@ -178,7 +178,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         [Then(@"The Docking is deactivated")]
         public void ThenTheDockingIsDeactivated()
         {
-            expectedlog = $"The Docking station with type {Docking.Type} in table docking is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Docking station with type {Docking.Type} is deleted due to {newValue} by {admin.Account.UserID} in table docking";
             overviewPage.Search(Docking.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();
@@ -213,7 +213,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Docking
         [Then(@"The docking station is activated")]
         public void ThenTheDockingStationIsActivated()
         {
-            expectedlog = $"The Docking station with type {Docking.Type} in table docking is activated by {admin.Account.UserID}";
+            expectedlog = $"The Docking station with type {Docking.Type} is activated by {admin.Account.UserID} in table docking";
             overviewPage.Search(Docking.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var detail = overviewPage.Detail();

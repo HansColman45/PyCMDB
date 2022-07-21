@@ -117,11 +117,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedField)
             {
                 case "Type":
-                    expectedLog =  $"The {updatedField} in table identitytype has been changed from {IdentityType.Type} to {newValue} by {admin.Account.UserID}";
+                    expectedLog =  $"The {updatedField} has been changed from {IdentityType.Type} to {newValue} by {admin.Account.UserID} in table identitytype";
                     overviewPage.Search(IdentityType.Description);
                     break;
                 case "Description":
-                    expectedLog = $"The {updatedField} in table identitytype has been changed from {IdentityType.Description} to {newValue} by {admin.Account.UserID}";
+                    expectedLog = $"The {updatedField} has been changed from {IdentityType.Description} to {newValue} by {admin.Account.UserID} in table identitytype";
                     overviewPage.Search(IdentityType.Type);
                     break;
             }
@@ -147,8 +147,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The Identity type is deactivated")]
         public void ThenTheIdentityTypeIsDeactivated()
         {
-            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} in table identitytype " +
-                $"is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} is deleted due to {newValue} by {admin.Account.UserID} in table identitytype";
             overviewPage.Search(IdentityType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
@@ -184,8 +183,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The Identity type is active")]
         public void ThenTheIdentityTypeIsActive()
         {
-            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} in table identitytype " +
-                 $"is activated by {admin.Account.UserID}";
+            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} is activated by {admin.Account.UserID} in table identitytype";
             overviewPage.Search(IdentityType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();

@@ -26,7 +26,6 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private AssignAccountPage assignAccount;
         private AssignFormPage AssignFom;
 
-        private readonly IUnitTestRuntimeProvider _unitTestRuntimeProvider;
         private readonly Random rnd = new();
         private int rndNr;
         private helpers.Identity iden;
@@ -34,9 +33,8 @@ namespace CMDB.UI.Tests.Stepdefinitions
         private entity.Identity Identity;
         private entity.Device device;
         private string updatedfield, newvalue, reason, expectedlog;
-        public IdentitySteps(ScenarioData scenarioData, IUnitTestRuntimeProvider unitTestRuntimeProvider, ScenarioContext context) : base(scenarioData, context)
+        public IdentitySteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
-            _unitTestRuntimeProvider = unitTestRuntimeProvider;
         }
         #region create
         [Order(1)]
@@ -171,23 +169,23 @@ namespace CMDB.UI.Tests.Stepdefinitions
             switch (updatedfield)
             {
                 case "FirstName":
-                    expectedlog = $"The {updatedfield} in table identity has been changed from {iden.FirstName} to {newvalue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedfield} has been changed from {iden.FirstName} to {newvalue} by {admin.Account.UserID} in table identity";
                     overviewPage.Search(newvalue);
                     break;
                 case "LastName":
-                    expectedlog = $"The {updatedfield} in table identity has been changed from {iden.LastName} to {newvalue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedfield} has been changed from {iden.LastName} to {newvalue} by {admin.Account.UserID} in table identity";
                     overviewPage.Search(newvalue);
                     break;
                 case "Company":
-                    expectedlog = $"The {updatedfield} in table identity has been changed from {iden.Company} to {newvalue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedfield} has been changed from {iden.Company} to {newvalue} by {admin.Account.UserID} in table identity";
                     overviewPage.Search(iden.FirstName);
                     break;
                 case "UserID":
-                    expectedlog = $"The {updatedfield} in table identity has been changed from {iden.UserId} to {newvalue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedfield} has been changed from {iden.UserId} to {newvalue} by {admin.Account.UserID} in table identity";
                     overviewPage.Search(iden.FirstName);
                     break;
                 case "Email":
-                    expectedlog = $"The {updatedfield} in table identity has been changed from {iden.Email} to {newvalue} by {admin.Account.UserID}";
+                    expectedlog = $"The {updatedfield} has been changed from {iden.Email} to {newvalue} by {admin.Account.UserID} in table identity";
                     overviewPage.Search(iden.FirstName);
                     break;
             }
@@ -239,7 +237,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity iden = context.GetIdentity(Id);
-            expectedlog = $"The Identity width name: {iden.Name} in table identity is deleted due to {reason} by {admin.Account.UserID}";
+            expectedlog = $"The Identity width name: {iden.Name} is deleted due to {reason} by {admin.Account.UserID} in table identity";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
@@ -278,17 +276,17 @@ namespace CMDB.UI.Tests.Stepdefinitions
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            expectedlog = $"The Identity width name: {Identity.Name} in table identity is activated by {admin.Account.UserID}";
+            expectedlog = $"The Identity width name: {Identity.Name} is activated by {admin.Account.UserID} in table identity";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog);
         }
         #endregion
-        #region Assign Account
         [Given(@"an Account exist as well")]
         public async Task GivenAnAccountExistAsWell()
         {
             Account = await context.CreateAccount(admin);
         }
+        #region Assign Account
         [When(@"I assign the account to the identity")]
         public void WhenIAssignTheAccountToTheIdentity()
         {
@@ -333,13 +331,50 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             int Id = detail.Id;
             entity.Identity identity = context.GetIdentity(Id);
-            expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} in table identity is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID}";
+            expectedlog = $"The Identity with name: {identity.FirstName}, {identity.LastName} is assigned to Account with UserID: {Account.UserID} by {admin.Account.UserID} in table identity";
             var log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog,"The log should match");
         }
         #endregion
+        #region release account
+        [Given(@"The account is assigned to the Idenitity")]
+        public async Task GivenTheAccountIsAssignedToTheIdenitity()
+        {
+            await context.AssignIden2Account(Identity, Account,admin) ;
+        }
+        [When(@"I release the account from my Identity")]
+        public void WhenIReleaseTheAccountFromMyIdentity()
+        {
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+        }
+        [When(@"I fill in the release account form for my Identity")]
+        public void WhenIFillInTheReleaseAccountFormForMyIdentity()
+        {
+            IdentityDetailPage detailPage = overviewPage.Detail();
+            detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deatil");
+            ReleaseAccountPage releasePage = detailPage.ReleaseAccount();
+            releasePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleasePage");
+            releasePage.Title.Should().BeEquivalentTo("Release account from identity", "Title should be correct");
+            releasePage.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            releasePage.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
+            releasePage.CreatePDF();
+            releasePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PDF Created");
+        }
+        [Then(@"The account is released")]
+        public void ThenTheAccountIsReleased()
+        {
+            expectedlog = $"The Identity with name: {Identity.Name} is released from Account with UserID: {Account.UserID} in application {Account.Application.Name} by {admin.Account.UserID} in table identity";
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+            var detail = overviewPage.Detail();
+            detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
+            var GetLastlog = detail.GetLastLog();
+            GetLastlog.Should().BeEquivalentTo(expectedlog, "The log should match");
+        }
+        #endregion
         [Given(@"a (.*) exist as well")]
-        public async void GivenALaptopExistAsWell(string category)
+        public async Task GivenALaptopExistAsWell(string category)
         {
             switch (category)
             {
@@ -398,6 +433,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         {
             log.Debug($"Release device of type: {category} is assigned");
             overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         [When(@"I fill in the release form for my Identity")]
         public void FillinReleaseForm()
@@ -406,7 +442,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deatil");
             ReleaseDevicePage releasePage = detailPage.ReleaseDevice();
             releasePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleasePage");
-            releasePage.Title.Should().BeEquivalentTo("Release device from Identity", "Title should be correct");
+            releasePage.Title.Should().BeEquivalentTo("Release device from identity", "Title should be correct");
             releasePage.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             releasePage.Employee.Should().BeEquivalentTo(Identity.Name, "The employee should be the name of the identity");
             releasePage.CreatePDF();
@@ -416,7 +452,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         public void CheckReleased(string category)
         {
             log.Debug($"Check if device of type: {category} is Released");
-            expectedlog = $"The identity with name: {Identity.Name}  is released from {device.Category.Category} with {device.AssetTag} by {admin.Account.UserID} in table identity";
+            expectedlog = $"The identity with name: {Identity.Name} is released from {device.Category.Category} with {device.AssetTag} by {admin.Account.UserID} in table identity";
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();

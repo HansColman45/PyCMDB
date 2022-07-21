@@ -25,6 +25,7 @@ namespace CMDB.UI.Tests.Pages
         protected static string AssignIdenityXpath => "//a[@title='Assign Identity']";
         protected static string ReleaseIdenityXpath => "//a[@title='Release Identity']";
         public static string ReleaseDeviceXPath => "//a[@id='ReleaseDevice']";
+        public static string ReleaseAccountXPath => "//a[@id='ReleaseAccount']";
 
         public bool LoggedIn()
         {

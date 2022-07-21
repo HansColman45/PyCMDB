@@ -1,4 +1,4 @@
-﻿Feature: DeactivateDesktop
+﻿Feature: Desktop actions
 
 Scenario: I want to activate and inactive Desktop
 	Given There is an inactive Desktop existing

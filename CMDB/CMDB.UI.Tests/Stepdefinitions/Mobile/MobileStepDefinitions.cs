@@ -135,11 +135,11 @@ namespace CMDB.UI.Tests.Stepdefinitions
             {
                 case "IMEI":
                     overviewPage.Search(newValue);
-                    expectedlog = $"The IMEI in table mobile has been changed from {Mobile.IMEI} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The IMEI has been changed from {Mobile.IMEI} to {newValue} by {admin.Account.UserID} in table mobile";
                     break;
                 case "Type":
                     overviewPage.Search(Mobile.IMEI.ToString());
-                    expectedlog = $"The Type in table mobile has been changed from {Mobile.MobileType} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The Type has been changed from {Mobile.MobileType} to {newValue} by {admin.Account.UserID} in table mobile";
                     break;
             }
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
@@ -163,7 +163,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The mobile is deactivated")]
         public void ThenTheMobileIsDeactivated()
         {
-            expectedlog = $"The mobile with type {Mobile.MobileType} is deactivated due to {newValue} in table mobile by {admin.Account.UserID}";
+            expectedlog = $"The mobile with type {Mobile.MobileType} is deactivated due to {newValue} by {admin.Account.UserID} in table mobile";
             overviewPage.Search(Mobile.IMEI.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
@@ -199,7 +199,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The mobile is actice again")]
         public void ThenTheMobileIsActiceAgain()
         {
-            expectedlog = $"The mobile with type {Mobile.MobileType} is activated in table mobile by {admin.Account.UserID}";
+            expectedlog = $"The mobile with type {Mobile.MobileType} is activated in table mobile by {admin.Account.UserID} in table mobile";
             overviewPage.Search(Mobile.IMEI.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
@@ -231,7 +231,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The identity is assigned to my mobile")]
         public void ThenTheIdentityIsAssignedToMyMobile()
         {
-            expectedlog = $"The mobile with type {Mobile.MobileType} is assigned to Identity width name: {identity.Name} by {admin.Account.UserID} in table mobile ";
+            expectedlog = $"The mobile with type {Mobile.MobileType} is assigned to Identity width name: {identity.Name} by {admin.Account.UserID} in table mobile";
             overviewPage.Search(Mobile.IMEI.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();

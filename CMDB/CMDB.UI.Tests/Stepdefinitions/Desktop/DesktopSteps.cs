@@ -31,6 +31,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
         public DesktopSteps(ScenarioData scenarioData, ScenarioContext context) : base(scenarioData, context)
         {
         }
+        #region Create
         [Given(@"I want to create a new Desktop with these details")]
         public void GivenIWantToCreateANewDesktopWithTheseDetails(Table table)
         {
@@ -80,7 +81,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             string log = detail.GetLastLog();
             Assert.Equal(log, expectedlog);
         }
-
+        #endregion
         [Given(@"There is an Desktop existing")]
         public async Task GivenThereIsAnDesktopExisting()
         {
@@ -99,6 +100,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             overviewPage.Search(Desktop.AssetTag);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
+        #region update
         [When(@"I update the (.*) with (.*) on my Desktop and I save")]
         public void WhenIUpdateTheSerialnumberWithOnMyDesktopAndISave(string field, string value)
         {
@@ -140,17 +142,18 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             switch (updatedField)
             {
                 case "Serialnumber":
-                    expectedlog = $"The SerialNumber in table desktop has been changed from {desktop.SerialNumber} to {newValue} by {admin.Account.UserID}";
+                    expectedlog = $"The SerialNumber has been changed from {desktop.SerialNumber} to {newValue} by {admin.Account.UserID} in table desktop";
                     break;
                 case "RAM":
                     var oldRam = context.GetRAM(desktop.RAM);
                     var newRam = context.GetRAM(newValue);
-                    expectedlog = $"The RAM in table desktop has been changed from {oldRam.Value} to {newRam.Value} by {admin.Account.UserID}";
+                    expectedlog = $"The RAM has been changed from {oldRam.Value} to {newRam.Value} by {admin.Account.UserID} in table desktop";
                     break;
             }
             Assert.Equal(log, expectedlog);
         }
-
+        #endregion
+        #region deactivate
         [Given(@"There is an active Desktop existing")]
         public async Task GivenThereIsAnActiveLaptopExisting()
         {
@@ -188,10 +191,11 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             string log = detail.GetLastLog();
-            expectedlog = $"The Desktop with type {Desktop.Type} in table desktop is deleted due to {newValue} by {admin.Account.UserID}";
+            expectedlog = $"The Desktop with type {Desktop.Type} is deleted due to {newValue} by {admin.Account.UserID} in table desktop";
             Assert.Equal(log, expectedlog);
         }
-
+        #endregion
+        #region Activate
         [Given(@"There is an inactive Desktop existing")]
         public async Task GivenThereIsAnInactiveLaptopExisting()
         {
@@ -224,10 +228,11 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
             string log = detail.GetLastLog();
-            expectedlog = $"The Desktop with type {Desktop.Type} in table desktop is activated by {admin.Account.UserID}";
+            expectedlog = $"The Desktop with type {Desktop.Type} is activated by {admin.Account.UserID} in table desktop";
             Assert.Equal(log, expectedlog);
         }
-
+        #endregion
+        #region Assign identity
         [When(@"I assign the Desktop to the Identity")]
         public void WhenIAssignTheDesktopToTheIdentity()
         {
@@ -259,7 +264,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Desktop
             string log = detail.GetLastLog();
             log.Should().BeEquivalentTo(expectedlog, "Log should match");
         }
-
+        #endregion
         [Given(@"that Identity is assigned to my Desktop")]
         public async Task GivenThatIdentityIsAssignedToMyDesktop()
         {

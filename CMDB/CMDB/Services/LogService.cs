@@ -83,7 +83,7 @@ namespace CMDB.Services
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
-            LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
+            LogText = $"The {field} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue)
@@ -92,47 +92,47 @@ namespace CMDB.Services
                 oldValue = "Empty";
             if (String.IsNullOrEmpty(newValue))
                 newValue = "Empty";
-            LogText = $"The {field} in table {table} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID}";
+            LogText = $"The {field} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, AssetTag);
         }
         protected async Task LogDeactivate(string table, int ID, string value, string reason)
         {
-            LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
+            LogText = $"The {value} is deleted due to {reason} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogDeactivated(string table, string AssetTag, string value, string reason)
         {
-            LogText = $"The {value} in table {table} is deleted due to {reason} by {Admin.Account.UserID}";
+            LogText = $"The {value} is deleted due to {reason} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, AssetTag);
         }
         protected async Task LogActivate(string table, int ID, string value)
         {
-            LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
+            LogText = $"The {value} is activated by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogActivate(string table, string AssetTag, string value)
         {
-            LogText = $"The {value} in table {table} is activated by {Admin.Account.UserID}";
+            LogText = $"The {value} is activated by {Admin.Account.UserID} in table {table}";
             await DoLog(table, AssetTag);
         }
         protected async Task LogAssignIden2Account(string table, int ID, Identity identity, Account account)
         {
-            LogText = $"The Identity with name: {identity.Name} in table {table} is assigned to Account with UserID: {account.UserID} by {Admin.Account.UserID}";
+            LogText = $"The Identity with name: {identity.Name} is assigned to Account with UserID: {account.UserID} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogAssignAccount2Identity(string table, int ID, Account account, Identity identity)
         {
-            LogText = $"The Account with UserID {account.UserID} in table {table} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID}";
+            LogText = $"The Account with UserID: {account.UserID} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogReleaseAccountFromIdentity(string table, int IdenId, Identity identity, Account account)
         {
-            LogText = $"Identity with Name {identity.Name} in table {table} is released from Account with UserID: {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID}";
+            LogText = $"The Identity with name: {identity.Name} is released from Account with UserID: {account.UserID} in appliction {account.Application.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, IdenId);
         }
         protected async Task LogReleaseIdentity4Account(string table, int AccId, Identity identity, Account account)
         {
-            LogText = $"The Account with UserID {account.UserID} in table {table} is released from Identity with name: {identity.Name} by {Admin.Account.UserID}";
+            LogText = $"The Account with UserID: {account.UserID} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, AccId);
         }
         protected async Task LogAssignDevice2Identity(string table, Device device, Identity identity)
@@ -167,7 +167,7 @@ namespace CMDB.Services
         }
         protected async Task LogReleaseMobileFromIdenity(string table, Mobile mobile, Identity identity)
         {
-            LogText = $"The Idenity with name {identity.Name} is released from {mobile.Category.Category} with {mobile.MobileType} by {Admin.Account.UserID} in table {table}";
+            LogText = $"The Idenity with name: {identity.Name} is released from {mobile.Category.Category} with {mobile.MobileType} by {Admin.Account.UserID} in table {table}";
             await DoLog(table,mobile.Id);
         }
         protected async Task LogReleaseIdentityFromMobile(string table, Identity identity, Mobile mobile)
