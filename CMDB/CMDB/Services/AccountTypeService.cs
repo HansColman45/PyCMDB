@@ -24,7 +24,7 @@ namespace CMDB.Services
             accountType.LastModfiedAdmin = Admin;
             _context.Types.Add(accountType);
             await _context.SaveChangesAsync();
-            string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
+            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
             await LogCreate(Table, accountType.TypeId, Value);
         }
         public async Task Update(AccountType accountType, string Type, string Description, string Table)
@@ -49,7 +49,7 @@ namespace CMDB.Services
             accountType.DeactivateReason = Reason;
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
-            string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
+            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
             await LogDeactivate(Table, accountType.TypeId, Value, Reason);
         }
         public async Task Activate(AccountType accountType, string Table)
@@ -58,7 +58,7 @@ namespace CMDB.Services
             accountType.DeactivateReason = "";
             accountType.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
-            string Value = "Account type created with type: " + accountType.Type + " and description: " + accountType.Description;
+            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
             await LogActivate(Table, accountType.TypeId, Value);
         }
         public async Task<List<AccountType>> ListAll()

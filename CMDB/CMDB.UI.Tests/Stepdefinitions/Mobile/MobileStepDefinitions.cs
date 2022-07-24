@@ -93,7 +93,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Logedin");
             overviewPage = main.MobileOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
-            overviewPage.Search(mobile.IMEI + rndNr.ToString());
+            overviewPage.Search(Mobile.IMEI.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
         [When(@"I change the (.*) to (.*) and I save the changes for my mobile")]
@@ -199,7 +199,7 @@ namespace CMDB.UI.Tests.Stepdefinitions
         [Then(@"The mobile is actice again")]
         public void ThenTheMobileIsActiceAgain()
         {
-            expectedlog = $"The mobile with type {Mobile.MobileType} is activated in table mobile by {admin.Account.UserID} in table mobile";
+            expectedlog = $"The mobile with type {Mobile.MobileType} is activated by {admin.Account.UserID} in table mobile";
             overviewPage.Search(Mobile.IMEI.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();

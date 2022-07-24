@@ -83,11 +83,11 @@ namespace CMDB.UI.Tests.Hooks
         /// </summary>
         /// <param name="scenarioData">The data of the scenario</param>
         [AfterFeature]
-        public static async void AfterFeature(ScenarioData scenarioData)
+        public static async Task AfterFeature(ScenarioData scenarioData)
         {
             try
             {
-                await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
+                var createdorupdated = await scenarioData.Context.DeleteAllCreatedOrUpdated(scenarioData.Admin);
             }
             catch (Exception ex)
             {

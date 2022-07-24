@@ -43,7 +43,7 @@ namespace CMDB.Testing.Helpers
         public static async Task Delete(CMDBContext context, Account account)
         {
             context.RemoveRange(account.Logs);
-            context.Remove<Account>(account);
+            context.Remove(account);
             await context.SaveChangesAsync();
         }
     }

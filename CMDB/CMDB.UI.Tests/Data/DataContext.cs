@@ -113,6 +113,18 @@ namespace CMDB.UI.Tests.Data
             return account;
         }
         /// <summary>
+        /// This will create a new AccountType in the system
+        /// </summary>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">To indicate if created accounttype needs to be active</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        public async Task<AccountType> CreateAccountType(Admin admin, bool active = true)
+        {
+            AccountType accountType = await AccountTypeHelper.CreateSimpleAccountType(context, admin,active);
+            return accountType;
+        }
+        /// <summary>
         /// This will create an Account
         /// </summary>
         /// <returns>Account</returns>

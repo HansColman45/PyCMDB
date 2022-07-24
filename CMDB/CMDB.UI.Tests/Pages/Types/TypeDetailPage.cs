@@ -12,10 +12,10 @@ namespace CMDB.UI.Tests.Pages
         public TypeDetailPage(IWebDriver webDriver) : base(webDriver)
         {
         }
-        public string GetLastLog()
+        public string GetLastLog(string type)
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));
-            return TekstFromElementByXpath("//td[contains(text(),'identitytype')]");
+            return TekstFromElementByXpath($"//td[contains(text(),'{type}')]");
         }
     }
 }

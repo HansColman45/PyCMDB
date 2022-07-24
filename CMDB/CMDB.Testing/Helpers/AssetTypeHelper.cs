@@ -43,10 +43,10 @@ namespace CMDB.Testing.Helpers
                 throw;
             }
         }
-        public static async Task Delete(CMDBContext context, AccountType accountType)
+        public static async Task Delete(CMDBContext context, AssetType assetType)
         {
-            context.RemoveRange(accountType.Logs);
-            context.Remove(accountType);
+            context.RemoveRange(assetType.Logs);
+            context.Remove(assetType);
             await context.SaveChangesAsync();
         }
     }

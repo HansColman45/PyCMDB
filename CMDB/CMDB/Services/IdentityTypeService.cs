@@ -42,7 +42,7 @@ namespace CMDB.Services
             identityType.LastModfiedAdmin = Admin;
             _context.Types.Add(identityType);
             await _context.SaveChangesAsync();
-            string Value = $"Identitytype created with type: {identityType.Type} and description: {identityType.Description}";
+            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
             await LogCreate(Table, identityType.TypeId, Value);
         }
         public async Task Update(IdentityType identityType, string Type, string Description, string Table)

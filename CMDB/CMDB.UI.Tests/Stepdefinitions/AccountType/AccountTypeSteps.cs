@@ -1,18 +1,19 @@
+using CMDB.UI.Tests.Hooks;
+using CMDB.UI.Tests.Pages;
 using System;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using System.Threading.Tasks;
 using helpers = CMDB.UI.Tests.Helpers;
 using entity = CMDB.Domain.Entities;
-using CMDB.UI.Tests.Pages;
-using FluentAssertions;
-using CMDB.UI.Tests.Hooks;
 using CMDB.Testing.Helpers;
+using FluentAssertions;
+using Xunit.Extensions.Ordering;
 
-namespace CMDB.UI.Tests.Stepdefinitions
+namespace CMDB.UI.Tests.Stepdefinitions.AccountType
 {
     [Binding]
-    public class IdentityTypeStepDefinitions: TestBase
+    public class AccountTypeSteps: TestBase
     {
         private LoginPage login;
         private MainPage main;
@@ -21,17 +22,18 @@ namespace CMDB.UI.Tests.Stepdefinitions
 
         private readonly Random rnd = new();
         private int rndNr;
-        private helpers.IdentiyType identiyType;
-        private entity.IdentityType IdentityType;
+        private helpers.AccountType accountType;
+        private entity.AccountType AccountType;
         private string expectedLog, updatedField, newValue;
-        public IdentityTypeStepDefinitions(ScenarioData scenarioData, ScenarioContext scenarioContext) : base(scenarioData, scenarioContext)
+
+        public AccountTypeSteps(ScenarioData scenarioData, ScenarioContext scenarioContext) : base(scenarioData, scenarioContext)
         {
         }
-
-        [Given(@"I want to create an Identity type with these details")]
-        public void GivenIWantToCreateAnIdentityTypeWithTheseDetails(Table table)
+        [Order(1)]
+        [Given(@"I want to create an accounttype as follows:")]
+        public void GivenIWantToCreateAnAccounttypeAsFollows(Table table)
         {
-            identiyType = table.CreateInstance<helpers.IdentiyType>();
+            accountType = table.CreateInstance<helpers.AccountType>();
             rndNr = rnd.Next();
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
@@ -42,39 +44,40 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
-            overviewPage = main.IdentityTypeOverview();
+            overviewPage = main.AccountTypeyOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             createPage = overviewPage.New();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
-            createPage.Type = identiyType.Type + rndNr.ToString();
+            createPage.Type = accountType.Type + rndNr.ToString();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SetType");
-            createPage.Description = identiyType.Description + rndNr.ToString();
+            createPage.Description = accountType.Description + rndNr.ToString();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SetDescription");
         }
-        [When(@"I save the Identity type")]
-        public void WhenISaveTheIdentityType()
+        [Order(2)]
+        [When(@"I save the accounttype")]
+        public void WhenISaveTheAccounttype()
         {
             createPage.Create();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Created");
         }
-
-        [Then(@"The I can find the newly create Identity type back")]
-        public void ThenTheICanFindTheNewlyCreateIdentityTypeBack()
+        [Order(3)]
+        [Then(@"The new accounttype can be find in the system")]
+        public void ThenTheNewAccounttypeCanBeFindInTheSystem()
         {
-            expectedLog = $"The Identitytype with type: {identiyType.Type + rndNr.ToString()} and description: {identiyType.Description + rndNr.ToString()} " +
-                $"is created by {admin.Account.UserID} in table identitytype";
-            overviewPage.Search(identiyType.Type + rndNr.ToString());
+            expectedLog = $"The Accounttype with type: {accountType.Type + rndNr.ToString()} and description: {accountType.Description + rndNr.ToString()} " +
+                $"is created by {admin.Account.UserID} in table accounttype";
+            overviewPage.Search(accountType.Type + rndNr.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string log = detail.GetLastLog("identitytype");
-            log.Should().BeEquivalentTo(expectedLog,"Log should match");
+            string log = detail.GetLastLog("accounttype");
+            log.Should().BeEquivalentTo(expectedLog, "Log should match");
         }
 
-        [Given(@"There is an Identity type existing")]
-        public async Task GivenThereIsAnIdentityTypeExisting()
+        [Given(@"There is an accounttype existing in the system")]
+        public async Task GivenThereIsAnAccounttypeExistingInTheSystem()
         {
-            IdentityType = await context.CreateIdentityType(admin);
+            AccountType = await context.CreateAccountType(admin);
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
@@ -84,19 +87,21 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
-            overviewPage = main.IdentityTypeOverview();
+            overviewPage = main.AccountTypeyOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
-            overviewPage.Search(IdentityType.Type);
+            overviewPage.Search(AccountType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
-        [When(@"I change the (.*) to (.*) and I save the Identity type")]
-        public void WhenIChangeTheTypeToAlienAndISaveTheIdentityType(string field, string newValue)
+        [Order(4)]
+        [When(@"I update the (.*) and change it to (.*) and I save the accounttype")]
+        public void WhenIUpdateTheTypeAndChangeItToRootAndISaveTheAccounttype(string field, string value)
         {
-            this.newValue = newValue;
+            rndNr = rnd.Next();
+            this.newValue = newValue + rndNr.ToString();
             updatedField = field;
             var editPage = overviewPage.Update();
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
-            switch (field)
+            switch (updatedField)
             {
                 case "Type":
                     editPage.Type = newValue;
@@ -110,29 +115,36 @@ namespace CMDB.UI.Tests.Stepdefinitions
             editPage.Edit();
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Updated");
         }
-        [Then(@"The Identity type is changed and the new values are visable")]
-        public void ThenTheIdentityTypeIsChangedAndTheNewValuesAreVisable()
+        [Order(5)]
+        [Then(@"The account type has been saved")]
+        public void ThenTheAccountTypeHasBeenSaved()
         {
             switch (updatedField)
             {
                 case "Type":
-                    expectedLog =  $"The {updatedField} has been changed from {IdentityType.Type} to {newValue} by {admin.Account.UserID} in table identitytype";
-                    overviewPage.Search(IdentityType.Description);
+                    expectedLog = $"The {updatedField} has been changed from {AccountType.Type} to {newValue} by {admin.Account.UserID} in table accounttype";
+                    overviewPage.Search(AccountType.Description);
                     break;
                 case "Description":
-                    expectedLog = $"The {updatedField} has been changed from {IdentityType.Description} to {newValue} by {admin.Account.UserID} in table identitytype";
-                    overviewPage.Search(IdentityType.Type);
+                    expectedLog = $"The {updatedField} has been changed from {AccountType.Description} to {newValue} by {admin.Account.UserID} in table accounttype";
+                    overviewPage.Search(AccountType.Type);
                     break;
             }
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
+        }
+        [Order(6)]
+        [Then(@"the Change is done")]
+        public void ThenTheChangeIsDone()
+        {
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string log = detail.GetLastLog("identitytype");
+            string log = detail.GetLastLog("accounttype");
             log.Should().BeEquivalentTo(expectedLog, "Log should match");
         }
-
-        [When(@"I want to deactivate the identity type with reason (.*)")]
-        public void WhenIWantToDeactivateTheIdentityTypeWithReasonTest(string reason)
+        
+        [Order(7)]
+        [When(@"I deactivate the accountType with reason (.*)")]
+        public void WhenIDeactivateTheAccountTypeWithReasonTest(string reason)
         {
             newValue = reason;
             var deactivatePage = overviewPage.Deactivate();
@@ -141,24 +153,25 @@ namespace CMDB.UI.Tests.Stepdefinitions
             deactivatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");
             deactivatePage.Delete();
             deactivatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivated");
-
         }
-        [Then(@"The Identity type is deactivated")]
-        public void ThenTheIdentityTypeIsDeactivated()
+        [Order(8)]
+        [Then(@"The accountType is deacticated")]
+        public void ThenTheAccountTypeIsDeacticated()
         {
-            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} is deleted due to {newValue} by {admin.Account.UserID} in table identitytype";
-            overviewPage.Search(IdentityType.Type);
+            expectedLog = $"The Accounttype with type: {AccountType.Type} and description: {AccountType.Description} is deleted due to {newValue} by {admin.Account.UserID} in table accounttype";
+            overviewPage.Search(AccountType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string log = detail.GetLastLog("identitytype");
+            string log = detail.GetLastLog("accounttype");
             log.Should().BeEquivalentTo(expectedLog, "Log should match");
         }
 
-        [Given(@"There is an inactive Identitytype existing")]
-        public async Task GivenThereIsAnInactiveIdentitytypeExisting()
+        [Order(9)]
+        [Given(@"There is an inactive accountType existing in the system")]
+        public async Task GivenThereIsAnInactiveAccountTypeExistingInTheSystem()
         {
-            IdentityType = await context.CreateIdentityType(admin,false);
+            AccountType = await context.CreateAccountType(admin, false);
             ScenarioData.Driver.Navigate().GoToUrl(Settings.Url);
             login = new LoginPage(ScenarioData.Driver);
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Start");
@@ -168,26 +181,28 @@ namespace CMDB.UI.Tests.Stepdefinitions
             login.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPwd");
             main = login.LogIn();
             main.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
-            overviewPage = main.IdentityTypeOverview();
+            overviewPage = main.AccountTypeyOverview();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
-            overviewPage.Search(IdentityType.Type);
+            overviewPage.Search(AccountType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
         }
-        [When(@"I want to activate the Idenity type")]
-        public void WhenIWantToActivateTheIdenityType()
+        [Order(10)]
+        [When(@"I activate the accountType")]
+        public void WhenIActivateTheAccountType()
         {
             overviewPage.Activate();
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activate");
         }
-        [Then(@"The Identity type is active")]
-        public void ThenTheIdentityTypeIsActive()
+        [Order(11)]
+        [Then(@"The accountType is active")]
+        public void ThenTheAccountTypeIsActive()
         {
-            expectedLog = $"The Identitytype with type: {IdentityType.Type} and description: {IdentityType.Description} is activated by {admin.Account.UserID} in table identitytype";
-            overviewPage.Search(IdentityType.Type);
+            expectedLog = $"The Accounttype with type: {AccountType.Type} and description: {AccountType.Description} is activated by {admin.Account.UserID} in table accounttype";
+            overviewPage.Search(AccountType.Type);
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Detail");
-            string log = detail.GetLastLog("identitytype");
+            string log = detail.GetLastLog("accounttype");
             log.Should().BeEquivalentTo(expectedLog, "Log should match");
         }
     }

@@ -84,7 +84,16 @@ namespace CMDB.Testing.Helpers
             foreach (var type in accountType)
             {
                 Data.Add("AccountType"+accountType.IndexOf(type).ToString(), type);
-                await AssetTypeHelper.Delete(context, type);
+                await AccountTypeHelper.Delete(context, type);
+            }
+            //AssetType
+            var assetType = context.AssetTypes
+                .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                .ToList();
+            foreach (var type in assetType)
+            {
+                Data.Add("AssetType" +assetType.IndexOf(type).ToString(), type);
+                await AssetTypeHelper.Delete(context,type);
             }
             //IdentityTypes
             var identypes = context.Types
