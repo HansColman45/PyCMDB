@@ -302,7 +302,9 @@ namespace CMDB.Controllers
                             Type = "Release"
                         };
                         PDFGenerator.SetMobileInfo(mobile);
-                        PDFGenerator.GeneratePDF(_env);
+                        string pdfFile = PDFGenerator.GeneratePDF(_env);
+                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
+                        await service.LogPdfFile(Table, mobile.Id, pdfFile);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -348,7 +350,9 @@ namespace CMDB.Controllers
                         Receiver = mobile.Identity.Name
                     };
                     _PDFGenerator.SetMobileInfo(mobile);
-                    _PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, mobile.Id, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }

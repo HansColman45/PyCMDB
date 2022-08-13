@@ -249,12 +249,12 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
-            if (moniror == null)
+            Screen monitor = monitors.FirstOrDefault();
+            if (monitor == null)
                 return NotFound();
-            ViewData["Name"] = moniror.Identity.Name;
+            ViewData["Name"] = monitor.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
-            service.GetAssignedIdentity(moniror);
+            service.GetAssignedIdentity(monitor);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -265,18 +265,20 @@ namespace CMDB.Controllers
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
-                        UserID = moniror.Identity.UserID,
-                        FirstName = moniror.Identity.FirstName,
-                        LastName = moniror.Identity.LastName,
-                        Language = moniror.Identity.Language.Code,
-                        Receiver = moniror.Identity.Name
+                        UserID = monitor.Identity.UserID,
+                        FirstName = monitor.Identity.FirstName,
+                        LastName = monitor.Identity.LastName,
+                        Language = monitor.Identity.Language.Code,
+                        Receiver = monitor.Identity.Name
                     };
-                    PDFGenerator.SetAssetInfo(moniror);
-                    PDFGenerator.GeneratePDF(_env);
+                    PDFGenerator.SetAssetInfo(monitor);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }
-            return View(moniror);
+            return View(monitor);
         }
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
@@ -313,7 +315,9 @@ namespace CMDB.Controllers
                         Receiver = identity.Name
                     };
                     PDFGenerator.SetAssetInfo(monitor);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }

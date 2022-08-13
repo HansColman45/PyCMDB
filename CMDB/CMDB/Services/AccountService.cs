@@ -183,7 +183,7 @@ namespace CMDB.Services
             await LogAssignAccount2Identity(Table, account.AccID, account, Identity);
             await LogAssignIden2Account("identity", IdenID, Identity, account);
         }
-        public async Task ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table)
+        public async Task ReleaseIdentity4Acount(Account account, Identity identity, int idenAccountID, string Table, string pdfFile)
         {
             var IdenAccount = _context.IdenAccounts.Where(x => x.ID == idenAccountID).First();
             IdenAccount.LastModifiedAdmin = Admin;
@@ -191,6 +191,8 @@ namespace CMDB.Services
             _context.IdenAccounts.Update(IdenAccount);
             await LogReleaseAccountFromIdentity("identity", identity.IdenId, identity, account);
             await LogReleaseIdentity4Account(Table, account.AccID, identity, account);
+            await LogPdfFile("identity",identity.IdenId, pdfFile);
+            await LogPdfFile(Table,account.AccID, pdfFile);
             account.LastModfiedAdmin = Admin;
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
@@ -260,6 +262,11 @@ namespace CMDB.Services
                 .Where(x => x.ID == id)
                 .ToListAsync();
             return idenAccounts;
+        }
+        public async Task LogPdfFile(string table, Account account, string pdfFile)
+        {
+            await LogPdfFile("identity", account.Identities.Last().Identity.IdenId, pdfFile);
+            await LogPdfFile(table, account.AccID, pdfFile);
         }
     }
 }

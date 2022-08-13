@@ -282,7 +282,9 @@ namespace CMDB.Controllers
                         Receiver = token.Identity.Name
                     };
                     PDFGenerator.SetAssetInfo(token);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -324,7 +326,9 @@ namespace CMDB.Controllers
                         Receiver = identity.Name
                     };
                     PDFGenerator.SetAssetInfo(token);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }

@@ -57,7 +57,7 @@ namespace CMDB.Util
         {
             accounts.Add(idenaccount);
         }
-        public void GeneratePDF(IWebHostEnvironment _env)
+        public string GeneratePDF(IWebHostEnvironment _env)
         {
             string path;
             DateTime date = DateTime.Now;
@@ -291,6 +291,7 @@ namespace CMDB.Util
             var converter = new ChromePdfRenderer();
             var PDF = converter.RenderHtmlAsPdf(HTML);
             PDF.SaveAs(path);
+            return path;
         }
     }
 }

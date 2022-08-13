@@ -29,13 +29,11 @@ namespace CMDB.Controllers
             List<Menu> menul1 = (List<Menu>)await service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {
-                if (m.Children is null)
-                    m.Children = new List<Menu>();
+                m.Children ??= new List<Menu>();
                 List<Menu> mL2 = (List<Menu>)await service.ListSecondMenuLevel(m.MenuId);
                 foreach (Menu m1 in mL2)
                 {
-                    if (m1.Children is null)
-                        m1.Children = new List<Menu>();
+                    m1.Children ??= new List<Menu>();
                     await service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
                 }
             }

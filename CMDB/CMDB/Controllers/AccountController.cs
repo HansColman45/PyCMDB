@@ -239,7 +239,6 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 int IdenID = Convert.ToInt32(values["Identity"]);
-                string validF = values["ValidFrom"];
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 service.IsPeriodOverlapping((int)id, from, until);
@@ -276,7 +275,6 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table);
                     PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
@@ -289,7 +287,8 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -312,7 +311,7 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";
             ViewData["Action"] = "AssignForm";
-            ViewData["Name"] = account.Identities.First().Identity.Name;
+            ViewData["Name"] = account.Identities.Last().Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -322,14 +321,15 @@ namespace CMDB.Controllers
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
-                    UserID = account.Identities.First().Identity.UserID,
-                    FirstName = account.Identities.First().Identity.FirstName,
-                    LastName = account.Identities.First().Identity.LastName,
-                    Language = account.Identities.First().Identity.Language.Code,
-                    Receiver = account.Identities.First().Identity.Name
+                    UserID = account.Identities.Last().Identity.UserID,
+                    FirstName = account.Identities.Last().Identity.FirstName,
+                    LastName = account.Identities.Last().Identity.LastName,
+                    Language = account.Identities.Last().Identity.Language.Code,
+                    Receiver = account.Identities.Last().Identity.Name
                 };
                 PDFGenerator.SetAccontInfo(account.Identities.First());
-                PDFGenerator.GeneratePDF(_env);
+                string pdfFile = PDFGenerator.GeneratePDF(_env);
+                await service.LogPdfFile(Table, account, pdfFile);
                 return RedirectToAction(nameof(Index));
             }
             return View(accounts);

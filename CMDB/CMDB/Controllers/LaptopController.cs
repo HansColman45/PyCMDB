@@ -292,7 +292,9 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAssetInfo(laptop);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -332,7 +334,9 @@ namespace CMDB.Controllers
                         Receiver = laptop.Identity.Name
                     };
                     PDFGenerator.SetAssetInfo(laptop);
-                    PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
+                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }

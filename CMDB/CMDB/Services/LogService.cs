@@ -175,6 +175,16 @@ namespace CMDB.Services
             LogText = $"The {mobile.Category.Category} with {mobile.MobileType} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, identity.IdenId);
         }
+        public async Task LogPdfFile(string table, int Id, string pdfFile)
+        {
+            LogText = $"Please find the PDFFile <a href='${pdfFile}'>here</a>";
+            await DoLog(table, Id);
+        }
+        public async Task LogPdfFile(string table, string AssetTag, string pdfFile)
+        {
+            LogText = $"Please find the PDFFile <a href='${pdfFile}'>here</a>";
+            await DoLog(table, AssetTag);
+        }
         private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;
