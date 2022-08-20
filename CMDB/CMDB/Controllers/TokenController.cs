@@ -9,6 +9,8 @@ using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
 using CMDB.Util;
+using Microsoft.Graph;
+using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Controllers
 {
@@ -80,6 +82,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
+                        if (token.Identity is not null)
+                        {
+                            await service.ReleaseIdenity(token, token.Identity, Table);
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = token.Identity.Name,
+                                UserID = token.Identity.UserID,
+                                FirstName = token.Identity.FirstName,
+                                LastName = token.Identity.LastName,
+                                Language = token.Identity.Language.Code,
+                                Receiver = token.Identity.Name
+                            };
+                            PDFGenerator.SetAssetInfo(token);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
+                            await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                        }
                         await service.Deactivate(token, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }

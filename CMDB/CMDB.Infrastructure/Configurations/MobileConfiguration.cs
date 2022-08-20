@@ -11,7 +11,7 @@ namespace CMDB.Infrastructure.Configuration
         {
             builder.ToTable(nameof(Mobile));
 
-            builder.HasKey(e => e.Id)
+            builder.HasKey(e => e.MobileId)
                 .HasName("PK_Mobile")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 

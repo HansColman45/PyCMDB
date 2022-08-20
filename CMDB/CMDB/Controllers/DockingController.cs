@@ -80,6 +80,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
+                        if (docking.Identity is not null)
+                        {
+                            await service.ReleaseIdenity(docking, docking.Identity, Table);
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = docking.Identity.Name,
+                                UserID = docking.Identity.UserID,
+                                FirstName = docking.Identity.FirstName,
+                                LastName = docking.Identity.LastName,
+                                Language = docking.Identity.Language.Code,
+                                Receiver = docking.Identity.Name
+                            };
+                            PDFGenerator.SetAssetInfo(docking);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
+                            await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                        }
                         await service.Deactivate(docking, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }

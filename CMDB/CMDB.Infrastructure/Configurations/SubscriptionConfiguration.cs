@@ -10,7 +10,7 @@ namespace CMDB.Infrastructure.Configurations
         {
             builder.ToTable(nameof(Subscription));
 
-            builder.HasKey(e => e.Id)
+            builder.HasKey(e => e.SubscriptionId)
                 .HasName("PK_Subscription");
 
             builder.HasOne(e => e.SubscriptionType)

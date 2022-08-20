@@ -182,6 +182,24 @@ namespace CMDB.Controllers
                     string reason = values["reason"];
                     if (ModelState.IsValid)
                     {
+                        if (mobile.Identity is not null)
+                        {
+                            await service.ReleaseIdenity(mobile, mobile.Identity, Table);
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = mobile.Identity.Name,
+                                UserID = mobile.Identity.UserID,
+                                FirstName = mobile.Identity.FirstName,
+                                LastName = mobile.Identity.LastName,
+                                Language = mobile.Identity.Language.Code,
+                                Receiver = mobile.Identity.Name
+                            };
+                            PDFGenerator.SetMobileInfo(mobile);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
+                            await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        }
                         await service.Deactivate(mobile, reason, Table);
                         return RedirectToAction(nameof(Index));
                     }
@@ -289,7 +307,6 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.ReleaseIdenity(mobile, identity, Table);
                         PDFGenerator PDFGenerator = new()
                         {
                             ITEmployee = ITPerson,
@@ -304,7 +321,8 @@ namespace CMDB.Controllers
                         PDFGenerator.SetMobileInfo(mobile);
                         string pdfFile = PDFGenerator.GeneratePDF(_env);
                         await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.Id, pdfFile);
+                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        await service.ReleaseIdenity(mobile, identity, Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -352,7 +370,7 @@ namespace CMDB.Controllers
                     _PDFGenerator.SetMobileInfo(mobile);
                     string pdfFile = _PDFGenerator.GeneratePDF(_env);
                     await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, mobile.Id, pdfFile);
+                    await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }

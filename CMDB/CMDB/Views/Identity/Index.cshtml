@@ -51,10 +51,6 @@
                             {
                                 <a class="btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account"><span class="@ViewBag.AddIdentityIcon"></span></a>
                             }
-                            @if (item.Active == CMDB.Domain.Entities.State.Active && item.Devices.Count >0 && (bool)ViewData["ReleaseDevice"])
-                            {
-                                <a class="btn btn-danger" asp-action="ReleaseDevices" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
-                            }
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

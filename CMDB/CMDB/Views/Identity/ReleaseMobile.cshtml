@@ -1,0 +1,55 @@
+﻿@model CMDB.Domain.Entities.Identity
+@{
+    Layout = "_Layout";
+    CMDB.Domain.Entities.Mobile mobile = (CMDB.Domain.Entities.Mobile)ViewBag.Mobile;
+}
+@if ((bool)ViewData["ReleaseMobile"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Name</th>
+                <th>UserID</th>
+                <th>E Mail</th>
+                <th>Language</th>
+                <th>Type</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="Name">@Html.DisplayFor(model => model.Name)</td>
+                <td id="UserId">@Html.DisplayFor(model => model.UserID)</td>
+                <td id="EMail">@Html.DisplayFor(model => model.EMail)</td>
+                <td id="Language">@Html.DisplayFor(model => model.Language.Description)</td>
+                <td id="Type">@Html.DisplayFor(model => model.Type.Description)</td>
+                <td id="State">@Html.DisplayFor(model => model.Active)</td>
+            </tr>
+        </tbody>
+    </table>
+    <H3>Device information that will be released</H3>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>IMEI</th>
+                <th>Category</th>
+                <th>Type</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@mobile.IMEI</td>
+                <td>@mobile.Category.Category</td>
+                <td>@mobile.MobileType</td>
+                <td>@mobile.Active</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_SignForm" />
+}
+else
+{
+    <p>You do not access to this page</p>
+}

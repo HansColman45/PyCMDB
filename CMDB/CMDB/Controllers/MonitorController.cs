@@ -69,8 +69,8 @@ namespace CMDB.Controllers
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
-            if (moniror == null)
+            Screen monitor = monitors.FirstOrDefault();
+            if (monitor == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -79,7 +79,25 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(moniror, values["reason"], Table);
+                        if (monitor.Identity is not null)
+                        {
+                            await service.ReleaseIdenity(monitor, monitor.Identity, Table);
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = monitor.Identity.Name,
+                                UserID = monitor.Identity.UserID,
+                                FirstName = monitor.Identity.FirstName,
+                                LastName = monitor.Identity.LastName,
+                                Language = monitor.Identity.Language.Code,
+                                Receiver = monitor.Identity.Name
+                            };
+                            PDFGenerator.SetAssetInfo(monitor);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
+                            await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
+                        }
+                        await service.Deactivate(monitor, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -90,7 +108,7 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(moniror);
+            return View(monitor);
         }
         public async Task<IActionResult> Activate(string id)
         {

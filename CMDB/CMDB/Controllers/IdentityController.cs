@@ -15,6 +15,7 @@ using Microsoft.Graph.CallRecords;
 using Microsoft.Graph;
 using Device = CMDB.Domain.Entities.Device;
 using Identity = CMDB.Domain.Entities.Identity;
+using Microsoft.IdentityModel.Tokens;
 
 namespace CMDB.Controllers
 {
@@ -81,6 +82,9 @@ namespace CMDB.Controllers
             ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
             ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseAccount");
             ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            ViewData["MobileOverview"] = service.HasAdminAccess(service.Admin, SitePart, "MobileOverview");
+            ViewData["ReleaseMobile"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseMobile");
+            ViewData["SubscriptionOverview"] = service.HasAdminAccess(service.Admin, SitePart, "SubscriptionOverview");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
@@ -247,21 +251,36 @@ namespace CMDB.Controllers
             if (identity == null)
                 return NotFound();
             ViewBag.Devices = await service.ListAllFreeDevices();
+            ViewBag.Mobiles = await service.ListAllFreeMobiles();
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 List<Device> devicesToAdd = new();
+                List<Mobile> mobilesToAdd = new();
                 var devices = await service.ListAllFreeDevices();
                 foreach (var device in devices)
                 {
                     if (!String.IsNullOrEmpty(values[device.AssetTag]))
                         devicesToAdd.Add(device);
                 }
+                var mobiles = await service.ListAllFreeMobiles();
+                foreach (var mobile in mobiles)
+                {
+                    if (!String.IsNullOrEmpty(values[mobile.IMEI.ToString()]))
+                        mobilesToAdd.Add(mobile);
+                }
+                if (devicesToAdd.Count == 0 && mobilesToAdd.Count == 0)
+                {
+                    ModelState.AddModelError("", "Please select at lease 1 Device");
+                }
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        await service.AssignDevice(identity, devicesToAdd, Table);
+                        if(devicesToAdd.Count > 0)
+                            await service.AssignDevice(identity, devicesToAdd, Table);
+                        if (mobilesToAdd.Count > 0)
+                            await service.AssignMobiles(identity, mobilesToAdd, Table);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                     catch (Exception ex)
@@ -458,6 +477,50 @@ namespace CMDB.Controllers
                 string PdfFile = PDFGenerator.GeneratePDF(_env);
                 await service.ReleaseDevices(identity, devices2Remove, Table);
                 await service.LogPdfFile(Table,identity.IdenId, PdfFile);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(identity);
+        }
+        public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int MobileId)
+        {
+            if (id == null && MobileId == 0)
+                return NotFound();
+            log.Debug("Using Release from in {0}", Table);
+            ViewData["Title"] = "Release mobile from identity";
+            ViewData["ReleaseMobile"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseMobile");
+            await BuildMenu();
+            var list = await service.GetByID((int)id);
+            Identity identity = list.FirstOrDefault();
+            if (identity == null)
+                return NotFound();
+            Mobile mobile = await service.GetMobile(MobileId);
+            if (mobile == null)
+                return NotFound();
+            ViewBag.Mobile = mobile;
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "ReleaseMobile";
+            ViewData["Name"] = identity.Name;
+            ViewData["AdminName"] = service.Admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                PDFGenerator PDFGenerator = new()
+                {
+                    ITEmployee = ITPerson,
+                    Singer = Employee,
+                    UserID = identity.UserID,
+                    FirstName = identity.FirstName,
+                    LastName = identity.LastName,
+                    Language = identity.Language.Code,
+                    Receiver = identity.Name
+                };
+                PDFGenerator.SetMobileInfo(mobile);
+                string PdfFile = PDFGenerator.GeneratePDF(_env);
+                await service.ReleaseMobile(identity, mobile, Table);
+                await service.LogPdfFile(Table,identity.IdenId,PdfFile);
+                await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);

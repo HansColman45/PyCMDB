@@ -44,7 +44,7 @@
                     {
                         <tr>
                             <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
-                            <td>@log.LogText</td>
+                            <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
                         </tr>
                     }
                 </tbody>

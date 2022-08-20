@@ -10,7 +10,7 @@ namespace CMDB.Domain.Entities
     public class Subscription : Model
     {
         [Key]
-        public int Id { get; set; }
+        public int SubscriptionId { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
         public int? SubsctiptionTypeId { get; set; }
         public string PhoneNumber { get; set; }

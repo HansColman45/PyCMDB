@@ -181,6 +181,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
+                        if (laptop.Identity is not null)
+                        {
+                            await service.ReleaseIdenity(laptop, laptop.Identity, Table);
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = laptop.Identity.Name,
+                                UserID = laptop.Identity.UserID,
+                                FirstName = laptop.Identity.FirstName,
+                                LastName = laptop.Identity.LastName,
+                                Language = laptop.Identity.Language.Code,
+                                Receiver = laptop.Identity.Name
+                            };
+                            PDFGenerator.SetAssetInfo(laptop);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
+                            await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
+                        }
                         await service.Deactivate(laptop, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
                     }

@@ -48,9 +48,9 @@ namespace CMDB.Services
                 "application" => _context.Logs.Include(x => x.Application).Where(x => x.Application.AppID == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "kensington" => _context.Logs.Include(x => x.Kensington).Where(x => x.Kensington.KeyID == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "admin" => _context.Logs.Include(x => x.Admin).Where(x => x.Admin.AdminId == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "mobile" => _context.Logs.Include(x => x.Mobile).Where(x => x.Mobile.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "mobile" => _context.Logs.Include(x => x.Mobile).Where(x => x.Mobile.MobileId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "subscriptiontype" => _context.Logs.Include(x => x.SubscriptionType).Where(x => x.SubscriptionType.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
-                "subscription" => _context.Logs.Include(x => x.Subscription).Where(x => x.Subscription.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
+                "subscription" => _context.Logs.Include(x => x.Subscription).Where(x => x.Subscription.SubscriptionId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "assetcategory" => _context.Logs.Include(x => x.Category).Where(x => x.Category.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
                 _ => throw new Exception("No log insert statement created for table: " + table),
             };
@@ -153,7 +153,7 @@ namespace CMDB.Services
         protected async Task LogAssignIdentity2Mobile(string table, Identity identity, Mobile mobile)
         {
             LogText = $"The {mobile.Category.Category} with {mobile.IMEI} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
-            await DoLog(table, mobile.Id);
+            await DoLog(table, mobile.MobileId);
         }
         protected async Task LogReleaseDeviceFromIdenity(string table, Device device, Identity identity)
         {
@@ -168,7 +168,7 @@ namespace CMDB.Services
         protected async Task LogReleaseMobileFromIdenity(string table, Mobile mobile, Identity identity)
         {
             LogText = $"The Idenity with name: {identity.Name} is released from {mobile.Category.Category} with {mobile.MobileType} by {Admin.Account.UserID} in table {table}";
-            await DoLog(table,mobile.Id);
+            await DoLog(table,mobile.MobileId);
         }
         protected async Task LogReleaseIdentityFromMobile(string table, Identity identity, Mobile mobile)
         {
@@ -177,14 +177,18 @@ namespace CMDB.Services
         }
         public async Task LogPdfFile(string table, int Id, string pdfFile)
         {
-            LogText = $"Please find the PDFFile <a href='${pdfFile}'>here</a>";
+            pdfFile = pdfFile[36..];
+            pdfFile = pdfFile.Replace('\\', '/');
+            pdfFile = "../.." + pdfFile;
+            LogText = $"Please find the PDFFile <a href='{pdfFile}' target='_blank'>here</a>";
             await DoLog(table, Id);
         }
         public async Task LogPdfFile(string table, string AssetTag, string pdfFile)
         {
-            LogText = $"Please find the PDFFile <a href='${pdfFile}'>here</a>";
+            LogText = $"Please find the PDFFile <a href='{pdfFile}'>here</a>";
             await DoLog(table, AssetTag);
         }
+
         private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;
@@ -259,7 +263,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "mobile":
-                    log.Mobile = _context.Mobiles.Where(x => x.Id == ID).First();
+                    log.Mobile = _context.Mobiles.Where(x => x.MobileId == ID).First();
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;
@@ -269,7 +273,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 case "subscription":
-                    log.Subscription = _context.Subscriptions.Where(x => x.Id == ID).First();
+                    log.Subscription = _context.Subscriptions.Where(x => x.SubscriptionId == ID).First();
                     _context.Logs.Add(log);
                     await _context.SaveChangesAsync();
                     break;

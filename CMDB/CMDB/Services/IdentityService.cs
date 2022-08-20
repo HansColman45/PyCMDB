@@ -74,7 +74,6 @@ namespace CMDB.Services
             {
                 devices.Add(laptop);
             }
-
             var Desktops = await _context.Devices.OfType<Desktop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
@@ -112,6 +111,15 @@ namespace CMDB.Services
                 devices.Add(token);
             }
             return devices;
+        }
+        public async Task<List<Mobile>> ListAllFreeMobiles()
+        {
+            var mobiles = await _context.Mobiles
+                .Include(x => x.MobileType)
+                .Include(x => x.Category)
+                .Where(x => x.IdentityId == 1)
+                .ToListAsync();
+            return mobiles;
         }
         public void GetAssingedDevices(Identity identity)
         {
@@ -258,9 +266,11 @@ namespace CMDB.Services
         }
         public async Task ReleaseDevices(Identity identity, List<Device> devices, string table)
         {
+            identity.LastModfiedAdmin = Admin;
             foreach (Device device in devices)
             {
                 device.IdentityId = 1;
+                device.LastModfiedAdmin = Admin;
                 identity.Devices.Remove(device);
                 await _context.SaveChangesAsync();
                 switch (device.Category.Category)
@@ -285,6 +295,16 @@ namespace CMDB.Services
                 }
                 await LogReleaseDeviceFromIdenity(table, device,identity);
             }
+        }
+        public async Task ReleaseMobile(Identity identity, Mobile mobile, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            mobile.LastModfiedAdmin = Admin;
+            identity.Mobiles.Remove(mobile);
+            mobile.IdentityId = 1;
+            await _context.SaveChangesAsync();
+            await LogReleaseMobileFromIdenity("mobile", mobile, identity);
+            await LogReleaseIdentityFromMobile(table, identity, mobile);
         }
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
@@ -373,6 +393,18 @@ namespace CMDB.Services
             }
             await _context.SaveChangesAsync();
         }
+        public async Task AssignMobiles(Identity identity, List<Mobile> mobiles, string Table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            identity.Mobiles = mobiles;
+            foreach (var mobile in mobiles)
+            {
+                mobile.LastModfiedAdmin = Admin;
+                await LogAssignIdentity2Mobile("idenity", identity, mobile);
+                await LogAssignMobile2Identity(Table,mobile, identity);
+            }
+            await _context.SaveChangesAsync();
+        }
         public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
             var idenAccount = _context.IdenAccounts.
@@ -417,6 +449,15 @@ namespace CMDB.Services
                 .Where(x => x.AssetTag == assetTag)
                 .FirstOrDefaultAsync();
             return device;
+        }
+        public async Task<Mobile> GetMobile(int mobileId)
+        {
+            Mobile mobile = await _context.Mobiles
+                .Include(x => x.MobileType)
+                .Include(x => x.Category)
+                .Where(x => x.MobileId == mobileId)
+                .FirstOrDefaultAsync();
+            return mobile;
         }
     }
 }

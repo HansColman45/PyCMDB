@@ -43,19 +43,19 @@ namespace CMDB.Services
             _context.Mobiles.Add(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
-            await LogCreate(table, mobile.Id, value);
+            await LogCreate(table, mobile.MobileId, value);
         }
         public async Task Update(Mobile mobile, long newImei, AssetType newAssetType, string table)
         {
             if(mobile.IMEI != newImei)
             {
                 mobile.IMEI = newImei;
-                await LogUpdate(table, mobile.Id, "IMEI", mobile.IMEI.ToString(), newImei.ToString());
+                await LogUpdate(table, mobile.MobileId, "IMEI", mobile.IMEI.ToString(), newImei.ToString());
             }
             if(mobile.MobileType != newAssetType)
             {
                 mobile.MobileType = newAssetType;
-                await LogUpdate(table, mobile.Id, "Type", mobile.MobileType.ToString(), newAssetType.ToString());
+                await LogUpdate(table, mobile.MobileId, "Type", mobile.MobileType.ToString(), newAssetType.ToString());
             }
             mobile.LastModfiedAdmin = Admin;
             _context.Mobiles.Update(mobile);
@@ -69,7 +69,7 @@ namespace CMDB.Services
             _context.Mobiles.Update(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
-            await LogDeactivate(table,mobile.Id,value,reason);
+            await LogDeactivate(table,mobile.MobileId,value,reason);
         }
         public async Task Activate(Mobile mobile, string table)
         {
@@ -79,7 +79,7 @@ namespace CMDB.Services
             _context.Mobiles.Update(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
-            await LogActivate(table, mobile.Id, value);
+            await LogActivate(table, mobile.MobileId, value);
         }
         public AssetType ListAssetTypeById(int id)
         {
@@ -114,7 +114,7 @@ namespace CMDB.Services
                 .Include(x => x.Identity)
                 .Include(x => x.Category)
                 .Include(x => x.MobileType)
-                .Where(x => x.Id == id)
+                .Where(x => x.MobileId == id)
                 .ToList();
             return mobiles;
         }
@@ -123,7 +123,7 @@ namespace CMDB.Services
             mobile.Identity = _context.Mobiles
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
-                .Where(x => x.Id == mobile.Id)
+                .Where(x => x.MobileId == mobile.MobileId)
                 .Select(x => x.Identity).First();
         }
         public void GetAssignedSubscription(Mobile mobile)
@@ -131,7 +131,7 @@ namespace CMDB.Services
             mobile.Subscriptions = _context.Subscriptions
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Mobile)
-                .Where(x => x.Mobile.Id == mobile.Id)
+                .Where(x => x.Mobile.MobileId == mobile.MobileId)
                 .ToList();
         }
         public List<SelectListItem> ListFreeIdentities()
@@ -157,8 +157,8 @@ namespace CMDB.Services
         public bool IsDeviceFree(Mobile mobile)
         {
             bool result = false;
-            var mobiles = _context.Mobiles.Where(x => x.Id == mobile.Id).First();
-            if (mobile.Identity is null)
+            var mobiles = _context.Mobiles.Where(x => x.MobileId == mobile.MobileId).First();
+            if (mobile.Identity is null || mobile.MobileId == 1)
                 result = true;
             return result;
         }
@@ -168,8 +168,8 @@ namespace CMDB.Services
             mobile.LastModfiedAdmin = Admin;
             identity.Mobiles.Add(mobile);
             await _context.SaveChangesAsync();
-            await LogAssignMobile2Identity(table,mobile,identity);
-            await LogAssignIdentity2Mobile("identity", identity, mobile);
+            await LogAssignMobile2Identity("identity",mobile,identity);
+            await LogAssignIdentity2Mobile(table, identity, mobile);
         }
         public async Task ReleaseIdenity(Mobile mobile, Identity identity, string table)
         {
