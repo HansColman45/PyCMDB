@@ -14,7 +14,9 @@ namespace CMDB.Domain.Entities
         public AssetCategory Category { get; set; }
         public int? AssetCategoryId { get; set; }
         public virtual ICollection<Subscription> Subscriptions { get; set; }
-
-
+        public override string ToString()
+        {
+            return $"{Provider} {Type} {Description}";
+        }
     }
 }

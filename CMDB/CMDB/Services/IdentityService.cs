@@ -3,7 +3,6 @@ using CMDB.Domain.Entities;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Text;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
@@ -177,7 +176,7 @@ namespace CMDB.Services
             string Value = "Identity width name: " + firstName + ", " + LastName;
             await LogCreate(Table, identity.IdenId, Value);
         }
-        public async Task EditAsync(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
+        public async Task Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
             identity.LastModfiedAdmin = Admin;
             if (String.Compare(identity.FirstName, firstName) != 0)

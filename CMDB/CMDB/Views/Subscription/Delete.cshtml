@@ -1,0 +1,29 @@
+﻿@model CMDB.Domain.Entities.Subscription
+@{
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["DeleteAccess"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Type</th>
+                <th>Phone number</th>
+                <th>Active</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="SubscriptionType">@Html.DisplayTextFor(model => model.SubscriptionType)</td>
+                <td id="Phone">@Html.DisplayTextFor(model => model.PhoneNumber)</td>
+                <td id="Active">@Html.DisplayTextFor(model => model.Active)</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_deleteForm" />
+}
+else
+{
+    <p>You do not access to this page</p>
+}
