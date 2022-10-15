@@ -175,14 +175,15 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             return new(driver);
         }
-        public void SubscriptionTypeOverview()
+        public SubscriptionTypeOverviewPage SubscriptionTypeOverview()
         {
+            WaitUntilElmentVisableByXpath("//a[@id='Types']");
+            ClickElementByXpath("//a[@id='Types']");
             WaitUntilElmentVisableByXpath("//a[@id='Subscription Type38']");
-            ClickElementByXpath("//a[@id='Subscription Type38']");
             ClickElementByXpath("//a[@id='Subscription Type38']");
             ClickElementByXpath("//a[@href='/SubscriptionType']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public void SystemOverview()
         {

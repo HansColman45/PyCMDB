@@ -34,6 +34,7 @@ namespace CMDB.Controllers
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["AssignMobile"] = service.HasAdminAccess(service.Admin, SitePart, "AssignMobile");
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["actionUrl"] = @"\Subscription\Search";
             return View(list);
         }
         public async Task<IActionResult> Search(string search)
@@ -42,6 +43,7 @@ namespace CMDB.Controllers
             log.Debug("Using search in {0}", Table);
             if (!String.IsNullOrEmpty(search))
             {
+                ViewData["search"] = search;
                 ViewData["Title"] = "Subscription overview";
                 await BuildMenu();
                 var list = await service.ListAll(search);

@@ -1,0 +1,43 @@
+﻿@model CMDB.Domain.Entities.SubscriptionType
+@{
+    Layout = "_Layout";
+}
+<zh2>@ViewData["Title"]</zh2>
+@if ((bool)ViewData["UpdateAccess"])
+{
+    <form class="form-horizontal" asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Type <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Category.Id, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Category" data-valmsg-replace="true"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Provider">Provider <span style="color:red;">*</span></label>
+            <input name="Provider" type="text" class="form-control" placeholder="Provider" asp-for="Provider">
+            <span asp-validation-for="Provider" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Type">Type <span style="color:red;">*</span></label>
+            <input name="Type" type="text" class="form-control" placeholder="Type" asp-for="Type">
+            <span asp-validation-for="Provider" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label class="control-label" asp-for="Description">Description </label>
+            <input name="Description" type="text" class="form-control" placeholder="Description" asp-for="Description">
+            <span asp-validation-for="Provider" class="text-danger"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Edit</button>
+            <a class="btn" asp-area="" asp-controller="SubscriptionType" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+}
+else
+{
+    <p>You do not access to this page</p>
+}

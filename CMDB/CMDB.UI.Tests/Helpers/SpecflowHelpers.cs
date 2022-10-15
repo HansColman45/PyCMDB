@@ -67,4 +67,11 @@ namespace CMDB.UI.Tests.Helpers
         public string IMEI { get; set; }
         public string Type { get; set; }
     }
+    public class SubscriptionType
+    {
+        public string Category { get; set; }
+        public string Provider { get; set; }
+        public string Type { get; set; }
+        public string Description { get; set; }
+    }
 }

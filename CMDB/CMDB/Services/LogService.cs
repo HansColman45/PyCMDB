@@ -52,7 +52,7 @@ namespace CMDB.Services
                 "subscriptiontype" => _context.Logs.Include(x => x.SubscriptionType).Where(x => x.SubscriptionType.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "subscription" => _context.Logs.Include(x => x.Subscription).Where(x => x.Subscription.SubscriptionId == ID).OrderByDescending(x => x.LogDate).ToList(),
                 "assetcategory" => _context.Logs.Include(x => x.Category).Where(x => x.Category.Id == ID).OrderByDescending(x => x.LogDate).ToList(),
-                _ => throw new Exception("No log insert statement created for table: " + table),
+                _ => throw new Exception("No get log statement created for table: " + table),
             };
         }
         public void GetLogs(string table, string AssetTag, Model model)
@@ -64,7 +64,7 @@ namespace CMDB.Services
                 "docking" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
                 "token" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
                 "screen" => _context.Logs.Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate).ToList(),
-                _ => throw new Exception("No log insert statement created for table: " + table),
+                _ => throw new Exception("No get log statement created for table: " + table),
             };
         }
         protected async Task LogCreate(string table, int ID, string Value)
@@ -283,7 +283,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 default:
-                    throw new Exception("No log insert statement created for table: " + table);
+                    throw new Exception($"No log insert statement created for table: {table}");
             }
         }
         private async Task DoLog(string table, string AssetTag)
@@ -292,7 +292,7 @@ namespace CMDB.Services
             Log log = new()
             {
                 LogDate = LogDate,
-                LogText = this.LogText
+                LogText = LogText
             };
             switch (table)
             {
@@ -327,7 +327,7 @@ namespace CMDB.Services
                     await _context.SaveChangesAsync();
                     break;
                 default:
-                    throw new Exception("No log insert statement created for table: " + table);
+                    throw new Exception($"No log insert statement created for table: {table}");
             }
         }
         #endregion
