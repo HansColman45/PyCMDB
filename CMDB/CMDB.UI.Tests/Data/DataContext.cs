@@ -57,6 +57,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This will create a new Identity
         /// </summary>
+        /// <param name="active">Indicates if the identity needs to be active or not</param>
+        /// <param name="admin">The admin</param>
         /// <returns>Identity</returns>
         public async Task<Identity> CreateIdentity(Admin admin, bool active = true)
         {
@@ -79,8 +81,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This function will create a desktop
         /// </summary>
-        /// <param name="admin">Tha admin that created the desktop</param>
-        /// <param name="active">bool</param>
+        /// <param name="admin">The admin that created the desktop</param>
+        /// <param name="active">Indicates if the desktop needs to be active or not</param>
         /// <returns>Desktop</returns>
         public async Task<Desktop> CreateDesktop(Admin admin, bool active = true)
         {
@@ -91,7 +93,7 @@ namespace CMDB.UI.Tests.Data
         /// This function will create a new Docking
         /// </summary>
         /// <param name="admin">The admin</param>
-        /// <param name="active">bool</param>
+        /// <param name="active">Indicates if the Docking needs to be active or not</param>
         /// <returns>Docking</returns>
         public async Task<Docking> CreateDocking(Admin admin, bool active = true)
         {
@@ -116,9 +118,8 @@ namespace CMDB.UI.Tests.Data
         /// This will create a new AccountType in the system
         /// </summary>
         /// <param name="admin">The admin</param>
-        /// <param name="active">To indicate if created accounttype needs to be active</param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
+        /// <param name="active">To indicate if accounttype needs to be active</param>
+        /// <returns>AccountType</returns>
         public async Task<AccountType> CreateAccountType(Admin admin, bool active = true)
         {
             AccountType accountType = await AccountTypeHelper.CreateSimpleAccountType(context, admin,active);
@@ -127,6 +128,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This will create an Account
         /// </summary>
+        /// <param name="active">Indicates if the Account needs to be active or not</param>
+        /// <param name="admin">The admin</param>
         /// <returns>Account</returns>
         public async Task<Account> CreateAccount(Admin admin, bool active = true)
         {
@@ -221,7 +224,6 @@ namespace CMDB.UI.Tests.Data
         /// <param name="identity">Identity</param>
         /// <param name="account">Account</param>
         /// <param name="admin">Admin</param>
-        /// <returns></returns>
         public async Task AssignIden2Account(Identity identity,Account account, Admin admin)
         {
             identity.LastModfiedAdmin = admin;
@@ -240,8 +242,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This function will create a new screen
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="active"></param>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">Indicates if the Screen needs to be active or not</param>
         /// <returns>Screen</returns>
         public async Task<Screen> CreateMonitor(Admin admin, bool active = true)
         {
@@ -251,9 +253,9 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This function will create a new token
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="active"></param>
-        /// <returns></returns>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">Indicates if the Token needs to be active or not</param>
+        /// <returns>Token</returns>
         public async Task<Token> CreateToken(Admin admin, bool active = true)
         {
             Token token = await TokenHelper.CreateNewToken(context,admin, active);
@@ -262,8 +264,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This function will create a new AssetType
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="active"></param>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">Indicates if the AssetType needs to be active or not</param>
         /// <returns>AssetType</returns>
         public async Task<AssetType> CreateAssetType(Admin admin, bool active = true)
         {
@@ -274,10 +276,9 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This function will assign a given Identity to a given device
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="device"></param>
-        /// <param name="identity"></param>
-        /// <returns></returns>
+        /// <param name="admin">The admin</param>
+        /// <param name="device">The device</param>
+        /// <param name="identity">The identity</param>
         public async Task AssignIdentity2Device(Admin admin, Device device, Identity identity)
         {
             identity.LastModfiedAdmin = admin;
@@ -288,8 +289,8 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This will create a IdenityType
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="active"></param>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">Indicates if the Identitytype needs to be active or not</param>
         /// <returns>IdentityType</returns>
         public async Task<IdentityType> CreateIdentityType(Admin admin, bool active = true)
         {
@@ -299,13 +300,40 @@ namespace CMDB.UI.Tests.Data
         /// <summary>
         /// This will create a new Mobile
         /// </summary>
-        /// <param name="admin"></param>
-        /// <param name="active"></param>
-        /// <returns></returns>
+        /// <param name="admin">The admin</param>
+        /// <param name="active">Indicates if the Mobile needs to be active or not</param>
+        /// <returns>Mobile</returns>
         public async Task<Mobile> CreateMobile(Admin admin, bool active = true)
         {
             Mobile mobile = await MobileHelper.CreateSimpleMobile(context, admin, active);
             return mobile;
+        }
+        /// <summary>
+        /// This function will create a subscription type
+        /// </summary>
+        /// <param name="admin">The admin</param>
+        /// <param name="actice">Indicates if the subscriptiontype needs to be active or not</param>
+        /// <returns></returns>
+        public async Task<SubscriptionType> CreateSubscriptionType(Admin admin, bool actice = true)
+        {
+            AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
+            SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
+            return subscriptionType;
+        }
+        /// <summary>
+        /// This function will check if there is a subscriptionType and if not create on
+        /// </summary>
+        /// <param name="admin">The Admin that will create it</param>
+        /// <param name="type">The type</param>
+        /// <returns></returns>
+        public async Task<SubscriptionType> GetOrCreateSubscriptionType(Admin admin, string type)
+        {
+            SubscriptionType subscriptionType = context.SubscriptionTypes
+                .Include(x => x.Category)
+                .Where(x => x.Type == type).FirstOrDefault();
+            subscriptionType ??= await CreateSubscriptionType(admin);
+
+            return subscriptionType;
         }
     }
 }

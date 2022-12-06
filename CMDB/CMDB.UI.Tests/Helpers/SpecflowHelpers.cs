@@ -74,4 +74,9 @@ namespace CMDB.UI.Tests.Helpers
         public string Type { get; set; }
         public string Description { get; set; }
     }
+    public class Subscription 
+    {
+        public string Type { get; set; }
+        public string PhoneNumber { get; set; }
+    }
 }

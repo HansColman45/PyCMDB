@@ -58,6 +58,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Features\Subscription\" />
     <Folder Include="Features\SubscriptionType\" />
   </ItemGroup>
 

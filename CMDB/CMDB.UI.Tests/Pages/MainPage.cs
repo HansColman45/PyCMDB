@@ -121,14 +121,14 @@ namespace CMDB.UI.Tests.Pages
             WaitOnAddNew();
             return new(driver);
         }
-        public void SubscriptionOverview()
+        public SubscriptionOverviewPage SubscriptionOverview()
         {
             WaitUntilElmentVisableByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Devices']");
             ClickElementByXpath("//a[@id='Subscription25']");
             ClickElementByXpath("//a[@href='/Subscription']");
             WaitOnAddNew();
-            //return new(driver);
+            return new(driver);
         }
         public AssetTypeOverviewPage AssetTypeOverview()
         {

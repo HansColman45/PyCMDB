@@ -14,6 +14,7 @@ namespace CMDB.Util
         private readonly List<Device> devices = new();
         private readonly List<Mobile> mobiles = new();
         private readonly List<IdenAccount> accounts = new();
+        private readonly List<Subscription> subscriptions = new();
         public string Type
         {
             set
@@ -56,6 +57,10 @@ namespace CMDB.Util
         public void SetAccontInfo(IdenAccount idenaccount)
         {
             accounts.Add(idenaccount);
+        }
+        public void SetSubscriptionInfo(Subscription subscription)
+        {
+            subscriptions.Add(subscription);
         }
         public string GeneratePDF(IWebHostEnvironment _env)
         {
@@ -206,7 +211,7 @@ namespace CMDB.Util
                     switch (Language)
                     {
                         case "NL":
-                            HTML += "<h3>Gegevens van het terug gebracht matteriaal</h3>";
+                            HTML += "<h3>Gegevens van de teruggebrachte GSM</h3>";
                             break;
                         case "EN":
                             HTML += "<h3>Info of the returned device</h3>";
@@ -246,6 +251,58 @@ namespace CMDB.Util
                     HTML += $"<td>{d.Category.Category}</td>";
                     HTML += $"<td>{d.MobileType}</td>";
                     HTML += $"<td>{d.IMEI}</td>";
+                    HTML += "</tr>";
+                }
+                HTML += "</tbody>";
+                HTML += "</table>";
+            }
+            if (subscriptions.Count > 0)
+            {
+                if (!String.IsNullOrEmpty(Type))
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            HTML += "<h3>Gegevens van het abbonement</h3>";
+                            break;
+                        case "EN":
+                            HTML += "<h3>Info of the subscription</h3>";
+                            break;
+                        case "FR":
+                            HTML += "<h3>Info of the subscription</h3>";
+                            break;
+                    }
+                }
+                else
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            HTML += "<h3>Gegevens van het abbonement</h3>";
+                            break;
+                        case "EN":
+                            HTML += "<h3>Info about the received mobile</h3>";
+                            break;
+                        case "FR":
+                            HTML += "<h3>Info about the received mobile</h3>";
+                            break;
+                    }
+                }
+                HTML += "<table class=\"table table-striped table-bordered\">";
+                HTML += "<thead>";
+                HTML += "<tr>";
+                HTML += "<th>Category</th>";
+                HTML += "<th>Asset Type</th>";
+                HTML += "<th>Phone Number</th>";
+                HTML += "</tr>";
+                HTML += "</thead>";
+                HTML += "<tbody>";
+                foreach (var s in subscriptions)
+                {
+                    HTML += "<tr>";
+                    HTML += $"<td>{s.Category.Category}</td>";
+                    HTML += $"<td>{s.SubscriptionType}</td>";
+                    HTML += $"<td>{s.PhoneNumber}</td>";
                     HTML += "</tr>";
                 }
                 HTML += "</tbody>";

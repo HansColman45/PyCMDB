@@ -65,7 +65,7 @@ namespace CMDB.Services
             bool changed = false;
             string oldProvider = subscriptionType.Provider;
             string oldType = subscriptionType.Type;
-            string oldDescription = description;
+            string oldDescription = subscriptionType.Description;
             if(String.Compare(oldProvider,provider) != 0)
             {
                 changed = true;

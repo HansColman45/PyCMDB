@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.Graph;
 using Subscription = CMDB.Domain.Entities.Subscription;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Services
 {
@@ -139,6 +140,25 @@ namespace CMDB.Services
                     return true;
             }
             return false;
+        }
+        public async Task ReleaseIdenity(Subscription subscription, Identity identity,string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            subscription.LastModfiedAdmin = Admin;
+            subscription.IdentityId = 1;
+            identity.Subscriptions.Remove(subscription);
+            await _context.SaveChangesAsync();
+            await LogReleaseIdentityFromSubscription("identity", identity,subscription);
+            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);
+        }
+        public async Task AssignIdentity(Subscription subscription, Identity identity, string table)
+        {
+            identity.LastModfiedAdmin = Admin;
+            subscription.LastModfiedAdmin = Admin;
+            identity.Subscriptions.Add(subscription);
+            await _context.SaveChangesAsync();
+            await LogAssignIdentity2Subscription("identity", identity, subscription);
+            await LogAssignSubsciption2Identity(table, subscription, identity);
         }
     }
 }

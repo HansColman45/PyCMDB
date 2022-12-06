@@ -175,6 +175,46 @@ namespace CMDB.Services
             LogText = $"The {mobile.Category.Category} with {mobile.MobileType} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, identity.IdenId);
         }
+        protected async Task LogAssignIdentity2Subscription(string table, Identity identity, Subscription subscription)
+        {
+            LogText = $"The {subscription.Category.Category} with {subscription.SubscriptionType} is assigned to Identity with name: {identity.Name} by {Admin.Account.UserID} in tabme {table}";
+            await DoLog(table, identity.IdenId);
+        }
+        protected async Task LogReleaseIdentityFromSubscription(string table, Identity identity, Subscription subscription)
+        {
+            LogText = $"The {subscription.Category.Category} with {subscription.SubscriptionType} is released from Identity with name: {identity.Name} by {Admin.Account.UserID} in tabme {table}";
+            await DoLog(table, identity.IdenId);
+        }
+        protected async Task LogAssignSubsciption2Identity(string table, Subscription subscription, Identity identity)
+        {
+            LogText = $"Thr Identit with name: {identity.Name} is assigned to {subscription.Category.Category} with {subscription.SubscriptionType} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, subscription.SubscriptionId);
+        }
+        protected async Task LogReleaseSubscriptionFromIdentity(string table, Subscription subscription, Identity identity)
+        {
+            LogText = $"Thr Identit with name: {identity.Name} is released from {subscription.Category.Category} with {subscription.SubscriptionType} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, subscription.SubscriptionId);
+        }
+        protected async Task LogAssignSubscription2Mobile(string table, Mobile mobile, Subscription subscription)
+        {
+            LogText = $"The {subscription.Category.Category} with {subscription.SubscriptionType} is assigned to Mobile with {mobile.MobileType} and {mobile.IMEI} in table {table}";
+            await DoLog(table, mobile.MobileId);
+        }
+        protected async Task LogReleaseSubscriptionFromMobile(string table, Mobile mobile, Subscription subscription)
+        {
+            LogText = $"The {subscription.Category.Category} with {subscription.SubscriptionType} is released from Mobile with {mobile.MobileType} and {mobile.IMEI} in table {table}";
+            await DoLog(table, mobile.MobileId);
+        }
+        protected async Task LogAssignMobile2Subscription(string table, Subscription subscription, Mobile mobile)
+        {
+            LogText = $"The mobile with {mobile.MobileType} and {mobile.IMEI} is assigned to {subscription.Category.Category} with {subscription.SubscriptionType} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, subscription.SubscriptionId);
+        }
+        protected async Task LogReleaseMobileFromSubscription(string table, Subscription subscription, Mobile mobile)
+        {
+            LogText = $"The mobile with {mobile.MobileType} and {mobile.IMEI} is released from {subscription.Category.Category} with {subscription.SubscriptionType} by {Admin.Account.UserID} in table {table}";
+            await DoLog(table, subscription.SubscriptionId);
+        }
         public async Task LogPdfFile(string table, int Id, string pdfFile)
         {
             pdfFile = pdfFile[36..];
@@ -188,7 +228,6 @@ namespace CMDB.Services
             LogText = $"Please find the PDFFile <a href='{pdfFile}'>here</a>";
             await DoLog(table, AssetTag);
         }
-
         private async Task DoLog(string table, int ID)
         {
             DateTime LogDate = DateTime.Now;

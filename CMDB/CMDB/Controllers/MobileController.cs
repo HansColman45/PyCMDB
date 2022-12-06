@@ -181,9 +181,8 @@ namespace CMDB.Controllers
                     string reason = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (mobile.Identity is not null)
+                        if (mobile.IdentityId > 1)
                         {
-                            await service.ReleaseIdenity(mobile, mobile.Identity, Table);
                             PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
@@ -198,6 +197,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePDF(_env);
                             await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                            await service.ReleaseIdenity(mobile, mobile.Identity, Table);
                         }
                         await service.Deactivate(mobile, reason, Table);
                         return RedirectToAction(nameof(Index));

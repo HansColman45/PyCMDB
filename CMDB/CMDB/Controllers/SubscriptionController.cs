@@ -8,6 +8,8 @@ using System;
 using Microsoft.AspNetCore.Http;
 using CMDB.Domain.Entities;
 using System.Linq;
+using CMDB.Util;
+using Microsoft.Graph;
 
 namespace CMDB.Controllers
 {
@@ -169,6 +171,25 @@ namespace CMDB.Controllers
                 try
                 {
                     if (ModelState.IsValid) { 
+                        if(subscription.IdentityId > 1 || subscription.Mobile.IdentityId >1)
+                        {
+                            PDFGenerator PDFGenerator = new()
+                            {
+                                ITEmployee = service.Admin.Account.UserID,
+                                Singer = subscription.Identity is not null ? subscription.Identity.Name : subscription.Mobile.Identity.Name,
+                                FirstName = subscription.Identity is not null ? subscription.Identity.FirstName : subscription.Mobile.Identity.FirstName,
+                                LastName = subscription.Identity is not null ? subscription.Identity.LastName : subscription.Mobile.Identity.LastName,
+                                UserID = subscription.Identity is not null ? subscription.Identity.UserID : subscription.Mobile.Identity.UserID,
+                                Language = subscription.Identity is not null ? subscription.Identity.Language.Code : subscription.Mobile.Identity.Language.Code,
+                                Receiver = subscription.Identity is not null ? subscription.Identity.Name : subscription.Mobile.Identity.Name,
+                            };
+                            PDFGenerator.SetSubscriptionInfo(subscription);
+                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            int intID = subscription.Identity is not null ? (int)subscription.Identity.IdenId : (int)subscription.Mobile.IdentityId;
+                            await service.LogPdfFile("identity", intID, pdfFile);
+                            await service.LogPdfFile(Table, subscription.SubscriptionId, pdfFile);
+                            await service.ReleaseIdenity(subscription, subscription.Identity is not null ? subscription.Identity : subscription.Mobile.Identity);
+                        }
                         await service.Deactivate(subscription, ViewData["reason"].ToString(), Table);
                         return RedirectToAction(nameof(Index));
                     }

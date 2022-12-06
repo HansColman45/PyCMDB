@@ -9,7 +9,6 @@ using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
 using CMDB.Util;
-using Microsoft.Graph;
 using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Controllers
@@ -82,9 +81,8 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (token.Identity is not null)
+                        if (token.IdentityId > 1)
                         {
-                            await service.ReleaseIdenity(token, token.Identity, Table);
                             PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
@@ -99,6 +97,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePDF(_env);
                             await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                            await service.ReleaseIdenity(token, token.Identity, Table);
                         }
                         await service.Deactivate(token, values["reason"], Table);
                         return RedirectToAction(nameof(Index));

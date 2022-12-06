@@ -79,9 +79,8 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (monitor.Identity is not null)
+                        if (monitor.IdentityId > 1)
                         {
-                            await service.ReleaseIdenity(monitor, monitor.Identity, Table);
                             PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
@@ -96,6 +95,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePDF(_env);
                             await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
+                            await service.ReleaseIdenity(monitor, monitor.Identity, Table);
                         }
                         await service.Deactivate(monitor, values["reason"], Table);
                         return RedirectToAction(nameof(Index));

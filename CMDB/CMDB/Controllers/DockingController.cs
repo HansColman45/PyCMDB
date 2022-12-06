@@ -80,9 +80,8 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (docking.Identity is not null)
+                        if (docking.IdentityId > 1)
                         {
-                            await service.ReleaseIdenity(docking, docking.Identity, Table);
                             PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
@@ -97,6 +96,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePDF(_env);
                             await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                            await service.ReleaseIdenity(docking, docking.Identity, Table);
                         }
                         await service.Deactivate(docking, values["reason"], Table);
                         return RedirectToAction(nameof(Index));
