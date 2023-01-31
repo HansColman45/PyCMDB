@@ -10,6 +10,7 @@ using CMDB.Domain.Entities;
 using System.Linq;
 using CMDB.Util;
 using Microsoft.Graph;
+using Subscription = CMDB.Domain.Entities.Subscription;
 
 namespace CMDB.Controllers
 {

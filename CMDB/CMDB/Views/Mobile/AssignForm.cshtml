@@ -34,4 +34,25 @@
         </tr>
     </tbody>
 </table>
+@if(Model.Subscriptions.Count > 0)
+{
+    <H3>Subscription overview</H3>
+    <table class="table table-striped table-bordered">
+    <thead class="thead-light">
+        <tr>
+            <th>Type</th>
+            <th>Phone number</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Subscriptions)
+        {
+            <tr>
+                <td class="small">@item.SubscriptionType</td>
+                <td class="small">@item.PhoneNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
 <partial name="_SignForm" />

@@ -150,16 +150,26 @@ namespace CMDB.Services
         }
         public async Task<Identity> GetIdentity(int IdenId) 
         {
-            IdentityService identityService = new IdentityService(_context);
+            IdentityService identityService = new(_context);
             var idenitities = await identityService.GetByID(IdenId);
             return idenitities.FirstOrDefault();
         }
-        public bool IsDeviceFree(Mobile mobile)
+        public bool IsDeviceFree(Mobile mobile, bool checkSub = false)
         {
             bool result = false;
-            var mobiles = _context.Mobiles.Where(x => x.MobileId == mobile.MobileId).First();
-            if (mobile.Identity is null || mobile.MobileId == 1)
-                result = true;
+            if (!checkSub) { 
+                var mobiles = _context.Mobiles.Where(x => x.MobileId == mobile.MobileId).First();
+                if (mobiles.Identity is null || mobiles.MobileId == 1)
+                    result = true;
+            }
+            if (checkSub)
+            {
+                var mobiles = _context.Mobiles
+                    .Include(x => x.Subscriptions)
+                    .Where(x => x.MobileId == mobile.MobileId).First();
+                if(mobiles.Subscriptions.Count == 0)
+                    result= true;
+            }
             return result;
         }
         public async Task AssignIdentity2Mobile(Identity identity, Mobile mobile, string table)
@@ -181,7 +191,33 @@ namespace CMDB.Services
             await LogReleaseMobileFromIdenity(table,mobile,identity);
             await LogReleaseIdentityFromMobile("identity", identity, mobile);
         }
+        public List<SelectListItem> ListFreeMobileSubscriptions()
+        {
+            List<SelectListItem> identites = new();
+            var subscriptions = _context.Subscriptions
+                .Include(x => x.SubscriptionType)
+                .Where(x => x.Category.Category == "Mobile Subscription" && x.Mobile == null).ToList();
+            foreach(var subscription in subscriptions)
+            {
+                identites.Add(new($"Type: {subscription.SubscriptionType} on phonenumber: {subscription.PhoneNumber}",$"{subscription.SubscriptionId}"));
+            }
+            return identites;
+        }
+        public async Task AssignSubscription(Mobile mobile, Subscription subscription, string table)
+        {
+            mobile.LastModfiedAdmin = Admin;
+            subscription.LastModfiedAdmin = Admin;
+            mobile.Subscriptions.Add(subscription);
+            await _context.SaveChangesAsync();
+            await LogAssignSubscription2Mobile(table, mobile, subscription);
+            await LogAssignMobile2Subscription("mobile",subscription,mobile);
+        }
 
-        
+        public async Task<Subscription> GetSubribtion(int id)
+        {
+            SubscriptionService subscriptionService = new(_context);
+            var subscriptions = await subscriptionService.GetByID(id);
+            return subscriptions.FirstOrDefault();
+        }
     }
 }

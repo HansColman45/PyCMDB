@@ -1,0 +1,40 @@
+﻿@model CMDB.Domain.Entities.Mobile;
+@{
+    Layout = "_Layout";
+}
+<h2>@ViewData["Title"]</h2>
+@if ((bool)ViewData["AssignSubscription"])
+{
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.IMEI)</th>
+            <th>Type</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="AssetTag">@Html.DisplayFor(model => model.IMEI)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.MobileType.Vendor) @Html.DisplayFor(model => model.MobileType.Type)</td>
+            </tr>
+        </tbody>
+    </table>
+    <p></p>
+    <form class="form-horizontal" asp-action="AssignSubscription" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Subscription <span style="color:red;">*</span></label>
+        @Html.DropDownListFor(Model => Model.Subscriptions, (IEnumerable<SelectListItem>)ViewBag.Subscriptions, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Subscriptions" data-valmsg-replace="true"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" />
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Assign</button>
+            <a class="btn" asp-area="" asp-controller="@ViewData["backUrl"]" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a>
+        </div>
+    </form>
+}
+else
+{
+    <p>You do not access to this page</p>
+}

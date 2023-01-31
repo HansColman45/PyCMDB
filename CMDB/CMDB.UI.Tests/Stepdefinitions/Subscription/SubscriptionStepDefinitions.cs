@@ -66,7 +66,7 @@ namespace CMDB.UI.Tests.Stepdefinitions.Subscription
         [Then(@"I can find the newly create subscription back")]
         public void ThenICanFindTheNewlyCreateSubscriptionBack()
         {
-            overviewPage.Search(monitor.AssetTag + rndNr.ToString());
+            overviewPage.Search(_Subscription.PhoneNumber + rndNr.ToString());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Searched");
             var detail = overviewPage.Detail();
             detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");

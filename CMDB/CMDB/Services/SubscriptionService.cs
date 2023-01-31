@@ -160,5 +160,10 @@ namespace CMDB.Services
             await LogAssignIdentity2Subscription("identity", identity, subscription);
             await LogAssignSubsciption2Identity(table, subscription, identity);
         }
+
+        internal Task ReleaseIdenity(Subscription subscription, Identity identity)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

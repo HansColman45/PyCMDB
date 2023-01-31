@@ -32,6 +32,7 @@ namespace CMDB.Controllers
             ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
             ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
             ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
             ViewData["actionUrl"] = @"\Mobile\Search";
             var mobiles = await service.ListAll();
             return View(mobiles);
@@ -50,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
                 ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
                 ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+                ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
                 ViewData["actionUrl"] = @"\Laptop\Search";
                 return View(mobiles);
             }
@@ -334,6 +336,34 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        public async Task<IActionResult> AssignSubscription(IFormCollection values, int? id)
+        {
+            if (id == null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile == null)
+                return NotFound();
+            log.Debug("Using assign subscription in {0}", Table);
+            ViewData["Title"] = "Assign subscription to mobile";
+            ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
+            ViewData["backUrl"] = "Mobile";
+            await BuildMenu();
+            ViewBag.Subscriptions = service.ListFreeMobileSubscriptions();
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                Subscription subscription =await service.GetSubribtion(Int32.Parse(values["Subscriptions"]));
+                if (!service.IsDeviceFree(mobile, true))
+                    ModelState.AddModelError("", "Mobile can not be assigned to another user");
+                if (ModelState.IsValid)
+                {
+                    await service.AssignSubscription(mobile, subscription,Table);
+                    return RedirectToAction("AssignForm", "Mobile", new { id });
+                }
+            }
+            return View(mobile);
+        }
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id == null)
@@ -348,6 +378,7 @@ namespace CMDB.Controllers
             ViewData["Action"] = "AssignForm";
             await BuildMenu();
             service.GetAssignedIdentity(mobile);
+            service.GetAssignedSubscription(mobile);
             ViewData["Name"] = mobile.Identity.Name;
             ViewData["AdminName"] = service.Admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
@@ -355,21 +386,36 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                if (ModelState.IsValid) { 
-                    PDFGenerator _PDFGenerator = new()
+                if (ModelState.IsValid) {
+                    if (mobile.Identity != null) {
+                        PDFGenerator _PDFGenerator = new()
+                        {
+                            ITEmployee = ITPerson,
+                            Singer = Employee,
+                            UserID = mobile.Identity.UserID,
+                            FirstName = mobile.Identity.FirstName,
+                            LastName = mobile.Identity.LastName,
+                            Language = mobile.Identity.Language.Code,
+                            Receiver = mobile.Identity.Name
+                        };
+                        _PDFGenerator.SetMobileInfo(mobile);
+                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
+                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                    }
+                    else if (mobile.Subscriptions.Count > 0)
                     {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = mobile.Identity.UserID,
-                        FirstName = mobile.Identity.FirstName,
-                        LastName = mobile.Identity.LastName,
-                        Language = mobile.Identity.Language.Code,
-                        Receiver = mobile.Identity.Name
-                    };
-                    _PDFGenerator.SetMobileInfo(mobile);
-                    string pdfFile = _PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        PDFGenerator _PDFGenerator = new()
+                        {
+                            ITEmployee = ITPerson,
+                            Singer = Employee
+                        };
+                        _PDFGenerator.SetMobileInfo(mobile);
+                        _PDFGenerator.SetSubscriptionInfo(mobile.Subscriptions.First());
+                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);
+                    }
                     return RedirectToAction(nameof(Index));
                 }
             }

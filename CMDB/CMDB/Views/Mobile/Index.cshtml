@@ -39,6 +39,10 @@
                         {
                             <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
                         }
+                        @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["AssignSubscription"])
+                        {
+                            <a class="btn btn-success" asp-action="AssignSubscription" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Subscription"><span class="@ViewBag.AssignSubscription"></span></a>
+                        }
                         @if ((bool)ViewData["InfoAccess"])
                         {
                             <a class="btn btn-info" asp-action="Details" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Info"><span class="@ViewBag.InfoIcon"></span></a>
