@@ -83,3 +83,5 @@ CMDB/CMDB.Testing/obj/
 CMDB/CMDB.UI.Tests/obj/
 CMDB/CMDB.UI.Tests/bin/Debug/
 CMDB/CMDB.UI.Tests/TestExecution/
+CMDB/PlaywrightUITests/bin/Debug/
+CMDB/PlaywrightUITests/obj/

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.UI.Tests.Pages
 {
-    internal class SubscriptionOverviewPage : MainPage
+    public class SubscriptionOverviewPage : MainPage
     {
         public SubscriptionOverviewPage(IWebDriver webDriver) : base(webDriver)
         {
