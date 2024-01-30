@@ -95,11 +95,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
             var list = await service.GetByID((int)id);
             Subscription subscription = list.FirstOrDefault();
-            if (subscription == null)
+            if (subscription is null)
                 return NotFound();
             log.Debug("Using Edit in {0}", Table);
             ViewData["Title"] = $"Edit {subscription.Category.Category}";
@@ -131,11 +131,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
             var list = await service.GetByID((int)id);
             Subscription subscription = list.FirstOrDefault();
-            if (subscription == null)
+            if (subscription is null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = $"{subscription.Category.Category} Details";
@@ -155,11 +155,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
             var list = await service.GetByID((int)id);
             Subscription subscription = list.FirstOrDefault();
-            if (subscription == null)
+            if (subscription is null)
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
             await BuildMenu();
@@ -206,11 +206,11 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(int? id)
         {
-            if (id == null)
+            if (id is null)
                 return NotFound();
             var list = await service.GetByID((int)id);
             Subscription subscription = list.FirstOrDefault();
-            if (subscription == null)
+            if (subscription is null)
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = $"Activate {subscription.Category.Category}";
@@ -233,6 +233,20 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
             return View();
+        }
+        public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id, int? idenid)
+        {
+            if (id is null)
+                return NotFound();
+            if (idenid is null)
+                return NotFound();
+            var list = await service.GetByID((int)id);
+            Subscription subscription = list.FirstOrDefault();
+            if (subscription == null)
+                return NotFound();
+            log.Debug($"Using Release in {Table}");
+            
+            return View(subscription);
         }
     }
 }

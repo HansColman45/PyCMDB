@@ -321,7 +321,7 @@ namespace CMDB.UI.Tests.Pages
                 Directory.CreateDirectory(Path.Combine(path, @"../../../Screenshots/", folder));
                 string fileName = $"{step.Split("_")[1]}_{step.Split("_")[2]}_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
                 string tempFileName = Path.Combine(path, @$"../../../Screenshots/{folder}/", fileName);
-                screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
+                screenshot.SaveAsFile(tempFileName);
                 log.Debug("Screenshot saved: {0}", tempFileName);
             }
         }

@@ -1,21 +1,16 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
+using CMDB.Services;
+using CMDB.Util;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Util;
-using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using CMDB.Domain.Entities;
-using CMDB.Services;
-using System.Threading.Tasks;
+using System;
 using System.Collections.Generic;
-using Microsoft.Graph.CallRecords;
-using Microsoft.Graph;
+using System.Linq;
+using System.Threading.Tasks;
 using Device = CMDB.Domain.Entities.Device;
 using Identity = CMDB.Domain.Entities.Identity;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CMDB.Controllers
 {

@@ -1,18 +1,14 @@
-﻿using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+﻿using CMDB.UI.Tests.Data;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Firefox;
-using TechTalk.SpecFlow;
-using CMDB.UI.Tests.Data;
-using System.IO;
 using System;
-using System.Threading.Tasks;
-using System.Diagnostics;
 using System.Collections.Generic;
-using CMDB.Domain.Entities;
-using CMDB.Testing.Helpers;
-using CMDB.UI.Tests.Pages;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
+using TechTalk.SpecFlow;
 
 namespace CMDB.UI.Tests.Hooks
 {
@@ -112,7 +108,7 @@ namespace CMDB.UI.Tests.Hooks
                 string fileName = $"{context.CurrentScenarioBlock}_Error_{DateTime.Now:yyyy-MM-dd'T'HH-mm-ss}.png";
                 Directory.CreateDirectory(Path.Combine(path, @"../../../Screenshots/", context.ScenarioInfo.Title));
                 string tempFileName = Path.Combine(path, @$"../../../Screenshots/{context.ScenarioInfo.Title}/", fileName);
-                screenshot.SaveAsFile(tempFileName, ScreenshotImageFormat.Png);
+                screenshot.SaveAsFile(tempFileName);
                 log.Debug("Screenshot saved: {0}", tempFileName);
                 List<Process> processes = Process.GetProcesses().Where(p => p.ProcessName == "chromedriver" && p.ProcessName == "geckodriver").ToList();
                 foreach (var proc in processes)

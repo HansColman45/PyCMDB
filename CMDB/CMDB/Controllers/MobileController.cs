@@ -336,6 +336,18 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        public async Task<IActionResult> ReleaseSubscription(IFormCollection values, int? id, int? subid)
+        {
+            if (id is null)
+                return NotFound();
+            var mobiles = service.GetMobileById((int)id);
+            Mobile mobile = mobiles.FirstOrDefault();
+            if (mobile is null)
+                return NotFound();
+            log.Debug($"Using Release subscription in {Table}");
+            await BuildMenu();
+            return View(mobile);
+        }
         public async Task<IActionResult> AssignSubscription(IFormCollection values, int? id)
         {
             if (id == null)

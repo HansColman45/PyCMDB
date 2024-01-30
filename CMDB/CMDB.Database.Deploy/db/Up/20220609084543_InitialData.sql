@@ -60,7 +60,7 @@ insert into IdenAccount (IdentityId,AccountId,ValidFrom,ValidUntil) values
 (1,1,'2012-01-01 00:00:00','9999-12-31 23:59:00');
 -- Admin
 INSERT INTO Admin (AccountId,Level,PassWord,DateSet) VALUES
-(1,9,'61a99380acad7d202889ecfa941a38e6','2012-01-01 00:00:00');
+(1,9,'109799de5567dae0b0f17deef5516a8b','2012-01-01 00:00:00');
 -- SubscriptionType
 insert into SubscriptionType (Type,Description, Provider, AssetCategoryId) values
 ('Expresnet','Telenet Expresnet','Telenet',4),
