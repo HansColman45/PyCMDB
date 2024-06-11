@@ -29,7 +29,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I logon with a valid user name and password")]
         public void WhenILogonWithAValidUserNameAndPassword()
         {
-            LoginTask.LoginAs(actor,Admin.Account.UserID,"1234");
+            TheLoginPageTasks.LoginAs(actor, Admin.Account.UserID, "1234");
         }
 
         [Then(@"I can logon")]
