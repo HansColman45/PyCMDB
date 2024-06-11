@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.Database.Deploy", "CMD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.Testing", "CMDB.Testing\CMDB.Testing.csproj", "{276A5A3B-B1D6-441C-83CB-03374E794B34}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.UI.Tests", "CMDB.UI.Tests\CMDB.UI.Tests.csproj", "{F93E8FB9-9FCD-4A8C-A566-63DD50664853}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMDB.UI.Specflow", "CMDB.UI.Specflow\CMDB.UI.Specflow.csproj", "{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,10 +41,10 @@ Global
 		{276A5A3B-B1D6-441C-83CB-03374E794B34}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{276A5A3B-B1D6-441C-83CB-03374E794B34}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{276A5A3B-B1D6-441C-83CB-03374E794B34}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F93E8FB9-9FCD-4A8C-A566-63DD50664853}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F93E8FB9-9FCD-4A8C-A566-63DD50664853}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F93E8FB9-9FCD-4A8C-A566-63DD50664853}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F93E8FB9-9FCD-4A8C-A566-63DD50664853}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
