@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj": {}
+    "C:\\software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj": {}
   },
   "projects": {
-    "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
+    "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj",
+        "projectUniqueName": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj",
         "projectName": "CMDB.Domain",
-        "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj",
-        "packagesPath": "C:\\Users\\HansColman\\.nuget\\packages\\",
-        "outputPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\obj\\",
+        "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj",
+        "packagesPath": "C:\\Users\\ext.h.colman\\.nuget\\packages\\",
+        "outputPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HansColman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ext.h.colman\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -81,17 +80,17 @@
         }
       }
     },
-    "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
+    "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj",
+        "projectUniqueName": "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj",
         "projectName": "CMDB.Infrastructure",
-        "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\HansColman\\.nuget\\packages\\",
-        "outputPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\obj\\",
+        "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\ext.h.colman\\.nuget\\packages\\",
+        "outputPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HansColman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ext.h.colman\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -99,15 +98,14 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
               }
             }
           }
@@ -198,17 +196,17 @@
         }
       }
     },
-    "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj": {
+    "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj",
+        "projectUniqueName": "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj",
         "projectName": "CMDB.Testing",
-        "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj",
-        "packagesPath": "C:\\Users\\HansColman\\.nuget\\packages\\",
-        "outputPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\obj\\",
+        "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj",
+        "packagesPath": "C:\\Users\\ext.h.colman\\.nuget\\packages\\",
+        "outputPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HansColman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ext.h.colman\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -216,18 +214,17 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
               },
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj"
               }
             }
           }
@@ -276,17 +273,17 @@
         }
       }
     },
-    "C:\\Software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj": {
+    "C:\\software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj",
+        "projectUniqueName": "C:\\software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj",
         "projectName": "CMDB.UI.Specflow",
-        "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj",
-        "packagesPath": "C:\\Users\\HansColman\\.nuget\\packages\\",
-        "outputPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\obj\\",
+        "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\CMDB.UI.Specflow.csproj",
+        "packagesPath": "C:\\Users\\ext.h.colman\\.nuget\\packages\\",
+        "outputPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.UI.Specflow\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HansColman\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\ext.h.colman\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -294,21 +291,20 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Domain\\CMDB.Domain.csproj"
               },
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Infrastructure\\CMDB.Infrastructure.csproj"
               },
-              "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj": {
-                "projectPath": "C:\\Software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj"
+              "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj": {
+                "projectPath": "C:\\software\\PyCMDB\\CMDB\\CMDB.Testing\\CMDB.Testing.csproj"
               }
             }
           }

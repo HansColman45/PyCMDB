@@ -80,8 +80,6 @@ CMDB/CMDB.Infrastructure/obj/
 CMDB/CMDB.Infrastructure/bin/Debug/
 CMDB/CMDB.Testing/bin/Debug/
 CMDB/CMDB.Testing/obj/
-CMDB/CMDB.UI.Tests/obj/
-CMDB/CMDB.UI.Tests/bin/Debug/
-CMDB/CMDB.UI.Tests/TestExecution/
-CMDB/PlaywrightUITests/bin/Debug/
-CMDB/PlaywrightUITests/obj/
+CMDB/CMDB.UI.Specflow/obj/
+CMDB/CMDB.UI.Specflow/bin/Debug/
+CMDB/CMDB.UI.Specflow/TestExecution/
