@@ -1,5 +1,4 @@
-﻿using CMDB.Domain.Entities;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
@@ -8,7 +7,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
         public AccountAssignIdentityPage(IWebDriver driver) : base(driver)
         {
         }
-        public void SelectIdentity(Identity identity)
+        public void SelectIdentity(Domain.Entities.Identity identity)
         {
             SelectValueInDropDownByXpath("//select[@id='Identity']", identity.IdenId.ToString());
         }
