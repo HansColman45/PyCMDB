@@ -9,20 +9,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         {
             Settings.BaseUrl = "https://localhost:44314/";
         }
-        public LoginPage OpenLoginPage(IWebDriver webDriver)
+        public string UserId
         {
-            WebDriver = webDriver;
-            WebDriver.Navigate().GoToUrl(Settings.BaseUrl);
-            WebDriver.Manage().Window.Maximize();
-            return this;
+            set => EnterInTextboxByXPath("//input[@type='text']", value);
         }
-        public void EnterUserID(string userId)
+        public string Password
         {
-            EnterInTextboxByXPath("//input[@type='text']", userId);
-        }
-        public void EnterPassword(string password)
-        {
-            EnterInTextboxByXPath("//input[@type='password']", password);
+            set => EnterInTextboxByXPath("//input[@type='password']", value);
         }
         public MainPage LogIn()
         {

@@ -11,8 +11,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
     public class LoginStepDefinitions: TestBase
     {
         private Actor actor;
-        private LoginPage loginPage;
-        private MainPage mainPage;
 
         public LoginStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -25,14 +23,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
             actor.IsAbleToDoOrUse<LoginPage>();
             actor.IsAbleToDoOrUse<DataContext>();
             Admin = await TheAdmin.CreateNewAdminAs(actor);
-            loginPage = OpenTheLoginPageTask.OpenLoginPageAs(actor); 
+            TheLoginPageTasks.OpenLoginPageAs(actor); 
         }
 
         [When(@"I logon with a valid user name and password")]
         public void WhenILogonWithAValidUserNameAndPassword()
         {
-            mainPage = LoginTask.LoginAs(actor,Admin.Account.UserID,"1234");
-            //actor.IsAbleToDoOrUse(mainPage);
+            LoginTask.LoginAs(actor,Admin.Account.UserID,"1234");
         }
 
         [Then(@"I can logon")]
