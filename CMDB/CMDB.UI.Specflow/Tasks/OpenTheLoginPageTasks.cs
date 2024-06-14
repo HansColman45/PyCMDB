@@ -1,18 +1,14 @@
 ﻿using Bright.ScreenPlay.Actors;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium;
-using Bright.ScreenPlay.Abilities;
-using Task = Bright.ScreenPlay.Tasks.Task;
 using CMDB.UI.Specflow.Abilities.Pages;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Firefox;
+using Task = Bright.ScreenPlay.Tasks.Task;
 
 namespace CMDB.UI.Specflow.Tasks
 {
-    public class TheLoginPageTasks : Task
+    public class OpenTheLoginPageTasks : Task
     {
         public override void PerformAs(IPerformer actor)
-        {
-        }
-        public static void OpenLoginPageAs(IPerformer actor)
         {
             var options = new FirefoxOptions
             {
@@ -27,14 +23,6 @@ namespace CMDB.UI.Specflow.Tasks
             page.WebDriver = webDriver;
             page.WebDriver.Navigate().GoToUrl(page.Settings.BaseUrl);
             page.WebDriver.Manage().Window.Maximize();
-        }
-        public static void LoginAs(IPerformer actor, string userName, string password)
-        {
-            var page = actor.GetAbility<LoginPage>();
-            page.UserId = userName;
-            page.Password = password;
-            var mainPage = page.LogIn();
-            actor.SetAbility(mainPage);
         }
     }
 }

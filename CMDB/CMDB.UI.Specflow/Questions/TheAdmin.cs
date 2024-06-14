@@ -1,16 +1,16 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
 using CMDB.Domain.Entities;
-using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Data;
 
 namespace CMDB.UI.Specflow.Questions
 {
-    internal class TheAdmin : Question<Admin>
+    public class TheAdmin : Question<Task<Admin>>
     {
-        public override Admin PerformAs(IPerformer actor)
+        public override async Task<Admin> PerformAs(IPerformer actor)
         {
-            return new();
+            var context = actor.GetAbility<DataContext>();
+            return await context.CreateNewAdmin();
         }
         public static async Task<Admin> CreateNewAdminAs(IPerformer actor)
         {
