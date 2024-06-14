@@ -35,11 +35,14 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
             ExpectedLog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
         }
-        public string GetLastLogLine()
+        public string LastLogLine
         {
-            var detail = Perform(new OpenTheIdentityDetailPage());
-            detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
-            return detail.GetLastLog();
+            get
+            {
+                var detail = Perform(new OpenTheIdentityDetailPage());
+                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                return detail.GetLastLog();
+            }
         }
     }
 }

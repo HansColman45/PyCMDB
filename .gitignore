@@ -49,6 +49,7 @@ dlldata.c
 *.dll
 *.pdb
 *.png
+*.log
 
 # Visual C++ cache files
 ipch/

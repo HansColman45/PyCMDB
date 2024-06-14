@@ -8,11 +8,15 @@ using CMDB.UI.Specflow.Abilities.Pages.Docking;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 using CMDB.UI.Specflow.Abilities.Pages.Mobile;
+using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 using CMDB.UI.Specflow.Abilities.Pages.Monitor;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 using CMDB.UI.Specflow.Abilities.Pages.SubscriptionType;
 using CMDB.UI.Specflow.Abilities.Pages.Token;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
+using CMDB.UI.Specflow.Abilities.Pages.Admin;
+using CMDB.UI.Specflow.Abilities.Pages.Application;
+using CMDB.UI.Specflow.Abilities.Pages.System;
 
 namespace CMDB.UI.Specflow.Questions
 {
@@ -29,7 +33,7 @@ namespace CMDB.UI.Specflow.Questions
             return new(page.WebDriver);
         }
     }
-    public class TheAccountOverviewPage : Question<AccountOverviewPage>
+    public class OpenTheAccountOverviewPage : Question<AccountOverviewPage>
     {
         public override AccountOverviewPage PerformAs(IPerformer actor)
         {
@@ -42,7 +46,7 @@ namespace CMDB.UI.Specflow.Questions
             return new(page.WebDriver);
         }
     }
-    public class TheLaptopOverviewPage : Question<LaptopOverviewPage>
+    public class OpenTheLaptopOverviewPage : Question<LaptopOverviewPage>
     {
         public override LaptopOverviewPage PerformAs(IPerformer actor)
         {
@@ -146,9 +150,9 @@ namespace CMDB.UI.Specflow.Questions
             return new(page.WebDriver);
         }
     }
-    public class TheIdentityTypeOverviewPage : Question<TypeOverviewPage> 
-    { 
-        public override TypeOverviewPage PerformAs(IPerformer actor) 
+    public class TheIdentityTypeOverviewPage : Question<TypeOverviewPage>
+    {
+        public override TypeOverviewPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MainPage>();
             page.WaitUntilElmentVisableByXpath("//a[@id='Types']");
@@ -157,11 +161,11 @@ namespace CMDB.UI.Specflow.Questions
             page.ClickElementByXpath("//a[@href='/IdentityType']");
             page.WaitOnAddNew();
             return new(page.WebDriver);
-        } 
+        }
     }
-    public class TheAccountTypeOverviewPage : Question<TypeOverviewPage> 
-    { 
-        public override TypeOverviewPage PerformAs(IPerformer actor) 
+    public class TheAccountTypeOverviewPage : Question<TypeOverviewPage>
+    {
+        public override TypeOverviewPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MainPage>();
             page.WaitUntilElmentVisableByXpath("//a[@id='Types']");
@@ -170,11 +174,11 @@ namespace CMDB.UI.Specflow.Questions
             page.ClickElementByXpath("//a[@href='/AccountType']");
             page.WaitOnAddNew();
             return new(page.WebDriver);
-        } 
+        }
     }
-    public class TheOpenRoleTypeOverviewPage : Question<TypeOverviewPage> 
-    { 
-        public override TypeOverviewPage PerformAs(IPerformer actor) 
+    public class TheOpenRoleTypeOverviewPage : Question<TypeOverviewPage>
+    {
+        public override TypeOverviewPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MainPage>();
             page.WaitUntilElmentVisableByXpath("//a[@id='Types']");
@@ -183,7 +187,7 @@ namespace CMDB.UI.Specflow.Questions
             page.ClickElementByXpath("//a[@href='/RoleType']");
             page.WaitOnAddNew();
             return new(page.WebDriver);
-        } 
+        }
     }
     public class TheSubscriptionTypeOverviewPage : Question<SubscriptionTypeOverviewPage>
     {
@@ -195,6 +199,71 @@ namespace CMDB.UI.Specflow.Questions
             page.WaitUntilElmentVisableByXpath("//a[@id='Subscription Type38']");
             page.ClickElementByXpath("//a[@id='Subscription Type38']");
             page.ClickElementByXpath("//a[@href='/SubscriptionType']");
+            page.WaitOnAddNew();
+            return new(page.WebDriver);
+        }
+    }
+    public class OpenTheKensingtonOverviewPage : Question<KensingtonOverviewPage>
+    {
+        public override KensingtonOverviewPage PerformAs(IPerformer actor)
+        {
+            var page = actor.GetAbility<MainPage>();
+            page.WaitUntilElmentVisableByXpath("//a[@id='Devices']");
+            page.ClickElementByXpath("//a[@id='Devices']");
+            page.ClickElementByXpath("//a[@id='Kensington21']");
+            page.ClickElementByXpath("//a[@href='/Kensington']");
+            page.WaitOnAddNew();
+            return new(page.WebDriver);
+        }
+    }
+    public class OpenTheAdminOverviewPage : Question<AdminOverviewPage>
+    {
+        public override AdminOverviewPage PerformAs(IPerformer actor)
+        {
+            var page = actor.GetAbility<MainPage>();
+            page.WaitUntilElmentVisableByXpath("//a[@id='Admin']");
+            page.ClickElementByXpath("//a[@id='Admin']");
+            page.ClickElementByXpath("//a[@id='Admin47']");
+            page.ClickElementByXpath("//a[@href='/Admin']");
+            page.WaitOnAddNew();
+            return new(page.WebDriver);
+        }
+    }
+    public class OpenThePermissionOverviewPage : Question<PermissionOverviewPage>
+    {
+        public override PermissionOverviewPage PerformAs(IPerformer actor)
+        {
+            var page = actor.GetAbility<MainPage>();
+            page.WaitUntilElmentVisableByXpath("//a[@id='Admin']");
+            page.ClickElementByXpath("//a[@id='Admin']");
+            page.ClickElementByXpath("//a[@id='Permissions49']");
+            page.ClickElementByXpath("//a[@href='/Permission']");
+            page.WaitOnAddNew();
+            return new(page.WebDriver);
+        }
+    }
+    public class OpenTheApplicationOverviewPage : Question<ApplicationOverviewPage>
+    {
+        public override ApplicationOverviewPage PerformAs(IPerformer actor)
+        {
+            var page = actor.GetAbility<MainPage>();
+            page.WaitUntilElmentVisableByXpath("//a[@id='Application']");
+            page.ClickElementByXpath("//a[@id='Application']");
+            page.ClickElementByXpath("//a[@id='Application44']");
+            page.ClickElementByXpath("//a[@href='/Application']");
+            page.WaitOnAddNew();
+            return new(page.WebDriver);
+        }
+    }
+    public class OpenTheSystemOverviewPage : Question<SystemOverviewPage>
+    {
+        public override SystemOverviewPage PerformAs(IPerformer actor)
+        {
+            var page = actor.GetAbility<MainPage>();
+            page.WaitUntilElmentVisableByXpath("//a[@id='System']");
+            page.ClickElementByXpath("//a[@id='System']");
+            page.ClickElementByXpath("//a[@id='System41']");
+            page.ClickElementByXpath("//a[@href='/System']");
             page.WaitOnAddNew();
             return new(page.WebDriver);
         }

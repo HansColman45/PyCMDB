@@ -13,24 +13,22 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             actor = new(scenarioContext);
         }
-
         [Given(@"I open the home page")]
         public async Task GivenIOpenTheHomePage()
         {
             Admin = await actor.CreateNewAdmin();
         }
-
         [When(@"I logon with a valid user name and password")]
         public void WhenILogonWithAValidUserNameAndPassword()
         {
             actor.DoLogin(Admin.Account.UserID, "1234");
         }
-
         [Then(@"I can logon")]
         public void ThenICanLogon()
         {
             bool result = actor.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
+            actor.Dispose();
         }
     }
 }

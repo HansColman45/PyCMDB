@@ -1,8 +1,8 @@
-﻿using Bright.ScreenPlay.Actors;
+﻿using Bright.ScreenPlay.Abilities;
+using Bright.ScreenPlay.Actors;
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages;
-using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Questions;
 using CMDB.UI.Specflow.Tasks;
 
@@ -40,6 +40,12 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
             IsAbleToDoOrUse(mainPage);
         }
-        
+        public void Dispose()
+        {
+            var main = GetAbility<LoginPage>();
+            main.Dispose();
+            var db = GetAbility<DataContext>();
+            db.Dispose();
+        }
     }
 }

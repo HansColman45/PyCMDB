@@ -331,5 +331,9 @@ namespace CMDB.UI.Specflow.Abilities.Data
 
             return subscriptionType;
         }
+        public new void Dispose()
+        {
+            context.Dispose();
+        }
     }
 }
