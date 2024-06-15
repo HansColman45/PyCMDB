@@ -40,6 +40,16 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
             IsAbleToDoOrUse(mainPage);
         }
+        public string IdentityLastLogLine
+        {
+            get
+            {
+                var detail = Perform(new OpenTheIdentityDetailPage());
+                IsAbleToDoOrUse(detail);
+                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                return Perform(new TheIdentityDertailLastLogLine());
+            }
+        }
         public void Dispose()
         {
             var main = GetAbility<LoginPage>();

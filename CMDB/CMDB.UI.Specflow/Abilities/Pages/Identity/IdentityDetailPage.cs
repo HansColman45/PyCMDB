@@ -30,10 +30,5 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
             ClickElementByXpath(ReleaseDeviceXPath);
             return new(WebDriver);
         }
-        public string GetLastLog()
-        {
-            ScrollToElement(By.XPath("//h3[.='Log overview']"));
-            return TekstFromElementByXpath("//td[contains(text(),'identity')]");
-        }
     }
 }

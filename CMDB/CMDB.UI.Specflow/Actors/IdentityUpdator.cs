@@ -10,10 +10,10 @@ namespace CMDB.UI.Specflow.Actors
         public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext, name)
         {
         }
-        public async Task<Identity> CreateNewIdentity()
+        public async Task<Identity> CreateNewIdentity(bool active = true)
         {
             var context = GetAbility<DataContext>();
-            return await context.CreateIdentity(admin);
+            return await context.CreateIdentity(admin,active);
         }
         public Identity UpdateIdentity(string field, string value, Identity iden)
         {
@@ -58,14 +58,13 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Updated");
             return iden;
         }
-        public string LastLogLine
+        public void Deactivate(string reason)
         {
-            get
-            {
-                var detail = Perform(new OpenTheIdentityDetailPage());
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
-                return detail.GetLastLog();
-            }
+            var page = GetAbility<DeactivateIdentityPage>();
+            page.Reason = reason;
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
+            page.Delete();
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Deleted");
         }
     }
 }

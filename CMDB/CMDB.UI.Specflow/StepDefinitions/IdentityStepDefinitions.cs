@@ -1,13 +1,11 @@
-using Bright.ScreenPlay.Actors;
 using CMDB.Domain.Entities;
-using CMDB.UI.Specflow.Abilities.Data;
-using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;
-using CMDB.UI.Specflow.Tasks;
-using TechTalk.SpecFlow;
+using Microsoft.Graph;
 using TechTalk.SpecFlow.Assist;
+using Identity = CMDB.Domain.Entities.Identity;
+using Table = TechTalk.SpecFlow.Table;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {
@@ -20,7 +18,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private IdentityUpdator identityUpdator;
         private IdentityOverviewPage overviewPage;
         private CreateIdentityPage createIdentity;
-        private string updatedfield, newvalue, reason, expectedlog;
+        private string updatedfield, reason, expectedlog;
 
         public IdentityStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -52,7 +50,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void ThenICanFindTheNewlyCreatedIdentityBack()
         {
             identityCreator.SearchIdentity(iden);
-            var log = identityCreator.LastLogLine;
+            var log = identityCreator.IdentityLastLogLine;
             expectedlog = identityCreator.ExpectedLog;
             log.Should().BeEquivalentTo(expectedlog);
             identityCreator.Dispose();
@@ -75,7 +73,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task WhenIWantToUpdateFirstNameWithTestje(string field, string newValue)
         {
             updatedfield = field;
-            this.newvalue = newValue;
             Identity = await identityUpdator.CreateNewIdentity();
             overviewPage.Search(Identity.FirstName);
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
@@ -92,16 +89,80 @@ namespace CMDB.UI.Specflow.StepDefinitions
                     overviewPage.Search(Identity.LastName);
                     break;
                 case "LastName":
-                    overviewPage.Search(Identity.FirstName);
-                    break;
                 case "Company":
                 case "UserID":
                 case "Email":
                     overviewPage.Search(Identity.FirstName);
                     break;
             }
-            var log = identityUpdator.LastLogLine;
+            var log = identityUpdator.IdentityLastLogLine;
             expectedlog = identityUpdator.ExpectedLog;
+            log.Should().BeEquivalentTo(expectedlog);
+            identityUpdator.Dispose();
+        }
+        #endregion
+        #region Ideneity Actions
+        [Given(@"An inactive Identity exisist in the system")]
+        public async Task GivenAnInactiveIdentityExisistInTheSystem()
+        {
+            identityUpdator = new(_scenarioContext);
+            Admin = await identityUpdator.CreateNewAdmin();
+            identityUpdator.DoLogin(Admin.Account.UserID, "1234");
+            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            overviewPage = identityUpdator.Perform(new OpenTheIdentityOverviewPage());
+            identityUpdator.IsAbleToDoOrUse(overviewPage);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            Identity = await identityUpdator.CreateNewIdentity(false);
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+        }
+        [When(@"I want to activate this identity")]
+        public void WhenIWantToActivateThisIdentity()
+        {
+            overviewPage.Activate();
+            identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is activated by {Admin.Account.UserID} in table identity";
+        }
+        [Then(@"The Identity is active")]
+        public void ThenTheIdentityIsActive()
+        {
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            var log = identityUpdator.IdentityLastLogLine;
+            log.Should().BeEquivalentTo(expectedlog);
+            identityUpdator.Dispose();
+        }
+
+        [Given(@"An acive Identity exisist in the system")]
+        public async Task GivenAnAciveIdentityExisistInTheSystem()
+        {
+            identityUpdator = new(_scenarioContext);
+            Admin = await identityUpdator.CreateNewAdmin();
+            identityUpdator.DoLogin(Admin.Account.UserID, "1234");
+            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            overviewPage = identityUpdator.Perform(new OpenTheIdentityOverviewPage());
+            identityUpdator.IsAbleToDoOrUse(overviewPage);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            Identity = await identityUpdator.CreateNewIdentity();
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+        }
+        [When(@"I want to deactivete the identity whith the reason (.*)")]
+        public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
+        {
+            var deactivatePage = identityUpdator.Perform(new OpenTheDeactivateIdentityPage());
+            identityUpdator.IsAbleToDoOrUse(deactivatePage);
+            this.reason = reason;
+            identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is deleted due to {reason} by {Admin.Account.UserID} in table identity";
+            identityUpdator.Deactivate(reason);
+        }
+        [Then(@"The Idenetity is inactive")]
+        public void ThenTheIdenetityIsInactive()
+        {
+            overviewPage.Search(Identity.FirstName);
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
             identityUpdator.Dispose();
         }
