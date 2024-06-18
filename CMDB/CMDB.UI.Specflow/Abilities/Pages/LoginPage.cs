@@ -1,5 +1,4 @@
 ﻿using Bright.ScreenPlay.Abilities;
-using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages
 {

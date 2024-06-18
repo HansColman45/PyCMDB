@@ -12,10 +12,5 @@ namespace CMDB.UI.Specflow.Questions
             var context = actor.GetAbility<DataContext>();
             return await context.CreateNewAdmin();
         }
-        public static async Task<Admin> CreateNewAdminAs(IPerformer actor)
-        {
-            var context = actor.GetAbility<DataContext>();
-            return await context.CreateNewAdmin();
-        }
     }
 }

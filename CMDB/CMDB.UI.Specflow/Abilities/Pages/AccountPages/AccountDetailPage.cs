@@ -1,5 +1,4 @@
-﻿using Microsoft.Graph;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
@@ -20,11 +19,6 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
         {
             ClickElementByXpath("//a[@id='ReleaseIdentity']");
             return new(WebDriver);
-        }
-        public string GetLastLog()
-        {
-            ScrollToElement(By.XPath("//h3[.='Log overview']"));
-            return TekstFromElementByXpath("//td[contains(text(),'account')]");
         }
     }
 }

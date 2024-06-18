@@ -1,7 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
-using CMDB.UI.Specflow.Questions;
 
 namespace CMDB.UI.Specflow.Actors
 {
@@ -65,6 +64,13 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
             page.Delete();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Deleted");
+        }
+        public void Activate()
+        {
+            var page = GetAbility<IdentityOverviewPage>();
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            page.Activate();
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
         }
     }
 }

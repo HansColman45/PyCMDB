@@ -2,6 +2,7 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;
+using CMDB.UI.Specflow.Questions.Identity;
 using Microsoft.Graph;
 using TechTalk.SpecFlow.Assist;
 using Identity = CMDB.Domain.Entities.Identity;
@@ -120,7 +121,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I want to activate this identity")]
         public void WhenIWantToActivateThisIdentity()
         {
-            overviewPage.Activate();
+            identityUpdator.Activate();
             identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is activated by {Admin.Account.UserID} in table identity";
         }
         [Then(@"The Identity is active")]

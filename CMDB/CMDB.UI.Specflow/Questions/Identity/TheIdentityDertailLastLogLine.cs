@@ -3,13 +3,13 @@ using Bright.ScreenPlay.Questions;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using OpenQA.Selenium;
 
-namespace CMDB.UI.Specflow.Questions
+namespace CMDB.UI.Specflow.Questions.Identity
 {
     public class TheIdentityDertailLastLogLine : Question<string>
     {
         public override string PerformAs(IPerformer actor)
         {
-            var page= actor.GetAbility<IdentityDetailPage>();
+            var page = actor.GetAbility<IdentityDetailPage>();
             page.ScrollToElement(By.XPath("//h3[.='Log overview']"));
             string log = page.TekstFromElementByXpath("//td[contains(text(),'identity')]");
             return log;

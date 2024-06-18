@@ -1,25 +1,24 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
-using OpenQA.Selenium;
 
-namespace CMDB.UI.Specflow.Questions
+namespace CMDB.UI.Specflow.Questions.Identity
 {
     public class OpenTheCreateIdentityPage : Question<CreateIdentityPage>
     {
         public override CreateIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityOverviewPage>();
-            page.ClickElementByXpath(IdentityOverviewPage.NewXpath);
+            page.ClickElementByXpath(Abilities.Pages.MainPage.NewXpath);
             return new(page.WebDriver);
         }
     }
-    public class OpenTheIdentityDetailPage: Question<IdentityDetailPage>
+    public class OpenTheIdentityDetailPage : Question<IdentityDetailPage>
     {
         public override IdentityDetailPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityOverviewPage>();
-            page.ClickElementByXpath(IdentityOverviewPage.InfoXpath);
+            page.ClickElementByXpath(Abilities.Pages.MainPage.InfoXpath);
             return new(page.WebDriver);
         }
     }
@@ -28,7 +27,7 @@ namespace CMDB.UI.Specflow.Questions
         public override UpdateIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityOverviewPage>();
-            page.ClickElementByXpath(IdentityOverviewPage.EditXpath);
+            page.ClickElementByXpath(Abilities.Pages.MainPage.EditXpath);
             page.WaitUntilElmentVisableByXpath("//input[@name='FirstName']");
             return new(page.WebDriver);
         }
@@ -38,7 +37,7 @@ namespace CMDB.UI.Specflow.Questions
         public override DeactivateIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityOverviewPage>();
-            page.ClickElementByXpath(IdentityOverviewPage.DeactivateXpath);
+            page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);
             page.WaitUntilElmentVisableByXpath("//input[@id='reason']");
             return new(page.WebDriver);
         }
