@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class DeactivateAssetTypePage : MainPage
     {
-        public DeactivateAssetTypePage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateAssetTypePage() : base()
         {
         }
         public string Reason

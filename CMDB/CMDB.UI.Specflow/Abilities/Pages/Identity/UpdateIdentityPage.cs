@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class UpdateIdentityPage : MainPage
     {
-        public UpdateIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public UpdateIdentityPage() : base()
         {
         }
         public string FirstName

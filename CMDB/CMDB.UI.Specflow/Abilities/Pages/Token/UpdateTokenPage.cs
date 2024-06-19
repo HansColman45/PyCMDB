@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class UpdateTokenPage : MainPage
     {
-        public UpdateTokenPage(IWebDriver webDriver) : base(webDriver)
+        public UpdateTokenPage() : base()
         {
         }
         public string AssetTag

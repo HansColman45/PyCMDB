@@ -1,10 +1,8 @@
-﻿using OpenQA.Selenium;
-
-namespace CMDB.UI.Specflow.Abilities.Pages.Token
+﻿namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class TokenAssignIdentityPage : MainPage
     {
-        public TokenAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public TokenAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -14,7 +12,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[.='Assign']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

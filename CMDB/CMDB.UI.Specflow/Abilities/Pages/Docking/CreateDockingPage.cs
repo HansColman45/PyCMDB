@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class CreateDockingPage : MainPage
     {
-        public CreateDockingPage(IWebDriver webDriver) : base(webDriver)
+        public CreateDockingPage() : base()
         {
         }
         public string AssetTag

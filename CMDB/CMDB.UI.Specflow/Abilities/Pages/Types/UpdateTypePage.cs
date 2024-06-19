@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class UpdateTypePage : MainPage
     {
-        public UpdateTypePage(IWebDriver webDriver) : base(webDriver)
+        public UpdateTypePage() : base()
         {
         }
         public string Type

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class CreateTypePage : MainPage
     {
-        public CreateTypePage(IWebDriver webDriver) : base(webDriver)
+        public CreateTypePage() : base()
         {
         }
         public string Type

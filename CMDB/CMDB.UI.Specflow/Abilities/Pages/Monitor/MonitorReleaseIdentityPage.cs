@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorReleaseIdentityPage : MainPage
     {
-        public MonitorReleaseIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public MonitorReleaseIdentityPage() : base()
         {
         }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");

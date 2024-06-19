@@ -16,11 +16,5 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         {
             set => EnterInTextboxByXPath("//input[@type='password']", value);
         }
-        public MainPage LogIn()
-        {
-            ClickElementByXpath("//button[@type='submit']");
-            WaitUntilElmentVisableByXpath("//h1");
-            return new(WebDriver);
-        }
     }
 }

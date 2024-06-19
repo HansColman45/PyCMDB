@@ -4,13 +4,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingDetailPage : MainPage
     {
-        public DockingDetailPage(IWebDriver webDriver) : base(webDriver)
+        public DockingDetailPage() : base()
         {
         }
         public DockingReleaseIdentityPage ReleaseIdentity()
         {
             ClickElementByXpath(ReleaseIdenityXpath);
-            return new(WebDriver);
+            return new();
         }
         public string GetLastLog()
         {

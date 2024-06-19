@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class DeactivateTypePage : MainPage
     {
-        public DeactivateTypePage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateTypePage() : base()
         {
         }
 

@@ -4,13 +4,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
 {
     public class DesktopDetailPage : MainPage
     {
-        public DesktopDetailPage(IWebDriver webDriver) : base(webDriver)
+        public DesktopDetailPage() : base()
         {
         }
         public DesktopReleaseIdentityPage ReleaseIdentity()
         {
             ClickElementByXpath(ReleaseIdenityXpath);
-            return new(WebDriver);
+            return new();
         }
         public string GetLastLog()
         {

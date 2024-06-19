@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileAssignIdentityPage : MainPage
     {
-        public MobileAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public MobileAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[.='Assign']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

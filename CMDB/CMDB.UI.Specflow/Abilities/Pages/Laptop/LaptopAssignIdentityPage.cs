@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class LaptopAssignIdentityPage : MainPage
     {
-        public LaptopAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public LaptopAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[.='Assign']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

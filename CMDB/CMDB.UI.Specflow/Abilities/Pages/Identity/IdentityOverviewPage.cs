@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class IdentityOverviewPage : MainPage
     {
-        public IdentityOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public IdentityOverviewPage() : base()
         {
         }
         public void Activate()

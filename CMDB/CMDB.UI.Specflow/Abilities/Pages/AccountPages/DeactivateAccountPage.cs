@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class DeactivateAccountPage : MainPage
     {
-        public DeactivateAccountPage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateAccountPage() : base()
         {
         }
         public string UserId

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class DeactivateLaptopPage : MainPage
     {
-        public DeactivateLaptopPage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateLaptopPage() : base()
         {
         }
         public string Reason

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorOverviewPage : MainPage
     {
-        public MonitorOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public MonitorOverviewPage() : base()
         {
         }
         public void Activate()

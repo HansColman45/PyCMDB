@@ -4,13 +4,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class LaptopDetailPage : MainPage
     {
-        public LaptopDetailPage(IWebDriver webDriver) : base(webDriver)
+        public LaptopDetailPage() : base()
         {
         }
         public LaptopReleaseIdentityPage ReleaseIdentity()
         {
             ClickElementByXpath(ReleaseIdenityXpath);
-            return new(WebDriver);
+            return new();
         }
         public string GetLastLog()
         {

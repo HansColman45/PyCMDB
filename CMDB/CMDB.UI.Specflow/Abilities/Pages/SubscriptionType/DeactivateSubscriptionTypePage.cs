@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.SubscriptionType
 {
     public class DeactivateSubscriptionTypePage : MainPage
     {
-        public DeactivateSubscriptionTypePage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateSubscriptionTypePage() : base()
         {
         }
         public string Reason

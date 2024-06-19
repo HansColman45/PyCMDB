@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class DeactivateMonitorPage : MainPage
     {
-        public DeactivateMonitorPage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateMonitorPage() : base()
         {
         }
         public string Reason

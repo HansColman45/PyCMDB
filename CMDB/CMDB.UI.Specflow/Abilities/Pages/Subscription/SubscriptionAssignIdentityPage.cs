@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
 {
     public class SubscriptionAssignIdentityPage : MainPage
     {
-        public SubscriptionAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public SubscriptionAssignIdentityPage() : base()
         {
         }
     }

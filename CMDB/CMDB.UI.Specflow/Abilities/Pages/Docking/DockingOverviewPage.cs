@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingOverviewPage : MainPage
     {
-        public DockingOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public DockingOverviewPage() : base()
         {
         }
         public void Activate()

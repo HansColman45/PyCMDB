@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorAssignIdentityPage : MainPage
     {
-        public MonitorAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public MonitorAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[.='Assign']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

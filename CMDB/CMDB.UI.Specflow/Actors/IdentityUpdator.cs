@@ -1,18 +1,38 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
+using CMDB.UI.Specflow.StepDefinitions;
+using CMDB.UI.Specflow.Tasks.Identity;
 
 namespace CMDB.UI.Specflow.Actors
 {
     public class IdentityUpdator : CMDBActor
     {
-        public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext, name)
+        public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext,name)
         {
         }
         public async Task<Identity> CreateNewIdentity(bool active = true)
         {
             var context = GetAbility<DataContext>();
             return await context.CreateIdentity(admin,active);
+        }
+        public UpdateIdentityPage OpenUpdateIdentityPage()
+        {
+            Perform(new OpenTheUpdateIdentityPage());
+            IsAbleToDoOrUse<UpdateIdentityPage>();
+            var page = GetAbility<UpdateIdentityPage>();
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UpdatePage");
+            return page;
+        }
+        public DeactivateIdentityPage OpenDeactivateIdentityPage()
+        {
+            Perform(new OpenTheDeactivateIdentityPage());
+            IsAbleToDoOrUse<DeactivateIdentityPage>();
+            var page = GetAbility<DeactivateIdentityPage>();
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
+            return page;
         }
         public Identity UpdateIdentity(string field, string value, Identity iden)
         {

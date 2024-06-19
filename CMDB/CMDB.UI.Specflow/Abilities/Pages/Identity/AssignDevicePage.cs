@@ -1,11 +1,10 @@
 ﻿using CMDB.Domain.Entities;
-using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class AssignDevicePage : MainPage
     {
-        public AssignDevicePage(IWebDriver webDriver) : base(webDriver)
+        public AssignDevicePage() : base()
         {
         }
         public void ClickDevice(Device device)
@@ -15,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[@type='submit']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

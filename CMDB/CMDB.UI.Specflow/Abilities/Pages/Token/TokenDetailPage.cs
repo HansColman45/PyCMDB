@@ -4,13 +4,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class TokenDetailPage : MainPage
     {
-        public TokenDetailPage(IWebDriver webDriver) : base(webDriver)
+        public TokenDetailPage() : base()
         {
         }
         public TokenReleaseIdentityPage ReleaseIdentity()
         {
             ClickElementByXpath(ReleaseIdenityXpath);
-            return new(WebDriver);
+            return new();
         }
         public string GetLastLog()
         {

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class AssetTypeDetailPage : MainPage
     {
-        public AssetTypeDetailPage(IWebDriver webDriver) : base(webDriver)
+        public AssetTypeDetailPage() : base()
         {
         }
         public int Id

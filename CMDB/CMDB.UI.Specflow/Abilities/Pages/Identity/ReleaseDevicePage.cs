@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class ReleaseDevicePage : MainPage
     {
-        public ReleaseDevicePage(IWebDriver webDriver) : base(webDriver)
+        public ReleaseDevicePage() : base()
         {
         }
         public string Employee

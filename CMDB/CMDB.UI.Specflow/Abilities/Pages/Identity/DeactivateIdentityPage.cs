@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class DeactivateIdentityPage : MainPage
     {
-        public DeactivateIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public DeactivateIdentityPage() : base()
         {
         }
         public string Reason

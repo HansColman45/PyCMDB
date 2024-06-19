@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class CreateLaptopPage : MainPage
     {
-        public CreateLaptopPage(IWebDriver webDriver) : base(webDriver)
+        public CreateLaptopPage() : base()
         {
         }
         public string AssetTag

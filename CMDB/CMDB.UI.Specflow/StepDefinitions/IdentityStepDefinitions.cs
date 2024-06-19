@@ -2,7 +2,6 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;
-using CMDB.UI.Specflow.Questions.Identity;
 using Microsoft.Graph;
 using TechTalk.SpecFlow.Assist;
 using Identity = CMDB.Domain.Entities.Identity;
@@ -19,7 +18,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private IdentityUpdator identityUpdator;
         private IdentityOverviewPage overviewPage;
         private CreateIdentityPage createIdentity;
-        private string updatedfield, reason, expectedlog;
+        private string updatedfield;
 
         public IdentityStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
         {
@@ -28,32 +27,29 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Given(@"I want to create an Identity with these details")]
         public async Task GivenIWantToCreateAnIdentityWithTheseDetails(Table table)
         {
-            identityCreator = new(_scenarioContext);
+            identityCreator = new(ScenarioContext);
             iden = table.CreateInstance<Helpers.Identity>();
             Admin = await identityCreator.CreateNewAdmin();
             identityCreator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityCreator.Perform(new IsTheUserLoggedIn());
+            bool result = identityCreator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityCreator.Perform(new OpenTheIdentityOverviewPage());
-            identityCreator.IsAbleToDoOrUse(overviewPage);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
-            createIdentity = identityCreator.Perform(new OpenTheCreateIdentityPage());
-            identityCreator.IsAbleToDoOrUse(createIdentity);
+            identityCreator.OpenIdentityOverviewPage();
+            createIdentity = identityCreator.OpenCreateIdentityPage();
             identityCreator.CreateNewIdentity(iden);
         }
         [When(@"I save")]
         public void WhenISave()
         {
             createIdentity.Create();
-            createIdentity.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Saved");
+            createIdentity.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
         }
         [Then(@"I can find the newly created Identity back")]
         public void ThenICanFindTheNewlyCreatedIdentityBack()
         {
             identityCreator.SearchIdentity(iden);
-            var log = identityCreator.IdentityLastLogLine;
+            var lastLog = identityCreator.IdentityLastLogLine;
             expectedlog = identityCreator.ExpectedLog;
-            log.Should().BeEquivalentTo(expectedlog);
+            lastLog.Should().BeEquivalentTo(expectedlog);
             identityCreator.Dispose();
         }
         #endregion
@@ -61,14 +57,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Given(@"An Identity exisist in the system")]
         public async Task GivenAnIdentityExisistInTheSystem()
         {
-            identityUpdator = new(_scenarioContext);
+            identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
+            bool result = identityUpdator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityUpdator.Perform(new OpenTheIdentityOverviewPage());
-            identityUpdator.IsAbleToDoOrUse(overviewPage);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            identityUpdator.OpenIdentityOverviewPage(); 
         }
         [When(@"I want to update (.*) with (.*)")]
         public async Task WhenIWantToUpdateFirstNameWithTestje(string field, string newValue)
@@ -76,9 +70,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
             updatedfield = field;
             Identity = await identityUpdator.CreateNewIdentity();
             overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
-            var updatepage = identityUpdator.Perform(new OpenTheUpdateIdentityPage());
-            identityUpdator.IsAbleToDoOrUse(updatepage);
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            var updatepage = identityUpdator.OpenUpdateIdentityPage();
             Identity = identityUpdator.UpdateIdentity(field, newValue, Identity);
         }
         [Then(@"The identity is updated")]
@@ -106,17 +99,15 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Given(@"An inactive Identity exisist in the system")]
         public async Task GivenAnInactiveIdentityExisistInTheSystem()
         {
-            identityUpdator = new(_scenarioContext);
+            identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
+            bool result = identityUpdator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityUpdator.Perform(new OpenTheIdentityOverviewPage());
-            identityUpdator.IsAbleToDoOrUse(overviewPage);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage = identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity(false);
             overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         [When(@"I want to activate this identity")]
         public void WhenIWantToActivateThisIdentity()
@@ -128,7 +119,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void ThenTheIdentityIsActive()
         {
             overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
             identityUpdator.Dispose();
@@ -137,24 +128,20 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Given(@"An acive Identity exisist in the system")]
         public async Task GivenAnAciveIdentityExisistInTheSystem()
         {
-            identityUpdator = new(_scenarioContext);
+            identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
+            bool result = identityUpdator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityUpdator.Perform(new OpenTheIdentityOverviewPage());
-            identityUpdator.IsAbleToDoOrUse(overviewPage);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage = identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity();
             overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         [When(@"I want to deactivete the identity whith the reason (.*)")]
         public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
         {
-            var deactivatePage = identityUpdator.Perform(new OpenTheDeactivateIdentityPage());
-            identityUpdator.IsAbleToDoOrUse(deactivatePage);
-            this.reason = reason;
+            var deactivatePage = identityUpdator.OpenDeactivateIdentityPage();
             identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is deleted due to {reason} by {Admin.Account.UserID} in table identity";
             identityUpdator.Deactivate(reason);
         }
@@ -162,7 +149,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void ThenTheIdenetityIsInactive()
         {
             overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
             identityUpdator.Dispose();

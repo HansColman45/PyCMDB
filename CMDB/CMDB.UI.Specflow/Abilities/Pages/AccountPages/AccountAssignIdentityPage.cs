@@ -1,10 +1,8 @@
-﻿using OpenQA.Selenium;
-
-namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
+﻿namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class AccountAssignIdentityPage : MainPage
     {
-        public AccountAssignIdentityPage(IWebDriver driver) : base(driver)
+        public AccountAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -18,11 +16,6 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
         public DateTime ValidUntil
         {
             set => EnterDateTimeByXPath("//input[@id='ValidUntil']", value);
-        }
-        public AssignFormPage Assign()
-        {
-            ClickElementByXpath("//button[@type='submit']");
-            return new(WebDriver);
         }
     }
 }

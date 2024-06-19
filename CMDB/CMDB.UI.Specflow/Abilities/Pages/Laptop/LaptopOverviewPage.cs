@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class LaptopOverviewPage : MainPage
     {
-        public LaptopOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public LaptopOverviewPage() : base()
         {
         }
         public void Activate()

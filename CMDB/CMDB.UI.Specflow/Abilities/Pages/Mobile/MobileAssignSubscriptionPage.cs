@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileAssignSubscriptionPage : MainPage
     {
-        public MobileAssignSubscriptionPage(IWebDriver webDriver) : base(webDriver)
+        public MobileAssignSubscriptionPage() : base()
         {
         }
     }

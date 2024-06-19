@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class TypeOverviewPage : MainPage
     {
-        public TypeOverviewPage(IWebDriver webDriver) : base(webDriver)
+        public TypeOverviewPage() : base()
         {
         }
         public void Activate()

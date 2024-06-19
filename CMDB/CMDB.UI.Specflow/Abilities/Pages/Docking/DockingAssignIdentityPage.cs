@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingAssignIdentityPage : MainPage
     {
-        public DockingAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public DockingAssignIdentityPage() : base()
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)
@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[.='Assign']");
-            return new(WebDriver);
+            return new();
         }
     }
 }

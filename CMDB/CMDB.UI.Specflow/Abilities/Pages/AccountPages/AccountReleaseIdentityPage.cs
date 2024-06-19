@@ -21,7 +21,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
             set => EnterInTextboxByXPath("//input[@id='ITEmp']", value);
             get => TekstFromTextBox("//input[@id='ITEmp']");
         }
-        public AccountReleaseIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public AccountReleaseIdentityPage() : base()
         {
         }
         public void CreatePDF()

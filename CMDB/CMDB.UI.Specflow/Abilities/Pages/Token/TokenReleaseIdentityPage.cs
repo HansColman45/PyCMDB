@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class TokenReleaseIdentityPage : MainPage
     {
-        public TokenReleaseIdentityPage(IWebDriver webDriver) : base(webDriver)
+        public TokenReleaseIdentityPage() : base()
         {
         }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class IdentityDetailPage : MainPage
     {
-        public IdentityDetailPage(IWebDriver webDriver) : base(webDriver)
+        public IdentityDetailPage() : base()
         {
         }
         public int Id
@@ -18,12 +18,12 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         public ReleaseAccountPage ReleaseAccount()
         {
             ClickElementByXpath(ReleaseAccountXPath);
-            return new(WebDriver);
+            return new();
         }
         public ReleaseDevicePage ReleaseDevice()
         {
             ClickElementByXpath(ReleaseDeviceXPath);
-            return new(WebDriver);
+            return new();
         }
     }
 }

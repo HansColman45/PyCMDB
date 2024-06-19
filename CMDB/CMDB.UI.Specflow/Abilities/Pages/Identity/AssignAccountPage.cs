@@ -5,7 +5,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class AssignAccountPage : MainPage
     {
-        public AssignAccountPage(IWebDriver webDriver) : base(webDriver)
+        public AssignAccountPage() : base()
         {
         }
         public string Name
@@ -47,7 +47,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[@type='submit']");
-            return new(WebDriver);
+            return new();
         }
     }
 }
