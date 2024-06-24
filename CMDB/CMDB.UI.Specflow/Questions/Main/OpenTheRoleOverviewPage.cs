@@ -1,12 +1,13 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages;
-using Task = Bright.ScreenPlay.Tasks.Task;
+using CMDB.UI.Specflow.Abilities.Pages.Role;
+using Bright.ScreenPlay.Questions;
 
 namespace CMDB.UI.Specflow.Questions.Main
 {
-    public class OpenTheRoleOverviewPage : Task
+    public class OpenTheRoleOverviewPage : Question<RoleOverviewPage>
     {
-        public override void PerformAs(IPerformer actor)
+        public override RoleOverviewPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MainPage>();
             page.WaitUntilElmentVisableByXpath("//a[@id='Role']");
@@ -14,6 +15,7 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Role8']");
             page.ClickElementByXpath("//a[@href='/Role']");
             page.WaitOnAddNew();
+            return new();
         }
     }
 }

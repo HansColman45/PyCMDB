@@ -4,6 +4,7 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Abilities.Pages.Admin;
+using CMDB.UI.Specflow.Abilities.Pages.Application;
 using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
 using CMDB.UI.Specflow.Abilities.Pages.Desktop;
 using CMDB.UI.Specflow.Abilities.Pages.Docking;
@@ -12,6 +13,7 @@ using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 using CMDB.UI.Specflow.Abilities.Pages.Monitor;
+using CMDB.UI.Specflow.Abilities.Pages.Role;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 using CMDB.UI.Specflow.Abilities.Pages.SubscriptionType;
 using CMDB.UI.Specflow.Abilities.Pages.System;
@@ -116,23 +118,9 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        public AssetTypeOverviewPage OpenAssetTypeOverviewPage()
+        public RoleOverviewPage OpenRoleOverviewPage()
         {
-            var overviewPage = Perform(new OpenAssetTypeOverviewPage());
-            overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
-            return overviewPage;
-        }
-        public DesktopOverviewPage OpenDesktopOverviewPage()
-        {
-            var overviewPage = Perform(new OpenTheDesktopOverviewPage());
-            overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
-            return overviewPage;
-        }
-        public DockingOverviewPage OpenDockingOverviewPage()
-        {
-            var overviewPage = Perform(new OpenTheDockingOverviewPage());
+            var overviewPage = Perform(new OpenTheRoleOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
@@ -144,9 +132,9 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        public MobileOverviewPage OpenMobileOverviewPage()
+        public DesktopOverviewPage OpenDesktopOverviewPage()
         {
-            var overviewPage = Perform(new OpenTheMobileOverviewPage());
+            var overviewPage = Perform(new OpenTheDesktopOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
@@ -158,9 +146,9 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        public SubscriptionOverviewPage OpenSubscriptionOverviewPage()
+        public DockingOverviewPage OpenDockingOverviewPage()
         {
-            var overviewPage = Perform(new OpenTheSubscriptionOverviewPage());
+            var overviewPage = Perform(new OpenTheDockingOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
@@ -172,6 +160,35 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
+        public KensingtonOverviewPage OpenKensingtonOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheKensingtonOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public MobileOverviewPage OpenMobileOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheMobileOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public SubscriptionOverviewPage OpenSubscriptionOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheSubscriptionOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public AssetTypeOverviewPage OpenAssetTypeOverviewPage()
+        {
+            var overviewPage = Perform(new OpenAssetTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        //TODO: AssetCategoryOverviewPage
         public TypeOverviewPage OpenIdentityTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheIdentityTypeOverviewPage());
@@ -200,9 +217,16 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        public KensingtonOverviewPage OpenKensingtonOverviewPage()
+        public SystemOverviewPage OpenSystemOverviewPage()
         {
-            var overviewPage = Perform(new OpenTheKensingtonOverviewPage());
+            var overviewPage = Perform(new OpenTheSystemOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public ApplicationOverviewPage OpenApplicationOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheApplicationOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
@@ -217,13 +241,6 @@ namespace CMDB.UI.Specflow.Actors
         public PermissionOverviewPage OpenPermissionOverviewPage()
         {
             var overviewPage = Perform(new OpenThePermissionOverviewPage());
-            overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
-            return overviewPage;
-        }
-        public SystemOverviewPage OpenSystemOverviewPage()
-        {
-            var overviewPage = Perform(new OpenTheSystemOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
