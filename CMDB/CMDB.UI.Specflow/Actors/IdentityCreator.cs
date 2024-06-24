@@ -1,4 +1,5 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.Identity;
+using CMDB.UI.Specflow.Questions.Identity;
 
 namespace CMDB.UI.Specflow.Actors
 {
@@ -6,6 +7,13 @@ namespace CMDB.UI.Specflow.Actors
     {
         public IdentityCreator(ScenarioContext scenarioContext, string name = "IdentityCreator") : base(scenarioContext, name)
         {
+        }
+        public CreateIdentityPage OpenCreateIdentityPage()
+        {
+            var createPage = Perform(new OpenTheCreateIdentityPage());
+            createPage.WebDriver = Driver;
+            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
+            return createPage;
         }
         public void CreateNewIdentity(Helpers.Identity iden)
         {

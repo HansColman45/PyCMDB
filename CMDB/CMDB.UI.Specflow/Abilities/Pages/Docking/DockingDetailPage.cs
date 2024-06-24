@@ -7,11 +7,6 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
         public DockingDetailPage() : base()
         {
         }
-        public DockingReleaseIdentityPage ReleaseIdentity()
-        {
-            ClickElementByXpath(ReleaseIdenityXpath);
-            return new();
-        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));

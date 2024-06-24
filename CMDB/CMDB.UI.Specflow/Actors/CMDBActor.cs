@@ -1,14 +1,26 @@
-﻿using Bright.ScreenPlay.Abilities;
-using Bright.ScreenPlay.Actors;
+﻿using Bright.ScreenPlay.Actors;
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
+using CMDB.UI.Specflow.Abilities.Pages.Admin;
+using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
+using CMDB.UI.Specflow.Abilities.Pages.Desktop;
+using CMDB.UI.Specflow.Abilities.Pages.Docking;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
+using CMDB.UI.Specflow.Abilities.Pages.Kensington;
+using CMDB.UI.Specflow.Abilities.Pages.Laptop;
+using CMDB.UI.Specflow.Abilities.Pages.Mobile;
+using CMDB.UI.Specflow.Abilities.Pages.Monitor;
+using CMDB.UI.Specflow.Abilities.Pages.Subscription;
+using CMDB.UI.Specflow.Abilities.Pages.SubscriptionType;
+using CMDB.UI.Specflow.Abilities.Pages.System;
+using CMDB.UI.Specflow.Abilities.Pages.Token;
+using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Questions;
-using CMDB.UI.Specflow.Tasks;
-using CMDB.UI.Specflow.Tasks.Account;
-using CMDB.UI.Specflow.Tasks.Identity;
+using CMDB.UI.Specflow.Questions.Account;
+using CMDB.UI.Specflow.Questions.Identity;
+using CMDB.UI.Specflow.Questions.Main;
 using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Actors
@@ -47,11 +59,13 @@ namespace CMDB.UI.Specflow.Actors
         {
             IsAbleToDoOrUse<DataContext>();
             IsAbleToDoOrUse<LoginPage>();
+            //IsAbleToDoOrUse<MainPage>();
             _scenarioContext = scenarioContext;
         }
         public async Task<Admin> CreateNewAdmin()
         {
-            return await Perform(new CreateTheAdmin());
+            admin = await Perform(new CreateTheAdmin());
+            return admin;
         }
         public bool IsTheUserLoggedIn => Perform(new IsTheUserLoggedIn());
         
@@ -64,9 +78,7 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterUserId");
             page.Password = password;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterPassword");
-            Perform(new OpenTheMainPage());
-            IsAbleToDoOrUse<MainPage>();
-            var mainPage = GetAbility<MainPage>();
+            var mainPage = Perform(new OpenTheMainPage());
             mainPage.WebDriver = Driver;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
         }
@@ -74,9 +86,7 @@ namespace CMDB.UI.Specflow.Actors
         {
             get
             {
-                Perform(new OpenTheIdentityDetailPage());
-                IsAbleToDoOrUse<IdentityDetailPage>();
-                var detail = GetAbility<IdentityDetailPage>();
+                var detail = Perform(new OpenTheIdentityDetailPage()); 
                 detail.WebDriver = Driver;
                 detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
                 return Perform(new TheIdentityDertailLastLogLine());
@@ -86,60 +96,150 @@ namespace CMDB.UI.Specflow.Actors
         {
             get
             {
-                Perform(new OpenTheAccountDetailPage());
-                IsAbleToDoOrUse<AccountDetailPage>();
-                var detail = GetAbility<AccountDetailPage>();
+                var detail = Perform(new OpenTheAccountDetailPage());
+                detail.WebDriver = Driver;
                 detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
                 return Perform(new TheAccountDertailLastLogLine());
             }
         }
         public IdentityOverviewPage OpenIdentityOverviewPage()
         {
-            Perform(new OpenTheIdentityOverviewPage());
-            IsAbleToDoOrUse<IdentityOverviewPage>();
-            var overviewPage = GetAbility<IdentityOverviewPage>();
+            var overviewPage = Perform(new OpenTheIdentityOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_OverviewPage");
             return overviewPage;
         }
-        public CreateIdentityPage OpenCreateIdentityPage()
-        {
-            Perform(new OpenTheCreateIdentityPage());
-            IsAbleToDoOrUse<CreateIdentityPage>();
-            var createPage = GetAbility<CreateIdentityPage>();
-            createPage.WebDriver = Driver;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
-            return createPage;
-        }
         public AccountOverviewPage OpenAccountOverviewPage()
         {
-            Perform(new OpenTheAccountOverviewPage());
-            IsAbleToDoOrUse<AccountOverviewPage>();
-            var overviewPage = GetAbility<AccountOverviewPage>();
+            var overviewPage = Perform(new OpenTheAccountOverviewPage());
             overviewPage.WebDriver = Driver;
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        public CreateAccountPage OpenAccountCreatePage()
+        public AssetTypeOverviewPage OpenAssetTypeOverviewPage()
         {
-            Perform(new OpenTheAccountCreatePage());
-            IsAbleToDoOrUse<CreateAccountPage>();
-            var createPage = GetAbility<CreateAccountPage>();
-            createPage.WebDriver = Driver;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
-            return createPage;
+            var overviewPage = Perform(new OpenAssetTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public DesktopOverviewPage OpenDesktopOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheDesktopOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public DockingOverviewPage OpenDockingOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheDockingOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public LaptopOverviewPage OpenLaptopOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheLaptopOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public MobileOverviewPage OpenMobileOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheMobileOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public MonitorOverviewPage OpenMonitorOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheMonitorOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public SubscriptionOverviewPage OpenSubscriptionOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheSubscriptionOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public TokenOverviewPage OpenTokenOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheTokenOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public TypeOverviewPage OpenIdentityTypeOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheIdentityTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public TypeOverviewPage OpenAccountTypeOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheAccountTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public TypeOverviewPage OpenRoleTypeOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheOpenRoleTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public SubscriptionTypeOverviewPage OpenSubscriptionTypeOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheSubscriptionTypeOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public KensingtonOverviewPage OpenKensingtonOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheKensingtonOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public AdminOverviewPage OpenAdminOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheAdminOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public PermissionOverviewPage OpenPermissionOverviewPage()
+        {
+            var overviewPage = Perform(new OpenThePermissionOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public SystemOverviewPage OpenSystemOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheSystemOverviewPage());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        public void Search(string search)
+        {
+            var page = GetAbility<MainPage>();
+            page.Search(search);
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
         }
         public void Dispose()
         {
-            //var main = GetAbility<LoginPage>();
-            //main.Dispose();
-            //var db = GetAbility<DataContext>();
-            //db.Dispose();
-            var abilities = GetAbilities();
-            foreach (var ability in abilities)
-            {
-                ability.Dispose();
-            }
+            var main = GetAbility<LoginPage>();
+            main.Dispose();
+            var db = GetAbility<DataContext>();
+            db.Dispose();
         }
     }
 }

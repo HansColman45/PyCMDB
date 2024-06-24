@@ -16,7 +16,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private Identity Identity;
         private IdentityCreator identityCreator;
         private IdentityUpdator identityUpdator;
-        private IdentityOverviewPage overviewPage;
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
@@ -69,9 +68,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             updatedfield = field;
             Identity = await identityUpdator.CreateNewIdentity();
-            overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
-            var updatepage = identityUpdator.OpenUpdateIdentityPage();
+            identityUpdator.Search(Identity.FirstName);
+            identityUpdator.OpenUpdateIdentityPage();
             Identity = identityUpdator.UpdateIdentity(field, newValue, Identity);
         }
         [Then(@"The identity is updated")]
@@ -80,13 +78,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
             switch (updatedfield)
             {
                 case "FirstName":
-                    overviewPage.Search(Identity.LastName);
+                    identityUpdator.Search(Identity.LastName);
                     break;
                 case "LastName":
                 case "Company":
                 case "UserID":
                 case "Email":
-                    overviewPage.Search(Identity.FirstName);
+                    identityUpdator.Search(Identity.FirstName);
                     break;
             }
             var log = identityUpdator.IdentityLastLogLine;
@@ -104,10 +102,9 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityUpdator.OpenIdentityOverviewPage();
+            identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity(false);
-            overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            identityUpdator.Search(Identity.FirstName);
         }
         [When(@"I want to activate this identity")]
         public void WhenIWantToActivateThisIdentity()
@@ -118,8 +115,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Then(@"The Identity is active")]
         public void ThenTheIdentityIsActive()
         {
-            overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            identityUpdator.Search(Identity.FirstName);
+            expectedlog = identityUpdator.ExpectedLog;
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
             identityUpdator.Dispose();
@@ -133,23 +130,22 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.IsTheUserLoggedIn;
             result.Should().BeTrue();
-            overviewPage = identityUpdator.OpenIdentityOverviewPage();
+            identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity();
-            overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            identityUpdator.Search(Identity.FirstName);
         }
         [When(@"I want to deactivete the identity whith the reason (.*)")]
         public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
         {
-            var deactivatePage = identityUpdator.OpenDeactivateIdentityPage();
+            identityUpdator.OpenDeactivateIdentityPage();
             identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is deleted due to {reason} by {Admin.Account.UserID} in table identity";
             identityUpdator.Deactivate(reason);
         }
         [Then(@"The Idenetity is inactive")]
         public void ThenTheIdenetityIsInactive()
         {
-            overviewPage.Search(Identity.FirstName);
-            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
+            identityUpdator.Search(Identity.FirstName);
+            expectedlog = identityUpdator.ExpectedLog;
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
             identityUpdator.Dispose();

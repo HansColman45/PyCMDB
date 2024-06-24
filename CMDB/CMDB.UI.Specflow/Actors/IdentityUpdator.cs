@@ -1,8 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
-using CMDB.UI.Specflow.StepDefinitions;
-using CMDB.UI.Specflow.Tasks.Identity;
+using CMDB.UI.Specflow.Questions.Identity;
 
 namespace CMDB.UI.Specflow.Actors
 {
@@ -18,18 +17,14 @@ namespace CMDB.UI.Specflow.Actors
         }
         public UpdateIdentityPage OpenUpdateIdentityPage()
         {
-            Perform(new OpenTheUpdateIdentityPage());
-            IsAbleToDoOrUse<UpdateIdentityPage>();
-            var page = GetAbility<UpdateIdentityPage>();
+            var page = Perform(new OpenTheUpdateIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UpdatePage");
             return page;
         }
         public DeactivateIdentityPage OpenDeactivateIdentityPage()
         {
-            Perform(new OpenTheDeactivateIdentityPage());
-            IsAbleToDoOrUse<DeactivateIdentityPage>();
-            var page = GetAbility<DeactivateIdentityPage>();
+            var page = Perform(new OpenTheDeactivateIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
             return page;

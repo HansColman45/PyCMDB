@@ -1,6 +1,5 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
-using CMDB.UI.Specflow.Tasks;
-using CMDB.UI.Specflow.Tasks.Account;
+using CMDB.UI.Specflow.Questions.Account;
 
 namespace CMDB.UI.Specflow.Actors
 {
@@ -8,6 +7,13 @@ namespace CMDB.UI.Specflow.Actors
     {
         public AccountCreator(ScenarioContext scenarioContext, string name = "AccountCreator") : base(scenarioContext, name)
         {
+        }
+        public CreateAccountPage OpenAccountCreatePage()
+        {
+            var createPage = Perform(new OpenTheAccountCreatePage());
+            createPage.WebDriver = Driver;
+            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
+            return createPage;
         }
         public void CreateNewAccount(Helpers.Account account)
         {
@@ -26,7 +32,7 @@ namespace CMDB.UI.Specflow.Actors
             var page = GetAbility<AccountOverviewPage>();
             page.Search(account.UserId + rndNr.ToString());
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = $"The Account width name: {account.UserId + rndNr.ToString()} is created by {admin.Account.UserID} in table account";
+            ExpectedLog = $"The Account width UserID: {account.UserId + rndNr.ToString()} with type {account.Type} for application {account.Application} is created by {admin.Account.UserID} in table account";
         }
     }
 }

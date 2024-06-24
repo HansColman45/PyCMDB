@@ -7,11 +7,6 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
         public DesktopDetailPage() : base()
         {
         }
-        public DesktopReleaseIdentityPage ReleaseIdentity()
-        {
-            ClickElementByXpath(ReleaseIdenityXpath);
-            return new();
-        }
         public string GetLastLog()
         {
             ScrollToElement(By.XPath("//h3[.='Log overview']"));
