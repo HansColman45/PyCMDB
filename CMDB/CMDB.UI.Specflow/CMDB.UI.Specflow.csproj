@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Features\Identity\" />
     <Folder Include="Features\Account\" />
+    <Folder Include="Screenshots\" />
     <Folder Include="Tasks\" />
   </ItemGroup>
 

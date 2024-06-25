@@ -66,26 +66,29 @@ namespace CMDB.UI.Specflow.Actors
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Email");
                     break;
                 default:
-                    throw new Exception($"Field {field} is not supported");
+                    log.Fatal($"Update on field {field} is not supported");
+                    throw new Exception($"Update on field {field} is not supported");
             }
             page.Update();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Updated");
             return iden;
         }
-        public void Deactivate(string reason)
+        public void Deactivate(string reason, Identity identity)
         {
             var page = GetAbility<DeactivateIdentityPage>();
             page.Reason = reason;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
             page.Delete();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Deleted");
+            ExpectedLog = $"The Identity width name: {identity.Name} is deleted due to {reason} by {admin.Account.UserID} in table identity";
         }
-        public void Activate()
+        public void Activate(Identity identity)
         {
             var page = GetAbility<IdentityOverviewPage>();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             page.Activate();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
+            ExpectedLog = $"The Identity width name: {identity.Name} is activated by {admin.Account.UserID} in table identity";
         }
     }
 }

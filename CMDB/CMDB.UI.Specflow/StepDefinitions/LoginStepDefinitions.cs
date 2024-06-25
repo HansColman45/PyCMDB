@@ -1,3 +1,4 @@
+using Bright.ScreenPlay.Actors;
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;
@@ -8,10 +9,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
     public class LoginStepDefinitions: TestBase
     {
         readonly CMDBActor actor;
+        
 
-        public LoginStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
+        public LoginStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
             actor = new(scenarioContext);
+            ActorRegistry.RegisterActor(actor);
         }
         [Given(@"I open the home page")]
         public async Task GivenIOpenTheHomePage()
@@ -28,7 +31,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             bool result = actor.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
-            actor.Dispose();
         }
     }
 }

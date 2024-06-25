@@ -23,12 +23,17 @@ namespace CMDB.UI.Specflow.StepDefinitions
         /// </summary>
         protected Admin Admin { get; set; }
         /// <summary>
+        /// The ActorRegistry
+        /// </summary>
+        protected ActorRegistry ActorRegistry { get; set; }
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="scenarioContext"></param>
-        public TestBase(ScenarioContext scenarioContext)
+        public TestBase(ScenarioContext scenarioContext, ActorRegistry actorRegistry)
         {
             ScenarioContext = scenarioContext;
+            ActorRegistry = actorRegistry;
         }
     }
 }

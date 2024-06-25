@@ -28,7 +28,7 @@ namespace CMDB.UI.Specflow.Actors
             var page = OpenEditAccountPage();
             switch (field)
             {
-                case "UserID":
+                case "UserId":
                     ExpectedLog = $"The {field} has been changed from {account.UserID} to {value + rndNr.ToString()} by {admin.Account.UserID} in table account";
                     page.UserId = value + rndNr.ToString();
                     account.UserID = value + rndNr.ToString();
@@ -44,10 +44,30 @@ namespace CMDB.UI.Specflow.Actors
                     page.Application = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Application");
                     break;
+                default:
+                    log.Fatal($"Update on field {field} is not supported");
+                    throw new Exception($"Update on field {field} is not supported");
             }
             page.Edit();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Changed");
             return account;
+        }
+        public void DeactivateAccount(Account account, string reason)
+        {
+            var page = Perform(new OpenTheAccountDeactivatePage());
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
+            page.Reason = reason;
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Reason");
+            ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {reason} by {admin.Account.UserID} in table account";
+            page.Delete();
+        }
+        public void AcctivateAccount(Account account) 
+        {
+            var page = GetAbility<AccountOverviewPage>();
+            page.Activate();
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
+            ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is activated by {admin.Account.UserID} in table account";
         }
     }
 }

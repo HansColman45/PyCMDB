@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.Database.Deploy", "CMD
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.Testing", "CMDB.Testing\CMDB.Testing.csproj", "{276A5A3B-B1D6-441C-83CB-03374E794B34}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CMDB.UI.Specflow", "CMDB.UI.Specflow\CMDB.UI.Specflow.csproj", "{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CMDB.UI.Specflow", "CMDB.UI.Specflow\CMDB.UI.Specflow.csproj", "{B7C9EA4C-FAC4-43DD-A16D-EEC9D46D5140}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

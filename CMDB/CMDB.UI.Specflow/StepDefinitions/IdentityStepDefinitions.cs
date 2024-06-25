@@ -19,7 +19,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
-        public IdentityStepDefinitions(ScenarioContext scenarioContext) : base(scenarioContext)
+        public IdentityStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
         #region Create Identity
@@ -27,6 +27,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task GivenIWantToCreateAnIdentityWithTheseDetails(Table table)
         {
             identityCreator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityCreator);
             iden = table.CreateInstance<Helpers.Identity>();
             Admin = await identityCreator.CreateNewAdmin();
             identityCreator.DoLogin(Admin.Account.UserID, "1234");
@@ -49,7 +50,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
             var lastLog = identityCreator.IdentityLastLogLine;
             expectedlog = identityCreator.ExpectedLog;
             lastLog.Should().BeEquivalentTo(expectedlog);
-            identityCreator.Dispose();
         }
         #endregion
         #region Edit Identity
@@ -57,6 +57,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task GivenAnIdentityExisistInTheSystem()
         {
             identityUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityUpdator);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
@@ -90,7 +91,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
             var log = identityUpdator.IdentityLastLogLine;
             expectedlog = identityUpdator.ExpectedLog;
             log.Should().BeEquivalentTo(expectedlog);
-            identityUpdator.Dispose();
         }
         #endregion
         #region Ideneity Actions
@@ -98,6 +98,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task GivenAnInactiveIdentityExisistInTheSystem()
         {
             identityUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityUpdator);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
@@ -109,8 +110,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I want to activate this identity")]
         public void WhenIWantToActivateThisIdentity()
         {
-            identityUpdator.Activate();
-            identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is activated by {Admin.Account.UserID} in table identity";
+            identityUpdator.Activate(Identity);
         }
         [Then(@"The Identity is active")]
         public void ThenTheIdentityIsActive()
@@ -119,13 +119,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
             expectedlog = identityUpdator.ExpectedLog;
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
-            identityUpdator.Dispose();
         }
 
         [Given(@"An acive Identity exisist in the system")]
         public async Task GivenAnAciveIdentityExisistInTheSystem()
         {
             identityUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityUpdator);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
@@ -138,8 +138,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void WhenIWantToDeactiveteTheIdentityWhithTheReasonTest(string reason)
         {
             identityUpdator.OpenDeactivateIdentityPage();
-            identityUpdator.ExpectedLog = $"The Identity width name: {Identity.Name} is deleted due to {reason} by {Admin.Account.UserID} in table identity";
-            identityUpdator.Deactivate(reason);
+            identityUpdator.Deactivate(reason, Identity);
         }
         [Then(@"The Idenetity is inactive")]
         public void ThenTheIdenetityIsInactive()
@@ -148,7 +147,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
             expectedlog = identityUpdator.ExpectedLog;
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
-            identityUpdator.Dispose();
         }
         #endregion
     }
