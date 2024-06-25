@@ -3,7 +3,7 @@ using CMDB.UI.Specflow.Questions.Account;
 
 namespace CMDB.UI.Specflow.Actors
 {
-    public class AccountCreator : CMDBActor
+    public class AccountCreator : AccountActor
     {
         public AccountCreator(ScenarioContext scenarioContext, string name = "AccountCreator") : base(scenarioContext, name)
         {

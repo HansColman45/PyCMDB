@@ -8,7 +8,8 @@ namespace CMDB.UI.Specflow.Questions
     {
         public override bool PerformAs(IPerformer actor)
         {
-            return actor.GetAbility<MainPage>().IsLoggedIn;
+            var page = actor.GetAbility<MainPage>();
+            return page.IsLoggedIn;
         }
     }
 }

@@ -29,6 +29,7 @@ namespace CMDB.UI.Specflow.Actors
 {
     public class CMDBActor : Actor
     {
+        private MainPage mainPage;
         /// <summary>
         /// The ScenatioContext
         /// </summary>
@@ -69,8 +70,7 @@ namespace CMDB.UI.Specflow.Actors
             admin = await Perform(new CreateTheAdmin());
             return admin;
         }
-        public bool IsTheUserLoggedIn => Perform(new IsTheUserLoggedIn());
-        
+
         public void DoLogin(string userName, string password)
         {
             Driver = Perform(new OpenTheLoginPage());
@@ -80,29 +80,9 @@ namespace CMDB.UI.Specflow.Actors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterUserId");
             page.Password = password;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterPassword");
-            var mainPage = Perform(new OpenTheMainPage());
+            mainPage = Perform(new OpenTheMainPage());
             mainPage.WebDriver = Driver;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
-        }
-        public string IdentityLastLogLine
-        {
-            get
-            {
-                var detail = Perform(new OpenTheIdentityDetailPage()); 
-                detail.WebDriver = Driver;
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
-                return Perform(new TheIdentityDertailLastLogLine());
-            }
-        }
-        public string AccountLastLogLine
-        {
-            get
-            {
-                var detail = Perform(new OpenTheAccountDetailPage());
-                detail.WebDriver = Driver;
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
-                return Perform(new TheAccountDertailLastLogLine());
-            }
         }
         public IdentityOverviewPage OpenIdentityOverviewPage()
         {
@@ -188,7 +168,13 @@ namespace CMDB.UI.Specflow.Actors
             overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
-        //TODO: AssetCategoryOverviewPage
+        public AssetCategoryOverviewPage OpenAssetCategoryOverviewPage()
+        {
+            var overviewPage = Perform(new OpenAssetCategoryOverview());
+            overviewPage.WebDriver = Driver;
+            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
         public TypeOverviewPage OpenIdentityTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheIdentityTypeOverviewPage());

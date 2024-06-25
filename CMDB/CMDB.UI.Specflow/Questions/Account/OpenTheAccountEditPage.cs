@@ -9,7 +9,8 @@ namespace CMDB.UI.Specflow.Questions.Account
         public override EditAccountPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<AccountOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.EditXpath);
+            page.ClickElementByXpath(AccountOverviewPage.EditXpath);
+            page.WaitUntilElmentVisableByXpath("//button[.='Edit']");
             return new();
         }
     }

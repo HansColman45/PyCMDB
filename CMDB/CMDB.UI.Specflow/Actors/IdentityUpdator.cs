@@ -5,7 +5,7 @@ using CMDB.UI.Specflow.Questions.Identity;
 
 namespace CMDB.UI.Specflow.Actors
 {
-    public class IdentityUpdator : CMDBActor
+    public class IdentityUpdator : IdentityActor
     {
         public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext,name)
         {

@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Pages;
 using Bright.ScreenPlay.Questions;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
+using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Questions.Account
 {

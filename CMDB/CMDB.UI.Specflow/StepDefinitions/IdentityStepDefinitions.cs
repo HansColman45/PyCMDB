@@ -30,7 +30,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             iden = table.CreateInstance<Helpers.Identity>();
             Admin = await identityCreator.CreateNewAdmin();
             identityCreator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityCreator.IsTheUserLoggedIn;
+            bool result = identityCreator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             identityCreator.OpenIdentityOverviewPage();
             createIdentity = identityCreator.OpenCreateIdentityPage();
@@ -59,7 +59,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.IsTheUserLoggedIn;
+            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             identityUpdator.OpenIdentityOverviewPage(); 
         }
@@ -100,7 +100,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.IsTheUserLoggedIn;
+            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity(false);
@@ -128,7 +128,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator = new(ScenarioContext);
             Admin = await identityUpdator.CreateNewAdmin();
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = identityUpdator.IsTheUserLoggedIn;
+            bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity();
