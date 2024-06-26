@@ -1,7 +1,7 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Questions.Account;
 
-namespace CMDB.UI.Specflow.Actors
+namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
     public class AccountCreator : AccountActor
     {

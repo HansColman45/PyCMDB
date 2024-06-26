@@ -62,13 +62,20 @@ namespace CMDB.UI.Specflow.Actors
         {
             IsAbleToDoOrUse<DataContext>();
             IsAbleToDoOrUse<LoginPage>();
-            //IsAbleToDoOrUse<MainPage>();
             _scenarioContext = scenarioContext;
         }
         public async Task<Admin> CreateNewAdmin()
         {
-            admin = await Perform(new CreateTheAdmin());
-            return admin;
+            try
+            {
+                admin = await Perform(new CreateTheAdmin());
+                return admin;
+            }
+            catch (Exception e)
+            {
+                log.Fatal(e.Message);
+                throw;
+            }
         }
 
         public void DoLogin(string userName, string password)

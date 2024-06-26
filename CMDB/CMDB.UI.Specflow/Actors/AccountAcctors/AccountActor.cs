@@ -1,7 +1,6 @@
-﻿
-using CMDB.UI.Specflow.Questions.Account;
+﻿using CMDB.UI.Specflow.Questions.Account;
 
-namespace CMDB.UI.Specflow.Actors
+namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
     public class AccountActor : CMDBActor
     {

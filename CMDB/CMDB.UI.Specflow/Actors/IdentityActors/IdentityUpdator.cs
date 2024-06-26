@@ -3,17 +3,17 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Questions.Identity;
 
-namespace CMDB.UI.Specflow.Actors
+namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
     public class IdentityUpdator : IdentityActor
     {
-        public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext,name)
+        public IdentityUpdator(ScenarioContext scenarioContext, string name = "IdentityUpdator") : base(scenarioContext, name)
         {
         }
         public async Task<Identity> CreateNewIdentity(bool active = true)
         {
             var context = GetAbility<DataContext>();
-            return await context.CreateIdentity(admin,active);
+            return await context.CreateIdentity(admin, active);
         }
         public UpdateIdentityPage OpenUpdateIdentityPage()
         {

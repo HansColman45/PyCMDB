@@ -1,7 +1,7 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Questions.Identity;
 
-namespace CMDB.UI.Specflow.Actors
+namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
     public class IdentityCreator : IdentityActor
     {

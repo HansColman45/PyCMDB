@@ -3,7 +3,7 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Questions.Account;
 
-namespace CMDB.UI.Specflow.Actors
+namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
     public class AccountUpdator : AccountActor
     {
@@ -62,7 +62,7 @@ namespace CMDB.UI.Specflow.Actors
             ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {reason} by {admin.Account.UserID} in table account";
             page.Delete();
         }
-        public void AcctivateAccount(Account account) 
+        public void AcctivateAccount(Account account)
         {
             var page = GetAbility<AccountOverviewPage>();
             page.Activate();

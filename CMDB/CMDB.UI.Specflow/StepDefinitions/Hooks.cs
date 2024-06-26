@@ -10,18 +10,18 @@ namespace CMDB.UI.Specflow.StepDefinitions
         /// <summary>
         /// The Nlog logger
         /// </summary>
-        private static NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        private static readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
        
         [BeforeScenario]
         public void BeforeScenario(ScenarioContext context, ActorRegistry actorRegistry)
         {
-            log.Debug("Scenario {0} started", context.ScenarioInfo.Title);
+            log.Info("Scenario {0} started", context.ScenarioInfo.Title);
             actorRegistry.Clear();
         }
         [AfterScenario]
         public void AfterScenario(ScenarioContext context, ActorRegistry actorRegistry)
         {
-            log.Debug("Scenario {0} ended", context.ScenarioInfo.Title);
+            log.Info("Scenario {0} ended", context.ScenarioInfo.Title);
             actorRegistry.DisposeActors();
         }
         [AfterStep]
@@ -36,6 +36,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
                 page.Settings.TakeScreenShot = true;
                 page.TakeScreenShot($"{context.ScenarioInfo.Title}_{context.CurrentScenarioBlock}_Error");
                 page.Settings.TakeScreenShot = false;
+                log.Info("A screenshot is saved");
                 actorRegistry.DisposeActors();
             }
         }

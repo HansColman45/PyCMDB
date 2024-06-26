@@ -5,7 +5,7 @@ using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Questions
 {
-    public class TheIdentityDertailLastLogLine : Question<string>
+    public class TheIdentityDetailLastLogLine : Question<string>
     {
         public override string PerformAs(IPerformer actor)
         {

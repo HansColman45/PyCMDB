@@ -1,6 +1,6 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
-using CMDB.UI.Specflow.Actors;
+using CMDB.UI.Specflow.Actors.IdentityActors;
 using CMDB.UI.Specflow.Questions;
 using Microsoft.Graph;
 using TechTalk.SpecFlow.Assist;
