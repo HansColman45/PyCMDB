@@ -109,7 +109,7 @@ namespace CMDB.Controllers
                     string newType = values["Type"];
                     string newDescription = values["Description"];
                     if (service.IsExisting(accountType, newType, newDescription))
-                        ModelState.AddModelError("", "Account type existing");
+                        ModelState.AddModelError("", "Account type already exist");
                     if (ModelState.IsValid)
                     {
                         await service.Update(accountType, newType, newDescription, Table);

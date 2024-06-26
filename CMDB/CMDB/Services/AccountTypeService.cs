@@ -30,17 +30,19 @@ namespace CMDB.Services
         public async Task Update(AccountType accountType, string Type, string Description, string Table)
         {
             accountType.LastModfiedAdmin = Admin;
+            var oldtype = accountType.Type;
+            var olddescription = accountType.Description;
             if (String.Compare(accountType.Type, Type) != 0)
             {
                 accountType.Type = Type;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeId, "Type", accountType.Type, Type);
+                await LogUpdate(Table, accountType.TypeId, "Type", oldtype, Type);
             }
             if (String.Compare(accountType.Description, Description) != 0)
             {
                 accountType.Description = Description;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeId, "Description", accountType.Description, Description);
+                await LogUpdate(Table, accountType.TypeId, "Description", olddescription, Description);
             }
         }
         public async Task Deactivate(AccountType accountType, string Reason, string Table)
@@ -77,11 +79,12 @@ namespace CMDB.Services
         public bool IsExisting(AccountType accountType, string Type = "", string Description = "")
         {
             bool result = false;
-            if (String.IsNullOrEmpty(Type) && String.Compare(accountType.Type, Type) != 0)
+            if (String.IsNullOrEmpty(Type) && String.Compare(accountType.Type, Type) != 0 && 
+                String.IsNullOrEmpty(Description) && String.Compare(accountType.Description, Description) != 0)
             {
                 var accountTypes = _context.Types
                     .OfType<AccountType>()
-                    .Where(x => x.Type == Type)
+                    .Where(x => x.Type == accountType.Type && x.Description == accountType.Description)
                     .ToList();
                 if (accountTypes.Count > 0)
                     result = true;
@@ -90,25 +93,7 @@ namespace CMDB.Services
             {
                 var accountTypes = _context.Types
                     .OfType<AccountType>()
-                    .Where(x => x.Type == accountType.Type)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
-            }
-            if (String.IsNullOrEmpty(Description) && String.Compare(accountType.Description, Description) != 0)
-            {
-                var accountTypes = _context
-                    .Types.OfType<AccountType>()
-                    .Where(x => x.Description == Description)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
-            }
-            else
-            {
-                var accountTypes = _context
-                    .Types.OfType<AccountType>()
-                    .Where(x => x.Description == accountType.Description)
+                    .Where(x => x.Type == Type && x.Description == Description)
                     .ToList();
                 if (accountTypes.Count > 0)
                     result = true;

@@ -54,7 +54,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
 			bool result = accountTypeUpdator.Perform(new IsTheUserLoggedIn());
 			result.Should().BeTrue();
 			accountTypeUpdator.OpenAccountTypeOverviewPage();
-			accountTypeUpdator.Search(AccountType.Type);
+			accountTypeUpdator.Search(AccountType.Description);
 		}
 		#region Update accounttype
 		[When(@"I update the (.*) and change it to (.*) and I save the accounttype")]
@@ -65,7 +65,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
 		[Then(@"The account type has been saved")]
 		public void ThenTheAccountTypeHasBeenSaved()
 		{
-			accountTypeUpdator.Search(AccountType.Type);
+			accountTypeUpdator.Search(AccountType.Description);
 		}
 		[Then(@"the Change is done")]
 		public void ThenTheChangeIsDone()

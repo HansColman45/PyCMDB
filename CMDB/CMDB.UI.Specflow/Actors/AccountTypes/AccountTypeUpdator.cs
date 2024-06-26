@@ -36,6 +36,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
                     accountType.Description = value + rndNr.ToString();
                     break;
                 default:
+                    log.Fatal($"The update on {field} is not implemented");
                     break;
             }
             page.Edit();
@@ -49,7 +50,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
 			page.Reason = reason;
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
-			ExpectedLog = $"The Accounttype with type: {accountType.Type} and description: {accountType.Description} is deactivated due to {reason} " +
+			ExpectedLog = $"The Accounttype with type: {accountType.Type} and description: {accountType.Description} is deleted due to {reason} " +
                 $"by {admin.Account.UserID} in table accounttype";
 			page.Delete();
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_deactivated");
