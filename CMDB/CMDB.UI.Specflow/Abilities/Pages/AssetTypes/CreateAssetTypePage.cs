@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
+﻿namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class CreateAssetTypePage : MainPage
     {

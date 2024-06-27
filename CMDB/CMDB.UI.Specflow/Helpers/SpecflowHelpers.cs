@@ -56,6 +56,12 @@
         public string Type { get; set; }
         public string Description { get; set; }
     }
+    public class AssetType
+    {
+        public string Category { get; set; }
+        public string Vendor { get; set; }
+        public string Type { get; set; }
+    }
     public class Mobile
     {
         public string IMEI { get; set; }
