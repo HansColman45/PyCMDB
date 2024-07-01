@@ -1,6 +1,7 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Helpers;
 using CMDB.UI.Specflow.Questions.Types;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AccountTypes
 {
@@ -27,8 +28,9 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
             var page = GetAbility<TypeOverviewPage>();
             page.Search(accountType.Type + rndNr.ToString());
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = $"The Accounttype with type: {accountType.Type + rndNr.ToString()} and description: {accountType.Description + rndNr.ToString()} " +
-                $"is created by {admin.Account.UserID} in table accounttype";
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Accounttype with type: {accountType.Type + rndNr.ToString()} and description: {accountType.Description + rndNr.ToString()}",
+                admin.Account.UserID,
+                Table);
         }
     }
 }

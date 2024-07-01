@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Questions.Account;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
@@ -10,7 +11,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         public AccountUpdator(ScenarioContext scenarioContext, string name = "AccountUpdator") : base(scenarioContext, name)
         {
         }
-        public async Task<Account> CreateAccount(bool active = false)
+        public async Task<Account> CreateAccount(bool active = true)
         {
             var db = GetAbility<DataContext>();
             return await db.CreateAccount(admin, active);
@@ -29,18 +30,21 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             switch (field)
             {
                 case "UserId":
-                    ExpectedLog = $"The {field} has been changed from {account.UserID} to {value + rndNr.ToString()} by {admin.Account.UserID} in table account";
+                    //ExpectedLog = $"The {field} has been changed from {account.UserID} to {value + rndNr.ToString()} by {admin.Account.UserID} in table account";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.UserID, value + rndNr.ToString(), admin.Account.UserID, table);
                     page.UserId = value + rndNr.ToString();
                     account.UserID = value + rndNr.ToString();
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UserId");
                     break;
                 case "Type":
-                    ExpectedLog = $"The {field} has been changed from {account.Type.Type} to {value} by {admin.Account.UserID} in table account";
+                    //ExpectedLog = $"The {field} has been changed from {account.Type.Type} to {value} by {admin.Account.UserID} in table account";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Type.Type, value, admin.Account.UserID, table);
                     page.Type = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
                     break;
                 case "Application":
-                    ExpectedLog = $"The {field} has been changed from {account.Application.Name} to {value} by {admin.Account.UserID} in table account";
+                    //ExpectedLog = $"The {field} has been changed from {account.Application.Name} to {value} by {admin.Account.UserID} in table account";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Application.Name, value, admin.Account.UserID, table);
                     page.Application = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Application");
                     break;
@@ -59,7 +63,8 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Reason");
-            ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {reason} by {admin.Account.UserID} in table account";
+            //ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {reason} by {admin.Account.UserID} in table account";
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine("Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,reason,table);
             page.Delete();
         }
         public void AcctivateAccount(Account account)
@@ -67,7 +72,8 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             var page = GetAbility<AccountOverviewPage>();
             page.Activate();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
-            ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is activated by {admin.Account.UserID} in table account";
+            //ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is activated by {admin.Account.UserID} in table account";
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,table);
         }
     }
 }

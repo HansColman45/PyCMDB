@@ -1,6 +1,7 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Helpers;
 using CMDB.UI.Specflow.Questions.AssetType;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AssetTypes
 {
@@ -37,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             var page = GetAbility<MainPage>();
             page.Search(assetType.Type);
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_searched");
-            ExpectedLog = $"The {assetType.Category} type Vendor: {assetType.Vendor} and type {assetType.Type} is created by {admin.Account.UserID} in table assettype";
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}",admin.Account.UserID,Table);
         }
     }
 }

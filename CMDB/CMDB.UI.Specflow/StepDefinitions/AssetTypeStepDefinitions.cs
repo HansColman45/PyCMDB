@@ -65,10 +65,64 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I change the Type and save the changes")]
         public void WhenIChangeTheTypeAndSaveTheChanges()
         {
-            AssetType = _assetTypeUpdator.UpdateAccountType(AssetType);
+            AssetType = _assetTypeUpdator.UpdateAssetType(AssetType);
         }
         [Then(@"The changes are saved")]
         public void ThenTheChangesAreSaved()
+        {
+            _assetTypeUpdator.Search(AssetType.Type);
+            var laslog = _assetTypeUpdator.AssetTypeLastLogLine;
+            _assetTypeUpdator.ExpectedLog.Should().BeEquivalentTo(laslog);
+        }
+        #endregion
+        #region Activate
+        [Given(@"There is an Inactive AssetType existing")]
+        public async Task GivenThereIsAnInactiveAssetTypeExisting()
+        {
+            _assetTypeUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(_assetTypeUpdator);
+            Admin = await _assetTypeUpdator.CreateNewAdmin();
+            AssetType = await _assetTypeUpdator.CreateAssetType(false);
+            _assetTypeUpdator.DoLogin(Admin.Account.UserID, "1234");
+            var result = _assetTypeUpdator.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            _assetTypeUpdator.OpenAssetTypeOverviewPage();
+            _assetTypeUpdator.Search(AssetType.Type);
+        }
+        [When(@"I want to activate the assettype")]
+        public void WhenIWantToActivateTheAssettype()
+        {
+            _assetTypeUpdator.ActivateAssetType(AssetType);
+        }
+        [Then(@"the assettype has been activeted")]
+        public void ThenTheAssettypeHasBeenActiveted()
+        {
+            _assetTypeUpdator.Search(AssetType.Type);
+            var laslog = _assetTypeUpdator.AssetTypeLastLogLine;
+            _assetTypeUpdator.ExpectedLog.Should().BeEquivalentTo(laslog);
+        }
+        #endregion
+        #region Deactivate
+        [Given(@"There is an active AssetType existing")]
+        public async Task GivenThereIsAnActiveAssetTypeExisting()
+        {
+            _assetTypeUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(_assetTypeUpdator);
+            Admin = await _assetTypeUpdator.CreateNewAdmin();
+            AssetType = await _assetTypeUpdator.CreateAssetType();
+            _assetTypeUpdator.DoLogin(Admin.Account.UserID, "1234");
+            var result = _assetTypeUpdator.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            _assetTypeUpdator.OpenAssetTypeOverviewPage();
+            _assetTypeUpdator.Search(AssetType.Type);
+        }
+        [When(@"I want to deactivate the assettype with reason (.*)")]
+        public void WhenIWantToDeactivateTheAssettypeWithReasonTest(string reason)
+        {
+            _assetTypeUpdator.DeActivateAssetType(AssetType, reason);
+        }
+        [Then(@"the assettype has been deactiveted")]
+        public void ThenTheAssettypeHasBeenDeactiveted()
         {
             _assetTypeUpdator.Search(AssetType.Type);
             var laslog = _assetTypeUpdator.AssetTypeLastLogLine;

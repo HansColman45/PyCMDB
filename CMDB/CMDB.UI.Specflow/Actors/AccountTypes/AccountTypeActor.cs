@@ -4,6 +4,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
 {
     public class AccountTypeActor : CMDBActor
     {
+        protected string Table => "accounttype";
         public AccountTypeActor(ScenarioContext scenarioContext, string name = "AccountAcctor") : base(scenarioContext, name)
         {
         }
@@ -14,7 +15,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
                 var detail = Perform(new OpenTheTypeDetailsPage());
                 detail.WebDriver = Driver;
                 detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
-                return detail.GetLastLog("accounttype");
+                return detail.GetLastLog(Table);
             }
         }
     }

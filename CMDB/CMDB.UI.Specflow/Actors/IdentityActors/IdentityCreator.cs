@@ -1,5 +1,6 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Questions.Identity;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
@@ -40,7 +41,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             var page = GetAbility<IdentityOverviewPage>();
             page.Search(iden.FirstName + rndNr.ToString());
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = $"The Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()} is created by {admin.Account.UserID} in table identity";
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()}", admin.Account.UserID, Table);
         }
     }
 }

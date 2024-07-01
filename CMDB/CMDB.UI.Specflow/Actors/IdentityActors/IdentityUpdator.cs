@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Questions.Identity;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
@@ -36,31 +37,31 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             switch (field)
             {
                 case "FirstName":
-                    ExpectedLog = $"The {field} has been changed from {iden.FirstName} to {value + rndNr.ToString()} by {admin.Account.UserID} in table identity";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.FirstName, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.FirstName = value + rndNr.ToString();
                     iden.FirstName = value + rndNr.ToString();
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_FirstName");
                     break;
                 case "LastName":
-                    ExpectedLog = $"The {field} has been changed from {iden.LastName} to {value + rndNr.ToString()} by {admin.Account.UserID} in table identity";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.LastName, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.LastName = value + rndNr.ToString();
                     iden.LastName = value + rndNr.ToString();
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LastName");
                     break;
                 case "Company":
-                    ExpectedLog = $"The {field} has been changed from {iden.Company} to {value} by {admin.Account.UserID} in table identity";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.Company, value, admin.Account.UserID, Table);
                     page.Company = value;
                     iden.Company = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Company");
                     break;
                 case "UserID":
-                    ExpectedLog = $"The {field} has been changed from {iden.UserID} to {value} by {admin.Account.UserID} in table identity";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.UserID, value, admin.Account.UserID, Table);
                     page.UserId = value;
                     iden.UserID = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UserId");
                     break;
                 case "Email":
-                    ExpectedLog = $"The {field} has been changed from {iden.EMail} to {value} by {admin.Account.UserID} in table identity";
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.EMail, value, admin.Account.UserID, Table);
                     page.Email = value;
                     iden.EMail = value;
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Email");
@@ -80,7 +81,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
             page.Delete();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Deleted");
-            ExpectedLog = $"The Identity width name: {identity.Name} is deleted due to {reason} by {admin.Account.UserID} in table identity";
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}",admin.Account.UserID,reason,Table);
         }
         public void Activate(Identity identity)
         {
@@ -88,7 +89,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
             page.Activate();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
-            ExpectedLog = $"The Identity width name: {identity.Name} is activated by {admin.Account.UserID} in table identity";
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", admin.Account.UserID, Table);
         }
     }
 }

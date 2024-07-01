@@ -33,14 +33,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
             createAccountPage = accountCreator.OpenAccountCreatePage();
             accountCreator.CreateNewAccount(account);
         }
-
         [When(@"I save the account")]
         public void WhenISaveTheAccount()
         {
             createAccountPage.Create();
             createAccountPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
         }
-
         [Then(@"The account is saved")]
         public void ThenTheAccountIsSaved()
         {

@@ -4,9 +4,9 @@ using Bright.ScreenPlay.Questions;
 
 namespace CMDB.UI.Specflow.Questions.AssetType
 {
-    public class OpenTheAssetTypeDeactivatePage : Question<OpenTheAssetTypeDeactivatePage>
+    public class OpenTheAssetTypeDeactivatePage : Question<DeactivateAssetTypePage>
     {
-        public override OpenTheAssetTypeDeactivatePage PerformAs(IPerformer actor)
+        public override DeactivateAssetTypePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<AssetTypeOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);

@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Questions.Types;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AccountTypes
 {
@@ -24,15 +25,15 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
             switch (field)
             {
                 case "Type":
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, accountType.Type, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.Type = value + rndNr.ToString();
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_type");
-                    ExpectedLog = $"The {field} has been changed from {accountType.Type} to {value + rndNr.ToString()} by {admin.Account.UserID} in table accounttype";
                     accountType.Type = value + rndNr.ToString();
                     break;
                 case "Description":
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, accountType.Description, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.Description = value + rndNr.ToString();
                     page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_description");
-                    ExpectedLog = $"The {field} has been changed from {accountType.Description} to {value + rndNr.ToString()} by {admin.Account.UserID} in table accounttype";
                     accountType.Description = value + rndNr.ToString();
                     break;
                 default:
@@ -50,8 +51,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
 			page.Reason = reason;
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
-			ExpectedLog = $"The Accounttype with type: {accountType.Type} and description: {accountType.Description} is deleted due to {reason} " +
-                $"by {admin.Account.UserID} in table accounttype";
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Accounttype with type: {accountType.Type} and description: {accountType.Description}", admin.Account.UserID, reason,Table);
 			page.Delete();
 			page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_deactivated");
         }
@@ -61,8 +61,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
             page.Activate();
             page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_activated");
-            ExpectedLog = $"The Accounttype with type: {accountType.Type} and description: {accountType.Description} " +
-                $"is activated by {admin.Account.UserID} in table accounttype";
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Accounttype with type: {accountType.Type} and description: {accountType.Description}", admin.Account.UserID,Table);
         }
     }
 }

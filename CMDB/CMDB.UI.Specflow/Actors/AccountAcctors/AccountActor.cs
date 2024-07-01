@@ -4,6 +4,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
     public class AccountActor : CMDBActor
     {
+        protected string table => "account";
         public AccountActor(ScenarioContext scenarioContext, string name = "CMDB") : base(scenarioContext, name)
         {
         }

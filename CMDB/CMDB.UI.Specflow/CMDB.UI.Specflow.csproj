@@ -21,8 +21,9 @@
     <Folder Include="Features\Account\" />
     <Folder Include="Features\AccountType\" />
     <Folder Include="Features\AssetType\" />
+    <Folder Include="Features\Desktop\" />
+    <Folder Include="Features\Docking\" />
     <Folder Include="Screenshots\" />
-    <Folder Include="Tasks\" />
   </ItemGroup>
 
   <ItemGroup>

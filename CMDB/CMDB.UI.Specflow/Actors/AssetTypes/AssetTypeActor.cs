@@ -4,6 +4,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
 {
     public class AssetTypeActor : CMDBActor
     {
+        protected string Table => "assettype";
         public AssetTypeActor(ScenarioContext scenarioContext, string name = "AssetTypeActor") : base(scenarioContext, name)
         {
         }

@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
 {
     public class DataContext: Ability
     {
-        private readonly CMDBContext context;
+        public readonly CMDBContext context;
         public DataContext() 
         {
             string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";
@@ -163,7 +163,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <param name="type">The Type</param>
         /// <param name="category">The category</param>
         /// <returns>AssetType</returns>
-        public AssetType GetOrCreateAssetType(string vendor, string type, AssetCategory category)
+        public async Task<AssetType> GetOrCreateAssetType(string vendor, string type, AssetCategory category)
         {
             var assetTypes = context.AssetTypes
                 .Include(x => x.Category)
@@ -178,7 +178,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
                     Category = category
                 };
                 context.AssetTypes.Add(assetType);
-                context.SaveChanges();
+                await context.SaveChangesAsync();
                 return assetType;
             }
             else

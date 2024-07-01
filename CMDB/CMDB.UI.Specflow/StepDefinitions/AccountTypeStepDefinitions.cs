@@ -84,7 +84,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
 		[Then(@"The accountType is deacticated")]
 		public void ThenTheAccountTypeIsDeacticated()
 		{
-            accountTypeUpdator.Search(AccountType.Type);
+            accountTypeUpdator.Search(AccountType.Description);
             var lastLog = accountTypeUpdator.AccountTypeLastLogLine;
 			expectedlog = accountTypeUpdator.ExpectedLog;
 			lastLog.Should().BeEquivalentTo(expectedlog);
@@ -102,7 +102,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
 			bool result = accountTypeUpdator.Perform(new IsTheUserLoggedIn());
 			result.Should().BeTrue();
 			accountTypeUpdator.OpenAccountTypeOverviewPage();
-			accountTypeUpdator.Search(AccountType.Type);
+			accountTypeUpdator.Search(AccountType.Description);
 		}
 		[When(@"I activate the accountType")]
 		public void WhenIActivateTheAccountType()
@@ -112,7 +112,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
 		[Then(@"The accountType is active")]
 		public void ThenTheAccountTypeIsActive()
 		{
-			accountTypeUpdator.Search(AccountType.Type);
+			accountTypeUpdator.Search(AccountType.Description);
 			var lastLog = accountTypeUpdator.AccountTypeLastLogLine;
 			expectedlog = accountTypeUpdator.ExpectedLog;
 			lastLog.Should().BeEquivalentTo(expectedlog);

@@ -5,6 +5,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
     public class IdentityActor : CMDBActor
     {
+        protected string Table => "identity";
         public IdentityActor(ScenarioContext scenarioContext, string name = "Identity") : base(scenarioContext, name)
         {
         }

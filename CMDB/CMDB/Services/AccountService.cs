@@ -57,7 +57,7 @@ namespace CMDB.Services
             };
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
-            string Value = $"Account width UserID: {UserID} with type {accountType.Type} for application {applications.Name}";
+            string Value = $"Account with UserID: {UserID} and with type {accountType.Type} for application {applications.Name}";
             await LogCreate(Table, account.AccID, Value);
         }
         public async Task Edit(Account account, string UserID, int type, int application, string Table)
@@ -87,7 +87,7 @@ namespace CMDB.Services
         {
             account.DeactivateReason = Reason;
             account.Active = State.Inactive;
-            string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
+            string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             await LogDeactivate(Table, account.AccID, value, Reason);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
@@ -97,7 +97,7 @@ namespace CMDB.Services
         {
             account.DeactivateReason = null;
             account.Active = State.Active;
-            string value = $"Account width UserID: {account.UserID} and type {account.Type.Description}";
+            string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             await LogActivate(Table, account.AccID, value);
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);

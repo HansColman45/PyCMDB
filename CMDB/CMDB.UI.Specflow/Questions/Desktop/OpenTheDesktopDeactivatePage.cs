@@ -4,9 +4,9 @@ using Bright.ScreenPlay.Questions;
 
 namespace CMDB.UI.Specflow.Questions.Desktop
 {
-    public class OpenTheDesktopDeactivatePage : Question<DesktopDetailPage>
+    public class OpenTheDesktopDeactivatePage : Question<DeactivateDesktopPage>
     {
-        public override DesktopDetailPage PerformAs(IPerformer actor)
+        public override DeactivateDesktopPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DesktopOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);

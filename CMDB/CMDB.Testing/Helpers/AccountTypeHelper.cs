@@ -19,7 +19,7 @@ namespace CMDB.Testing.Helpers
             context.Types.Add(accountType);
             accountType.Logs.Add(new LogBuilder()
                 .With(x => x.Type, accountType)
-                .With(x => x.LogText, $"The IdentityType with type: {accountType.Type} and description: {accountType.Description} is created by Automation in table accounttype")
+                .With(x => x.LogText, $"The AccountType with type: {accountType.Type} and description: {accountType.Description} is created by Automation in table accounttype")
                 .Build()
             );
             await context.SaveChangesAsync();

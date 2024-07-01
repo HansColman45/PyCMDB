@@ -1,7 +1,9 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
+using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
 using CMDB.UI.Specflow.Actors.AccountTypes;
 using CMDB.UI.Specflow.Questions.AssetType;
+using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AssetTypes
 {
@@ -15,7 +17,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             var context = GetAbility<DataContext>();
             return await context.CreateAssetType(admin,active);
         }
-        public AssetType UpdateAccountType(AssetType assetType)
+        public AssetType UpdateAssetType(AssetType assetType)
         {
             var oldtype = assetType.Type;
             rndNr = rnd.Next();
@@ -27,8 +29,26 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
             editPage.Edit();
             editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_edited");
-            ExpectedLog = $"The Type has been changed from {oldtype} to {assetType.Type} by {admin.Account.UserID} in table assettype";
+            ExpectedLog = GenericLogLineCreator.UpdateLogLine("Type", oldtype, assetType.Type, admin.Account.UserID, Table);
             return assetType;
+        }
+        public void DeActivateAssetType(AssetType assetType, string reason)
+        {
+            var deletePage = Perform(new OpenTheAssetTypeDeactivatePage());
+            deletePage.WebDriver = Driver;
+            deletePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_deletePage");
+            deletePage.Reason = reason;
+            deletePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Reason");
+            deletePage.Delete();
+            deletePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_deleted");
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}", admin.Account.UserID, reason, Table);
+        }
+        public void ActivateAssetType(AssetType assetType)
+        {
+            var page = GetAbility<AssetTypeOverviewPage>();
+            page.Activate();
+            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_activated");
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}", admin.Account.UserID, Table);
         }
     }
 }

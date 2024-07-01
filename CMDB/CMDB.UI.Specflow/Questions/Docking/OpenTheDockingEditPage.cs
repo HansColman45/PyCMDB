@@ -4,9 +4,9 @@ using Bright.ScreenPlay.Questions;
 
 namespace CMDB.UI.Specflow.Questions.Docking
 {
-    public class OpenTheDockingEditPage : Question<DockingOverviewPage>
+    public class OpenTheDockingEditPage : Question<UpdateDockingPage>
     {
-        public override DockingOverviewPage PerformAs(IPerformer actor)
+        public override UpdateDockingPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DockingOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.EditXpath);

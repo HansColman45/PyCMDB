@@ -4,9 +4,9 @@ using Bright.ScreenPlay.Questions;
 
 namespace CMDB.UI.Specflow.Questions.Docking
 {
-    public class OpenTheDockingDeactivatePage : Question<DockingOverviewPage>
+    public class OpenTheDockingDeactivatePage : Question<DeactivateDockingPage>
     {
-        public override DockingOverviewPage PerformAs(IPerformer actor)
+        public override DeactivateDockingPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DockingOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);

@@ -21,7 +21,7 @@ using CMDB.UI.Specflow.Abilities.Pages.Token;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Questions;
 using CMDB.UI.Specflow.Questions.Account;
-using CMDB.UI.Specflow.Questions.Identity;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Main;
 using OpenQA.Selenium;
 
@@ -80,16 +80,24 @@ namespace CMDB.UI.Specflow.Actors
 
         public void DoLogin(string userName, string password)
         {
-            Driver = Perform(new OpenTheLoginPage());
-            var page = GetAbility<LoginPage>();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Login");
-            page.UserId = userName;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterUserId");
-            page.Password = password;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterPassword");
-            mainPage = Perform(new OpenTheMainPage());
-            mainPage.WebDriver = Driver;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
+            try
+            {
+                Driver = Perform(new OpenTheLoginPage());
+                var page = GetAbility<LoginPage>();
+                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Login");
+                page.UserId = userName;
+                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterUserId");
+                page.Password = password;
+                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterPassword");
+                mainPage = Perform(new OpenTheMainPage());
+                mainPage.WebDriver = Driver;
+                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
+            }
+            catch (Exception e)
+            {
+                log.Fatal(e.Message);
+                throw;
+            }
         }
         public IdentityOverviewPage OpenIdentityOverviewPage()
         {
