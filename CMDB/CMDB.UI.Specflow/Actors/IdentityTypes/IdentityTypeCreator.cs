@@ -1,36 +1,34 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.Types;
-using CMDB.UI.Specflow.Helpers;
 using CMDB.UI.Specflow.Questions.Types;
 using CMDB.UI.Specflow.Tasks;
 
-namespace CMDB.UI.Specflow.Actors.AccountTypes
+namespace CMDB.UI.Specflow.Actors.IdentityTypes
 {
-    public class AccountTypeCreator : AccountTypeActor
+    public class IdentityTypeCreator : IdentityTypeActor
     {
-        public AccountTypeCreator(ScenarioContext scenarioContext, string name = "AccountAcctor") : base(scenarioContext, name)
+        public IdentityTypeCreator(ScenarioContext scenarioContext, string name = "IdentityTypeCreator") : base(scenarioContext, name)
         {
         }
-        public void CreateAccountType(AccountType accountType)
+        public void CreateIdentityType(Helpers.IdentiyType identiyType)
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheTypeCreatePage());
-            page.WebDriver= Driver;
+            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
-            page.Type = accountType.Type + rndNr.ToString();
+            page.Type = identiyType.Type + rndNr.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_type");
-            page.Description = accountType.Description + rndNr.ToString();
+            page.Description = identiyType.Description + rndNr.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_description");
             page.Create();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_created");
         }
-        public void SearchAccountType(AccountType accountType)
+        public void SearchIdentityType(Helpers.IdentiyType identiyType)
         {
             var page = GetAbility<TypeOverviewPage>();
-            page.Search(accountType.Type + rndNr.ToString());
+            page.Search(identiyType.Type + rndNr.ToString());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Accounttype with type: {accountType.Type + rndNr.ToString()} and description: {accountType.Description + rndNr.ToString()}",
-                admin.Account.UserID,
-                Table);
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Identitytype with type: {identiyType.Type + rndNr.ToString()} and description: {identiyType.Description + rndNr.ToString()}",
+                admin.Account.UserID, Table);
         }
     }
 }

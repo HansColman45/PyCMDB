@@ -30,7 +30,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
             var result = context.StepContext.Status;
             if (result == ScenarioExecutionStatus.TestError)
             {
-                log.Error($"The scenario {context.ScenarioInfo.Title} on step {context.CurrentScenarioBlock} ended with {result}");
+                var errorMessage = context.TestError.Message;
+                log.Error($"The scenario {context.ScenarioInfo.Title} on step {context.CurrentScenarioBlock} ended with {result} and the error message is {errorMessage}");
                 var actor = actorRegistry.Actors.First();
                 var page = actor.GetAbility<MainPage>();
                 page.Settings.TakeScreenShot = true;

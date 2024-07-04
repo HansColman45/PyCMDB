@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
     public class AccountActor : CMDBActor
     {
-        protected string table => "account";
+        protected string Table => "account";
         public AccountActor(ScenarioContext scenarioContext, string name = "CMDB") : base(scenarioContext, name)
         {
         }
@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             {
                 var detail = Perform(new OpenTheAccountDetailPage());
                 detail.WebDriver = Driver;
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return Perform(new TheAccountDertailLastLogLine());
             }
         }

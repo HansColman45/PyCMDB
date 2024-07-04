@@ -1,6 +1,7 @@
 ﻿
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
+using CMDB.UI.Specflow.Abilities.Pages.Docking;
 using CMDB.UI.Specflow.Questions.Docking;
 using CMDB.UI.Specflow.Tasks;
 using Microsoft.Graph;
@@ -12,7 +13,7 @@ namespace CMDB.UI.Specflow.Actors.Dockings
         public DockingUpdator(ScenarioContext scenarioContext, string name = "DockingUpdator") : base(scenarioContext, name)
         {
         }
-        public async Task<Docking> CreateNewDocking(bool active = false)
+        public async Task<Docking> CreateNewDocking(bool active = true)
         {
             var context = GetAbility<DataContext>();
             return await context.CreateDocking(admin, active);
@@ -22,14 +23,14 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             rndNr = rnd.Next();
             var updatePage = Perform(new OpenTheDockingEditPage());
             updatePage.WebDriver = Driver;
-            updatePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EditPage");
+            updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             switch (field)
             {
                 case "SerialNumber":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, docking.SerialNumber, value + rndNr, admin.Account.UserID, Table);
                     updatePage.SerialNumber = value + rndNr;
                     docking.SerialNumber = value + rndNr;
-                    updatePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_SerialNumber");
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
                     
                     break;
                 case "Type":
@@ -40,15 +41,33 @@ namespace CMDB.UI.Specflow.Actors.Dockings
                     var assetType = await GetOrCreateDockingAssetType(Vendor, Type);
                     updatePage.Type = assetType.TypeID.ToString();
                     docking.Type = assetType;
-                    updatePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
                     break;
                 default: 
                     log.Fatal($"The update for the field {field} is not implemented");
                     throw new NotImplementedException();
             }
             updatePage.Edit();
-            updatePage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EditPage");
+            updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             return docking;
+        }
+        public void DeactivateDocking(Docking docking, string reason)
+        {
+            var page = Perform(new OpenTheDockingDeactivatePage());
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
+            page.Reason = reason;
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");
+            page.Delete();
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deleted");
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Docking station with type {docking.Type}", admin.Account.UserID, reason,Table);
+        }
+        public void ActivateDocking(Docking docking)
+        {
+            var page = GetAbility<DockingOverviewPage>();
+            page.Activate();
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ACtivated");
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Docking station with type {docking.Type}", admin.Account.UserID, Table);
         }
     }
 }

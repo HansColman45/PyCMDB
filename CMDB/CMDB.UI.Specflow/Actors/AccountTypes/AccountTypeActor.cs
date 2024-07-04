@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
             {
                 var detail = Perform(new OpenTheTypeDetailsPage());
                 detail.WebDriver = Driver;
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return detail.GetLastLog(Table);
             }
         }

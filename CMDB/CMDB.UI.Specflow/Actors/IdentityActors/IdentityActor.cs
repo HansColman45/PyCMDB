@@ -15,7 +15,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             {
                 var detail = Perform(new OpenTheIdentityDetailPage());
                 detail.WebDriver = Driver;
-                detail.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return Perform(new TheIdentityDetailLastLogLine());
             }
         }

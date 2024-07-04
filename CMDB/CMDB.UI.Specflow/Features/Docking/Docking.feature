@@ -19,3 +19,13 @@ Scenario Outline: I want to update an existing docking
 	| Field        | Value      |
 	| SerialNumber | 456123     |
 	| Type         | HP Generic |
+
+Scenario: I want to activate an existing inactive docking station
+	Given There is an inactve Docking existing
+	When I activate the docking station
+	Then The docking station is activated
+
+Scenario: I want to deactivate a existing active Docking station
+	Given There is an active Docking existing
+	When I deactivate the Docking with reason Test
+	Then The Docking is deactivated

@@ -21,21 +21,21 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDesktopCreatePage());
             createPage.WebDriver = Driver;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             string Vendor, Type;
             Vendor = desktop.Type.Split(" ")[0];
             Type = desktop.Type.Split(" ")[1];
             var assetType = await GetOrCreateDesktopAssetType(Vendor, Type);
             createPage.AssetTag = desktop.AssetTag + rndNr;
             desktop.AssetTag = desktop.AssetTag + rndNr;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_AssetTag");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssetTag");
             createPage.SerialNumber = desktop.SerialNumber + rndNr;
             desktop.SerialNumber = desktop.SerialNumber + rndNr;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_SerialNumber");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
             createPage.RAM = desktop.RAM;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_RAM");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_RAM");
             createPage.Type = assetType.TypeID.ToString();
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             createPage.Create();
             return desktop;
         }

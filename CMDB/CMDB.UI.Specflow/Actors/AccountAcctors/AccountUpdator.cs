@@ -20,7 +20,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         {
             var page = Perform(new OpenTheAccountEditPage());
             page.WebDriver = Driver;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EditPage");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             return page;
         }
         public Account UpdateAccount(string field, string value, Account account)
@@ -30,50 +30,45 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             switch (field)
             {
                 case "UserId":
-                    //ExpectedLog = $"The {field} has been changed from {account.UserID} to {value + rndNr.ToString()} by {admin.Account.UserID} in table account";
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.UserID, value + rndNr.ToString(), admin.Account.UserID, table);
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.UserID, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.UserId = value + rndNr.ToString();
                     account.UserID = value + rndNr.ToString();
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UserId");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UserId");
                     break;
                 case "Type":
-                    //ExpectedLog = $"The {field} has been changed from {account.Type.Type} to {value} by {admin.Account.UserID} in table account";
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Type.Type, value, admin.Account.UserID, table);
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Type.Type, value, admin.Account.UserID, Table);
                     page.Type = value;
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
                     break;
                 case "Application":
-                    //ExpectedLog = $"The {field} has been changed from {account.Application.Name} to {value} by {admin.Account.UserID} in table account";
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Application.Name, value, admin.Account.UserID, table);
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, account.Application.Name, value, admin.Account.UserID, Table);
                     page.Application = value;
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Application");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Application");
                     break;
                 default:
                     log.Fatal($"Update on field {field} is not supported");
                     throw new Exception($"Update on field {field} is not supported");
             }
             page.Edit();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Changed");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Changed");
             return account;
         }
         public void DeactivateAccount(Account account, string reason)
         {
             var page = Perform(new OpenTheAccountDeactivatePage());
             page.WebDriver = Driver;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Reason");
-            //ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is deleted due to {reason} by {admin.Account.UserID} in table account";
-            ExpectedLog = GenericLogLineCreator.DeleteLogLine("Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,reason,table);
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine("Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,reason,Table);
             page.Delete();
         }
         public void AcctivateAccount(Account account)
         {
             var page = GetAbility<AccountOverviewPage>();
             page.Activate();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
-            //ExpectedLog = $"The Account width UserID: {account.UserID} and type {account.Type.Description} is activated by {admin.Account.UserID} in table account";
-            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,table);
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,Table);
         }
     }
 }

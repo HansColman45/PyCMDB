@@ -15,7 +15,7 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             {
                 var overviewPAge = Perform(new OpenTheDockingDetailPage());
                 overviewPAge.WebDriver = Driver;
-                overviewPAge.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                overviewPAge.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return overviewPAge.GetLastLog();
             }
         }

@@ -33,7 +33,7 @@ namespace CMDB.UI.Specflow.Actors
         /// <summary>
         /// The ScenatioContext
         /// </summary>
-        protected readonly ScenarioContext _scenarioContext;
+        protected readonly ScenarioContext ScenarioContext;
         /// <summary>
         /// Random number generator
         /// </summary>
@@ -62,7 +62,7 @@ namespace CMDB.UI.Specflow.Actors
         {
             IsAbleToDoOrUse<DataContext>();
             IsAbleToDoOrUse<LoginPage>();
-            _scenarioContext = scenarioContext;
+            ScenarioContext = scenarioContext;
         }
         public async Task<Admin> CreateNewAdmin()
         {
@@ -84,14 +84,14 @@ namespace CMDB.UI.Specflow.Actors
             {
                 Driver = Perform(new OpenTheLoginPage());
                 var page = GetAbility<LoginPage>();
-                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Login");
+                page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
                 page.UserId = userName;
-                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterUserId");
+                page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
                 page.Password = password;
-                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_EnterPassword");
+                page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterPassword");
                 mainPage = Perform(new OpenTheMainPage());
                 mainPage.WebDriver = Driver;
-                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LogedIn");
+                page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LogedIn");
             }
             catch (Exception e)
             {
@@ -103,154 +103,154 @@ namespace CMDB.UI.Specflow.Actors
         {
             var overviewPage = Perform(new OpenTheIdentityOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_OverviewPage");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_OverviewPage");
             return overviewPage;
         }
         public AccountOverviewPage OpenAccountOverviewPage()
         {
             var overviewPage = Perform(new OpenTheAccountOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public RoleOverviewPage OpenRoleOverviewPage()
         {
             var overviewPage = Perform(new OpenTheRoleOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public LaptopOverviewPage OpenLaptopOverviewPage()
         {
             var overviewPage = Perform(new OpenTheLaptopOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public DesktopOverviewPage OpenDesktopOverviewPage()
         {
             var overviewPage = Perform(new OpenTheDesktopOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public MonitorOverviewPage OpenMonitorOverviewPage()
         {
             var overviewPage = Perform(new OpenTheMonitorOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public DockingOverviewPage OpenDockingOverviewPage()
         {
             var overviewPage = Perform(new OpenTheDockingOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public TokenOverviewPage OpenTokenOverviewPage()
         {
             var overviewPage = Perform(new OpenTheTokenOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public KensingtonOverviewPage OpenKensingtonOverviewPage()
         {
             var overviewPage = Perform(new OpenTheKensingtonOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public MobileOverviewPage OpenMobileOverviewPage()
         {
             var overviewPage = Perform(new OpenTheMobileOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public SubscriptionOverviewPage OpenSubscriptionOverviewPage()
         {
             var overviewPage = Perform(new OpenTheSubscriptionOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public AssetTypeOverviewPage OpenAssetTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenAssetTypeOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public AssetCategoryOverviewPage OpenAssetCategoryOverviewPage()
         {
             var overviewPage = Perform(new OpenAssetCategoryOverview());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public TypeOverviewPage OpenIdentityTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheIdentityTypeOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public TypeOverviewPage OpenAccountTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheAccountTypeOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public TypeOverviewPage OpenRoleTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheOpenRoleTypeOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public SubscriptionTypeOverviewPage OpenSubscriptionTypeOverviewPage()
         {
             var overviewPage = Perform(new OpenTheSubscriptionTypeOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public SystemOverviewPage OpenSystemOverviewPage()
         {
             var overviewPage = Perform(new OpenTheSystemOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public ApplicationOverviewPage OpenApplicationOverviewPage()
         {
             var overviewPage = Perform(new OpenTheApplicationOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public AdminOverviewPage OpenAdminOverviewPage()
         {
             var overviewPage = Perform(new OpenTheAdminOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public PermissionOverviewPage OpenPermissionOverviewPage()
         {
             var overviewPage = Perform(new OpenThePermissionOverviewPage());
             overviewPage.WebDriver = Driver;
-            overviewPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }
         public void Search(string search)
         {
             var page = GetAbility<MainPage>();
             page.Search(search);
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Search");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
         public void Dispose()
         {
@@ -258,6 +258,11 @@ namespace CMDB.UI.Specflow.Actors
             main.Dispose();
             var db = GetAbility<DataContext>();
             db.Dispose();
+        }
+        protected RAM GetRam(string notConvertedRam)
+        {
+            var AllRams = Perform(new GetAllRAMInfo());
+            return AllRams.FirstOrDefault(x => x.Display == notConvertedRam);
         }
     }
 }

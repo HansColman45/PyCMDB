@@ -15,10 +15,10 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDockingCreatePage());
             createPage.WebDriver = Driver;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_CreatePage");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             createPage.SerialNumber = dockingStation.SerialNumber + rndNr;
             dockingStation.SerialNumber += rndNr;
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_SerialNumber");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
             createPage.AssetTag = dockingStation.AssetTag + rndNr;
             dockingStation.AssetTag += rndNr;
             string Vendor, Type;
@@ -26,7 +26,7 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             Type = dockingStation.Type.Split(" ")[1];
             var assetType = await GetOrCreateDockingAssetType(Vendor, Type);
             createPage.Type = assetType.TypeID.ToString();
-            createPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
+            createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             createPage.Create();
             return dockingStation;
         }

@@ -20,14 +20,14 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         {
             var page = Perform(new OpenTheUpdateIdentityPage());
             page.WebDriver = Driver;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UpdatePage");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UpdatePage");
             return page;
         }
         public DeactivateIdentityPage OpenDeactivateIdentityPage()
         {
             var page = Perform(new OpenTheDeactivateIdentityPage());
             page.WebDriver = Driver;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_DeactivatePage");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             return page;
         }
         public Identity UpdateIdentity(string field, string value, Identity iden)
@@ -40,55 +40,55 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.FirstName, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.FirstName = value + rndNr.ToString();
                     iden.FirstName = value + rndNr.ToString();
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_FirstName");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_FirstName");
                     break;
                 case "LastName":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.LastName, value + rndNr.ToString(), admin.Account.UserID, Table);
                     page.LastName = value + rndNr.ToString();
                     iden.LastName = value + rndNr.ToString();
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_LastName");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_LastName");
                     break;
                 case "Company":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.Company, value, admin.Account.UserID, Table);
                     page.Company = value;
                     iden.Company = value;
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Company");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Company");
                     break;
                 case "UserID":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.UserID, value, admin.Account.UserID, Table);
                     page.UserId = value;
                     iden.UserID = value;
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_UserId");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UserId");
                     break;
                 case "Email":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, iden.EMail, value, admin.Account.UserID, Table);
                     page.Email = value;
                     iden.EMail = value;
-                    page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Email");
+                    page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Email");
                     break;
                 default:
                     log.Fatal($"Update on field {field} is not supported");
                     throw new Exception($"Update on field {field} is not supported");
             }
             page.Update();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Updated");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Updated");
             return iden;
         }
         public void Deactivate(string reason, Identity identity)
         {
             var page = GetAbility<DeactivateIdentityPage>();
             page.Reason = reason;
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_reason");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");
             page.Delete();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Deleted");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deleted");
             ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}",admin.Account.UserID,reason,Table);
         }
         public void Activate(Identity identity)
         {
             var page = GetAbility<IdentityOverviewPage>();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Overview");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             page.Activate();
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Activated");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
             ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", admin.Account.UserID, Table);
         }
     }

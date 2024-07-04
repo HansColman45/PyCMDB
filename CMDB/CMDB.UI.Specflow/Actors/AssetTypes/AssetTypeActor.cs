@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             {
                 var page = Perform(new OpenTheAssetTypeDetailPage());
                 page.WebDriver = Driver;
-                page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_detail");
+                page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return page.GetLastLog();
             }
         }

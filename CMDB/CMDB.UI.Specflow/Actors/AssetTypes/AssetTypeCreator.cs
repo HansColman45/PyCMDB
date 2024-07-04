@@ -16,7 +16,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             rndNr = rnd.Next();
             var editPage = Perform(new OpenTheAsseTypeCreatePage());
             editPage.WebDriver = Driver;
-            editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_create");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             AssetType assetType = new()
             {
                 Category = category,
@@ -24,20 +24,20 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
                 Type = type + rndNr.ToString()
             };
             editPage.Category = assetType.Category;
-            editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Category");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Category");
             editPage.Vendor = assetType.Vendor;
-            editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Vendor");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Vendor");
             editPage.Type = assetType.Type;
-            editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_Type");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             editPage.Create();
-            editPage.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_created");
+            editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_created");
             return assetType;
         }
         public void SearchAssetType(AssetType assetType)
         {
             var page = GetAbility<MainPage>();
             page.Search(assetType.Type);
-            page.TakeScreenShot($"{_scenarioContext.ScenarioInfo.Title}_{_scenarioContext.CurrentScenarioBlock}_searched");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_searched");
             ExpectedLog = GenericLogLineCreator.CreateLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}",admin.Account.UserID,Table);
         }
     }

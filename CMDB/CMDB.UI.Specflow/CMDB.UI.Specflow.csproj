@@ -23,6 +23,8 @@
     <Folder Include="Features\AssetType\" />
     <Folder Include="Features\Desktop\" />
     <Folder Include="Features\Docking\" />
+    <Folder Include="Features\IdentityType\" />
+    <Folder Include="Features\Laptop\" />
     <Folder Include="Screenshots\" />
   </ItemGroup>
 
