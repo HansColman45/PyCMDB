@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Questions.Account;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AccountAcctors
@@ -13,8 +14,10 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         }
         public async Task<Account> CreateAccount(bool active = true)
         {
-            var db = GetAbility<DataContext>();
-            return await db.CreateAccount(admin, active);
+            if (active)
+                return await Perform(new CreateTheAccount());
+            else
+                return await Perform(new CreateTheIncativeAccount());
         }
         public EditAccountPage OpenEditAccountPage()
         {
@@ -60,7 +63,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");
-            ExpectedLog = GenericLogLineCreator.DeleteLogLine("Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,reason,Table);
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Account with UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,reason,Table);
             page.Delete();
         }
         public void AcctivateAccount(Account account)
@@ -68,7 +71,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             var page = GetAbility<AccountOverviewPage>();
             page.Activate();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
-            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Account width UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,Table);
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Account with UserID: {account.UserID} and type {account.Type.Description}", admin.Account.UserID,Table);
         }
     }
 }

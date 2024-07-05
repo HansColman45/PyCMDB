@@ -1,6 +1,6 @@
 ﻿using CMDB.Domain.Entities;
-using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Laptop;
 using CMDB.UI.Specflow.Tasks;
 
@@ -13,8 +13,10 @@ namespace CMDB.UI.Specflow.Actors.Laptops
         }
         public async Task<Laptop> CreateLaptop(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateLaptop(admin, active);
+            if(active)
+                return await Perform(new CreateTheLaptop());
+            else
+                return await Perform(new CreateTheInactiveLaptop());
         }
         public Laptop UpdateLaptop(Laptop laptop, string field, string value)
         {

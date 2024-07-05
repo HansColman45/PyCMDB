@@ -1,10 +1,8 @@
-﻿
-using CMDB.Domain.Entities;
-using CMDB.UI.Specflow.Abilities.Data;
+﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Docking;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Docking;
 using CMDB.UI.Specflow.Tasks;
-using Microsoft.Graph;
 
 namespace CMDB.UI.Specflow.Actors.Dockings
 {
@@ -15,8 +13,10 @@ namespace CMDB.UI.Specflow.Actors.Dockings
         }
         public async Task<Docking> CreateNewDocking(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateDocking(admin, active);
+            if(active)
+                return await Perform(new CreateTheDockingStation());
+            else
+                return await Perform(new CreateTheIncativeDockingStation());
         }
         public async Task<Docking> UpdateDocking(Docking docking, string field, string value)
         {

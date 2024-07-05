@@ -69,6 +69,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             updatedfield = field;
             Identity = await identityUpdator.CreateNewIdentity();
+            log.Info($"Identity created with FirstName {Identity.FirstName} and LastName {Identity.LastName}");
             identityUpdator.Search(Identity.FirstName);
             identityUpdator.OpenUpdateIdentityPage();
             Identity = identityUpdator.UpdateIdentity(field, newValue, Identity);
@@ -105,6 +106,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             result.Should().BeTrue();
             identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity(false);
+            log.Info($"Identity created with FirstName {Identity.FirstName} and LastName {Identity.LastName}");
             identityUpdator.Search(Identity.FirstName);
         }
         [When(@"I want to activate this identity")]
@@ -132,6 +134,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             result.Should().BeTrue();
             identityUpdator.OpenIdentityOverviewPage();
             Identity = await identityUpdator.CreateNewIdentity();
+            log.Info($"Identity created with FirstName {Identity.FirstName} and LastName {Identity.LastName}");
             identityUpdator.Search(Identity.FirstName);
         }
         [When(@"I want to deactivete the identity whith the reason (.*)")]

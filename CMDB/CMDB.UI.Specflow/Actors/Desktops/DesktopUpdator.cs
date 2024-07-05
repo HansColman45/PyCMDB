@@ -15,8 +15,10 @@ namespace CMDB.UI.Specflow.Actors.Desktops
         }
         public async Task<Desktop> CreateDesktop(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateDesktop(admin, active);
+            if(active)
+                return await Perform(new CreateTheDesktop());
+            else
+                return await Perform(new CreateTheInactiveDesktop());
         }
         public Desktop UpdateDesktop(Desktop desktop, string field, string value)
         {

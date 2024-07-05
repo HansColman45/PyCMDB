@@ -1,16 +1,10 @@
 ﻿using CMDB.Domain.Entities;
-using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Types;
 using CMDB.UI.Specflow.Tasks;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace CMDB.UI.Specflow.Actors.IdentityTypes 
+namespace CMDB.UI.Specflow.Actors.IdentityTypes
 {
     public class IdentityTypeUpdator : IdentityTypeActor
     {
@@ -19,8 +13,10 @@ namespace CMDB.UI.Specflow.Actors.IdentityTypes
         }
         public async Task<IdentityType> CreateNewIdentityType(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateIdentityType(admin, active);
+            if (active)
+                return await Perform(new CreateTheIdentityType());
+            else
+                return await Perform(new CreateTheInactiveIdentityType());
         }
         public IdentityType UpdateIdentity(IdentityType identityType, string field, string value)
         {

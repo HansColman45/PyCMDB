@@ -31,13 +31,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
             result.Should().BeTrue();
             accountCreator.OpenAccountOverviewPage();
             createAccountPage = accountCreator.OpenAccountCreatePage();
-            accountCreator.CreateNewAccount(account);
         }
         [When(@"I save the account")]
         public void WhenISaveTheAccount()
         {
-            createAccountPage.Create();
-            createAccountPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Saved");
+            accountCreator.CreateNewAccount(account);
         }
         [Then(@"The account is saved")]
         public void ThenTheAccountIsSaved()
@@ -56,6 +54,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             ActorRegistry.RegisterActor(accountUpdator);
             Admin = await accountUpdator.CreateNewAdmin();
             _account = await accountUpdator.CreateAccount();
+            log.Info($"Account created with UserID {_account.UserID}");
             accountUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = accountUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -84,6 +83,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             ActorRegistry.RegisterActor(accountUpdator);
             Admin = await accountUpdator.CreateNewAdmin();
             _account = await accountUpdator.CreateAccount();
+            log.Info($"Account created with UserID {_account.UserID}");
             accountUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = accountUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -112,6 +112,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             ActorRegistry.RegisterActor(accountUpdator);
             Admin = await accountUpdator.CreateNewAdmin();
             _account = await accountUpdator.CreateAccount(false);
+            log.Info($"Account created with UserID {_account.UserID}");
             accountUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = accountUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();

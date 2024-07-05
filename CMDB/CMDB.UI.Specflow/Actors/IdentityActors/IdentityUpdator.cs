@@ -1,6 +1,7 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Identity;
 using CMDB.UI.Specflow.Tasks;
 
@@ -13,8 +14,10 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         }
         public async Task<Identity> CreateNewIdentity(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateIdentity(admin, active);
+            if (active)
+                return await Perform(new CreateTheIdentity());
+            else
+                return await Perform(new CreateTheInactiveIdentity());
         }
         public UpdateIdentityPage OpenUpdateIdentityPage()
         {

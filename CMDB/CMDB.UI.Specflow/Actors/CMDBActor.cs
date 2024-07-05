@@ -69,6 +69,7 @@ namespace CMDB.UI.Specflow.Actors
             try
             {
                 admin = await Perform(new CreateTheAdmin());
+                log.Info($"We will use Admin with UserId: {admin.Account.UserID} to logon");
                 return admin;
             }
             catch (Exception e)

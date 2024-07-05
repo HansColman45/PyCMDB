@@ -10,6 +10,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
     public class DataContext: Ability
     {
         public readonly CMDBContext context;
+        public Admin Admin { get; set; }
         public DataContext() 
         {
             string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";
@@ -25,16 +26,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>Admin</returns>
         public async Task<Admin> CreateNewAdmin(int level = 9)
         {
-            var admin = await AdminHelper.CreateCMDBAdmin(context, level);
-            return admin;
-        }
-        /// <summary>
-        /// This will delete all Created or update entities the Admin has done
-        /// </summary>
-        /// <param name="admin">The Admin</param>
-        public async Task<Dictionary<string, Object>> DeleteAllCreatedOrUpdated(Admin admin)
-        {
-            return await AdminHelper.DeleteCascading(context, admin);
+            Admin = await AdminHelper.CreateCMDBAdmin(context, level);
+            return Admin;
         }
         /// <summary>
         /// This function will return an Identity using the Id
@@ -51,17 +44,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             return iden;
         }
         /// <summary>
-        /// This will create a new Identity
-        /// </summary>
-        /// <param name="active">Indicates if the identity needs to be active or not</param>
-        /// <param name="admin">The admin</param>
-        /// <returns>Identity</returns>
-        public async Task<Identity> CreateIdentity(Admin admin, bool active = true)
-        {
-            Identity identity = await IdentityHelper.CreateSimpleIdentity(context, admin, active);
-            return identity;
-        }
-        /// <summary>
         /// This will return an AssetType using the Id
         /// </summary>
         /// <param name="AssetTypeID">The AssetTypeId</param>
@@ -73,28 +55,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 .Where(x => x.TypeID == AssetTypeID)
                 .FirstOrDefault();
             return assetType;
-        }
-        /// <summary>
-        /// This function will create a desktop
-        /// </summary>
-        /// <param name="admin">The admin that created the desktop</param>
-        /// <param name="active">Indicates if the desktop needs to be active or not</param>
-        /// <returns>Desktop</returns>
-        public async Task<Desktop> CreateDesktop(Admin admin, bool active = true)
-        {
-            Desktop desktop = await DesktopHelper.CreateSimpleDesktop(context, admin, active);
-            return desktop;
-        }
-        /// <summary>
-        /// This function will create a new Docking
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the Docking needs to be active or not</param>
-        /// <returns>Docking</returns>
-        public async Task<Docking> CreateDocking(Admin admin, bool active = true)
-        {
-            Docking docking = await DockingHelpers.CreateSimpleDocking(context, admin, active);
-            return docking;
         }
         /// <summary>
         /// This will return the Account using the Id
@@ -109,28 +69,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 .Where(x => x.AccID == AccountId)
                 .FirstOrDefault();
             return account;
-        }
-        /// <summary>
-        /// This will create a new AccountType in the system
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">To indicate if accounttype needs to be active</param>
-        /// <returns>AccountType</returns>
-        public async Task<AccountType> CreateAccountType(Admin admin, bool active = true)
-        {
-            AccountType accountType = await AccountTypeHelper.CreateSimpleAccountType(context, admin, active);
-            return accountType;
-        }
-        /// <summary>
-        /// This will create an Account
-        /// </summary>
-        /// <param name="active">Indicates if the Account needs to be active or not</param>
-        /// <param name="admin">The admin</param>
-        /// <returns>Account</returns>
-        public async Task<Account> CreateAccount(Admin admin, bool active = true)
-        {
-            var Account = await AccountHelper.CreateSimpleAccountAsync(context, admin, active);
-            return Account;
         }
         /// <summary>
         /// This will return abn AssetCategory using the Category
@@ -197,24 +135,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             return Laptop;
         }
         /// <summary>
-        /// This function will create a new Laptop
-        /// </summary>
-        /// <returns>Laptop</returns>
-        public async Task<Laptop> CreateLaptop(Admin admin, bool active = true)
-        {
-            return await LaptopHelper.CreateSimpleLaptop(context, admin, active);
-        }
-        /// <summary>
-        /// This function will return the RAM info
-        /// </summary>
-        /// <param name="display">The display value</param>
-        /// <returns>RAM</returns>
-        public RAM GetRAM(string display)
-        {
-            var ram = context.RAMs.Where(x => x.Display == display).FirstOrDefault();
-            return ram;
-        }
-        /// <summary>
         /// This function will assign an Idenity to an Account
         /// </summary>
         /// <param name="identity">Identity</param>
@@ -236,40 +156,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             await context.SaveChangesAsync();
         }
         /// <summary>
-        /// This function will create a new screen
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the Screen needs to be active or not</param>
-        /// <returns>Screen</returns>
-        public async Task<Screen> CreateMonitor(Admin admin, bool active = true)
-        {
-            Screen screen = await ScreenHelper.CreateScreen(context, admin, active);
-            return screen;
-        }
-        /// <summary>
-        /// This function will create a new token
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the Token needs to be active or not</param>
-        /// <returns>Token</returns>
-        public async Task<Token> CreateToken(Admin admin, bool active = true)
-        {
-            Token token = await TokenHelper.CreateNewToken(context, admin, active);
-            return token;
-        }
-        /// <summary>
-        /// This function will create a new AssetType
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the AssetType needs to be active or not</param>
-        /// <returns>AssetType</returns>
-        public async Task<AssetType> CreateAssetType(Admin admin, bool active = true)
-        {
-            AssetCategory category = context.AssetCategories.FirstOrDefault();
-            AssetType assetType = await AssetTypeHelper.CreateSimpleAssetType(context, category, admin, active);
-            return assetType;
-        }
-        /// <summary>
         /// This function will assign a given Identity to a given device
         /// </summary>
         /// <param name="admin">The admin</param>
@@ -281,40 +167,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             device.LastModfiedAdmin = admin;
             identity.Devices.Add(device);
             await context.SaveChangesAsync();
-        }
-        /// <summary>
-        /// This will create a IdenityType
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the Identitytype needs to be active or not</param>
-        /// <returns>IdentityType</returns>
-        public async Task<IdentityType> CreateIdentityType(Admin admin, bool active = true)
-        {
-            IdentityType type = await IdentityTypeHelper.CreateSimpleIdentityType(context, admin, active);
-            return type;
-        }
-        /// <summary>
-        /// This will create a new Mobile
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="active">Indicates if the Mobile needs to be active or not</param>
-        /// <returns>Mobile</returns>
-        public async Task<Mobile> CreateMobile(Admin admin, bool active = true)
-        {
-            Mobile mobile = await MobileHelper.CreateSimpleMobile(context, admin, active);
-            return mobile;
-        }
-        /// <summary>
-        /// This function will create a subscription type
-        /// </summary>
-        /// <param name="admin">The admin</param>
-        /// <param name="actice">Indicates if the subscriptiontype needs to be active or not</param>
-        /// <returns></returns>
-        public async Task<SubscriptionType> CreateSubscriptionType(Admin admin, bool actice = true)
-        {
-            AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
-            SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
-            return subscriptionType;
         }
         /// <summary>
         /// This function will check if there is a subscriptionType and if not create on
@@ -334,6 +186,18 @@ namespace CMDB.UI.Specflow.Abilities.Data
         public new void Dispose()
         {
             context.Dispose();
+        }
+        /// <summary>
+        /// This function will create a subscription type
+        /// </summary>
+        /// <param name="admin">The admin</param>
+        /// <param name="actice">Indicates if the subscriptiontype needs to be active or not</param>
+        /// <returns></returns>
+        private async Task<SubscriptionType> CreateSubscriptionType(Admin admin, bool actice = true)
+        {
+            AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
+            SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
+            return subscriptionType;
         }
     }
 }

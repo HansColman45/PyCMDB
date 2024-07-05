@@ -1,8 +1,7 @@
 ﻿using CMDB.Domain.Entities;
-using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
-using CMDB.UI.Specflow.Actors.AccountTypes;
 using CMDB.UI.Specflow.Questions.AssetType;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.AssetTypes
@@ -14,8 +13,10 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
         }
         public async Task<AssetType> CreateAssetType(bool active = true)
         {
-            var context = GetAbility<DataContext>();
-            return await context.CreateAssetType(admin,active);
+            if (active)
+                return await Perform(new CreateTheAssetType());
+            else
+                return await Perform(new CreateTheInactiveAssetType());
         }
         public AssetType UpdateAssetType(AssetType assetType)
         {

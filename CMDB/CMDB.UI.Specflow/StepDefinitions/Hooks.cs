@@ -19,13 +19,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
             actorRegistry.Clear();
         }
         [AfterScenario]
-        public void AfterScenario(ScenarioContext context, ActorRegistry actorRegistry)
+        public async Task AfterScenario(ScenarioContext context, ActorRegistry actorRegistry)
         {
             log.Info("Scenario {0} ended", context.ScenarioInfo.Title);
-            actorRegistry.DisposeActors();
+            await actorRegistry.DisposeActors();
         }
         [AfterStep]
-        public void AfterStep(ScenarioContext context, ActorRegistry actorRegistry)
+        public async Task AfterStep(ScenarioContext context, ActorRegistry actorRegistry)
         {
             var result = context.StepContext.Status;
             if (result == ScenarioExecutionStatus.TestError)
@@ -38,7 +38,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
                 page.TakeScreenShot($"{context.ScenarioInfo.Title}_{context.CurrentScenarioBlock}_Error");
                 page.Settings.TakeScreenShot = false;
                 log.Info("A screenshot is saved");
-                actorRegistry.DisposeActors();
+                await actorRegistry.DisposeActors();
             }
         }
         

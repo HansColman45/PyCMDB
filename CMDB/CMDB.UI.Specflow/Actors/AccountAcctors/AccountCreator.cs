@@ -27,6 +27,9 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             page.Application = account.Application;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Application");
+            page.Create();
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Created");
+            log.Info($"We created an account with UserID: {account.UserId + rndNr} and Type: {account.Type}");
         }
         public void SearchAccount(Helpers.Account account)
         {

@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Actors;
+using CMDB.UI.Specflow.Questions.DataContextAnswers;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {
@@ -15,10 +16,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             _actors.Clear();
         }
-        public void DisposeActors()
+        public async Task DisposeActors()
         {
             foreach (var actor in _actors)
             {
+                await actor.Perform(new DeleteAllItemsCreatedOrUpdatedByAdmin());
                 actor.Dispose();
             }
         }
