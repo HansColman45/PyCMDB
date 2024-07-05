@@ -50,6 +50,7 @@ dlldata.c
 *.pdb
 *.png
 *.log
+*.bkp
 
 # Visual C++ cache files
 ipch/
