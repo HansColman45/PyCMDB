@@ -1,4 +1,5 @@
 ﻿using Bright.ScreenPlay.Abilities;
+using Bright.ScreenPlay.Settings;
 
 namespace CMDB.UI.Specflow.Abilities.Pages
 {
@@ -6,7 +7,11 @@ namespace CMDB.UI.Specflow.Abilities.Pages
     {
         public LoginPage()
         {
-            Settings.BaseUrl = "https://localhost:44314/";
+            WebSettings settings = new()
+            {
+                BaseUrl = "https://localhost:44314/"
+            };
+            Settings = settings;
         }
         public string UserId
         {

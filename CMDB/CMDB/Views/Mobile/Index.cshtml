@@ -41,7 +41,7 @@
                         }
                         @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["AssignSubscription"])
                         {
-                            <a class="btn btn-success" asp-action="AssignSubscription" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Subscription"><span class="@ViewBag.AssignSubscription"></span></a>
+                            <a class="btn btn-success" asp-action="AssignSubscription" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Subscription"><span class="@ViewBag.SubscriptionIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

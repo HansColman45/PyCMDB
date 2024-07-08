@@ -10,24 +10,24 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.HTML" Version="22.6.0" />
-    <PackageReference Include="bootstrap" Version="5.1.3" />
+    <PackageReference Include="Aspose.HTML" Version="24.6.0" />
+    <PackageReference Include="bootstrap" Version="5.3.3" />
     <PackageReference Include="Bootstrap.Datepicker" Version="1.8.0.1" />
-    <PackageReference Include="IronPdf" Version="2022.6.6115" />
-    <PackageReference Include="jQuery" Version="3.6.0" />
+    <PackageReference Include="IronPdf" Version="2024.7.8" />
+    <PackageReference Include="jQuery" Version="3.7.1" />
     <PackageReference Include="jQuery.UI.Combined" Version="1.13.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="6.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="7.0.20" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.20">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.6" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.6" />
-    <PackageReference Include="NLog" Version="5.0.1" />
-    <PackageReference Include="NLog.Extensions.Logging" Version="5.0.1" />
-    <PackageReference Include="NLog.Web.AspNetCore" Version="5.0.0" />
-    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.20" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.12" />
+    <PackageReference Include="NLog" Version="5.3.2" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.11" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="5.3.11" />
+    <PackageReference Include="NUnit" Version="4.1.0" />
   </ItemGroup>
 
   <ItemGroup>

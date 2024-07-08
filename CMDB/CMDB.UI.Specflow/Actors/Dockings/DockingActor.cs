@@ -1,11 +1,10 @@
-﻿using CMDB.UI.Specflow.Abilities.Data;
-using CMDB.UI.Specflow.Questions.Docking;
+﻿using CMDB.UI.Specflow.Questions.Docking;
 
 namespace CMDB.UI.Specflow.Actors.Dockings
 {
     public class DockingActor : CMDBActor
     {
-        protected string Table => "docking";
+        protected static string Table => "docking";
         public DockingActor(ScenarioContext scenarioContext, string name = "DockingActor") : base(scenarioContext, name)
         {
         }
@@ -18,12 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
                 overviewPAge.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return overviewPAge.GetLastLog();
             }
-        }
-        protected async Task<Domain.Entities.AssetType> GetOrCreateDockingAssetType(string vendor, string type)
-        {
-            var context = GetAbility<DataContext>();
-            var assetCat = context.GetAssetCategory("Docking station");
-            return await context.GetOrCreateAssetType(vendor, type, assetCat);
         }
     }
 }

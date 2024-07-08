@@ -47,15 +47,17 @@ namespace CMDB.Services
         }
         public async Task Update(Mobile mobile, long newImei, AssetType newAssetType, string table)
         {
+            var oldImei = mobile.IMEI;
+            var oldAssetType = mobile.MobileType;
             if(mobile.IMEI != newImei)
             {
                 mobile.IMEI = newImei;
-                await LogUpdate(table, mobile.MobileId, "IMEI", mobile.IMEI.ToString(), newImei.ToString());
+                await LogUpdate(table, mobile.MobileId, "IMEI", oldImei.ToString(), newImei.ToString());
             }
             if(mobile.MobileType != newAssetType)
             {
                 mobile.MobileType = newAssetType;
-                await LogUpdate(table, mobile.MobileId, "Type", mobile.MobileType.ToString(), newAssetType.ToString());
+                await LogUpdate(table, mobile.MobileId, "Type", $"{oldAssetType}", newAssetType.ToString());
             }
             mobile.LastModfiedAdmin = Admin;
             _context.Mobiles.Update(mobile);

@@ -24,7 +24,7 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             string Vendor, Type;
             Vendor = dockingStation.Type.Split(" ")[0];
             Type = dockingStation.Type.Split(" ")[1];
-            var assetType = await GetOrCreateDockingAssetType(Vendor, Type);
+            var assetType = await GetOrCreateAssetType("Docking station",Vendor, Type);
             createPage.Type = assetType.TypeID.ToString();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             createPage.Create();

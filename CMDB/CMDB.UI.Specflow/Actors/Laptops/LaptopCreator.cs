@@ -24,7 +24,7 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             string Vendor, Type;
             Vendor = laptop.Type.Split(" ")[0];
             Type = laptop.Type.Split(" ")[1];
-            var assetType = GetOrCreateLaptopType(Vendor, Type).Result;
+            var assetType = GetOrCreateAssetType("Laptop",Vendor, Type).Result;
             page.Type = assetType.TypeID.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_type");
             page.Create();

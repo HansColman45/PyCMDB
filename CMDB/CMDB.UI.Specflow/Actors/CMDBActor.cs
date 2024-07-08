@@ -265,5 +265,11 @@ namespace CMDB.UI.Specflow.Actors
             var AllRams = Perform(new GetAllRAMInfo());
             return AllRams.FirstOrDefault(x => x.Display == notConvertedRam);
         }
+        protected async Task<Domain.Entities.AssetType> GetOrCreateAssetType(string assetCategory, string vendor, string type)
+        {
+            var context = GetAbility<DataContext>();
+            var assetCat = context.GetAssetCategory(assetCategory);
+            return await context.GetOrCreateAssetType(vendor, type, assetCat, admin);
+        }
     }
 }

@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace CMDB
 {
@@ -19,9 +18,10 @@ namespace CMDB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";
             services.AddMvc();
             services.AddDbContext<CMDBContext>(
-                opt => opt.UseSqlServer(Configuration.GetConnectionString("CMDBConnection")),
+                opt => opt.UseSqlServer(connectionstring),
                 ServiceLifetime.Singleton
             );
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();

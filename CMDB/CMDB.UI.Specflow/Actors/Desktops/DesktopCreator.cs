@@ -10,12 +10,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
         public DesktopCreator(ScenarioContext scenarioContext, string name = "DesktopCreator") : base(scenarioContext, name)
         {
         }
-        private async Task<Domain.Entities.AssetType> GetOrCreateDesktopAssetType(string vendor, string type)
-        {
-            var context = GetAbility<DataContext>();
-            var assetCat = context.GetAssetCategory("Desktop");
-            return await context.GetOrCreateAssetType(vendor, type, assetCat);
-        }
         public async Task<Helpers.Desktop> CreateNewDesktop(Helpers.Desktop desktop)
         {
             rndNr = rnd.Next();
@@ -25,7 +19,7 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             string Vendor, Type;
             Vendor = desktop.Type.Split(" ")[0];
             Type = desktop.Type.Split(" ")[1];
-            var assetType = await GetOrCreateDesktopAssetType(Vendor, Type);
+            var assetType = await GetOrCreateAssetType("Desktop",Vendor, Type);
             createPage.AssetTag = desktop.AssetTag + rndNr;
             desktop.AssetTag = desktop.AssetTag + rndNr;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssetTag");

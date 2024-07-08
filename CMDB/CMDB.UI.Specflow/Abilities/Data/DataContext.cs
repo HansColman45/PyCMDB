@@ -71,7 +71,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
             return account;
         }
         /// <summary>
-        /// This will return abn AssetCategory using the Category
+        /// This will return an AssetCategory using the Category
         /// </summary>
         /// <param name="category">Category</param>
         /// <returns>AssetCategory</returns>
@@ -101,7 +101,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <param name="type">The Type</param>
         /// <param name="category">The category</param>
         /// <returns>AssetType</returns>
-        public async Task<AssetType> GetOrCreateAssetType(string vendor, string type, AssetCategory category)
+        public async Task<AssetType> GetOrCreateAssetType(string vendor, string type, AssetCategory category, Admin admin)
         {
             var assetTypes = context.AssetTypes
                 .Include(x => x.Category)
@@ -113,7 +113,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 {
                     Vendor = vendor,
                     Type = type,
-                    Category = category
+                    Category = category,
+                    LastModfiedAdmin = admin
                 };
                 context.AssetTypes.Add(assetType);
                 await context.SaveChangesAsync();
