@@ -11,10 +11,5 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
         {
             SelectValueInDropDownByXpath("//select[@id='Identity']", $"{identity.IdenId}");
         }
-        public AssignFormPage Assign()
-        {
-            ClickElementByXpath("//button[.='Assign']");
-            return new();
-        }
     }
 }

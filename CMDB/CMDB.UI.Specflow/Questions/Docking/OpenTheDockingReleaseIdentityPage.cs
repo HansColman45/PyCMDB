@@ -1,6 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
-using CMDB.UI.Specflow.Abilities.Pages.Docking;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages.Docking;
 
 namespace CMDB.UI.Specflow.Questions.Docking
 {
@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Questions.Docking
         public override DockingReleaseIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DockingDetailPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.ReleaseAccountXPath);
+            page.ClickElementByXpath(DockingDetailPage.ReleaseAccountXPath);
             return new();
         }
     }

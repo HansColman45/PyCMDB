@@ -27,6 +27,20 @@ Scenario: I want to activate and inactive Desktop
 	Then The desktop is active
 
 Scenario: I want to deactivate an existing Desktop
-	Given There is an active Desktop existing
+	Given There is an Desktop existing
 	When I deactivate the Desktop with reason Test
 	Then The desktop is deactivated
+
+Scenario: I want to assign an existing Identiy to my Desktop
+	Given There is an active Desktop existing
+	And the Identity exist as well
+	When I assign the Desktop to the Identity
+	And I fill in the assign form for my Desktop
+	Then The Identity is assigned to the Desktop
+
+Scenario: I want to release an assigned identity from my Desktop
+	Given There is an active Desktop existing
+	And the Identity exist as well
+	And that Identity is assigned to my Desktop
+	When I release that identity from my Desktop and I fill in the release form
+	Then The identity is released from my Desktop

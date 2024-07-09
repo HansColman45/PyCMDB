@@ -1,10 +1,10 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers.Devices
 {

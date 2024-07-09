@@ -26,6 +26,7 @@
     <Folder Include="Features\IdentityType\" />
     <Folder Include="Features\Laptop\" />
     <Folder Include="Features\Mobile\" />
+    <Folder Include="Features\Monitor\" />
     <Folder Include="Screenshots\" />
   </ItemGroup>
 

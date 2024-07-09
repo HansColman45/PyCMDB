@@ -253,6 +253,13 @@ namespace CMDB.UI.Specflow.Actors
             page.Search(search);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
         }
+        public AssignFormPage OpenAssignFom()
+        {
+            var page = Perform(new OpenTheAssignFormPage());
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
+            return page;
+        }
         public void Dispose()
         {
             var main = GetAbility<LoginPage>();
@@ -271,5 +278,6 @@ namespace CMDB.UI.Specflow.Actors
             var assetCat = context.GetAssetCategory(assetCategory);
             return await context.GetOrCreateAssetType(vendor, type, assetCat, admin);
         }
+        
     }
 }

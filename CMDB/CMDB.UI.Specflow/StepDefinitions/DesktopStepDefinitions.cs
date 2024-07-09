@@ -1,5 +1,6 @@
 using CMDB.UI.Specflow.Actors.Desktops;
 using CMDB.UI.Specflow.Questions;
+using CMDB.UI.Specflow.Tasks;
 using TechTalk.SpecFlow.Assist;
 
 namespace CMDB.UI.Specflow.StepDefinitions
@@ -9,8 +10,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         private DesktopCreator _desktopCreator;
         private DesktopUpdator _desktopUpdator;
+        private DesktopIdentityActor _desktopIdentityActor;
+
         private Helpers.Desktop _desktop;
         private Domain.Entities.Desktop Desktop;
+        private Domain.Entities.Identity Identity;
         public DesktopStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -67,19 +71,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         #endregion
         #region Deactivate Desktop
-        [Given(@"There is an active Desktop existing")]
-        public async Task GivenThereIsAnActiveDesktopExisting()
-        {
-            _desktopUpdator = new(ScenarioContext);
-            ActorRegistry.RegisterActor(_desktopUpdator);
-            Admin = await _desktopUpdator.CreateNewAdmin();
-            Desktop = await _desktopUpdator.CreateDesktop();
-            _desktopUpdator.DoLogin(Admin.Account.UserID, "1234");
-            var result = _desktopUpdator.Perform(new IsTheUserLoggedIn());
-            result.Should().BeTrue();
-            _desktopUpdator.OpenDesktopOverviewPage();
-            _desktopUpdator.Search(Desktop.AssetTag);
-        }
         [When(@"I deactivate the Desktop with reason (.*)")]
         public void WhenIDeactivateTheDesktopWithReasonTest(string reason)
         {
@@ -119,6 +110,64 @@ namespace CMDB.UI.Specflow.StepDefinitions
             var lastlog = _desktopUpdator.DesktopLastLogLine;
             _desktopUpdator.ExpectedLog.Should().BeEquivalentTo(lastlog);
         }
+        #endregion
+        
+        [Given(@"There is an active Desktop existing")]
+        public async Task GivenThereIsAnActiveDesktopExisting()
+        {
+            _desktopIdentityActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(_desktopIdentityActor);
+            Admin = await _desktopIdentityActor.CreateNewAdmin();
+            Desktop = await _desktopIdentityActor.CreateDesktop();
+            _desktopIdentityActor.DoLogin(Admin.Account.UserID, "1234");
+            var result = _desktopIdentityActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            _desktopIdentityActor.OpenDesktopOverviewPage();
+            _desktopIdentityActor.Search(Desktop.AssetTag);
+        }
+        [Given(@"the Identity exist as well")]
+        public async Task GivenTheIdentityExistAsWell()
+        {
+            Identity = await _desktopIdentityActor.CreateNewIdentity();
+        }
+        #region Assign Identity
+        [When(@"I assign the Desktop to the Identity")]
+        public void WhenIAssignTheDesktopToTheIdentity()
+        {
+            _desktopIdentityActor.AssignTheIdentity2Desktop(Desktop, Identity);
+        }
+        [When(@"I fill in the assign form for my Desktop")]
+        public void WhenIFillInTheAssignFormForMyDesktop()
+        {
+            _desktopIdentityActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The Identity is assigned to the Desktop")]
+        public void ThenTheIdentityIsAssignedToTheDesktop()
+        {
+            _desktopIdentityActor.Search(Desktop.AssetTag);
+            var lastlog = _desktopIdentityActor.DesktopLastLogLine;
+            _desktopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #endregion
+        #region Release Identity
+        [Given(@"that Identity is assigned to my Desktop")]
+        public async Task GivenThatIdentityIsAssignedToMyDesktop()
+        {
+            await _desktopIdentityActor.AssignDesktop2Identity(Desktop, Identity);
+        }
+        [When(@"I release that identity from my Desktop and I fill in the release form")]
+        public void WhenIReleaseThatIdentityFromMyDesktop()
+        {
+            _desktopIdentityActor.ReleaseIdentity(Desktop, Identity);
+        }
+        [Then(@"The identity is released from my Desktop")]
+        public void ThenTheIdentityIsReleasedFromMyDesktop()
+        {
+            _desktopIdentityActor.Search(Desktop.AssetTag);
+            var lastlog = _desktopIdentityActor.DesktopLastLogLine;
+            _desktopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+
         #endregion
     }
 }

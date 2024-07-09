@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CMDB.Domain.Entities;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers.Devices
 {

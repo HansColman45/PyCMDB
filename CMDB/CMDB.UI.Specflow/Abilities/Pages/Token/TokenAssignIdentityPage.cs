@@ -9,10 +9,5 @@
         {
             SelectValueInDropDownByXpath("//select[@id='Identity']", $"{identity.IdenId}");
         }
-        public AssignFormPage Assign()
-        {
-            ClickElementByXpath("//button[.='Assign']");
-            return new();
-        }
     }
 }

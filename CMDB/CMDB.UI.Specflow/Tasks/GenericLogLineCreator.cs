@@ -1,4 +1,5 @@
-﻿namespace CMDB.UI.Specflow.Tasks
+﻿
+namespace CMDB.UI.Specflow.Tasks
 {
     public static class GenericLogLineCreator
     {
@@ -48,6 +49,54 @@
         public static string ActivateLogLine(string value,string activator, string table)
         {
             return $"The {value} is activated by {activator} in table {table}";
+        }
+        /// <summary>
+        /// This function will generate the Log line for when an account is assigned to an Identity
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <param name="IdentityInfo"></param>
+        /// <param name="assingee"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static string AssingAccount2IdenityLogLine(string accountInfo, string IdentityInfo, string assingee, string table)
+        {
+            return $"The {accountInfo} is assigned to {IdentityInfo} by {assingee} in table {table}";
+        }
+        /// <summary>
+        /// This function will generate the Log line for when an account is released from an Identity
+        /// </summary>
+        /// <param name="accountInfo"></param>
+        /// <param name="IdentityInfo"></param>
+        /// <param name="releaser"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static string ReleaseAccountFromIdentityLogLine(string accountInfo, string IdentityInfo, string releaser, string table)
+        {
+            return $"The {accountInfo} is released from {IdentityInfo} by {releaser} in table {table}";
+        }
+        /// <summary>
+        /// This function will generate the Log line for when a device is assigned to an Identity
+        /// </summary>
+        /// <param name="deviceInfo"></param>
+        /// <param name="IdentityInfo"></param>
+        /// <param name="assignee"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static string AssingDevice2IdenityLogLine(string deviceInfo, string IdentityInfo, string assignee, string table)
+        {
+            return $"The {deviceInfo} is assigned to {IdentityInfo} by {assignee} in table {table}";
+        }
+        /// <summary>
+        /// This function will generate the Log line for when a device is released from an Identity
+        /// </summary>
+        /// <param name="deviceInfo"></param>
+        /// <param name="IdentityInfo"></param>
+        /// <param name="releaser"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static string ReleaseDeviceFromIdentityLogLine(string deviceInfo, string IdentityInfo, string releaser, string table)
+        {
+            return $"The {deviceInfo} is released from {IdentityInfo} by {releaser} in table {table}";
         }
     }
 }
