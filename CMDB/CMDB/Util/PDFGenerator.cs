@@ -1,34 +1,24 @@
-﻿using Aspose.Html;
-using CMDB.Domain.Entities;
-using IronPdf;
+﻿using CMDB.Domain.Entities;
 using Microsoft.AspNetCore.Hosting;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace CMDB.Util
 {
-    public class PDFGenerator
+    public class PDFGenerator : IDocument
     {
-        private string HTML;
-        private string _type;
         private readonly List<Device> devices = new();
         private readonly List<Mobile> mobiles = new();
         private readonly List<IdenAccount> accounts = new();
         private readonly List<Subscription> subscriptions = new();
-        public string Type
-        {
-            set
-            {
-                if (!String.IsNullOrEmpty(value))
-                {
-                    HTML += "<H1>Release Form</h1>";
-                    _type = value;
-                }
-                else
-                    HTML += "<H1>Release Form</h1>";
-            }
-            get => _type;
-        }
+        private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
+        private readonly TextStyle titleStyle = TextStyle.Default.FontFamily("Arial").FontSize(20).SemiBold().FontColor(Colors.Black);
+        private readonly TextStyle defaultStyle = TextStyle.Default.FontFamily("Arial").FontSize(9);
+        public string Type { get; set; }
         public string Language { get; set; }
         public string Receiver { get; set; }
         public string FirstName { get; set; }
@@ -36,15 +26,11 @@ namespace CMDB.Util
         public string UserID { get; set; }
         public string Singer { get; set; }
         public string ITEmployee { get; set; }
-
+        public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
+        public DocumentSettings GetSettings() => DocumentSettings.Default;
         public PDFGenerator()
         {
-            HTML = "<HTML>";
-            HTML += "<head>";
-            HTML += "<link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css\" integrity=\"sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO\" crossorigin=\"anonymous\" />";
-            HTML += "<script src=\"https://code.jquery.com/jquery-3.3.1.min.js\"></script>";
-            HTML += "</head>";
-            HTML += "<body>";
+            QuestPDF.Settings.License = LicenseType.Community;
         }
         public void SetAssetInfo(Device device)
         {
@@ -62,293 +48,625 @@ namespace CMDB.Util
         {
             subscriptions.Add(subscription);
         }
-        public string GeneratePDF(IWebHostEnvironment _env)
+        public string GeneratePath(IWebHostEnvironment _env)
         {
             string path;
             DateTime date = DateTime.Now;
             if (!String.IsNullOrEmpty(Type))
-            {
                 path = _env.WebRootPath + @$"\PDF-Files\release_{UserID}_{date:dd-MM-yyyy-HH-mm-ss}.pdf";
-                switch (Language)
+            else
+                path = _env.WebRootPath + @$"\PDF-Files\Assign_{UserID}_{date:dd-MM-yyyy-HH-mm-ss}.pdf";
+            return path;
+        }
+        /// <summary>
+        /// This is the general method to generate the PDF
+        /// </summary>
+        /// <param name="container"></param>
+        public void Compose(IDocumentContainer container)
+        {
+            container.Page(page =>
+            {
+                page.Margin(50);
+                //Generate Header
+                page.Header()
+                    .Height(50)
+                    .Background(Colors.Grey.Lighten1)
+                    .Element(ComposeHeader);
+                //Generate Body
+                page.Content()
+                    .Element(ComposeBody);
+                //Generate Footer
+                page.Footer()
+                    .Height(50)
+                    .Background(Colors.Grey.Lighten1)
+                    .AlignCenter()
+                    .Text(x =>
+                    {
+                        x.CurrentPageNumber();
+                        x.Span(" / ");
+                        x.TotalPages();
+                    });
+            });
+        }
+        private void ComposeHeader(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(colum =>
                 {
-                    case "NL":
-                        HTML += "<p>Beste " + Receiver + " Gelieve te teken voor het terug geven van het volgende materiaal:</p>";
-                        break;
-                    case "EN":
-                        HTML += "<p>Dear " + Receiver + " please sing for the recievment of the following material:</p>";
-                        break;
-                    case "FR":
-                        HTML += "<p>Dear " + Receiver + " please sing for the recievment of the following material:</p>";
-                        break;
-                }
+                    if (string.IsNullOrEmpty(Type))
+                    {
+                        colum.Item().Text("Relase Form").AlignCenter().Style(titleStyle);
+                        colum.Item().AlignLeft().Text(" ").Style(defaultStyle);
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item()
+                                    .AlignLeft()
+                                    .Text($"Beste {Receiver} gelieve te teken voor het terug geven van het volgene materiaal")
+                                    .Style(defaultStyle).Bold();
+                                break;
+                            case "EN":
+                                colum.Item()
+                                    .AlignLeft()
+                                    .Text($"Dear {Receiver} please sign for the receivment of the following material")
+                                    .Bold()
+                                    .Style(defaultStyle);
+                                break;
+                            case "FR":
+                                colum.Item()
+                                    .AlignLeft()
+                                    .Text($"Dear {Receiver} please sign for the receivment of the following material")
+                                    .Style(defaultStyle)
+                                    .Bold();
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        colum.Item().Text("Asign Form").AlignCenter().Style(titleStyle);
+                        colum.Item().AlignLeft().Text(" ").Style(defaultStyle);
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item().AlignLeft().Text($"Beste {Receiver} gelieve te teken voor het ontvangen van het volgene materiaal").Style(defaultStyle).Bold();
+                                break;
+                            case "EN":
+                                colum.Item().AlignLeft().Text($"Dear {Receiver} please sign for the recievement of the following material").Bold().Style(defaultStyle);
+                                break;
+                            case "FR":
+                                colum.Item().AlignLeft().Text($"Dear {Receiver} please sign for the receivment of the following material").Bold().Style(defaultStyle);
+                                break;
+                        }
+                    }
+                });
+            });
+        }
+        private void ComposeEmployeTitle(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(colum =>
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            colum.Item().Text("Gegevens van de employee").Style(h3Style);
+                            break;
+                        case "EN":
+                            colum.Item().Text("Info from the employee").Style(h3Style);
+                            break;
+                        case "FR":
+                            colum.Item().Text("Info from the employee").Style(h3Style);
+                            break;
+                    }
+                });
+            });
+        }
+        private void ComposeBody(IContainer container)
+        {
+            container
+                .PaddingVertical(10)
+                .Background(Colors.Grey.Lighten3)
+                .AlignLeft()
+                .Column(column =>
+                    {
+                        column.Spacing(5);
+                        column.Item().Element(ComposeEmployeTitle);
+                        column.Item().Element(ComposeEmployeeTable);
+                        if (accounts.Count > 0)
+                        {
+                            column.Item().Element(ComposeAccountTitle);
+                            column.Item().Element(ComposeAccountTable);
+                        }
+                        if (devices.Count > 0)
+                        {
+                            column.Item().Element(ComposeDeviceTitle);
+                            column.Item().Element(ComposeDeviceTable);
+                        }
+                        if (mobiles.Count > 0)
+                        {
+                            column.Item().Element(ComposeMobileTitle);
+                            column.Item().Element(ComposeMobileTable);
+                        }
+                        if(subscriptions.Count > 0)
+                        {
+                            column.Item().Element(ComposeSubscriptionTitle);
+                            column.Item().Element(ComposeSubscriptionTable);
+                        }
+                        if (!String.IsNullOrEmpty(Singer) && !String.IsNullOrEmpty(ITEmployee))
+                        {
+                            column.Item().Element(ComposeSinger);
+                            column.Item().Element(ComposeSingerTable);
+                        }
+                    });
+        }
+        private void ComposeDeviceTitle(IContainer container)
+        {
+            if (string.IsNullOrEmpty(Type))
+            {
+                container.Row(row =>
+                {
+                    row.RelativeItem().Column(colum =>
+                    {
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item().Text("Gegevens van het terug gebracht matteriaal").Style(h3Style);
+                                break;
+                            case "EN":
+                                colum.Item().Text("Gegevens van het terug gebracht matteriaal").Style(h3Style);
+                                break;
+                            case "FR":
+                                colum.Item().Text("Gegevens van het terug gebracht matteriaal").Style(h3Style);
+                                break;
+                        }
+                    });
+                });
             }
             else
             {
-                path = _env.WebRootPath + @$"\PDF-Files\Assign_{UserID}_{date:dd-MM-yyyy-HH-mm-ss}.pdf";
-            }
-            switch (Language)
-            {
-                case "NL":
-                    HTML += "<h3>Gegevens van de employee</h3>";
-                    break;
-                case "EN":
-                    HTML += "<h3>Info from the employee</h3>";
-                    break;
-                case "FR":
-                    HTML += "<h3>Info from the employee</h3>";
-                    break;
-            }
-            HTML += "<table class=\"table table-striped table-bordered\">";
-            HTML += "<thead>";
-            HTML += "<tr>";
-            HTML += "<th>FirstName</th>";
-            HTML += "<th>LastName</th>";
-            HTML += "<th>UserId</th>";
-            HTML += "</tr>";
-            HTML += "</thead>";
-            HTML += "<tbody>";
-            HTML += "<tr>";
-            HTML += $"<td>{FirstName}</td>";
-            HTML += $"<td>{LastName}</td>";
-            HTML += $"<td>{UserID}</td>";
-            HTML += "</tr>";
-            HTML += "</tbody>";
-            HTML += "</table>";
-            if (accounts.Count > 0)
-            {
-                switch (Language)
+                container.Row(row =>
                 {
-                    case "NL":
-                        HTML += "<h3>Gegevens van de account</h3>";
-                        break;
-                    case "EN":
-                        HTML += "<h3>Info of the account</h3>";
-                        break;
-                    case "FR":
-                        HTML += "<h3>Info of the account</h3>";
-                        break;
-                }
-                HTML += "<table class=\"table table-striped table-bordered\">";
-                HTML += "<thead>";
-                HTML += "<tr>";
-                HTML += "<th>UserID</th>";
-                HTML += "<th>Application</th>";
-                HTML += "<th>From</th>";
-                HTML += "<th>Until</th>";
-                HTML += "</tr>";
-                HTML += "</thead>";
-                HTML += "<tbody>";
-                foreach (IdenAccount a in accounts)
-                {
-                    HTML += "<tr>";
-                    HTML += $"<td>{a.Account.UserID}</td>";
-                    HTML += $"<td>{a.Account.Application.Name}</td>";
-                    HTML += $"<td>{a.ValidFrom:dd/MM/yyyy}</td>";
-                    HTML += $"<td>{a.ValidUntil:dd/MM/yyyy}</td>";
-                    HTML += "</tr>";
-                }
-                HTML += "</tbody>";
-                HTML += "</table>";
+                    row.RelativeItem().Column(colum =>
+                    {
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item().Text("Gegevens van het ontvangen matteriaal").Style(h3Style);
+                                break;
+                            case "EN":
+                                colum.Item().Text("Gegevens van het ontvangen matteriaal").Style(h3Style);
+                                break;
+                            case "FR":
+                                colum.Item().Text("Gegevens van het ontvangen matteriaal").Style(h3Style);
+                                break;
+                        }
+                    });
+                });
             }
-            if (devices.Count > 0)
+        }
+        private void ComposeDeviceTable(IContainer container)
+        {
+            container.Table(table =>
             {
-                if (!String.IsNullOrEmpty(Type))
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("Category").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Asset Type").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("AssetTag").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("SerialNumber").Style(defaultStyle).ExtraBold();
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                });
+                foreach (var device in devices) 
+                { 
+                    table.Cell().Element(Style).Text(device.Category.Category).Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{device.Type}").Style(defaultStyle);
+                    table.Cell().Element(Style).Text(device.AssetTag).Style(defaultStyle);
+                    table.Cell().Element(Style).Text(device.SerialNumber).Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                }
+            });
+        }
+        private void ComposeSinger(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(colum =>
                 {
                     switch (Language)
                     {
                         case "NL":
-                            HTML += "<h3>Gegevens van het terug gebracht matteriaal</h3>";
+                            colum.Item().Text("Info van wie er tekent").Style(h3Style);
+                            colum.Item().Text("Gelieve hier te tekenen:").Style(defaultStyle);
                             break;
                         case "EN":
-                            HTML += "<h3>Info of the returned device</h3>";
+                            colum.Item().Text("Info about who will sign").Style(h3Style);
+                            colum.Item().Text("Please sing here:").Style(defaultStyle);
                             break;
                         case "FR":
-                            HTML += "<h3>Info of the returned device</h3>";
+                            colum.Item().Text("Info van wie er tekent").Style(h3Style);
+                            colum.Item().Text("Please sing here:").Style(defaultStyle);
                             break;
                     }
-                }
-                else
-                {
-                    switch (Language)
-                    {
-                        case "NL":
-                            HTML += "<h3>Gegevens van het ontvangen matteriaal</h3>";
-                            break;
-                        case "EN":
-                            HTML += "<h3>Info about the received device</h3>";
-                            break;
-                        case "FR":
-                            HTML += "<h3>Info about the received device</h3>";
-                            break;
-                    }
-                }
-                HTML += "<table class=\"table table-striped table-bordered\">";
-                HTML += "<thead>";
-                HTML += "<tr>";
-                HTML += "<th>Category</th>";
-                HTML += "<th>Asset Type</th>";
-                HTML += "<th>AssetTag</th>";
-                HTML += "<th>SerialNumber</th>";
-                HTML += "</tr>";
-                HTML += "</thead>";
-                HTML += "<tbody>";
-                foreach (Device d in devices)
-                {
-                    HTML += "<tr>";
-                    HTML += $"<td>{d.Category.Category}</td>";
-                    HTML += $"<td>{d.Type}</td>";
-                    HTML += $"<td>{d.AssetTag}</td>";
-                    HTML += $"<td>{d.SerialNumber}</td>";
-                    HTML += "</tr>";
-                }
-                HTML += "</tbody>";
-                HTML += "</table>";
-            }
-            if (mobiles.Count > 0)
+                });
+            });
+        }
+        private void ComposeSingerTable(IContainer container)
+        {
+            container.Table(table =>
             {
-                if (!String.IsNullOrEmpty(Type))
+                //First set the definition of the columns
+                table.ColumnsDefinition(columns =>
                 {
-                    switch (Language)
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+                //Then set the Header
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("Employee").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("IT Employee").Style(defaultStyle).ExtraBold();
+                    IContainer Style(IContainer container)
                     {
-                        case "NL":
-                            HTML += "<h3>Gegevens van de teruggebrachte GSM</h3>";
-                            break;
-                        case "EN":
-                            HTML += "<h3>Info of the returned device</h3>";
-                            break;
-                        case "FR":
-                            HTML += "<h3>Info of the returned device</h3>";
-                            break;
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
                     }
-                }
-                else
+                });
+                //Now set the details
+                table.Cell().Element(Style).Text(Singer).Style(defaultStyle); 
+                table.Cell().Element(Style).Text(ITEmployee).Style(defaultStyle);
+                table.Cell().Element(Style).Text("Signature:").Style(defaultStyle);
+                table.Cell().Element(Style).Text("Signature:").Style(defaultStyle);
+                table.Cell().Element(SignStyle).MinHeight(50).Text("");
+                table.Cell().Element(SignStyle).MinHeight(50).Text("");
+                IContainer Style(IContainer container)
                 {
-                    switch (Language)
-                    {
-                        case "NL":
-                            HTML += "<h3>Gegevens van de ontvangen GSM</h3>";
-                            break;
-                        case "EN":
-                            HTML += "<h3>Info about the received mobile</h3>";
-                            break;
-                        case "FR":
-                            HTML += "<h3>Info about the received mobile</h3>";
-                            break;
-                    }
+                    return container
+                        .BorderLeft(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .BorderBottom(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .BorderRight(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .Padding(5);
                 }
-                HTML += "<table class=\"table table-striped table-bordered\">";
-                HTML += "<thead>";
-                HTML += "<tr>";
-                HTML += "<th>Category</th>";
-                HTML += "<th>Asset Type</th>";
-                HTML += "<th>IMEI</th>";
-                HTML += "</tr>";
-                HTML += "</thead>";
-                HTML += "<tbody>";
-                foreach (Mobile d in mobiles)
+                IContainer SignStyle(IContainer container)
                 {
-                    HTML += "<tr>";
-                    HTML += $"<td>{d.Category.Category}</td>";
-                    HTML += $"<td>{d.MobileType}</td>";
-                    HTML += $"<td>{d.IMEI}</td>";
-                    HTML += "</tr>";
+                    return container
+                        .DefaultTextStyle(x => x.ExtraLight())
+                        .BorderTop(1)
+                        .BorderColor(Colors.Red.Accent4)
+                        .BorderLeft(1)
+                        .BorderColor(Colors.Red.Accent4)
+                        .BorderBottom(1)
+                        .BorderColor(Colors.Red.Accent4)
+                        .BorderRight(1)
+                        .BorderColor(Colors.Red.Accent4)
+                        .Padding(5);
                 }
-                HTML += "</tbody>";
-                HTML += "</table>";
-            }
-            if (subscriptions.Count > 0)
+            });
+        }
+        private void ComposeEmployeeTable(IContainer container)
+        {
+            container.Table(table =>
             {
-                if (!String.IsNullOrEmpty(Type))
+                //First set the definition of the columns
+                table.ColumnsDefinition(columns =>
                 {
-                    switch (Language)
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+                //Then set the Header
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("FirstName").Style(defaultStyle);
+                    header.Cell().Element(Style).Text("LastName").Style(defaultStyle);
+                    header.Cell().Element(Style).Text("UserID").Style(defaultStyle);
+                    IContainer Style(IContainer container)
                     {
-                        case "NL":
-                            HTML += "<h3>Gegevens van het abbonement</h3>";
-                            break;
-                        case "EN":
-                            HTML += "<h3>Info of the subscription</h3>";
-                            break;
-                        case "FR":
-                            HTML += "<h3>Info of the subscription</h3>";
-                            break;
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
                     }
-                }
-                else
+                });
+                //Now set the body
+                table.Cell().Element(Style).Text(FirstName).Style(defaultStyle);
+                table.Cell().Element(Style).Text(LastName).Style(defaultStyle);
+                table.Cell().Element(Style).Text(UserID).Style(defaultStyle);
+                IContainer Style(IContainer container)
                 {
-                    switch (Language)
-                    {
-                        case "NL":
-                            HTML += "<h3>Gegevens van het abbonement</h3>";
-                            break;
-                        case "EN":
-                            HTML += "<h3>Info about the received mobile</h3>";
-                            break;
-                        case "FR":
-                            HTML += "<h3>Info about the received mobile</h3>";
-                            break;
-                    }
+                    return container
+                        .BorderLeft(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .BorderBottom(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .BorderRight(1)
+                        .BorderColor(Colors.Grey.Darken2)
+                        .Padding(5);
                 }
-                HTML += "<table class=\"table table-striped table-bordered\">";
-                HTML += "<thead>";
-                HTML += "<tr>";
-                HTML += "<th>Category</th>";
-                HTML += "<th>Asset Type</th>";
-                HTML += "<th>Phone Number</th>";
-                HTML += "</tr>";
-                HTML += "</thead>";
-                HTML += "<tbody>";
-                foreach (var s in subscriptions)
-                {
-                    HTML += "<tr>";
-                    HTML += $"<td>{s.Category.Category}</td>";
-                    HTML += $"<td>{s.SubscriptionType}</td>";
-                    HTML += $"<td>{s.PhoneNumber}</td>";
-                    HTML += "</tr>";
-                }
-                HTML += "</tbody>";
-                HTML += "</table>";
-            }
-            if (!String.IsNullOrEmpty(Singer) && !String.IsNullOrEmpty(ITEmployee))
+            });
+        }
+        private void ComposeAccountTitle(IContainer container)
+        {
+            container.Row(row =>
             {
-                switch (Language)
+                row.RelativeItem().Column(colum =>
                 {
-                    case "NL":
-                        HTML += "<h3>Info van wie er tekent</h3>";
-                        break;
-                    case "EN":
-                        HTML += "<h3>EN</h3>";
-                        break;
-                    case "FR":
-                        HTML += "<h3>FR</h3>";
-                        break;
+                    switch (Language)
+                    {
+                        case "NL":
+                            colum.Item().Text("Gegevens van de account").Style(h3Style);
+                            break;
+                        case "EN":
+                            colum.Item().Text("Info from the account").Style(h3Style);
+                            break;
+                        case "FR":
+                            colum.Item().Text("Info from the account").Style(h3Style);
+                            break;
+                    }
+                });
+            });
+        }
+        private void ComposeAccountTable(IContainer container)
+        {
+            container.Table(table =>
+            {
+                //First set the definition of the columns
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+                //Then set the Header
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("UserID").Style(defaultStyle);
+                    header.Cell().Element(Style).Text("Application").Style(defaultStyle);
+                    header.Cell().Element(Style).Text("From").Style(defaultStyle);
+                    header.Cell().Element(Style).Text("Until").Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                });
+                //Now set the details
+                foreach (IdenAccount a in accounts) { 
+                    table.Cell().Element(Style).Text(a.Account.UserID).Style(defaultStyle);
+                    table.Cell().Element(Style).Text(a.Account.Application.Name).Style(defaultStyle);
+                    table.Cell().Element(Style).Text(a.ValidFrom.ToString("dd/MM/yyyy")).Style(defaultStyle);
+                    table.Cell().Element(Style).Text(a.ValidUntil.ToString("dd/MM/yyyy")).Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
                 }
-                HTML += "Please sing here: <br>";
-                HTML += "<table class=\"table table-striped table-bordered\">";
-                HTML += "<thead>";
-                HTML += "<tr>";
-                HTML += "<th>Employee Info</th>";
-                HTML += "<th>IT Employee Info</th>";
-                HTML += "</tr>";
-                HTML += "</thead>";
-                HTML += "<tbody>";
-                HTML += "<tr>";
-                HTML += $"<td>{Singer}</td>";
-                HTML += $"<td>{ITEmployee}</td>";
-                HTML += "</tr>";
-                HTML += "<tr>";
-                HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
-                HTML += "<td><textarea rows=\"4\" cols=\"50\"> </textarea></td>";
-                HTML += "</tr>";
-                HTML += "</tbody>";
-                HTML += "</table>";
+            });
+        }
+        private void ComposeMobileTitle(IContainer container)
+        {
+            if (string.IsNullOrEmpty(Type))
+            {
+                container.Row(row =>
+                {
+                    row.RelativeItem().Column(colum =>
+                    {
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item().Text("Gegevens van de teruggebrachte GSM").Style(h3Style);
+                                break;
+                            case "EN":
+                                colum.Item().Text("Gegevens van de teruggebrachte GSM").Style(h3Style);
+                                break;
+                            case "FR":
+                                colum.Item().Text("Gegevens van de teruggebrachte GSM").Style(h3Style);
+                                break;
+                        }
+                    });
+                });
             }
-            HTML += "</div>";
-            HTML += "</body>";
-            HTML += "</html>";
-            var converter = new ChromePdfRenderer();
-            var PDF = converter.RenderHtmlAsPdf(HTML);
-            PDF.SaveAs(path);
-            return path;
+            else
+            {
+                container.Row(row =>
+                {
+                    row.RelativeItem().Column(colum =>
+                    {
+                        switch (Language)
+                        {
+                            case "NL":
+                                colum.Item().Text("Gegevens van de ontvangen GSM").Style(h3Style);
+                                break;
+                            case "EN":
+                                colum.Item().Text("Info of the recieved Mobile").Style(h3Style);
+                                break;
+                            case "FR":
+                                colum.Item().Text("Gegevens van de ontvangen GSM").Style(h3Style);
+                                break;
+                        }
+                    });
+                });
+            }
+        }
+        private void ComposeMobileTable(IContainer container)
+        {
+            container.Table(table =>
+            {
+                table.ColumnsDefinition(columns =>
+                {
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                    columns.RelativeColumn();
+                });
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("Category").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Asset Type").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("IMEI").Style(defaultStyle).ExtraBold();
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                });
+                foreach(var mobile in mobiles)
+                {
+                    table.Cell().Element(Style).Text(mobile.Category.Category).Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{mobile.MobileType}").Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{mobile.IMEI}").Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                }
+            });
+        }
+        private void ComposeSubscriptionTitle(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(colum =>
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            colum.Item().Text("Gegevens van het abbonement").Style(h3Style);
+                            break;
+                        case "EN":
+                            colum.Item().Text("Gegevens van het abbonement").Style(h3Style);
+                            break;
+                        case "FR":
+                            colum.Item().Text("Gegevens van het abbonement").Style(h3Style);
+                            break;
+                    }
+                });
+            });
+        }
+        private void ComposeSubscriptionTable(IContainer container)
+        {
+            container.Table(table =>
+            {
+                table.ColumnsDefinition(col =>
+                {
+                    col.RelativeColumn();
+                    col.RelativeColumn();
+                    col.RelativeColumn();
+                });
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("Category").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Subscription Type").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Phone Number").Style(defaultStyle).ExtraBold();
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                });
+                foreach(var subcription in subscriptions)
+                {
+                    table.Cell().Element(Style).Text(subcription.Category.Category).Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{subcription.SubscriptionType}").Style(defaultStyle);
+                    table.Cell().Element(Style).Text(subcription.PhoneNumber).Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                }
+            });
         }
     }
 }

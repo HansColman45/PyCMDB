@@ -38,7 +38,7 @@ Scenario: I want to assign an existing Identity to my account
 	And I fill in the assig form for my account
 	Then The identity is assigned to my account
 
-Scenario: 4 I want to release an assigned Identity
+Scenario: I want to release an assigned Identity
 	Given There is an active account existing
 	And There is an Identity assigned
 	When I release the Identity and the release form is filled in

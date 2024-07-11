@@ -5,6 +5,7 @@ using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -361,7 +362,8 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile(Table, idenAccount.Identity.IdenId, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
@@ -419,7 +421,8 @@ namespace CMDB.Controllers
                     foreach (Mobile mobile in identity.Mobiles)
                         PDFGenerator.SetMobileInfo(mobile);
                 }
-                string PdfFile = PDFGenerator.GeneratePDF(_env);
+                string PdfFile = PDFGenerator.GeneratePath(_env);
+                PDFGenerator.GeneratePdf(PdfFile);
                 await service.LogPdfFile(Table, identity.IdenId, PdfFile);
                 return RedirectToAction(nameof(Index));
             }
@@ -462,10 +465,12 @@ namespace CMDB.Controllers
                     FirstName = identity.FirstName,
                     LastName = identity.LastName,
                     Language = identity.Language.Code,
-                    Receiver = identity.Name
+                    Receiver = identity.Name,
+                    Type = "Release"
                 };
                 PDFGenerator.SetAssetInfo(device);
-                string PdfFile = PDFGenerator.GeneratePDF(_env);
+                string PdfFile = PDFGenerator.GeneratePath(_env);
+                PDFGenerator.GeneratePdf(PdfFile);
                 await service.ReleaseDevices(identity, devices2Remove, Table);
                 await service.LogPdfFile(Table,identity.IdenId, PdfFile);
                 return RedirectToAction(nameof(Index));
@@ -505,10 +510,12 @@ namespace CMDB.Controllers
                     FirstName = identity.FirstName,
                     LastName = identity.LastName,
                     Language = identity.Language.Code,
-                    Receiver = identity.Name
+                    Receiver = identity.Name,
+                    Type = "Release"
                 };
                 PDFGenerator.SetMobileInfo(mobile);
-                string PdfFile = PDFGenerator.GeneratePDF(_env);
+                string PdfFile = PDFGenerator.GeneratePath(_env);
+                PDFGenerator.GeneratePdf(PdfFile);
                 await service.ReleaseMobile(identity, mobile, Table);
                 await service.LogPdfFile(Table,identity.IdenId,PdfFile);
                 await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);
@@ -550,13 +557,15 @@ namespace CMDB.Controllers
                         FirstName = identity.FirstName,
                         LastName = identity.LastName,
                         Language = identity.Language.Code,
-                        Receiver = identity.Name
+                        Receiver = identity.Name,
+                        Type = "Release"
                     };
                     foreach (var device in devicesToRelease)
                     {
                         PDFGenerator.SetAssetInfo(device);
                     }
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     return RedirectToAction(nameof(Index));
                     //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }
@@ -592,13 +601,15 @@ namespace CMDB.Controllers
                     FirstName = identity.FirstName,
                     LastName = identity.LastName,
                     Language = identity.Language.Code,
-                    Receiver = identity.Name
+                    Receiver = identity.Name,
+                    Type = "Release"
                 };
                /* foreach (var device in devices)
                 {
                     PDFGenerator.SetAssetInfo(device);
                 }*/
-                string PdfFile = PDFGenerator.GeneratePDF(_env);
+                string PdfFile = PDFGenerator.GeneratePath(_env);
+                PDFGenerator.GeneratePdf(PdfFile);
                 await service.LogPdfFile(Table, identity.IdenId, PdfFile);
                 return RedirectToAction(nameof(Index));
             }

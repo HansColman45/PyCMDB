@@ -9,6 +9,7 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using System.Threading.Tasks;
+using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
@@ -287,7 +288,8 @@ namespace CMDB.Controllers
                         Type = "Release"
                     };
                     PDFGenerator.SetAccontInfo(idenAccount);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
@@ -328,7 +330,8 @@ namespace CMDB.Controllers
                     Receiver = account.Identities.Last().Identity.Name
                 };
                 PDFGenerator.SetAccontInfo(account.Identities.First());
-                string pdfFile = PDFGenerator.GeneratePDF(_env);
+                string pdfFile = PDFGenerator.GeneratePath(_env);
+                PDFGenerator.GeneratePdf(pdfFile);
                 await service.LogPdfFile(Table, account, pdfFile);
                 return RedirectToAction(nameof(Index));
             }

@@ -9,6 +9,7 @@ using CMDB.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using System.Linq;
 using CMDB.Util;
+using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
@@ -196,7 +197,8 @@ namespace CMDB.Controllers
                                 Receiver = mobile.Identity.Name
                             };
                             PDFGenerator.SetMobileInfo(mobile);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            string pdfFile = PDFGenerator.GeneratePath(_env);
+                            PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                             await service.ReleaseIdenity(mobile, mobile.Identity, Table);
@@ -320,7 +322,8 @@ namespace CMDB.Controllers
                             Type = "Release"
                         };
                         PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = PDFGenerator.GeneratePDF(_env);
+                        string pdfFile = PDFGenerator.GeneratePath(_env);
+                        PDFGenerator.GeneratePdf(pdfFile);
                         await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                         await service.ReleaseIdenity(mobile, identity, Table);
@@ -411,7 +414,7 @@ namespace CMDB.Controllers
                             Receiver = mobile.Identity.Name
                         };
                         _PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                        string pdfFile = _PDFGenerator.GeneratePath(_env);
                         await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                     }
@@ -424,7 +427,8 @@ namespace CMDB.Controllers
                         };
                         _PDFGenerator.SetMobileInfo(mobile);
                         _PDFGenerator.SetSubscriptionInfo(mobile.Subscriptions.First());
-                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                        string pdfFile = _PDFGenerator.GeneratePath(_env);
+                        _PDFGenerator.GeneratePdf(pdfFile);
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                         await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);
                     }

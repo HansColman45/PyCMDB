@@ -30,11 +30,12 @@ namespace CMDB.Infrastructure
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
         public virtual DbSet<CMDB.Domain.Entities.Configuration> Configurations { get; set; }
         public virtual DbSet<RAM> RAMs { get; set; }
+        public virtual DbSet<IdentityAccountInfo> IdentityAccountInfos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CMDBContext).Assembly);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n");
+        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False");
     }
 }

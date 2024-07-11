@@ -9,6 +9,7 @@ using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
 using CMDB.Util;
+using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
@@ -92,7 +93,8 @@ namespace CMDB.Controllers
                                 Receiver = monitor.Identity.Name
                             };
                             PDFGenerator.SetAssetInfo(monitor);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            string pdfFile = PDFGenerator.GeneratePath(_env);
+                            PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
                             await service.ReleaseIdenity(monitor, monitor.Identity, Table);
@@ -290,7 +292,7 @@ namespace CMDB.Controllers
                         Receiver = monitor.Identity.Name
                     };
                     PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
                     await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
                     await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
@@ -333,7 +335,8 @@ namespace CMDB.Controllers
                         Receiver = identity.Name
                     };
                     PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
                     await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));

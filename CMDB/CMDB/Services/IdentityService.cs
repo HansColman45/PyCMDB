@@ -308,21 +308,24 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
             List<SelectListItem> accounts = new();
+            
+            var test = _context.IdentityAccountInfos.FromSqlRaw(
+                $"select distinct a.AccID, a.UserID, ap.Name from Account a " +
+                "left join Application ap on a.ApplicationId = ap.AppID " +
+                "left join IdenAccount ia on ia.AccountId = a.AccID " +
+                "where ia.IdentityId is null or ia.ValidUntil <= GETDATE()")
+                .ToList();/*
             var freeAccounts = await _context.Accounts
                 .Include(x => x.Application)
-                .Where(x => x.active == 1)
-                .ToListAsync();
-            var idenaccounts = await _context.IdenAccounts
-                .Include(x => x.Account)
-                .Where(x => x.ValidFrom <= DateTime.Now && x.ValidUntil >= DateTime.Now)
-                .ToListAsync();
-            foreach (var account in freeAccounts)
+                .Include(y => y.Identities)
+                .ThenInclude(x => x.Identity)
+                .Where(x => x.Identities.Any(y => y.ValidUntil <= DateTime.UtcNow))
+                .Where(x => x.Identities.Any(y => y.IdentityId != null))
+                .Select(x => new { x.AccID, x.UserID, x.Application.Name }).Distinct()
+                .ToListAsync();*/
+            foreach (var account in test)
             {
-                foreach (var iden in idenaccounts)
-                {
-                    if (!(iden.Account.AccID == account.AccID))
-                        accounts.Add(new(account.UserID + " " + account.Application.Name, account.AccID.ToString()));
-                }
+                accounts.Add(new(account.UserId + " " + account.Name, account.AccId.ToString()));
             }
             return accounts;
         }

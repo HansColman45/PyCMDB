@@ -11,6 +11,7 @@ using System.Linq;
 using CMDB.Util;
 using Microsoft.Graph;
 using Subscription = CMDB.Domain.Entities.Subscription;
+using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
@@ -185,7 +186,8 @@ namespace CMDB.Controllers
                                 Receiver = subscription.Identity is not null ? subscription.Identity.Name : subscription.Mobile.Identity.Name,
                             };
                             PDFGenerator.SetSubscriptionInfo(subscription);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            string pdfFile = PDFGenerator.GeneratePath(_env);
+                            PDFGenerator.GeneratePdf(pdfFile);
                             int intID = subscription.Identity is not null ? (int)subscription.Identity.IdenId : (int)subscription.Mobile.IdentityId;
                             await service.LogPdfFile("identity", intID, pdfFile);
                             await service.LogPdfFile(Table, subscription.SubscriptionId, pdfFile);

@@ -10,6 +10,7 @@ using CMDB.Services;
 using System.Threading.Tasks;
 using CMDB.Util;
 using Identity = CMDB.Domain.Entities.Identity;
+using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
@@ -94,7 +95,8 @@ namespace CMDB.Controllers
                                 Receiver = token.Identity.Name
                             };
                             PDFGenerator.SetAssetInfo(token);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
+                            string pdfFile = PDFGenerator.GeneratePath(_env);
+                            PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
                             await service.LogPdfFile(Table, token.AssetTag, pdfFile);
                             await service.ReleaseIdenity(token, token.Identity, Table);
@@ -301,7 +303,8 @@ namespace CMDB.Controllers
                         Receiver = token.Identity.Name
                     };
                     PDFGenerator.SetAssetInfo(token);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
                     await service.LogPdfFile(Table, token.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
@@ -345,7 +348,8 @@ namespace CMDB.Controllers
                         Receiver = identity.Name
                     };
                     PDFGenerator.SetAssetInfo(token);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
+                    string pdfFile = PDFGenerator.GeneratePath(_env);
+                    PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
                     await service.LogPdfFile(Table, token.AssetTag, pdfFile);
                     return RedirectToAction(nameof(Index));
