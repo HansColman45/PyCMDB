@@ -12,14 +12,14 @@ namespace CMDB.UI.Specflow.Actors.Desktops
         }
         public async Task<Helpers.Desktop> CreateNewDesktop(Helpers.Desktop desktop)
         {
+            string Vendor, Type;
+            Vendor = desktop.Type.Split(" ")[0];
+            Type = desktop.Type.Split(" ")[1];
+            var assetType = await GetOrCreateAssetType("Desktop", Vendor, Type);
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDesktopCreatePage());
             createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
-            string Vendor, Type;
-            Vendor = desktop.Type.Split(" ")[0];
-            Type = desktop.Type.Split(" ")[1];
-            var assetType = await GetOrCreateAssetType("Desktop",Vendor, Type);
             createPage.AssetTag = desktop.AssetTag + rndNr;
             desktop.AssetTag = desktop.AssetTag + rndNr;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssetTag");

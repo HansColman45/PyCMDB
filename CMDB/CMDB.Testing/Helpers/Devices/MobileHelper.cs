@@ -1,5 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
+using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,10 @@ namespace CMDB.Testing.Helpers.Devices
                 .With(x => x.LastModfiedAdmin, admin)
                 .With(x => x.IdentityId, 1)
                 .Build();
+            mobile.Logs.Add(new LogBuilder().With(x => x.Mobile, mobile)
+                .With(x => x.LogText, $"The {cat.Category} with type {mobile.MobileType} is created by Automation in table mobile")
+                .Build()
+                );
             context.Mobiles.Add(mobile);
             await context.SaveChangesAsync();
             if (!active)

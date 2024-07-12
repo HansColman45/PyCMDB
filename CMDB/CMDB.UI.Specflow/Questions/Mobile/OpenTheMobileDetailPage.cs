@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         public override MobileDetailPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MobileOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.InfoXpath);
+            page.ClickElementByXpath(MobileOverviewPage.InfoXpath);
             return new();
         }
     }

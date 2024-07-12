@@ -1,10 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
-using CMDB.Domain.Entities;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
-using Microsoft.Graph;
-using System;
 
 namespace CMDB.UI.Specflow.Questions.DataContextAnswers
 {

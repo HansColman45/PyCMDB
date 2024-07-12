@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Questions.Desktop
         public override DesktopReleaseIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DesktopDetailPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.ReleaseIdenityXpath);
+            page.ClickElementByXpath(DesktopDetailPage.ReleaseIdenityXpath);
             return new();
         }
     }

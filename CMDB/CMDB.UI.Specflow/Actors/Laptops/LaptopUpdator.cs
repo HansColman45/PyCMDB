@@ -27,15 +27,15 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             switch (field)
             {
                 case "Serialnumber":
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field,laptop.SerialNumber, value,admin.Account.UserID,Table);
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field,laptop.SerialNumber, value + rndNr.ToString(), admin.Account.UserID,Table);
                     page.SerialNumber = value + rndNr.ToString();
                     laptop.SerialNumber = value + rndNr.ToString();
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_serialNumber");
                     break;
                 case "RAM":
                     var newRam = GetRam(value).Value;
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, laptop.RAM, $"{newRam}", admin.Account.UserID, Table);
                     laptop.RAM = value;
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field,laptop.RAM, $"{newRam}",admin.Account.UserID,Table);
                     page.RAM = value;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ram");
                     break;

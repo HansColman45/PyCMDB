@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='MobileType.Id']", value);
+            set => SelectValueInDropDownByXpath("//select[@id='MobileType_TypeID']", value);
         }
         public void Edit()
         {

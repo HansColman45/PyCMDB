@@ -46,7 +46,10 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
         public void ReleaseIdentity(Account account, Identity identity)
-        {
+        {   
+            var detailPage = Perform(new OpenTheAccountDetailPage());
+            detailPage.WebDriver = Driver;
+            detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             ExpectedLog = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine($"Account with UserID: {account.UserID}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheAccountReleaseIdentityPage());

@@ -12,6 +12,10 @@ namespace CMDB.UI.Specflow.Actors.Dockings
         }
         public async Task<Helpers.DockingStation> CreateNewDocking(Helpers.DockingStation dockingStation)
         {
+            string Vendor, Type;
+            Vendor = dockingStation.Type.Split(" ")[0];
+            Type = dockingStation.Type.Split(" ")[1];
+            var assetType = await GetOrCreateAssetType("Docking station", Vendor, Type);
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDockingCreatePage());
             createPage.WebDriver = Driver;
@@ -21,10 +25,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
             createPage.AssetTag = dockingStation.AssetTag + rndNr;
             dockingStation.AssetTag += rndNr;
-            string Vendor, Type;
-            Vendor = dockingStation.Type.Split(" ")[0];
-            Type = dockingStation.Type.Split(" ")[1];
-            var assetType = await GetOrCreateAssetType("Docking station",Vendor, Type);
             createPage.Type = assetType.TypeID.ToString();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
             createPage.Create();

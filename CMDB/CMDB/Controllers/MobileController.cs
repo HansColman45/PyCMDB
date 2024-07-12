@@ -142,8 +142,6 @@ namespace CMDB.Controllers
                 long newImei = Convert.ToInt64(values["IMEI"]);
                 int Type = Convert.ToInt32(values["MobileType.TypeID"]);
                 var AssetType = service.ListAssetTypeById(Type);
-                mobile.MobileType = AssetType;
-                mobile.Category = AssetType.Category;
                 if (service.IsMobileExisting(mobile, newImei))
                     ModelState.AddModelError("", "Mobile already exist");
                 try

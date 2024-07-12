@@ -67,7 +67,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
         }
         public void ActivateMonitor(Domain.Entities.Screen screen)
         {
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Monitor with type {screen.Type}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Monitor with type {screen.Type}", admin.Account.UserID, Table);
             var page = GetAbility<MonitorOverviewPage>();
             page.Activate();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");

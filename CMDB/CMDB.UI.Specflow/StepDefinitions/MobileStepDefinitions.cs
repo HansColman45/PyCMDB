@@ -55,6 +55,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             bool result = mobileUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             mobileUpdator.OpenMobileOverviewPage();
+            mobileUpdator.Search(Mobile.IMEI.ToString());
         }
         #region Update Mobile
         [When(@"I change the (.*) to (.*) and I save the changes for my mobile")]

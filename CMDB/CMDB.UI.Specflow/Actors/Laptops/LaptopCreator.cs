@@ -11,6 +11,10 @@ namespace CMDB.UI.Specflow.Actors.Laptops
         }
         public void CreateNewLaptop(Helpers.Laptop laptop)
         {
+            string Vendor, Type;
+            Vendor = laptop.Type.Split(" ")[0];
+            Type = laptop.Type.Split(" ")[1];
+            var assetType = GetOrCreateAssetType("Laptop", Vendor, Type).Result;
             rndNr = rnd.Next();
             var page = Perform(new OpenTheLaptopCreatePage());
             page.WebDriver = Driver;
@@ -21,10 +25,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_serialNumber");
             page.RAM = laptop.RAM;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ram");
-            string Vendor, Type;
-            Vendor = laptop.Type.Split(" ")[0];
-            Type = laptop.Type.Split(" ")[1];
-            var assetType = GetOrCreateAssetType("Laptop",Vendor, Type).Result;
             page.Type = assetType.TypeID.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_type");
             page.Create();

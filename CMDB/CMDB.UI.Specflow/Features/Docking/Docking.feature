@@ -26,6 +26,20 @@ Scenario: I want to activate an existing inactive docking station
 	Then The docking station is activated
 
 Scenario: I want to deactivate a existing active Docking station
-	Given There is an active Docking existing
+	Given There is an Docking existing
 	When I deactivate the Docking with reason Test
 	Then The Docking is deactivated
+
+Scenario: I want to assign an Identity to my docking station
+	Given There is an active Docking existing
+	And The Identity exist as well
+	When I assign the Docking to the Identity
+	And I fill in the assign form for my Docking
+	Then The Identity is assigned to the Docking
+
+Scenario: I want to release an assigned identity from my Docking
+	Given There is an active Docking existing
+	And The Identity exist as well
+	And that Identity is assigned to my Docking
+	When I release the Identity from the Docking and I have filled in the release form
+	Then The Identity is released from the Docking

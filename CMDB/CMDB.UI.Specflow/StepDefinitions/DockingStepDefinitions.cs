@@ -10,8 +10,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         DockingCreator dockingCreator;
         DockingUpdator dockingUpdator;
+        DockingIdentityActor dockingIdentityActor;
+
         Helpers.DockingStation dockingStation;
         Docking Docking;
+        Identity Identity;
         public DockingStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -67,19 +70,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         #endregion
         #region Deactivate Docking
-        [Given(@"There is an active Docking existing")]
-        public async Task GivenThereIsAnActiveDockingExisting()
-        {
-            dockingUpdator = new(ScenarioContext);
-            ActorRegistry.RegisterActor(dockingUpdator);
-            Docking = await dockingUpdator.CreateNewDocking();
-            Admin = await dockingUpdator.CreateNewAdmin();
-            dockingUpdator.DoLogin(Admin.Account.UserID, "1234");
-            bool result = dockingUpdator.Perform(new IsTheUserLoggedIn());
-            result.Should().BeTrue();
-            dockingUpdator.OpenDockingOverviewPage();
-            dockingUpdator.Search(Docking.AssetTag);
-        }
         [When(@"I deactivate the Docking with reason (.*)")]
         public void WhenIDeactivateTheDockingWithReasonTest(string reason)
         {
@@ -120,6 +110,62 @@ namespace CMDB.UI.Specflow.StepDefinitions
             dockingUpdator.ExpectedLog.Should().BeEquivalentTo(lastLog);
         }
 
+        #endregion
+        [Given(@"There is an active Docking existing")]
+        public async Task GivenThereIsAnActiveDockingExisting()
+        {
+            dockingIdentityActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(dockingIdentityActor);
+            Docking = await dockingIdentityActor.CreateNewDocking();
+            Admin = await dockingIdentityActor.CreateNewAdmin();
+            dockingIdentityActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = dockingIdentityActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            dockingIdentityActor.OpenDockingOverviewPage();
+            dockingIdentityActor.Search(Docking.AssetTag);
+        }
+        #region Assign Identity
+        [Given(@"The Identity exist as well")]
+        public async Task GivenTheIdentityExistAsWell()
+        {
+            Identity = await dockingIdentityActor.CreateNewIdentity(); 
+        }
+        [When(@"I assign the Docking to the Identity")]
+        public void WhenIAssignTheDockingToTheIdentity()
+        {
+            dockingIdentityActor.DoAssignIdentityt2Docking(Identity, Docking);
+        }
+        [When(@"I fill in the assign form for my Docking")]
+        public void WhenIFillInTheAssignFormForMyDocking()
+        {
+            dockingIdentityActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The Identity is assigned to the Docking")]
+        public void ThenTheIdentityIsAssignedToTheDocking()
+        {
+            dockingIdentityActor.Search(Docking.AssetTag);
+            var lastLog = dockingIdentityActor.DockingLastLogLine;
+            dockingIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+        #endregion
+        #region Release Identity
+        [Given(@"that Identity is assigned to my Docking")]
+        public async Task GivenThatIdentityIsAssignedToMyDocking()
+        {
+            await dockingIdentityActor.AssignIdenity2Docking(Identity, Docking);
+        }
+        [When(@"I release the Identity from the Docking and I have filled in the release form")]
+        public void WhenIReleaseTheIdentityFromTheDockingAndIHaveFilledInTheReleaseForm()
+        {
+            dockingIdentityActor.DoReleaseIdentityFromDocking(Identity, Docking);
+        }
+        [Then(@"The Identity is released from the Docking")]
+        public void ThenTheIdentityIsReleasedFromTheDocking()
+        {
+            dockingIdentityActor.Search(Docking.AssetTag);
+            var lastLog = dockingIdentityActor.DockingLastLogLine;
+            dockingIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
         #endregion
     }
 }

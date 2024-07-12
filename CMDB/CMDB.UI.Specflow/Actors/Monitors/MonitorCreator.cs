@@ -31,8 +31,8 @@ namespace CMDB.UI.Specflow.Actors.Monitors
         }
         public void SearchMonitor(Helpers.Monitor monitor)
         {
-            var page = GetAbility<MonitorDetailPage>();
-            page.Search(monitor.AssetTag);
+            var page = GetAbility<MonitorOverviewPage>();
+            page.Search(monitor.AssetTag +rndNr);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
             ExpectedLog = GenericLogLineCreator.CreateLogLine($"Monitor with type {monitor.Type}", admin.Account.UserID, Table);
         }

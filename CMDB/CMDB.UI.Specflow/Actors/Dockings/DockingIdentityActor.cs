@@ -1,26 +1,26 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
-using CMDB.UI.Specflow.Questions.Desktop;
+using CMDB.UI.Specflow.Questions.Docking;
 using CMDB.UI.Specflow.Tasks;
 
-namespace CMDB.UI.Specflow.Actors.Desktops
+namespace CMDB.UI.Specflow.Actors.Dockings
 {
-    public class DesktopIdentityActor : DesktopUpdator
+    public class DockingIdentityActor : DockingUpdator
     {
-        public DesktopIdentityActor(ScenarioContext scenarioContext, string name = "DesktopUpdator") : base(scenarioContext, name)
+        public DockingIdentityActor(ScenarioContext scenarioContext, string name = "DockingIdentityActor") : base(scenarioContext, name)
         {
         }
         public async Task<Identity> CreateNewIdentity()
         {
             return await Perform(new CreateTheIdentity());
         }
-        public async Task AssignDesktop2Identity(Desktop desktop, Identity identity)
+        public async Task AssignIdenity2Docking(Identity identity, Docking docking)
         {
             try
             {
                 var context = GetAbility<DataContext>();
-                await context.AssignIdentity2Device(admin, desktop, identity);
+                await context.AssignIdentity2Device(admin, docking, identity);
             }
             catch (Exception e)
             {
@@ -28,11 +28,11 @@ namespace CMDB.UI.Specflow.Actors.Desktops
                 throw;
             }
         }
-        public void AssignTheIdentity2Desktop(Desktop desktop, Identity identity)
+        public void DoAssignIdentityt2Docking(Identity identity, Docking docking) 
         {
-            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Desktop with {desktop.AssetTag}",
+            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"{docking.Category.Category} with {docking.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
-            var page = Perform(new OpenTheDesktopAssignIdentityPage());
+            var page = Perform(new OpenTheDockingAssignIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
@@ -46,14 +46,14 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             Perform<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
-        public void ReleaseIdentity(Desktop desktop, Identity identity)
+        public void DoReleaseIdentityFromDocking(Identity identity, Docking docking)
         {
-            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Desktop with {desktop.AssetTag}",
+            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"{docking.Category.Category} with {docking.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
-            var detailPage = Perform(new OpenTheDesktopDetailPage());
+            var detailPage = Perform(new OpenTheDockingDetailPage());
             detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
-            var page = Perform(new OpenTheDesktopReleaseIdentityPage());
+            var page = Perform(new OpenTheDockingReleaseIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");

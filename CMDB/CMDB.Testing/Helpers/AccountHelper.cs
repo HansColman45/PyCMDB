@@ -27,7 +27,7 @@ namespace CMDB.Testing.Helpers
 
             Account.Logs.Add(new LogBuilder()
                 .With(x => x.Account, Account)
-                .With(x => x.LogText, $"The Account with UserID: {Account.UserID} with type {Account.Type} for application {Account.Application} is created by Automation in table account")
+                .With(x => x.LogText, $"The Account with UserID: {Account.UserID} with type {Account.Type.Type} for application {Account.Application.Name} is created by Automation in table account")
                 .Build()
             );
             context.Accounts.Add(Account);

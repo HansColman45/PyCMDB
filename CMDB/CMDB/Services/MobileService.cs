@@ -57,6 +57,7 @@ namespace CMDB.Services
             if(mobile.MobileType != newAssetType)
             {
                 mobile.MobileType = newAssetType;
+                mobile.Category = newAssetType.Category;
                 await LogUpdate(table, mobile.MobileId, "Type", $"{oldAssetType}", newAssetType.ToString());
             }
             mobile.LastModfiedAdmin = Admin;

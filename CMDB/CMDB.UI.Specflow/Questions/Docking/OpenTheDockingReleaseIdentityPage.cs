@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Questions.Docking
         public override DockingReleaseIdentityPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<DockingDetailPage>();
-            page.ClickElementByXpath(DockingDetailPage.ReleaseAccountXPath);
+            page.ClickElementByXpath(DockingDetailPage.ReleaseIdenityXpath);
             return new();
         }
     }

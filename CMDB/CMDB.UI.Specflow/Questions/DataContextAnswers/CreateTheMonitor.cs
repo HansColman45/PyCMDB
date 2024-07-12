@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
         public override async Task<Screen> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await ScreenHelper.CreateScreen(context.context, context.Admin);
+            return await ScreenHelper.CreateScreen(context.context, context.Admin, false);
         }
     }
 }

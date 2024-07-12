@@ -57,6 +57,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             bool result = accountUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             accountUpdator.OpenAccountOverviewPage();
+            accountUpdator.Search(_account.UserID);
         }
         #region Update Account
         [When(@"I change the (.*) to (.*) and I save the changes")]

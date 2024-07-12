@@ -263,9 +263,11 @@ namespace CMDB.UI.Specflow.Actors
         public void Dispose()
         {
             var main = GetAbility<LoginPage>();
-            main.Dispose();
+            if(main.WebDriver != null)
+                main.Dispose();
             var db = GetAbility<DataContext>();
-            db.Dispose();
+            if(db.context != null)
+                db.Dispose();
         }
         protected RAM GetRam(string notConvertedRam)
         {

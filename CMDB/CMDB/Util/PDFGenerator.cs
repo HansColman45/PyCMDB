@@ -94,16 +94,16 @@ namespace CMDB.Util
             {
                 row.RelativeItem().Column(colum =>
                 {
-                    if (string.IsNullOrEmpty(Type))
+                    if (!string.IsNullOrEmpty(Type))
                     {
-                        colum.Item().Text("Relase Form").AlignCenter().Style(titleStyle);
+                        colum.Item().Text("Release Form").AlignCenter().Style(titleStyle);
                         colum.Item().AlignLeft().Text(" ").Style(defaultStyle);
                         switch (Language)
                         {
                             case "NL":
                                 colum.Item()
                                     .AlignLeft()
-                                    .Text($"Beste {Receiver} gelieve te teken voor het terug geven van het volgene materiaal")
+                                    .Text($"Beste {Receiver} gelieve te teken voor het terug geven van het volgende materiaal")
                                     .Style(defaultStyle).Bold();
                                 break;
                             case "EN":
@@ -129,7 +129,7 @@ namespace CMDB.Util
                         switch (Language)
                         {
                             case "NL":
-                                colum.Item().AlignLeft().Text($"Beste {Receiver} gelieve te teken voor het ontvangen van het volgene materiaal").Style(defaultStyle).Bold();
+                                colum.Item().AlignLeft().Text($"Beste {Receiver} gelieve te teken voor het ontvangen van het volgende materiaal").Style(defaultStyle).Bold();
                                 break;
                             case "EN":
                                 colum.Item().AlignLeft().Text($"Dear {Receiver} please sign for the recievement of the following material").Bold().Style(defaultStyle);

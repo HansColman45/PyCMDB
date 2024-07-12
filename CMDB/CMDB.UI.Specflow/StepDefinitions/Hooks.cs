@@ -38,7 +38,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
                 page.TakeScreenShot($"{context.ScenarioInfo.Title}_{context.CurrentScenarioBlock}_Error");
                 page.Settings.TakeScreenShot = false;
                 log.Info("A screenshot is saved");
-                await actorRegistry.DisposeActors();
             }
         }
         

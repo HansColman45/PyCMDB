@@ -1,5 +1,7 @@
 ﻿
+using CMDB.UI.Specflow.Abilities.Pages.Monitor;
 using CMDB.UI.Specflow.Questions.Mobile;
+using CMDB.UI.Specflow.Questions.Monitor;
 
 namespace CMDB.UI.Specflow.Actors.Monitors
 {
@@ -14,7 +16,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
         {
             get
             {
-                var page = Perform(new OpenTheMobileDetailPage());
+                var page = Perform(new OpenTheMonitorDetailPage());
                 page.WebDriver = Driver;
                 return page.GetLastLog();
             }
