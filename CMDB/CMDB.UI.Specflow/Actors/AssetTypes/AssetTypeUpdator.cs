@@ -42,14 +42,14 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");
             deletePage.Delete();
             deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deleted");
-            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}", admin.Account.UserID, reason, Table);
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}", admin.Account.UserID, reason, Table);
         }
         public void ActivateAssetType(AssetType assetType)
         {
             var page = GetAbility<AssetTypeOverviewPage>();
             page.Activate();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_activated");
-            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}", admin.Account.UserID, Table);
         }
     }
 }

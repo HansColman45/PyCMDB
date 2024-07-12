@@ -26,8 +26,8 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Types)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
 
             builder.HasOne(e => e.LastModfiedAdmin)
                 .WithMany(p => p.AssetTypes)

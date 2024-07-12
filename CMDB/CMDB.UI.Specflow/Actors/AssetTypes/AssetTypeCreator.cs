@@ -38,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             var page = GetAbility<MainPage>();
             page.Search(assetType.Type);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_searched");
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Assettype with Vendor: {assetType.Vendor} and type: {assetType.Type}",admin.Account.UserID,Table);
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"{assetType.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}",admin.Account.UserID,Table);
         }
     }
 }

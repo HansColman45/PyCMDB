@@ -9,7 +9,6 @@ namespace CMDB.UI.Specflow.StepDefinitions
     public class LoginStepDefinitions: TestBase
     {
         readonly CMDBActor actor;
-        
 
         public LoginStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {

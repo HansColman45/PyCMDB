@@ -45,7 +45,11 @@ namespace CMDB.Testing.Helpers
         }
         public static async Task Delete(CMDBContext context, AssetType assetType)
         {
-            context.RemoveRange(assetType.Logs);
+            //context.RemoveRange(assetType.Logs);
+            foreach (var log in assetType.Logs)
+            {
+                context.Remove(log);
+            }
             context.Remove(assetType);
             await context.SaveChangesAsync();
         }

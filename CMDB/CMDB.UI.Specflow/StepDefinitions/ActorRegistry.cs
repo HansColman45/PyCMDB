@@ -1,5 +1,4 @@
-﻿using Bright.ScreenPlay.Actors;
-using CMDB.UI.Specflow.Actors;
+﻿using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 
 namespace CMDB.UI.Specflow.StepDefinitions
@@ -7,6 +6,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
     public class ActorRegistry
     {
         private readonly List<CMDBActor> _actors = new();
+        private NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
 
         public void RegisterActor(CMDBActor actor)
         {
@@ -20,8 +20,16 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             foreach (var actor in _actors)
             {
-                await actor.Perform(new DeleteAllItemsCreatedOrUpdatedByAdmin());
-                actor.Dispose();
+                try
+                {
+                    await actor.Perform(new DeleteAllItemsCreatedOrUpdatedByAdmin());
+                    actor.Dispose();
+                }
+                catch (Exception e)
+                {
+                    log.Fatal(e.Message);
+                    throw;
+                }
             }
         }
         public List<CMDBActor> Actors => _actors;

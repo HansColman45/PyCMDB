@@ -75,125 +75,132 @@ namespace CMDB.Testing.Helpers
         public static async Task<Dictionary<string, Object>> DeleteCascading(CMDBContext context, Admin admin)
         {
             Dictionary<string, Object> Data = new();
-            //AccountType
-            var accountType = context.Types
-                .OfType<AccountType>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var type in accountType)
+            try
             {
-                Data.Add("AccountType"+accountType.IndexOf(type).ToString(), type);
-                await AccountTypeHelper.Delete(context, type);
+                //AccountType
+                var accountType = context.Types
+                    .OfType<AccountType>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var type in accountType)
+                {
+                    Data.Add("AccountType" + accountType.IndexOf(type).ToString(), type);
+                    await AccountTypeHelper.Delete(context, type);
+                }
+                //AssetType
+                var assetType = context.AssetTypes
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var type in assetType)
+                {
+                    Data.Add("AssetType" + assetType.IndexOf(type).ToString(), type);
+                    await AssetTypeHelper.Delete(context, type);
+                }
+                //IdentityTypes
+                var identypes = context.Types
+                    .OfType<IdentityType>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var type in identypes)
+                {
+                    Data.Add("IdentityType" + identypes.IndexOf(type).ToString(), type);
+                    await IdentityTypeHelper.Delete(context, type);
+                }
+                //Laptop
+                var laptops = context.Devices
+                    .OfType<Laptop>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var laptop in laptops)
+                {
+                    Data.Add("Laptop" + laptops.IndexOf(laptop).ToString(), laptop);
+                    await LaptopHelper.Delete(context, laptop);
+                }
+                //Desktop
+                var desktops = context.Devices
+                    .OfType<Desktop>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var desktop in desktops)
+                {
+                    Data.Add("Desktop" + desktops.IndexOf(desktop).ToString(), desktop);
+                    await DesktopHelper.Delete(context, desktop);
+                }
+                //Screen
+                var screens = context.Devices
+                    .OfType<Screen>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var screen in screens)
+                {
+                    Data.Add("Screen" + screens.IndexOf(screen).ToString(), screen);
+                    await ScreenHelper.Delete(context, screen);
+                }
+                //Docking
+                var dockings = context.Devices
+                    .OfType<Docking>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var docking in dockings)
+                {
+                    Data.Add("Docking" + dockings.IndexOf(docking).ToString(), docking);
+                    await DockingHelpers.Delete(context, docking);
+                }
+                //Token
+                var tokens = context.Devices
+                    .OfType<Token>()
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var token in tokens)
+                {
+                    Data.Add("Token" + tokens.IndexOf(token).ToString(), token);
+                    await TokenHelper.Delete(context, token);
+                }
+                //IdenAccount
+                var idenAccs = context.IdenAccounts
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var idenacc in idenAccs)
+                {
+                    Data.Add("IdenAccount" + idenAccs.IndexOf(idenacc).ToString(), idenacc);
+                    context.Remove<IdenAccount>(idenacc);
+                }
+                //Identity
+                var identities = context.Identities
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var identity in identities)
+                {
+                    Data.Add("Identity" + identities.IndexOf(identity).ToString(), identity);
+                    await IdentityHelper.Delete(context, identity);
+                }
+                //Account
+                var accounts = context.Accounts
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var account in accounts)
+                {
+                    Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
+                    await AccountHelper.Delete(context, account);
+                }
+                //Admin
+                context.RemoveRange(admin.Logs);
+                context.Remove<Admin>(admin);
+                await context.SaveChangesAsync();
             }
-            //AssetType
-            var assetType = context.AssetTypes
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var type in assetType)
+            catch (Exception)
             {
-                Data.Add("AssetType" +assetType.IndexOf(type).ToString(), type);
-                await AssetTypeHelper.Delete(context,type);
+                throw;
             }
-            //IdentityTypes
-            var identypes = context.Types
-                .OfType<IdentityType>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var type in identypes)
-            {
-                Data.Add("IdentityType"+identypes.IndexOf(type).ToString(), type);
-                await IdentityTypeHelper.Delete(context, type);
-            }
-            //Laptop
-            var laptops = context.Devices
-                .OfType<Laptop>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var laptop in laptops)
-            {
-                Data.Add("Laptop"+laptops.IndexOf(laptop).ToString(), laptop);
-                await LaptopHelper.Delete(context, laptop);
-            }
-            //Desktop
-            var desktops = context.Devices
-                .OfType<Desktop>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var desktop in desktops)
-            {
-                Data.Add("Desktop"+desktops.IndexOf(desktop).ToString(), desktop);
-                await DesktopHelper.Delete(context, desktop);
-            }
-            //Screen
-            var screens = context.Devices
-                .OfType<Screen>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var screen in screens)
-            {
-                Data.Add("Screen"+screens.IndexOf(screen).ToString(), screen);
-                await ScreenHelper.Delete(context, screen);
-            }
-            //Docking
-            var dockings = context.Devices
-                .OfType<Docking>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var docking in dockings)
-            {
-                Data.Add("Docking"+dockings.IndexOf(docking).ToString(), docking);
-                await DockingHelpers.Delete(context, docking);
-            }
-            //Token
-            var tokens = context.Devices
-                .OfType<Token>()
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var token in tokens)
-            {
-                Data.Add("Token"+tokens.IndexOf(token).ToString(), token);
-                await TokenHelper.Delete(context, token);
-            }
-            //IdenAccount
-            var idenAccs = context.IdenAccounts
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var idenacc in idenAccs)
-            {
-                Data.Add("IdenAccount"+ idenAccs.IndexOf(idenacc).ToString(), idenacc);
-                context.Remove<IdenAccount>(idenacc);
-            }
-            //Identity
-            var identities = context.Identities
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var identity in identities)
-            {
-                Data.Add("Identity"+identities.IndexOf(identity).ToString(), identity);
-                await IdentityHelper.Delete(context, identity);
-            }
-            //Account
-            var accounts = context.Accounts
-                .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                .ToList();
-            foreach (var account in accounts)
-            {
-                Data.Add("Account"+accounts.IndexOf(account).ToString(), account);
-                await AccountHelper.Delete(context, account);
-            }
-            //Admin
-            context.RemoveRange(admin.Logs);
-            context.Remove<Admin>(admin);
-            await context.SaveChangesAsync();
             return Data;
         }
     }
