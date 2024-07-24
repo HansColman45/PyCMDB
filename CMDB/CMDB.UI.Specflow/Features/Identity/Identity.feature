@@ -36,3 +36,18 @@ Scenario: I want to deactivate an existing Identity
 	Given An acive Identity exisist in the system
 	When I want to deactivete the identity whith the reason Test
 	Then The Idenetity is inactive
+
+Scenario Outline: I want to assign a device to an existing Identity
+	Given An active Identity exisist in the system
+	And a <Device> exist as well
+	When I assign that <Device> to the identity
+	And I fill in the assig form
+	Then The <Device> is assigned
+
+	Examples:
+		| Device  |
+		| Laptop  |
+		| Desktop |
+		| Token   |
+		| Monitor |
+		| Docking |

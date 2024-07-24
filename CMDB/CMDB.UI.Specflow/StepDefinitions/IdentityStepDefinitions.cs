@@ -2,7 +2,6 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors.IdentityActors;
 using CMDB.UI.Specflow.Questions;
-using Microsoft.Graph;
 using TechTalk.SpecFlow.Assist;
 using Identity = CMDB.Domain.Entities.Identity;
 using Table = TechTalk.SpecFlow.Table;
@@ -14,8 +13,10 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         private Helpers.Identity iden;
         private Identity Identity;
+        private Device _Device;
         private IdentityCreator identityCreator;
         private IdentityUpdator identityUpdator;
+        private IdentityDeviceActor identityDeviceActor;
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
@@ -150,6 +151,45 @@ namespace CMDB.UI.Specflow.StepDefinitions
             expectedlog = identityUpdator.ExpectedLog;
             var log = identityUpdator.IdentityLastLogLine;
             log.Should().BeEquivalentTo(expectedlog);
+        }
+        #endregion
+        #region Assign Device
+        [Given(@"An active Identity exisist in the system")]
+        public async Task GivenAnActiveIdentityExisistInTheSystem()
+        {
+            identityDeviceActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityDeviceActor);
+            Admin = await identityDeviceActor.CreateNewAdmin();
+            Identity = await identityDeviceActor.CreateNewIdentity();
+            identityDeviceActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = identityDeviceActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            identityDeviceActor.OpenIdentityOverviewPage();
+            identityDeviceActor.Search(Identity.UserID);
+        }
+        [Given(@"a (.*) exist as well")]
+        public async Task GivenALaptopExistAsWell(string device)
+        {
+            _Device = await identityDeviceActor.CreateNewDevice(device);
+        }
+        [When(@"I assign that (.*) to the identity")]
+        public void WhenIAssignThatLaptopToTheIdentity(string device)
+        {
+            log.Debug($"Will try to assign the {device} to the Identity");
+            identityDeviceActor.DoAssignDevice2Identity(_Device, Identity);
+        }
+        [When(@"I fill in the assig form")]
+        public void WhenIFillInTheAssigForm()
+        {
+            identityDeviceActor.FillInAssignForm();
+        }
+        [Then(@"The (.*) is assigned")]
+        public void ThenTheLaptopIsAssigned(string device)
+        {
+            log.Debug($"Will check if the {device} is assigned to the Identity");
+            identityDeviceActor.Search(Identity.UserID);
+            var lastLog = identityDeviceActor.IdentityLastLogLine;
+            identityDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
         }
         #endregion
     }
