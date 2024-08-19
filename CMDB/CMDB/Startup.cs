@@ -18,7 +18,7 @@ namespace CMDB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionstring = "Server=localhost;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False";
+            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False";
             services.AddMvc();
             services.AddDbContext<CMDBContext>(
                 options => SqlServerDbContextOptionsExtensions.UseSqlServer(options, connectionstring),

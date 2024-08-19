@@ -51,3 +51,19 @@ Scenario Outline: I want to assign a device to an existing Identity
 		| Token   |
 		| Monitor |
 		| Docking |
+
+Scenario Outline: I want to relase a device from an exising Identity
+	Given An active Identity exisist in the system
+	And a <Device> exist as well
+	And The <Device> is assigned to the Identity
+	When I release the <Device> from the Identity
+	And I fill in the release form for my Identity
+	Then The <Device> is released from the Identity
+
+	Examples:
+		| Device  |
+		| Laptop  |
+		| Desktop |
+		| Token   |
+		| Monitor |
+		| Docking |

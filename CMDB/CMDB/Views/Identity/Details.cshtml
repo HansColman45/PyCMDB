@@ -122,7 +122,10 @@
                                 <td class="small">@device.SerialNumber</td>
                                 @if ((bool)ViewData["ReleaseDevice"] && item.IdenId > 1)
                                 {
-                                    <td class="small"><a class="btn btn-danger" href="/Identity/ReleaseDevice/@item.IdenId/@device.AssetTag" id="ReleaseDevice" data-toggle="tooltip" data-placement="top" title="Release"><span class="@ViewBag.AddDeviceIcon"></span></a></td>
+                                    <td class="small">
+                                        <a class="btn btn-danger" asp-controller="Identity" asp-action="ReleaseDevice" asp-route-id="@item.IdenId" asp-route-AssetTag="@device.AssetTag" id="ReleaseDevice" data-toggle="tooltip" data-placement="top" title="Release device">
+                                            <span class="@ViewBag.AddDeviceIcon"></span>
+                                        </a></td>
                                 }
                             </tr>
                         }

@@ -1,4 +1,6 @@
 ﻿
+using Microsoft.Graph.Models.CallRecords;
+
 namespace CMDB.UI.Specflow.Tasks
 {
     public static class GenericLogLineCreator
@@ -97,6 +99,18 @@ namespace CMDB.UI.Specflow.Tasks
         public static string ReleaseDeviceFromIdentityLogLine(string deviceInfo, string IdentityInfo, string releaser, string table)
         {
             return $"The {deviceInfo} is released from {IdentityInfo} by {releaser} in table {table}";
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="IdentityInfo"></param>
+        /// <param name="deviceInfo"></param>
+        /// <param name="releaser"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        public static string ReleaseIdentityFromDeviceLogLine(string IdentityInfo, string deviceInfo, string releaser, string table)
+        {
+            return $"The {IdentityInfo} is released from {deviceInfo} by {releaser} in table {table}";
         }
     }
 }

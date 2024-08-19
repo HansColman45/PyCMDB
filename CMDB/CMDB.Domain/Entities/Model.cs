@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
     public class Model
     {
+        [JsonIgnore]
         public int active { get; set; }
         public Model()
         {

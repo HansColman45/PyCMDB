@@ -2,9 +2,11 @@
 
 
 using CMDB.Domain.Entities;
+using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Identity;
 using CMDB.UI.Specflow.Tasks;
+using System.Runtime.Serialization.DataContracts;
 
 namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
@@ -25,6 +27,26 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
                 "Token" => await Perform(new CreateTheToken()),
                 _ => throw new Exception($"Category {category} not found")
             };
+        }
+        public async Task AssignDevice2Identity(Device device, Identity identity)
+        {
+            var context = GetAbility<DataContext>();
+            await context.AssignIdentity2Device(admin, device, identity);
+        }
+        public void DoReleaseDeviceFromIdentity(Device device, Identity identity) 
+        {
+            Search(identity.FirstName);
+            var detailpage = Perform(new OpenTheIdentityDetailPage());
+            detailpage.WebDriver = Driver;
+            detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
+            ExpectedLog = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine($"identity with name: {identity.Name}", 
+                $"{device.Category.Category} with {device.AssetTag}", admin.Account.UserID, Table);
+            var page = Perform(new OpenTheReleaceDevicePage());
+            page.WebDriver = Driver;
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseDevicePage");
+            page.Title.Should().BeEquivalentTo("Release device from identity", "Title should be correct");
+            page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
         }
         public void DoAssignDevice2Identity(Device device, Identity identity)
         {

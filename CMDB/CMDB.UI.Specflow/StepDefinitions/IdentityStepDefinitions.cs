@@ -2,6 +2,7 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors.IdentityActors;
 using CMDB.UI.Specflow.Questions;
+using CMDB.UI.Specflow.Tasks;
 using TechTalk.SpecFlow.Assist;
 using Identity = CMDB.Domain.Entities.Identity;
 using Table = TechTalk.SpecFlow.Table;
@@ -187,6 +188,33 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void ThenTheLaptopIsAssigned(string device)
         {
             log.Debug($"Will check if the {device} is assigned to the Identity");
+            identityDeviceActor.Search(Identity.UserID);
+            var lastLog = identityDeviceActor.IdentityLastLogLine;
+            identityDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+        #endregion
+        #region Release device
+        [Given(@"The (.*) is assigned to the Identity")]
+        public async Task GivenTheDeviceIsAssignedToTheIdentity(string device)
+        {
+            log.Debug($"Will assign the {device} to the Identity");
+            await identityDeviceActor.AssignDevice2Identity(_Device,Identity);
+        }
+        [When(@"I release the (.*) from the Identity")]
+        public void WhenIReleaseTheDeviceFromTheIdentity(string device)
+        {
+            log.Debug($"We will release the {device} from the Identity {Identity.Name}");
+            identityDeviceActor.DoReleaseDeviceFromIdentity(_Device,Identity);
+        }
+        [When(@"I fill in the release form for my Identity")]
+        public void WhenIFillInTheReleaseFormForMyIdentity()
+        {
+            identityDeviceActor.Perform<ClickTheGeneratePDFOnReleaseForm>();
+        }
+        [Then(@"The (.*) is released from the Identity")]
+        public void ThenTheDeviceIsReleasedFromTheIdentity(string device)
+        {
+            log.Debug($"Will check if the {device} is released to the Identity");
             identityDeviceActor.Search(Identity.UserID);
             var lastLog = identityDeviceActor.IdentityLastLogLine;
             identityDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastLog);

@@ -1,35 +1,37 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
 
-namespace CMDB.Services
+namespace CMDB.API.Services
 {
-    public class LogService : CMDBServices
+    public class LogService
     {
+        private CMDBContext _context;
         private string LogText;
-        public LogService(CMDBContext context) : base(context)
+        public LogService(CMDBContext context)
         {
+            _context = context;
         }
-        #region Admin stuff
-        public bool HasAdminAccess(Admin admin, string site, string action)
+        public Admin Admin
         {
-            var perm = _context.RolePerms
-                .Include(x => x.Menu)
-                .Include(x => x.Permission)
-                .Where(x => x.Level == admin.Level || x.Menu.Label == site || x.Permission.Rights == action).ToList();
-            if (perm.Count > 0)
-                return true;
-            else
-                return false;
+            get
+            {
+                if (_context.Admin == null)
+                    return null;
+                else
+                    return _context.Admin;
+            }
+            set
+            {
+                if (_context.Admin != null && value != null)
+                {
+                    if (_context.Admin.AdminId != value.AdminId)
+                        _context.Admin = _context.Admins.Where(x => x.AdminId == value.AdminId).SingleOrDefault();
+                }
+                else if (value is null)
+                    _context.Admin = null;
+            }
         }
-        #endregion
         #region log functions
         public void GetLogs(string table, int ID, Model model)
         {
@@ -167,7 +169,7 @@ namespace CMDB.Services
         protected async Task LogReleaseMobileFromIdenity(string table, Mobile mobile, Identity identity)
         {
             LogText = $"The Idenity with name: {identity.Name} is released from {mobile.Category.Category} with {mobile.MobileType} by {Admin.Account.UserID} in table {table}";
-            await DoLog(table,mobile.MobileId);
+            await DoLog(table, mobile.MobileId);
         }
         protected async Task LogReleaseIdentityFromMobile(string table, Identity identity, Mobile mobile)
         {
@@ -369,15 +371,5 @@ namespace CMDB.Services
             }
         }
         #endregion
-        public List<SelectListItem> ListAssetTypes(string category)
-        {
-            List<SelectListItem> assettypes = new();
-            var types = _context.AssetTypes.Include(x => x.Category).Where(x => x.Category.Category == category).ToList();
-            foreach (var type in types)
-            {
-                assettypes.Add(new(type.Vendor + " " + type.Type, type.TypeID.ToString()));
-            }
-            return assettypes;
-        }
     }
 }
