@@ -10,7 +10,6 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 string connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
-//string connectionString = "Server=localhost;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Trusted_Connection=True;TrustServerCertificate=True;Encrypt=False";
 // configure strongly typed settings object
 builder.Services.AddDbContext<CMDBContext>(options => SqlServerDbContextOptionsExtensions.UseSqlServer(options,connectionString), ServiceLifetime.Singleton);
 
@@ -30,7 +29,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddScoped<JwtService>();
 //builder.Services.AddSingleton<IAdminService, AdminService>();
+builder.Services.AddTransient<IMenuService, MenuService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
+builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 builder.Services.AddSwaggerGen(swagger =>
 {
@@ -52,21 +53,21 @@ builder.Services.AddSwaggerGen(swagger =>
         Description = "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
     });
     swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
         {
-            {
-                    new OpenApiSecurityScheme
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
                     {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[] {}
 
-            }
-        });
+        }
     });
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

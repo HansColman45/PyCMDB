@@ -2,7 +2,6 @@
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Models;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers
@@ -12,9 +11,11 @@ namespace CMDB.API.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityService identityService;
-        public IdentityController(IIdentityService service)
+        private readonly IAccountService _accountService;
+        public IdentityController(IIdentityService service, IAccountService accountService)
         {
             identityService = service;
+            _accountService = accountService;
         }
         [HttpGet]
         [Authorize]
@@ -54,13 +55,13 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Identity")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("")).FirstOrDefault();
+            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("AssignAccount")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
             var Iden = await GetById(model.IdenityId);
             if (Iden == null)
                 return NotFound();
-            var account = await identityService.GetAccountById(model.AccountId);
+            var account = await _accountService.GetById(model.AccountId);
             if (account == null)
                 return BadRequest();
             //ToDO

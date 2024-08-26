@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
+using CMDB.Util;
 
 namespace CMDB.Services
 {
@@ -16,24 +17,45 @@ namespace CMDB.Services
         }
         public async Task<List<Account>> ListAll()
         {
-            List<Account> accounts = await _context.Accounts
+            BaseUrl = _url + $"api/Account/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if(response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Account>>();
+            else
+                return new List<Account>();
+            /*List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .ToListAsync();
-            return accounts;
+            return accounts;*/
         }
         public async Task<List<Account>> GetByID(int ID)
         {
-            List<Account> accounts = await _context.Accounts
+            BaseUrl = _url + $"api/Account/{ID}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Account>>();
+            else
+                return new List<Account>();
+            /*List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
                 .ToListAsync();
-            return accounts;
+            return accounts;*/
         }
         public async Task<List<Account>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
+            BaseUrl = _url + $"api/Account/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Account>>();
+            else
+                return new List<Account>();
+            /*string searhterm = "%" + searchString + "%";
             List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
@@ -42,7 +64,7 @@ namespace CMDB.Services
                     || EF.Functions.Like(x.Type.Description, searhterm)
                     || EF.Functions.Like(x.UserID, searhterm))
                 .ToListAsync();
-            return accounts;
+            return accounts;*/
         }
         public async Task CreateNew(string UserID, int type, int application, string Table)
         {

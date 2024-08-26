@@ -28,7 +28,8 @@ namespace CMDB.API.Helper
             var claims = new List<Claim>
             {
                 new(ClaimTypes.PrimarySid, user.AdminId.ToString()),
-                new(ClaimTypes.UserData, user.Account.UserID)
+                new(ClaimTypes.UserData, user.Account.UserID),
+                new(ClaimTypes.Name, user.Level.ToString()),
             };
             var menus = _CMDBContext.RolePerms
                 .Include(x => x.Menu)

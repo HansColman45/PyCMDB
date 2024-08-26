@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using CMDB.Domain.Requests;
+using CMDB.Util;
 
 namespace CMDB.Services
 {
@@ -18,14 +20,19 @@ namespace CMDB.Services
         {
         }
         #region Admin stuff
-        public bool HasAdminAccess(Admin admin, string site, string action)
+        public async Task<bool> HasAdminAccess(int adminId, string site, string action)
         {
-            var perm = _context.RolePerms
-                .Include(x => x.Menu)
-                .Include(x => x.Permission)
-                .Where(x => x.Level == admin.Level || x.Menu.Label == site || x.Permission.Rights == action).ToList();
-            if (perm.Count > 0)
-                return true;
+            BaseUrl = _url + $"api/Admin/HasAdminAccess";
+            _Client.SetBearerToken(TokenStore.Token);
+            HasAdminAccessRequest request = new()
+            {
+                AdminId = adminId,
+                Site = site,
+                Action = action
+            };
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<bool>();
             else
                 return false;
         }
@@ -78,18 +85,18 @@ namespace CMDB.Services
         }
         protected async Task LogUpdate(string table, int ID, string field, string oldValue, string newValue)
         {
-            if (String.IsNullOrEmpty(oldValue))
+            if (string.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
-            if (String.IsNullOrEmpty(newValue))
+            if (string.IsNullOrEmpty(newValue))
                 newValue = "Empty";
             LogText = $"The {field} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, ID);
         }
         protected async Task LogUpdate(string table, string AssetTag, string field, string oldValue, string newValue)
         {
-            if (String.IsNullOrEmpty(oldValue))
+            if (string.IsNullOrEmpty(oldValue))
                 oldValue = "Empty";
-            if (String.IsNullOrEmpty(newValue))
+            if (string.IsNullOrEmpty(newValue))
                 newValue = "Empty";
             LogText = $"The {field} has been changed from {oldValue} to {newValue} by {Admin.Account.UserID} in table {table}";
             await DoLog(table, AssetTag);

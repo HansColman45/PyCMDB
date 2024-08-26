@@ -22,7 +22,6 @@ namespace CMDB.Controllers
         public IActionResult LogOut()
         {
             log.Debug("Using Logout {0}", "Home");
-            service.Admin = null;
             string stringFullUrl = @"\Login";
             return Redirect(stringFullUrl);
         }

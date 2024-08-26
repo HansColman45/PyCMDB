@@ -1,5 +1,63 @@
 [
   {
+    "ContainingType": "CMDB.API.Controllers.AccountController",
+    "Method": "Create",
+    "RelativePath": "api/Account",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "account",
+        "Type": "CMDB.API.Models.AccountDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AccountController",
+    "Method": "GetById",
+    "RelativePath": "api/Account/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AccountController",
+    "Method": "GetAll",
+    "RelativePath": "api/Account/GetAll",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AccountController",
+    "Method": "GetAll",
+    "RelativePath": "api/Account/GetAll/{searchstr}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "searchstr",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "CMDB.API.Controllers.AdminController",
     "Method": "GetAll",
     "RelativePath": "api/Admin",
@@ -7,6 +65,22 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AdminController",
+    "Method": "Create",
+    "RelativePath": "api/Admin",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "admin",
+        "Type": "CMDB.Domain.Entities.Admin",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {
@@ -20,6 +94,43 @@
       {
         "Name": "id",
         "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AdminController",
+    "Method": "Update",
+    "RelativePath": "api/Admin/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "admin",
+        "Type": "CMDB.Domain.Entities.Admin",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.AdminController",
+    "Method": "HasAdminAccess",
+    "RelativePath": "api/Admin/HasAdminAccess",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "CMDB.Domain.Requests.HasAdminAccessRequest",
         "IsRequired": true
       }
     ],
@@ -78,6 +189,48 @@
       {
         "Name": "model",
         "Type": "CMDB.Domain.Requests.AssignAccountRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.MenuController",
+    "Method": "GetFirstLevelMenu",
+    "RelativePath": "api/Menu/FirstLevel",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.MenuController",
+    "Method": "GetPersonalMenu",
+    "RelativePath": "api/Menu/PersonalMenu/{menuId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "menuId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "CMDB.API.Controllers.MenuController",
+    "Method": "GetSecondLevel",
+    "RelativePath": "api/Menu/SecondLevel/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

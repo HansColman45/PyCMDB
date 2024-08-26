@@ -309,12 +309,12 @@ namespace CMDB.Services
         {
             List<SelectListItem> accounts = new();
             
-            var test = _context.IdentityAccountInfos.FromSqlRaw(
+            var test = await _context.IdentityAccountInfos.FromSqlRaw(
                 $"select distinct a.AccID, a.UserID, ap.Name from Account a " +
                 "left join Application ap on a.ApplicationId = ap.AppID " +
                 "left join IdenAccount ia on ia.AccountId = a.AccID " +
                 "where ia.IdentityId is null or ia.ValidUntil <= GETDATE()")
-                .ToList();/*
+                .ToListAsync();/*
             var freeAccounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(y => y.Identities)

@@ -104,3 +104,4 @@ C:\Software\PyCMDB\CMDB\CMDB.API\obj\Debug\net8.0\refint\CMDB.API.dll
 C:\Software\PyCMDB\CMDB\CMDB.API\obj\Debug\net8.0\CMDB.API.pdb
 C:\Software\PyCMDB\CMDB\CMDB.API\obj\Debug\net8.0\CMDB.API.genruntimeconfig.cache
 C:\Software\PyCMDB\CMDB\CMDB.API\obj\Debug\net8.0\ref\CMDB.API.dll
+C:\Software\PyCMDB\CMDB\CMDB.API\bin\Debug\net8.0\AutoMapper.dll

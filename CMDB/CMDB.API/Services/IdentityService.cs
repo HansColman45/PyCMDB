@@ -1,20 +1,14 @@
-﻿using CMDB.API.Helper;
-using CMDB.Domain.Entities;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 namespace CMDB.API.Services
 {
     public class IdentityService : LogService, IIdentityService
     {
-        private readonly AppSettings _appSettings;
-        private readonly CMDBContext _context;
 
-        public IdentityService(IOptions<AppSettings> settings, CMDBContext context) : base(context)
+        public IdentityService(CMDBContext context) : base(context)
         {
-            _appSettings = settings.Value;
-            _context = context;
         }
         public async Task<IEnumerable<Identity>> GetAll()
         {

@@ -9,7 +9,9 @@ namespace CMDB.API.Services
         Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model);
         Task<IEnumerable<AdminDetailResponce>> GetAll();
         Task<Admin?> GetById(int id);
-        Task Create(Admin admin);
-        Task Update(Admin admin);
+        Task<Admin?> Create(Admin admin);
+        Task<Admin?> Update(Admin admin);
+        Task<bool> HasAdminAccess(HasAdminAccessRequest request);
+        bool IsExisting(Admin admin);
     }
 }

@@ -1,15 +1,14 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
+using CMDB.Services;
+using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
-using System.Threading.Tasks;
-using CMDB.Util;
+using Microsoft.AspNetCore.Mvc;
 using QuestPDF.Fluent;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -28,12 +27,12 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Monitor overview";
             await BuildMenu();
             var Desktops = await service.ListAll("Monitor");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Monitor\Search";
             return View(Desktops);
         }
@@ -45,12 +44,12 @@ namespace CMDB.Controllers
                 ViewData["Title"] = "Monitor overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Monitor\Search";
                 return View(Desktops);
             }
@@ -65,7 +64,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Monitor";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -116,7 +115,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -124,7 +123,7 @@ namespace CMDB.Controllers
             Screen moniror = monitors.FirstOrDefault();
             if (moniror == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(moniror, Table);
                 return RedirectToAction(nameof(Index));
@@ -139,7 +138,7 @@ namespace CMDB.Controllers
         {
             log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create monitor";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             ViewBag.Types = service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Desktop";
@@ -183,11 +182,11 @@ namespace CMDB.Controllers
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Monitor details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             service.GetLogs(Table, screen.AssetTag, screen);
@@ -204,7 +203,7 @@ namespace CMDB.Controllers
                 return NotFound();
             await BuildMenu();
             Screen screen = screens.FirstOrDefault();
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["Title"] = "Edit monitor";
             ViewBag.Types = service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Monitor";
@@ -226,7 +225,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to Monitor";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Monitor";
             await BuildMenu();
             if (id == null)
@@ -304,7 +303,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Release identity in {0}", Table);
             ViewData["Title"] = "Release identity from Monitor";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Monitor";
             ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();

@@ -28,12 +28,12 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Desktop overview";
             await BuildMenu();
             var Desktops = await service.ListAll(SitePart);
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete").ConfigureAwait(false);
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Desktop\Search";
             return View(Desktops);
         }
@@ -45,12 +45,12 @@ namespace CMDB.Controllers
             {
                 ViewData["Title"] = "Desktop overview";
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Desktop\Search";
                 return View(Desktops);
             }
@@ -63,7 +63,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Desktop";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             Desktop desktop = new();
             ViewBag.Types = service.ListAssetTypes(SitePart);
@@ -102,7 +102,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Desktop";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -143,11 +143,11 @@ namespace CMDB.Controllers
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Desktop details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (String.IsNullOrEmpty(id))
@@ -166,7 +166,7 @@ namespace CMDB.Controllers
             if (String.IsNullOrEmpty(id))
                 return NotFound();
             ViewData["Title"] = "Delete Desktop";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -217,7 +217,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
@@ -225,7 +225,7 @@ namespace CMDB.Controllers
             Desktop desktop = desktops.FirstOrDefault();
             if (desktop == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(desktop, Table);
                 return RedirectToAction(nameof(Index));
@@ -240,7 +240,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to Desktop";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             if (id == null)
@@ -320,7 +320,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Release identity in {0}", Table);
             ViewData["Title"] = "Release identity from Desktop";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Desktop";
             ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();

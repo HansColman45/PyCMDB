@@ -29,12 +29,12 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Token overview";
             await BuildMenu();
             var Desktops = await service.ListAll("Token");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
             return View(Desktops);
         }
@@ -47,12 +47,12 @@ namespace CMDB.Controllers
                 ViewData["Title"] = "Token overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
                 return View(Desktops);
             }
@@ -67,7 +67,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete token";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
             var tokens = await service.ListTokenByID(id);
             Token token = tokens.FirstOrDefault();
@@ -118,7 +118,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate token";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             if (id == null)
                 return NotFound();
             var tokens = await service.ListTokenByID(id);
@@ -126,7 +126,7 @@ namespace CMDB.Controllers
             if (token == null)
                 return NotFound();
             await BuildMenu();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(token, Table);
                 return RedirectToAction(nameof(Index));
@@ -148,11 +148,11 @@ namespace CMDB.Controllers
             log.Debug($"Using details in {Table}");
             ViewData["Title"] = "Token details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             service.GetLogs(Table, token.AssetTag, token);
@@ -163,7 +163,7 @@ namespace CMDB.Controllers
         {
             log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create token";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             Token token= new();
             ViewBag.Types = service.ListAssetTypes(SitePart);
@@ -200,7 +200,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit token";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["backUrl"] = "Token";
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
@@ -237,7 +237,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to Token";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Token";
             await BuildMenu();
             if (id == null)
@@ -316,7 +316,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Release identity in {0}", Table);
             ViewData["Title"] = "Release identity from Token";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Token";
             ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();

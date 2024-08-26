@@ -25,10 +25,10 @@ namespace CMDB.Controllers
             log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
             ViewData["Title"] = "Permissiont overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\Permission\Search";
             return View();
         }

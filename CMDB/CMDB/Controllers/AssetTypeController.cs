@@ -35,11 +35,11 @@ namespace CMDB.Controllers
             await BuildMenu();
             var accounts = await service.ListAllAssetTypes();
             ViewData["Title"] = "Assettype overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\AssetType\Search";
             return View(accounts);
         }
@@ -57,11 +57,11 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var accounts = await service.ListAllAssetTypes(search);
                 ViewData["Title"] = "Assettype overview";
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["actionUrl"] = @"\AssetType\Search";
                 return View(accounts);
             }
@@ -77,7 +77,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create assettype";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             AssetType assetType = new();
             await BuildMenu();
             ViewBag.Catgories = service.ListActiveCategories();
@@ -114,7 +114,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit assettype";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -154,8 +154,8 @@ namespace CMDB.Controllers
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Assettype details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
@@ -171,7 +171,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Assettype";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -205,7 +205,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Account";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
@@ -213,7 +213,7 @@ namespace CMDB.Controllers
             AssetType assetType = assetTypes.FirstOrDefault();
             if (assetType == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.ActivateAssetType(assetType, Table);
                 return RedirectToAction(nameof(Index));

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
@@ -22,11 +23,17 @@ namespace CMDB.Domain.Entities
         public string Category { get; set; }
         public string Prefix { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<AssetType> Types { get; set; }
-        public ICollection<Device> Devices { get; set; }
-        public ICollection<Kensington> Kensingtons { get; set; }
-        public ICollection<Mobile> Mobiles { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Device> Devices { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Kensington> Kensingtons { get; set; }
+        [JsonIgnore]
+        public virtual ICollection<Mobile> Mobiles { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Subscription> Subscriptions { get; set; }
+        [JsonIgnore]
         public virtual ICollection<SubscriptionType> SubscriptionTypes { get; set; }
     }
 }

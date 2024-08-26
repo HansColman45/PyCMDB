@@ -25,6 +25,7 @@ namespace CMDB
                 ServiceLifetime.Singleton
             );
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
+            services.AddTransient<ITokenStore, TokenStore>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
         }
 

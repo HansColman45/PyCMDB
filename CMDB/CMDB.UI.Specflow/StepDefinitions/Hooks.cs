@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             await actorRegistry.DisposeActors();
         }
         [AfterStep]
-        public async Task AfterStep(ScenarioContext context, ActorRegistry actorRegistry)
+        public void AfterStep(ScenarioContext context, ActorRegistry actorRegistry)
         {
             var result = context.StepContext.Status;
             if (result == ScenarioExecutionStatus.TestError)

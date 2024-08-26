@@ -1,28 +1,39 @@
-﻿using CMDB.Infrastructure;
-using System.Collections.Generic;
-using CMDB.Domain.Entities;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Domain.Requests;
+using CMDB.Domain.Responses;
+using CMDB.Infrastructure;
+using CMDB.Util;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Security.Cryptography;
-using System.Text;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
     public class CMDBServices
     {
+        protected string _url = "https://localhost:7055/";
         protected CMDBContext _context;
+        protected HttpClient _Client;
+        protected string BaseUrl { get; set; }
+        protected string Token {  get; private set; }
         public Admin Admin
         {
             get
             {
-                if (_context.Admin == null)
-                    return null;
+                BaseUrl = _url + $"api/Admin/{TokenStore.AdminId}";
+                _Client.SetBearerToken(TokenStore.Token);
+                var response = _Client.GetAsync(BaseUrl).Result;
+                if (response.IsSuccessStatusCode)
+                    return response.Content.ReadAsJsonAsync<Admin>().Result;
                 else
-                    return _context.Admin;
+                    return null;
             }
-            set
+            /*set
             {
                 if (_context.Admin != null && value != null)
                 {
@@ -31,11 +42,19 @@ namespace CMDB.Services
                 }
                 else if (value is null)
                     _context.Admin = null;
-            }
+            }*/
         }
 
         public CMDBServices(CMDBContext context)
         {
+            HttpClientHandler clientHandler = new()
+            {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => {
+                    //if (development) return true;
+                    return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
+                }
+            };
+            _Client = new HttpClient(clientHandler);
             _context = context;
         }
         #region generic app things
@@ -74,48 +93,61 @@ namespace CMDB.Services
         }
         #endregion
 
-        public async Task<Admin> Login(string userID, string pwd)
+        public async Task<string> Login(string userID, string pwd)
         {
-            Admin admin = await _context.Admins
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Application)
-                .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == userID).FirstOrDefaultAsync();
-
-            if (String.Equals(admin.Password, new PasswordHasher().EncryptPassword(pwd)))
+            AuthenticateRequest request = new()
             {
-                return admin;
+                Username = userID,
+                Password = pwd
+            };
+            BaseUrl = _url + "api/Admin/login";
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (response.IsSuccessStatusCode)
+            {
+                AuthenticateResponse authenticateResponse = await response.Content.ReadAsJsonAsync<AuthenticateResponse>();
+                TokenStore.AdminId = authenticateResponse.Id;
+                TokenStore.Token = authenticateResponse.Token;
+                return TokenStore.Token;
             }
             else
-            {
                 return null;
-            }
         }
         #region generic menu
         public async Task<ICollection<Menu>> ListFirstMenuLevel()
         {
-            var menu = await _context.Menus.Where(x => x.ParentId == null)
-                .OrderBy(x => x.ParentId).ThenBy(x => x.MenuId)
-                .ToListAsync();
-            return menu;
+            BaseUrl = _url + "api/Menu/FirstLevel";
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<Menu>>();
+            }
+            else
+                return new List<Menu>();
         }
         public async Task<ICollection<Menu>> ListSecondMenuLevel(int menuID)
         {
-            var menu = await _context.Menus
-                .Include(x => x.Parent)
-                .Where(x => x.ParentId == menuID)
-                .OrderBy(x => x.ParentId).ThenBy(x => x.MenuId)
-                .ToListAsync();
-            return menu;
+            BaseUrl = _url + $"api/Menu/SecondLevel/{menuID}";
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var menus = await response.Content.ReadAsJsonAsync<List<Menu>>();
+                return menus;
+            }
+            else
+                return new List<Menu>();
         }
-        public async Task<ICollection<Menu>> ListPersonalMenu(int level, int menuID)
+        public async Task<ICollection<Menu>> ListPersonalMenu(string token, int menuID)
         {
-            var menu = await _context.RolePerms
-                .Include(x => x.Menu)
-                .ThenInclude(x => x.Children)
-                .Include(x => x.Permission)
-                .Where(x => x.Permission.Rights == "Read" || x.Level == level || x.Menu.MenuId == menuID)
-                .SelectMany(x => x.Menu.Children).ToListAsync();
-            return menu;
+            BaseUrl = _url + $"api/Menu/PersonalMenu/{menuID}";
+            _Client.SetBearerToken(token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var menus = await response.Content.ReadAsJsonAsync<List<Menu>>();
+                return menus;
+            }
+            else
+                return new List<Menu>();
         }
         #endregion
     }

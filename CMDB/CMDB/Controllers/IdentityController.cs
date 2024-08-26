@@ -30,14 +30,14 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Identity overview";
             await BuildMenu();
             var list = await service.ListAll();
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["AssignAccountAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
-            ViewData["AssignDeviceAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
-            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["AssignAccountAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
+            ViewData["AssignDeviceAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
@@ -50,13 +50,13 @@ namespace CMDB.Controllers
                 var list = await service.ListAll(search);
                 ViewData["Title"] = "Identity overview";
                 await BuildMenu();
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignAccountAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
-                ViewData["AssignDeviceAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["AssignAccountAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
+                ViewData["AssignDeviceAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
                 ViewData["actionUrl"] = @"\Identity\Search";
                 return View(list);
             }
@@ -73,17 +73,17 @@ namespace CMDB.Controllers
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Identity Details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["AccountOverview"] = service.HasAdminAccess(service.Admin, SitePart, "AccountOverview");
-            ViewData["DeviceOverview"] = service.HasAdminAccess(service.Admin, SitePart, "DeviceOverview");
-            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
-            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
-            ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseAccount");
-            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
-            ViewData["MobileOverview"] = service.HasAdminAccess(service.Admin, SitePart, "MobileOverview");
-            ViewData["ReleaseMobile"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseMobile");
-            ViewData["SubscriptionOverview"] = service.HasAdminAccess(service.Admin, SitePart, "SubscriptionOverview");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["AccountOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AccountOverview");
+            ViewData["DeviceOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "DeviceOverview");
+            ViewData["AssignDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
+            ViewData["AssignAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
+            ViewData["ReleaseAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseAccount");
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
+            ViewData["MobileOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "MobileOverview");
+            ViewData["ReleaseMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseMobile");
+            ViewData["SubscriptionOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "SubscriptionOverview");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             service.GetAssingedDevices(list.First());
@@ -95,7 +95,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", Table);
             ViewData["Title"] = "Create Identity";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             ViewBag.Types = service.ListActiveIdentityTypes();
             ViewBag.Languages = service.ListAllActiveLanguages();
@@ -145,7 +145,7 @@ namespace CMDB.Controllers
             log.Debug("Using Edit in {0}", Table);
             ViewData["Title"] = "Edit Identity";
             await BuildMenu();
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewBag.Types = service.ListActiveIdentityTypes();
             ViewBag.Languages = service.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
@@ -187,7 +187,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Identity";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Identity";
@@ -218,9 +218,9 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Identity";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(identity, Table);
                 return RedirectToAction(nameof(Index));
@@ -239,7 +239,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Assign device to identity";
-            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
+            ViewData["AssignDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewBag.Devices = await service.ListAllFreeDevices();
@@ -295,7 +295,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Assign Account in {0}", Table);
             ViewData["Title"] = "Assign Account";
-            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
+            ViewData["AssignAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewBag.Identity = identity;
@@ -336,7 +336,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Release Account";
             ViewBag.Identity = idenAccount.Identity;
             ViewBag.Account = idenAccount.Account;
-            ViewData["ReleaseAccount"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseAccount");
+            ViewData["ReleaseAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseAccount");
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseAccount";
@@ -380,8 +380,8 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Assign Form in {0}", Table);
             ViewData["Title"] = "Assign form";
-            ViewData["AssignDevice"] = service.HasAdminAccess(service.Admin, SitePart, "AssignDevice");
-            ViewData["AssignAccount"] = service.HasAdminAccess(service.Admin, SitePart, "AssignAccount");
+            ViewData["AssignDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
+            ViewData["AssignAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
             service.GetAssingedDevices(list.First());
             service.GetAssignedAccounts(list.First());
             await BuildMenu();
@@ -438,7 +438,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release device from identity";
-            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
             Device device = await service.GetDevice(AssetTag);
             if (device == null) 
@@ -490,7 +490,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release mobile from identity";
-            ViewData["ReleaseMobile"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseMobile");
+            ViewData["ReleaseMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseMobile");
             await BuildMenu();            
             ViewBag.Mobile = mobile;
             ViewData["backUrl"] = "Identity";
@@ -533,7 +533,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release devices from identity";
-            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
             service.GetAssingedDevices(list.First());
             string FormSubmit = values["form-submitted"];
@@ -582,7 +582,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Releasefrom in {0}", Table);
             ViewData["Title"] = "Releasefrom";
-            ViewData["ReleaseDevice"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseDevice");
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseDevice";

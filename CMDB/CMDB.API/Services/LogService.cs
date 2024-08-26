@@ -6,30 +6,23 @@ namespace CMDB.API.Services
 {
     public class LogService
     {
-        private CMDBContext _context;
+        protected CMDBContext _context;
         private string LogText;
+        private Admin admin;
         public LogService(CMDBContext context)
         {
             _context = context;
+            LogText = "";
         }
         public Admin Admin
         {
             get
             {
-                if (_context.Admin == null)
-                    return null;
-                else
-                    return _context.Admin;
+                return admin;
             }
             set
             {
-                if (_context.Admin != null && value != null)
-                {
-                    if (_context.Admin.AdminId != value.AdminId)
-                        _context.Admin = _context.Admins.Where(x => x.AdminId == value.AdminId).SingleOrDefault();
-                }
-                else if (value is null)
-                    _context.Admin = null;
+                admin = value;
             }
         }
         #region log functions

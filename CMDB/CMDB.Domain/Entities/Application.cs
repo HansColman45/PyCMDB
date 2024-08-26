@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
@@ -13,6 +14,7 @@ namespace CMDB.Domain.Entities
         [Required(ErrorMessage = "Please fill in a name")]
         public string Name { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<Account> Accounts { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
@@ -20,7 +21,9 @@ namespace CMDB.Domain.Entities
         [Required(ErrorMessage = "Please select an application")]
         public Application Application { get; set; }
 
+        [JsonIgnore]
         public virtual ICollection<IdenAccount> Identities { get; set; }
+        [JsonIgnore]
         public virtual ICollection<Admin> Admins { get; set; }
 
     }

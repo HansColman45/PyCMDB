@@ -18,6 +18,7 @@ namespace CMDB.Controllers
         protected readonly IWebHostEnvironment _env;
         protected string SitePart { get; set; }
         protected string Table { get; set; }
+        protected string Token { get; set; }
         public CMDBController(CMDBContext context, IWebHostEnvironment env)
         {
             _context = context;
@@ -26,15 +27,15 @@ namespace CMDB.Controllers
         }
         protected async Task BuildMenu()
         {
+            Token ??= TokenStore.Token;
             List<Menu> menul1 = (List<Menu>)await service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {
-                m.Children ??= new List<Menu>();
                 List<Menu> mL2 = (List<Menu>)await service.ListSecondMenuLevel(m.MenuId);
+                m.Children = mL2;
                 foreach (Menu m1 in mL2)
                 {
-                    m1.Children ??= new List<Menu>();
-                    await service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
+                    m1.Children = await  service.ListPersonalMenu(Token,m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;

@@ -1,10 +1,10 @@
-﻿using CMDB.Infrastructure;
-using System.Collections.Generic;
-using CMDB.Domain.Entities;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -107,6 +107,8 @@ namespace CMDB.Services
         {
             bool result = false;
             var admins = _context.Admins.Include(x => x.Account).Where(x => x.Account.UserID == admin.Account.UserID);
+            if(admins.Any())
+                result = true;
             return result;
         }
         public async Task<List<Account>> GetAccountByID(int ID)
