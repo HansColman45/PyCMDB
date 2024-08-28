@@ -1,15 +1,13 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Collections.Generic;
+﻿using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
+using CMDB.Infrastructure;
 using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {

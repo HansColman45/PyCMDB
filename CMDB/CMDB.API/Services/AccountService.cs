@@ -3,16 +3,17 @@ using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace CMDB.API.Services
 {
     public class AccountService : LogService, IAccountService
     {
         private readonly string Table = "account";
-        private AutoMapper.Mapper Mapper;
-        public AccountService(CMDBContext context) : base(context)
+        private readonly ILogger<AccountService> _logger;
+        public AccountService(CMDBContext context, ILogger<AccountService> logger) : base(context)
         {
-            Mapper = MapperConfig.InitializeAutomapper();
+            _logger = logger;
         }
         public async Task<List<AccountDTO>> ListAll()
         {
@@ -126,13 +127,21 @@ namespace CMDB.API.Services
         }        
         public async Task<AccountDTO?> CreateNew(AccountDTO accountDTO)
         {
-            Account newAcc = ConvertDto(accountDTO);
-            newAcc.LastModfiedAdmin = Admin;
-            _context.Accounts.Add(newAcc);
-            await _context.SaveChangesAsync();
-            string Value = $"Account with UserID: {newAcc.UserID} and with type {newAcc.Type.Type} for application {newAcc.Application.Name}";
-            await LogCreate(Table, newAcc.AccID, Value);
-            return ConvertAccount(newAcc);
+            try
+            {
+                Account newAcc = ConvertDto(accountDTO);
+                newAcc.LastModfiedAdmin = Admin;
+                _context.Accounts.Add(newAcc);
+                await _context.SaveChangesAsync();
+                string Value = $"Account with UserID: {newAcc.UserID} and with type {newAcc.Type.Type} for application {newAcc.Application.Name}";
+                await LogCreate(Table, newAcc.AccID, Value);
+                return ConvertAccount(newAcc);
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
         }
         public async Task<AccountDTO?> ActivateById(int id)
         {

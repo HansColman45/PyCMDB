@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Threading.Tasks;
 using CMDB.Util;
+using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
 
 namespace CMDB.Services
 {
@@ -20,31 +22,22 @@ namespace CMDB.Services
             BaseUrl = _url + $"api/Account/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<Account>>();
             else
-                return new List<Account>();
-            /*List<Account> accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Type)
-                .ToListAsync();
-            return accounts;*/
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<Account>> GetByID(int ID)
         {
             BaseUrl = _url + $"api/Account/{ID}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
-            if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsJsonAsync<List<Account>>();
+            if (response.IsSuccessStatusCode) { 
+                var account = await response.Content.ReadAsJsonAsync<Account>();
+                return new List<Account> { account };
+            }
             else
-                return new List<Account>();
-            /*List<Account> accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Type)
-                .Where(x => x.AccID == ID)
-                .ToListAsync();
-            return accounts;*/
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<Account>> ListAll(string searchString)
         {
@@ -54,21 +47,25 @@ namespace CMDB.Services
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<Account>>();
             else
-                return new List<Account>();
-            /*string searhterm = "%" + searchString + "%";
-            List<Account> accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Type)
-                .Where(x => EF.Functions.Like(x.Application.Name, searhterm)
-                    || EF.Functions.Like(x.Type.Type, searhterm)
-                    || EF.Functions.Like(x.Type.Description, searhterm)
-                    || EF.Functions.Like(x.UserID, searhterm))
-                .ToListAsync();
-            return accounts;*/
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task CreateNew(string UserID, int type, int application, string Table)
         {
-            var accountType = GetAccountTypeByID(type).First();
+            AccountDTO dto = new()
+            {
+                Active = 1,
+                UserID = UserID,
+                ApplicationId = application,
+                TypeId = type,
+                Application = await GetApplicationByID(application),
+                Type = await GetAccountTypeByID(type),
+            };
+            BaseUrl = _url + "api/Account";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, dto);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error: {response.StatusCode}");
+            /*var accountType = GetAccountTypeByID(type).First();
             var applications = GetApplicationByID(application).First();
             Account account = new()
             {
@@ -80,12 +77,12 @@ namespace CMDB.Services
             _context.Accounts.Add(account);
             await _context.SaveChangesAsync();
             string Value = $"Account with UserID: {UserID} and with type {accountType.Type} for application {applications.Name}";
-            await LogCreate(Table, account.AccID, Value);
+            await LogCreate(Table, account.AccID, Value);*/
         }
         public async Task Edit(Account account, string UserID, int type, int application, string Table)
         {
-            var accountType = GetAccountTypeByID(type).First();
-            var applications = GetApplicationByID(application).First();
+            /*var accountType = GetAccountTypeByID(type);
+            var applications = GetApplicationByID(application);
             if (String.Compare(account.UserID, UserID) != 0)
             {
                 await LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
@@ -103,7 +100,7 @@ namespace CMDB.Services
             }
             account.LastModfiedAdmin = Admin;
             _context.Accounts.Update(account);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
         }
         public async Task Deactivate(Account account, string Reason, string Table)
         {
@@ -219,10 +216,15 @@ namespace CMDB.Services
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
         }
-        public List<Application> GetApplicationByID(int ID)
+        public async Task<ApplicationDTO> GetApplicationByID(int id)
         {
-            List<Application> application = _context.Applications.Where(x => x.AppID == ID).ToList();
-            return application;
+            BaseUrl = _url + $"api/Application/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<ApplicationDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public List<SelectListItem> ListActiveApplications()
         {
@@ -234,10 +236,15 @@ namespace CMDB.Services
             }
             return accounts;
         }
-        public List<AccountType> GetAccountTypeByID(int ID)
+        public async Task<AccountTypeDTO> GetAccountTypeByID(int id)
         {
-            List<AccountType> accountTypes = _context.Types.OfType<AccountType>().Where(x => x.TypeId == ID).ToList();
-            return accountTypes;
+            BaseUrl = _url + $"api/AccountType/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<AccountTypeDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListAllFreeIdentities()
         {

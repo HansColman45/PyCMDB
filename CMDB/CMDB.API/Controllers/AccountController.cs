@@ -75,7 +75,15 @@ namespace CMDB.API.Controllers
                 ModelState.AddModelError("UserExisits", "User allready exists");
                 return NotFound(ModelState);
             }
-            return Ok(await _accountService.CreateNew(account));
+            try
+            {
+                var admin = await _accountService.CreateNew(account);
+                return Ok(admin);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
 
     }

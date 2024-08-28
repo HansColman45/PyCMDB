@@ -32,7 +32,9 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddTransient<IMenuService, MenuService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
-builder.Services.AddScoped<IAdminService, AdminService>();
+builder.Services.AddTransient<IAdminService, AdminService>();
+builder.Services.AddTransient<IApplicationService, ApplicationService>();
+builder.Services.AddTransient<IAccountTypeService, AccountTypeService>();
 builder.Services.AddSwaggerGen(swagger =>
 {
     //This is to generate the Default UI of Swagger Documentation  
@@ -40,7 +42,7 @@ builder.Services.AddSwaggerGen(swagger =>
     {
         Version = "v1",
         Title = "JWT Token Authentication API",
-        Description = ".NET 8 Web API"
+        Description = "CMDB API"
     });
     // To Enable authorization using Swagger (JWT)  
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

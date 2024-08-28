@@ -1,15 +1,14 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Util;
-using Microsoft.AspNetCore.Hosting;
-using CMDB.Domain.Entities;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
-using System.Threading.Tasks;
+using CMDB.Util;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using QuestPDF.Fluent;
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -28,6 +27,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             var accounts = await service.ListAll();
             ViewData["Title"] = "Account overview";
+            ViewData["Controller"] = @"\Account\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
@@ -46,6 +46,7 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var accounts = await service.ListAll(search);
                 ViewData["Title"] = "Account overview";
+                ViewData["Controller"] = @"\Account\Create";
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
                 ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
                 ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
@@ -65,6 +66,7 @@ namespace CMDB.Controllers
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Account";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["Controller"] = @"\Account\Create";
             await BuildMenu();
             Account account = new();
             ViewBag.Types = service.ListActiveAccountTypes();
@@ -78,18 +80,24 @@ namespace CMDB.Controllers
                     ViewData["UserID"] = UserID;
                     string Type = values["type"];
                     string Application = values["Application"];
-                    AccountType accountType = service.GetAccountTypeByID(Convert.ToInt32(Type)).First();
+                    /*AccountType accountType = service.GetAccountTypeByID(Convert.ToInt32(Type)).First();
                     Application application = service.GetApplicationByID(Convert.ToInt32(Application)).First();
                     account.UserID = UserID;
                     account.Application = application;
                     account.Type = accountType;
                     if (service.IsAccountExisting(account))
-                        ModelState.AddModelError("", "Account alreaday exist");
-                    if (ModelState.IsValid)
+                        ModelState.AddModelError("", "Account alreaday exist");*/
+                    try
                     {
                         await service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application), Table);
-                        return RedirectToAction(nameof(Index));
                     }
+                    catch (Exception e)
+                    {
+                        ModelState.AddModelError("API Error", e.Message);
+                        throw;
+                    }
+                    if (ModelState.IsValid)
+                        return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
