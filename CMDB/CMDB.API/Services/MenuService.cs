@@ -1,14 +1,15 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Graph.Models;
 
 namespace CMDB.API.Services
 {
-    public class MenuService : LogService, IMenuService
+    public class MenuService : CMDBService, IMenuService
     {
-        public MenuService(CMDBContext context) : base(context)
+        private ILogService _logService;
+        public MenuService(CMDBContext context, ILogService logService) : base(context)
         {
+            _logService = logService;
         }
 
         public async Task<ICollection<Menu>> ListFirstMenuLevel()

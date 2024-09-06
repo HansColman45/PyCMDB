@@ -1,26 +1,50 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
-using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 
 namespace CMDB.API.Services
 {
-    public class ApplicationService : LogService, IApplicationService
+    public class ApplicationService : CMDBService, IApplicationService
     {
-        public ApplicationService(CMDBContext context) : base(context)
+        private readonly ILogger<ApplicationService> _logger;
+        private ILogService _logService;
+        public ApplicationService(CMDBContext context, ILogService logService, ILogger<ApplicationService> logger) : base(context)
         {
+            _logger = logger;
+            _logService = logService;
         }
 
         public Task<List<ApplicationDTO>> GetAll()
         {
-            throw new NotImplementedException();
+            var applications = _context.Applications
+                .Select(x => new ApplicationDTO()
+                {
+                    AppID = x.AppID,
+                    Active = x.active,
+                    DeactivateReason = x.DeactivateReason,
+                    LastModifiedAdminId = x.LastModifiedAdminId,
+                    Name = x.Name,
+                })
+                .ToListAsync();
+            return applications;
         }
 
         public Task<List<ApplicationDTO>> GetAll(string searchStr)
         {
-            throw new NotImplementedException();
+            string searhterm = "%" + searchStr + "%";
+            var applications = _context.Applications
+                .Select(x => new ApplicationDTO()
+                {
+                    AppID = x.AppID,
+                    Active = x.active,
+                    DeactivateReason = x.DeactivateReason,
+                    LastModifiedAdminId = x.LastModifiedAdminId,
+                    Name = x.Name,
+                })
+                .ToListAsync();
+            return applications;
         }
 
         public async Task<ApplicationDTO> GetById(int id)
@@ -28,7 +52,7 @@ namespace CMDB.API.Services
             Application? application = await _context.Applications.Where(x => x.AppID == id).FirstOrDefaultAsync();
             return ConvertApplication(application);
         }
-        private ApplicationDTO ConvertApplication(Application application)
+        public static ApplicationDTO ConvertApplication(Application application)
         {
             return new()
             {

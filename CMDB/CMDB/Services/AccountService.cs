@@ -1,14 +1,15 @@
-﻿using CMDB.Infrastructure;
-using System.Collections.Generic;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Threading.Tasks;
-using CMDB.Util;
-using CMDB.API.Models;
+﻿using CMDB.API.Models;
 using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
+using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
@@ -49,7 +50,7 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task CreateNew(string UserID, int type, int application, string Table)
+        public async Task CreateNew(string UserID, int type, int application)
         {
             AccountDTO dto = new()
             {
@@ -65,121 +66,71 @@ namespace CMDB.Services
             var response = await _Client.PostAsJsonAsync(BaseUrl, dto);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Error: {response.StatusCode}");
-            /*var accountType = GetAccountTypeByID(type).First();
-            var applications = GetApplicationByID(application).First();
-            Account account = new()
+        }
+        public async Task Edit(Account account, string UserID, int type, int application)
+        {
+            AccountDTO dto = new()
             {
+                AccID = account.AccID,
+                Active = account.active,
                 UserID = UserID,
-                Application = applications,
-                Type = accountType,
-                LastModfiedAdmin = Admin
+                ApplicationId = application,
+                TypeId = type,
+                Application = await GetApplicationByID(application),
+                Type = await GetAccountTypeByID(type),
             };
-            _context.Accounts.Add(account);
-            await _context.SaveChangesAsync();
-            string Value = $"Account with UserID: {UserID} and with type {accountType.Type} for application {applications.Name}";
-            await LogCreate(Table, account.AccID, Value);*/
+            BaseUrl = _url + "api/Account";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl, dto);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error: {response.StatusCode}");
         }
-        public async Task Edit(Account account, string UserID, int type, int application, string Table)
+        public async Task Deactivate(Account account, string Reason)
         {
-            /*var accountType = GetAccountTypeByID(type);
-            var applications = GetApplicationByID(application);
-            if (String.Compare(account.UserID, UserID) != 0)
-            {
-                await LogUpdate(Table, account.AccID, "UserId", account.UserID, UserID);
-                account.UserID = UserID;
-            }
-            if (account.Type.TypeId != type)
-            {
-                await LogUpdate(Table, account.AccID, "Type", account.Type.Type, accountType.Type);
-                account.Type = accountType;
-            }
-            if (account.Application.AppID != application)
-            {
-                await LogUpdate(Table, account.AccID, "Application", account.Application.Name, applications.Name);
-                account.Application = applications;
-            }
-            account.LastModfiedAdmin = Admin;
-            _context.Accounts.Update(account);
-            await _context.SaveChangesAsync();*/
+            AccountDTO dto = await SetDTO(account);
+            BaseUrl = _url + $"api/Account/{Reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, dto);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error: {response.StatusCode}");
         }
-        public async Task Deactivate(Account account, string Reason, string Table)
+        public async Task Activate(Account account)
         {
-            account.DeactivateReason = Reason;
-            account.Active = State.Inactive;
-            string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
-            await LogDeactivate(Table, account.AccID, value, Reason);
-            account.LastModfiedAdmin = Admin;
-            _context.Accounts.Update(account);
-            await _context.SaveChangesAsync();
+            AccountDTO dto = await SetDTO(account);
+            BaseUrl = _url + $"api/Account/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, dto);
+            if (!response.IsSuccessStatusCode)
+                throw new Exception($"Error: {response.StatusCode}");
         }
-        public async Task Activate(Account account, string Table)
-        {
-            account.DeactivateReason = null;
-            account.Active = State.Active;
-            string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
-            await LogActivate(Table, account.AccID, value);
-            account.LastModfiedAdmin = Admin;
-            _context.Accounts.Update(account);
-            await _context.SaveChangesAsync();
-        }
-        public void GetAssignedIdentitiesForAccount(Account account)
-        {
-            var Accounts = _context.Accounts
-                .Include(x => x.Identities)
-                .ThenInclude(x => x.Identity)
-                .ThenInclude(x => x.Type)
-                .Include(x => x.Identities)
-                .ThenInclude(x => x.Identity)
-                .ThenInclude(x => x.Language)
-                .Include(x => x.Identities)
-                .ThenInclude(x => x.Identity)
-                .SelectMany(x => x.Identities)
-                .Where(x => x.Account.AccID == account.AccID)
-                .ToList();
-        }
-        public List<SelectListItem> ListActiveAccountTypes()
+        public async Task<List<SelectListItem>> ListActiveAccountTypes()
         {
             List<SelectListItem> accounts = new();
-            List<AccountType> accountTypes = _context.Types.OfType<AccountType>().Where(x => x.active == 1).ToList();
-            foreach (var accountType in accountTypes)
+            var accountTypes = await GetAllAccountTypes();
+            foreach (var accountType in accountTypes.Where(x => x.Active == 1))
             {
                 accounts.Add(new SelectListItem(accountType.Type, accountType.TypeId.ToString()));
             }
             return accounts;
         }
-        public bool IsAccountExisting(Account account, string UserID = "", int application = 0)
+        /// <summary>
+        /// This will check if the account is existing
+        /// </summary>
+        /// <param name="account"></param>
+        /// <param name="userID"></param>
+        /// <param name="application"></param>
+        /// <param name="type"></param>
+        /// <returns>bool</returns>
+        public async Task<bool> IsAccountExisting(Account account, string userID = "", int application = 0, int type = 0)
         {
             bool result = false;
-            if (String.IsNullOrEmpty(UserID) && application == 0)
+            BaseUrl = _url + $"api/AccountType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var dto = await SetDTO(account, userID, application, type);
+            var response = await _Client.PostAsJsonAsync(BaseUrl,dto);
+            if (response.IsSuccessStatusCode)
             {
-                var accounts = _context.Accounts
-                    .Include(x => x.Application)
-                    .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).ToList();
-                if (accounts.Count > 0)
-                    result = true;
-            }
-            else
-            {
-                if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID == application)
-                {
-                    var accounts = _context.Accounts
-                        .Include(x => x.Application)
-                        .Where(x => x.UserID == UserID && x.Application.AppID == account.Application.AppID).ToList();
-                    if (accounts.Count > 0)
-                        result = true;
-                }
-                else if (String.Compare(account.UserID, UserID) == 0 && account.Application.AppID == application)
-                {
-                    result = false;
-                }
-                else if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID != application)
-                {
-                    var accounts = _context.Accounts
-                        .Include(x => x.Application)
-                        .Where(x => x.UserID == UserID && x.Application.AppID == application).ToList();
-                    if (accounts.Count > 0)
-                        result = true;
-                }
+                return await response.Content.ReadAsJsonAsync<bool>();  
             }
             return result;
         }
@@ -226,37 +177,38 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public List<SelectListItem> ListActiveApplications()
+        public async Task<List<SelectListItem>> ListActiveApplications()
         {
             List<SelectListItem> accounts = new();
-            List<Application> applications = _context.Applications.Where(x => x.active == 1).ToList();
-            foreach (var appliction in applications)
+            var applications = await GetAllApplications();
+            foreach (var appliction in applications.Where(x => x.Active == 1))
             {
                 accounts.Add(new SelectListItem(appliction.Name, appliction.AppID.ToString()));
             }
             return accounts;
         }
-        public async Task<AccountTypeDTO> GetAccountTypeByID(int id)
+        public async Task<TypeDTO> GetAccountTypeByID(int id)
         {
             BaseUrl = _url + $"api/AccountType/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsJsonAsync<AccountTypeDTO>();
+                return await response.Content.ReadAsJsonAsync<TypeDTO>();
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListAllFreeIdentities()
         {
             List<SelectListItem> accounts = new();
-            var identities = await _context.Identities
-                .Include(x => x.Accounts)
-                .Where(x => x.active == 1 && x.IdenId != 1)
-                .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now))
-                .ToListAsync();
-            foreach (var idenity in identities)
-            {
-                accounts.Add(new SelectListItem(idenity.UserID + " " + idenity.Name, idenity.IdenId.ToString()));
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) {
+                var identities = await response.Content.ReadAsJsonAsync<List<Identity>>();
+                foreach (var idenity in identities)
+                {
+                    accounts.Add(new SelectListItem(idenity.UserID + " " + idenity.Name, idenity.IdenId.ToString()));
+                }
             }
             return accounts;
         }
@@ -296,6 +248,69 @@ namespace CMDB.Services
         {
             await LogPdfFile("identity", account.Identities.Last().Identity.IdenId, pdfFile);
             await LogPdfFile(table, account.AccID, pdfFile);
+        }
+        private async Task<List<TypeDTO>> GetAllAccountTypes()
+        {
+            BaseUrl = _url + $"api/AccountType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        private async Task<List<ApplicationDTO>> GetAllApplications()
+        {
+            BaseUrl = _url + $"api/Application";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<ApplicationDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        private async Task<AccountDTO> SetDTO(Account account, string userID = "", int application = 0, int type = 0)
+        {
+            ApplicationDTO appdto;
+            TypeDTO accountTypeDTO;
+            if (application != 0)
+                appdto = await GetApplicationByID(application);
+            else
+            {
+                appdto = new()
+                {
+                    Active = account.Application.active,
+                    AppID = account.Application.AppID,
+                    DeactivateReason = account.Application.DeactivateReason,
+                    LastModifiedAdminId = account.Application.LastModifiedAdminId,
+                    Name = account.Application.Name
+                };
+            }
+            if (type != 0)
+                accountTypeDTO = await GetAccountTypeByID(type);
+            else
+            {
+                accountTypeDTO = new()
+                {
+                    Active = account.Type.active,
+                    TypeId = account.Type.TypeId,
+                    Type =  account.Type.Type,
+                    Description = account.Type.Description,
+                    DeactivateReason = account.Type.DeactivateReason,
+                    LastModifiedAdminId = account.Type.LastModifiedAdminId
+                };
+            }
+            AccountDTO dto = new()
+            {
+                AccID = account.AccID,
+                Active = account.active,
+                ApplicationId = account.ApplicationId,
+                TypeId = account.TypeId,
+                UserID = userID == "" ? account.UserID : userID,
+                Application = appdto,
+                Type = accountTypeDTO
+            };
+            return dto;
         }
     }
 }

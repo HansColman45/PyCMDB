@@ -3,6 +3,8 @@ using System.Net.Mime;
 using System.Threading.Tasks;
 using System.Text;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System;
 
 namespace CMDB.Util
 {
@@ -37,6 +39,17 @@ namespace CMDB.Util
             var content = ToJson(data);
             var responce = await httpClient.PutAsync(url, content);
             return responce;
+        }
+        public static async Task<HttpResponseMessage> DeleteAsJsonAsync<T>(this HttpClient httpClient, string url, T data)
+        {
+            var content = ToJson(data);
+            HttpRequestMessage request = new()
+            {
+                Content = content,
+                Method = HttpMethod.Delete,
+                RequestUri = new Uri(url, UriKind.Absolute)
+            };
+            return await httpClient.SendAsync(request);
         }
         private static StringContent ToJson<T>(T data)
         {

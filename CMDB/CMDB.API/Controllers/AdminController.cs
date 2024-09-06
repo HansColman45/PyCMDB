@@ -1,10 +1,8 @@
-﻿using CMDB.API.Helper;
-using CMDB.API.Services;
+﻿using CMDB.API.Services;
 using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers

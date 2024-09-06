@@ -1,4 +1,6 @@
-﻿namespace CMDB.Infrastructure
+﻿using CMDB.Domain.Entities;
+
+namespace CMDB.Infrastructure
 {
     public interface ITokenStore
     {
@@ -8,5 +10,6 @@
     {
         public static string Token { get; set; }
         public static int AdminId { get; set; }
+        public static Admin Admin { get; set; }
     }
 }

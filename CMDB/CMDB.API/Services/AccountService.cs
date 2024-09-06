@@ -3,17 +3,18 @@ using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace CMDB.API.Services
 {
-    public class AccountService : LogService, IAccountService
+    public class AccountService : CMDBService,IAccountService
     {
         private readonly string Table = "account";
         private readonly ILogger<AccountService> _logger;
-        public AccountService(CMDBContext context, ILogger<AccountService> logger) : base(context)
+        private ILogService _logService;
+        public AccountService(CMDBContext context, ILogger<AccountService> logger, ILogService logService) : base(context)
         {
             _logger = logger;
+            _logService = logService;
         }
         public async Task<List<AccountDTO>> ListAll()
         {
@@ -123,6 +124,10 @@ namespace CMDB.API.Services
                     }
                 })
                 .FirstOrDefaultAsync();
+            if(account is not null) {
+                _logService.GetLogs(Table, id, account);
+                GetAssignedIdentitiesForAccount(account);
+            }
             return account;
         }        
         public async Task<AccountDTO?> CreateNew(AccountDTO accountDTO)
@@ -130,11 +135,11 @@ namespace CMDB.API.Services
             try
             {
                 Account newAcc = ConvertDto(accountDTO);
-                newAcc.LastModfiedAdmin = Admin;
+                newAcc.LastModfiedAdmin = TokenStore.Admin;
                 _context.Accounts.Add(newAcc);
                 await _context.SaveChangesAsync();
                 string Value = $"Account with UserID: {newAcc.UserID} and with type {newAcc.Type.Type} for application {newAcc.Application.Name}";
-                await LogCreate(Table, newAcc.AccID, Value);
+                await _logService.LogCreate(Table, newAcc.AccID, Value);
                 return ConvertAccount(newAcc);
             }
             catch (DbUpdateException e)
@@ -143,28 +148,82 @@ namespace CMDB.API.Services
                 throw;
             }
         }
-        public async Task<AccountDTO?> ActivateById(int id)
+        public async Task<AccountDTO?> Activate(AccountDTO account)
         {
-            var _account = await GetById(id);
-
-            return _account;
+            try
+            {
+                account.DeactivateReason = "";
+                Account _account = ConvertDto(account);
+                _account.DeactivateReason = "";
+                _account.Active = State.Active;
+                string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
+                await _logService.LogActivate(Table, account.AccID, value); 
+                _account.LastModfiedAdmin = TokenStore.Admin;
+                _context.Accounts.Update(_account);
+                await _context.SaveChangesAsync();
+                return account;
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
         }
-        public async Task<AccountDTO?> DeactivateById(int id)
+        public async Task<AccountDTO?> Deactivate(AccountDTO account, string reason)
         {
-            var _account = await GetById(id);
-
-            return _account;
+            try
+            {
+                account.DeactivateReason = reason;
+                Account _account = ConvertDto(account);
+                _account.DeactivateReason = reason;
+                _account.Active = State.Inactive;
+                string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
+                await _logService.LogDeactivate(Table, account.AccID, value, reason);
+                _account.LastModfiedAdmin = TokenStore.Admin;
+                _context.Accounts.Update(_account);
+                await _context.SaveChangesAsync();
+                return account;
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
         }
         public async Task<AccountDTO?> Update(AccountDTO account)
         {
             var _account = await GetById(account.AccID);
-
-            return _account;
+            if (string.Compare(_account.UserID, account.UserID) != 0)
+            {
+                await _logService.LogUpdate(Table, account.AccID, "UserId", _account.UserID, account.UserID);
+            }
+            if (_account.Type.TypeId != account.Type.TypeId)
+            {
+                await _logService.LogUpdate(Table, account.AccID, "Type", _account.Type.Type, account.Type.Type);
+            }
+            if (_account.Application.AppID != account.Application.AppID)
+            {
+                await _logService.LogUpdate(Table, account.AccID, "Application", _account.Application.Name, account.Application.Name);
+            }
+            try
+            {
+                var Account = ConvertDto(account);
+                Account.LastModfiedAdmin = TokenStore.Admin;
+                _context.Accounts.Update(Account);
+                await _context.SaveChangesAsync();
+                return _account;
+            }
+            catch (DbUpdateException e)
+            {
+                _logger.LogError(e.Message);
+                throw;
+            }
         }
-        public bool IsAccountExisting(AccountDTO account, string UserID = "", int application = 0)
+        public async Task<bool> IsAccountExisting(AccountDTO account)
         {
+            var oldAccount = await GetById(account.AccID);
             bool result = false;
-            if (String.IsNullOrEmpty(UserID) && application == 0)
+            if (oldAccount is null)
             {
                 var accounts = _context.Accounts
                     .Include(x => x.Application)
@@ -174,29 +233,49 @@ namespace CMDB.API.Services
             }
             else
             {
-                if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID == application)
+                if (String.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID == oldAccount.Application.AppID)
                 {
                     var accounts = _context.Accounts
                         .Include(x => x.Application)
-                        .Where(x => x.UserID == UserID && x.Application.AppID == account.Application.AppID).ToList();
+                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).ToList();
                     if (accounts.Count > 0)
                         result = true;
                 }
-                else if (String.Compare(account.UserID, UserID) == 0 && account.Application.AppID == application)
+                else if (String.Compare(account.UserID, oldAccount.UserID) == 0 && account.Application.AppID == oldAccount.Application.AppID)
                 {
                     result = false;
                 }
-                else if (String.Compare(account.UserID, UserID) != 0 && account.Application.AppID != application)
+                else if (String.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID != oldAccount.Application.AppID)
                 {
                     var accounts = _context.Accounts
                         .Include(x => x.Application)
-                        .Where(x => x.UserID == UserID && x.Application.AppID == application).ToList();
+                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).ToList();
                     if (accounts.Count > 0)
                         result = true;
                 }
             }
             return result;
-        }      
+        }
+        public async Task<AccountDTO> AssignIdentity(IdenAccountDTO request)
+        {
+            var account = ConvertDto(request.Account);
+            var Identity = IdentityService.ConvertDTO(request.Identity);
+            IdenAccount IdenAcc = new()
+            {
+                Identity = Identity,
+                Account = account,
+                ValidFrom = request.ValidFrom,
+                ValidUntil = request.ValidUntil,
+            };
+            account.LastModfiedAdmin = TokenStore.Admin;
+            Identity.LastModfiedAdmin = TokenStore.Admin;
+            _context.IdenAccounts.Add(IdenAcc);
+            await _context.SaveChangesAsync();
+            await _logService.LogAssignAccount2Identity(Table, account.AccID, account, Identity);
+            await _logService.LogAssignIden2Account("identity", Identity.IdenId, Identity, account);
+            return request.Account;
+        }
+
         private AccountType GetAccountTypeById(int typeId)
         {
             AccountType accountType = _context.Types.OfType<AccountType>().Where(x => x.TypeId == typeId).First();
@@ -207,7 +286,7 @@ namespace CMDB.API.Services
             Application application = _context.Applications.Where(x =>x.AppID == appId).First();
             return application;
         }
-        private Account ConvertDto(AccountDTO accountDTO)
+        public static Account ConvertDto(AccountDTO accountDTO)
         {
             return new()
             {
@@ -235,7 +314,7 @@ namespace CMDB.API.Services
                 TypeId = accountDTO.TypeId
             };
         }
-        private AccountDTO ConvertAccount(Account account)
+        public static AccountDTO ConvertAccount(Account account)
         {
             return new()
             {
@@ -264,6 +343,21 @@ namespace CMDB.API.Services
                     LastModifiedAdminId = account.Type.LastModifiedAdminId
                 }
             };
+        }
+        private void GetAssignedIdentitiesForAccount(AccountDTO accountDTO)
+        {
+            var Accounts = _context.Accounts
+                .Include(x => x.Identities)
+                .ThenInclude(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identities)
+                .ThenInclude(x => x.Identity)
+                .ThenInclude(x => x.Language)
+                .Include(x => x.Identities)
+                .ThenInclude(x => x.Identity)
+                .SelectMany(x => x.Identities)
+                .Where(x => x.Account.AccID == accountDTO.AccID)
+                .ToList();
         }
     }
 }

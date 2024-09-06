@@ -3,9 +3,6 @@ using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -20,7 +17,6 @@ namespace CMDB.Services
         protected CMDBContext _context;
         protected HttpClient _Client;
         protected string BaseUrl { get; set; }
-        protected string Token {  get; private set; }
         public Admin Admin
         {
             get

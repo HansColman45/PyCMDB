@@ -1,4 +1,4 @@
-﻿<form class="form-horizontal" asp-action="@ViewData["Action"]" method="post">
+﻿<form class="form-horizontal" action="@ViewData["Controller"]" method="post">
     <div class="form-group">
         <label class="control-label" for="Employee"><span style="color:red;">*</span>Employee that will sign</label>
         <input name="Employee" type="text" id="Employee" class="form-control" placeholder="Please insert name of person" value="@ViewData["Name"]" required>

@@ -9,7 +9,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
+string? connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
 // configure strongly typed settings object
 builder.Services.AddDbContext<CMDBContext>(options => SqlServerDbContextOptionsExtensions.UseSqlServer(options,connectionString), ServiceLifetime.Singleton);
 
@@ -30,6 +30,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<JwtService>();
 //builder.Services.AddSingleton<IAdminService, AdminService>();
 builder.Services.AddTransient<IMenuService, MenuService>();
+builder.Services.AddTransient<ILogService, LogService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddTransient<IAccountService, AccountService>();
 builder.Services.AddTransient<IAdminService, AdminService>();

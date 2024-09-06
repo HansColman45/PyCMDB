@@ -69,8 +69,8 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Account\Create";
             await BuildMenu();
             Account account = new();
-            ViewBag.Types = service.ListActiveAccountTypes();
-            ViewBag.Applications = service.ListActiveApplications();
+            ViewBag.Types = await service.ListActiveAccountTypes();
+            ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -80,16 +80,9 @@ namespace CMDB.Controllers
                     ViewData["UserID"] = UserID;
                     string Type = values["type"];
                     string Application = values["Application"];
-                    /*AccountType accountType = service.GetAccountTypeByID(Convert.ToInt32(Type)).First();
-                    Application application = service.GetApplicationByID(Convert.ToInt32(Application)).First();
-                    account.UserID = UserID;
-                    account.Application = application;
-                    account.Type = accountType;
-                    if (service.IsAccountExisting(account))
-                        ModelState.AddModelError("", "Account alreaday exist");*/
                     try
                     {
-                        await service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application), Table);
+                        await service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application));
                     }
                     catch (Exception e)
                     {
@@ -112,12 +105,13 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Account";
+            ViewData["Controller"] = @$"\Account\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            ViewBag.Types = service.ListActiveAccountTypes();
-            ViewBag.Applications = service.ListActiveApplications();
+            ViewBag.Types = await service.ListActiveAccountTypes();
+            ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
             var accounts = await service.GetByID((int)id);
             Account account = accounts.FirstOrDefault();
@@ -131,11 +125,11 @@ namespace CMDB.Controllers
                     string NewUserID = values["UserID"];
                     string Type = values["Type.TypeId"];
                     string Application = values["Application.AppID"];
-                    if (service.IsAccountExisting(account, NewUserID, Convert.ToInt32(Type)))
+                    if (await service.IsAccountExisting(account, NewUserID, Convert.ToInt32(Type)))
                         ModelState.AddModelError("", "Account alreaday exist");
                     if (ModelState.IsValid)
                     {
-                        await service.Edit(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application), Table);
+                        await service.Edit(account, NewUserID, Convert.ToInt32(Type), Convert.ToInt32(Application));
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -152,6 +146,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Account Details";
+            ViewData["Controller"] = @"\Account\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -166,20 +161,17 @@ namespace CMDB.Controllers
             }
             var accounts = await service.GetByID((int)id);
             Account account = accounts.FirstOrDefault();
+            if (accounts == null)
+                return NotFound();
             if (account == null)
                 NotFound();
-            service.GetLogs(Table, (int)id, account);
-            service.GetAssignedIdentitiesForAccount(account);
-            if (accounts == null)
-            {
-                return NotFound();
-            }
             return View(accounts);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Account";
+            ViewData["Controller"] = @$"\Account\Delete\{id}"; 
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             await BuildMenu();
             if (id == null)
@@ -195,7 +187,7 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    await service.Deactivate(account, ViewData["reason"].ToString(), Table);
+                    await service.Deactivate(account, ViewData["reason"].ToString());
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -211,6 +203,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Account";
+            ViewData["Controller"] = @$"\Account\Edit\{id}";
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
@@ -221,7 +214,7 @@ namespace CMDB.Controllers
                 NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(account, Table);
+                await service.Activate(account);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -234,6 +227,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign Identity in {0}", Table);
             ViewData["Title"] = "Assign Identity";
+            ViewData["Controller"] = @$"\Account\AssignIdentity\{id}";
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             await BuildMenu();
             if (id == null)
@@ -316,7 +310,6 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             var accounts = await service.GetByID((int)id);
             Account account = accounts.First();
-            service.GetAssignedIdentitiesForAccount(account);
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";

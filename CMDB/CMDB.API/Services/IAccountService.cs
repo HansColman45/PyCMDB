@@ -11,8 +11,9 @@ namespace CMDB.API.Services
         Task<AccountDTO?> GetById(int id);
         Task<AccountDTO?> CreateNew(AccountDTO account);
         Task<AccountDTO?> Update(AccountDTO account);
-        Task<AccountDTO?> DeactivateById(int id);
-        Task<AccountDTO?> ActivateById(int id);
-        bool IsAccountExisting(AccountDTO account, string UserID = "", int application = 0);
+        Task<AccountDTO?> Deactivate(AccountDTO account, string reason);
+        Task<AccountDTO?> Activate(AccountDTO account);
+        Task<bool> IsAccountExisting(AccountDTO account);
+        Task<AccountDTO> AssignIdentity(IdenAccountDTO request);
     }
 }

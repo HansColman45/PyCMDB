@@ -7,15 +7,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public class AdminService : LogService, IAdminService
+    public class AdminService : CMDBService, IAdminService
     {
         private readonly JwtService _jwtService;
-        private readonly string Table = "admin";
-
-        public AdminService(JwtService jwtService, CMDBContext context): base(context)
+        private readonly string Table = "admin"; 
+        private readonly ILogger<AdminService> _logger;
+        private ILogService _logService;
+        public AdminService(JwtService jwtService, CMDBContext context, ILogService logService, ILogger<AdminService> logger) : base(context)
         {
+            _context = context;
             _jwtService = jwtService;
+            _logService = logService;
+            _logger = logger;
         }
+
         public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
         {
             var admin = await _context.Admins
@@ -24,14 +29,16 @@ namespace CMDB.API.Services
                 .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == model.Username).FirstOrDefaultAsync();
             if (admin == null)
                 return null;
-            Admin = admin;
-            if (string.Equals(admin.Password, new PasswordHasher().EncryptPassword(model.Password))) { 
+            TokenStore.AdminId = admin.AdminId;
+            TokenStore.Admin = admin;
+            if (string.Equals(admin.Password, new PasswordHasher().EncryptPassword(model.Password)))
+            {
                 var token = _jwtService.GenerateToken(admin);
                 return new AuthenticateResponse()
                 {
-                    Id = Admin.AdminId,
-                    UserId = Admin.Account.UserID,
-                    Level = Admin.Level,
+                    Id = admin.AdminId,
+                    UserId = admin.Account.UserID,
+                    Level = admin.Level,
                     Token = token
                 };
             }
@@ -60,22 +67,23 @@ namespace CMDB.API.Services
         public async Task<Admin?> GetById(int id)
         {
             return await _context.Admins
-                .Where(x => x.AdminId == id).FirstOrDefaultAsync();
+                .Where(x => x.AdminId == id)
+                .FirstOrDefaultAsync();
         }
         public async Task<Admin?> Create(Admin admin)
         {
             var _admin = await GetById(admin.AdminId);
             if (_admin is null)
                 return null;
-            admin.LastModfiedAdmin = Admin;
+            admin.LastModfiedAdmin = TokenStore.Admin;
             string pwd = new PasswordHasher().EncryptPassword("cmdb");
             admin.Password = pwd;
             admin.DateSet = DateTime.Now;
-            admin.LastModfiedAdmin = Admin;
+            admin.LastModfiedAdmin = TokenStore.Admin;
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogCreate(Table, Admin.AdminId, Value);
+            await _logService.LogCreate(Table, admin.AdminId, Value);
             return admin;
         }
         public async Task<Admin?> Update(Admin admin)
@@ -86,9 +94,9 @@ namespace CMDB.API.Services
             if (admin.Level != _admin.Level)
             {
                 _admin.Level = admin.Level;
-                _admin.LastModfiedAdmin = Admin;
+                _admin.LastModfiedAdmin = TokenStore.Admin;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, _admin.AdminId, "Level", _admin.Level.ToString(), _admin.Level.ToString());
+                await _logService.LogUpdate(Table, _admin.AdminId, "Level", _admin.Level.ToString(), _admin.Level.ToString());
             }
             return _admin;
         }

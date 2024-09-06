@@ -2,7 +2,6 @@
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
-using CMDB.Testing.Helpers.Devices;
 using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.UI.Specflow.Abilities.Data
