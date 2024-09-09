@@ -87,9 +87,5 @@ CMDB/CMDB.UI.Specflow/bin/Debug/
 CMDB/CMDB.UI.Specflow/TestExecution/
 CMDB/CMDB.UI.Specflow/Screenshots/
 CMDB/CMDN.API/obj/
+CMDB/CMDN.API/obj/Debug/
 CMDB/CMDB.API/bin/Debug/
-/CMDB/CMDB.API/bin/Debug/net8.0/CMDB.API.exe
-/CMDB/CMDB.API/obj/Debug/net8.0/ApiEndpoints.json
-/CMDB/CMDB.API/obj/Debug/net8.0/apphost.exe
-/CMDB/CMDB.API/obj/Debug/net8.0/CMDB.API.AssemblyInfo.cs
-/CMDB/CMDB.API/obj/Debug/net8.0/CMDB.API.sourcelink.json
