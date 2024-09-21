@@ -14,9 +14,9 @@ namespace CMDB.Controllers
     public class IdentityTypeController : CMDBController
     {
         private new readonly IdentityTypeService service;
-        public IdentityTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public IdentityTypeController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             Table = "identitytype";
             SitePart = "Identity Type";
         }
@@ -69,7 +69,6 @@ namespace CMDB.Controllers
             var idenType = idenTypes.FirstOrDefault();
             if (idenType == null)
                 return NotFound();
-            service.GetLogs(Table, (int)id, idenType);
             if (idenType == null)
             {
                 return NotFound();

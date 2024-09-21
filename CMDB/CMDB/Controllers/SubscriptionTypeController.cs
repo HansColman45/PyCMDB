@@ -15,11 +15,11 @@ namespace CMDB.Controllers
     public class SubscriptionTypeController : CMDBController
     {
         private new SubscriptionTypeService service;
-        public SubscriptionTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public SubscriptionTypeController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Subscription Type";
             Table = "subscriptiontype";
-            service = new(context);
+            service = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -142,7 +142,6 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] =  service.DateFormat;
-            service.GetLogs(Table, (int)id, subscriptionType);
             return View(subscriptionType);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)

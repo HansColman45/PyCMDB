@@ -9,10 +9,10 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class ApplicationController : ControllerBase
     {
-       private IApplicationService applicationService;
-        public ApplicationController(IApplicationService service)
+        private readonly IUnitOfWork _uof;
+        public ApplicationController(IUnitOfWork uow)
         {
-            applicationService = service;
+            _uof = uow;
         }
 
         [HttpGet]
@@ -27,7 +27,7 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await applicationService.GetAll());
+            return Ok(await _uof.ApplicationRepository.GetAll());
         }
         [HttpGet("{id:int}")]
         [Authorize]
@@ -41,7 +41,7 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await applicationService.GetById(id));
+            return Ok(await _uof.ApplicationRepository.GetById(id));
         }
     }
 }

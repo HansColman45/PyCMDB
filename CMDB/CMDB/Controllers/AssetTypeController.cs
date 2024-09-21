@@ -19,9 +19,9 @@ namespace CMDB.Controllers
         /// </summary>
         /// <param name="context"></param>
         /// <param name="env"></param>
-        public AssetTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public AssetTypeController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Asset Type";
             Table = "assettype";
         }
@@ -164,7 +164,6 @@ namespace CMDB.Controllers
             AssetType assetType = assetTypes.FirstOrDefault();
             if (assetType == null)
                 return NotFound();
-            service.GetLogs(Table, assetType.TypeID, assetType);
             return View(assetType);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)

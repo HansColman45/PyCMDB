@@ -15,36 +15,39 @@ namespace CMDB.Services
 {
     public class SubscriptionService : LogService
     {
-        public SubscriptionService(CMDBContext context) : base(context)
+        public SubscriptionService() : base()
         {
         }
         public async Task<ICollection<Subscription>> ListAll()
         {
-            var subscriptions = await _context.Subscriptions
+            /*var subscriptions = await _context.Subscriptions
                 .Include(x => x.Category)
                 .Include(x => x.SubscriptionType)
                 .ToListAsync();
-            return subscriptions;
+            return subscriptions;*/
+            return [];
         }
         public async Task<ICollection<Subscription>> ListAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            var subscriptions = await _context.Subscriptions
+            /*var subscriptions = await _context.Subscriptions
                 .Include(x => x.Category)
                 .Include(x => x.SubscriptionType)
                 .Where(x => EF.Functions.Like(x.PhoneNumber, searhterm) || EF.Functions.Like(x.SubscriptionType.Description, searhterm)
                     || EF.Functions.Like(x.SubscriptionType.Type, searhterm))
                 .ToListAsync();
-            return subscriptions;
+            return subscriptions;*/
+            return [];
         }
         public async Task<ICollection<Subscription>> GetByID(int id)
         {
-            var subscriptions = await _context.Subscriptions
+            /*var subscriptions = await _context.Subscriptions
                 .Include(x => x.Category)
                 .Include(x => x.SubscriptionType)
                 .Where(x => x.SubscriptionId == id)
                 .ToListAsync();
-            return subscriptions;
+            return subscriptions;*/
+            return [];
         }
         public async Task Create(SubscriptionType type, string phoneNumber, string table)
         {
@@ -57,10 +60,10 @@ namespace CMDB.Services
             };
             if (type.Category.Category == "Internet Subscription")
                 subscription.IdentityId = 1;
-            _context.Subscriptions.Add(subscription);
+            /*_context.Subscriptions.Add(subscription);
             await _context.SaveChangesAsync();
             string Value = $"Subscription with Category: {type.Category.Category} and type {type} on {phoneNumber}";
-            await LogCreate(table, subscription.SubscriptionId, Value);
+            await LogCreate(table, subscription.SubscriptionId, Value);*/
         }
         public async Task Edit(Subscription subscription, string phoneNumber, string table)
         {
@@ -69,8 +72,8 @@ namespace CMDB.Services
             {
                 subscription.PhoneNumber = phoneNumber;
                 subscription.LastModfiedAdmin = Admin;
-                await _context.SaveChangesAsync();
-                await LogUpdate(table, subscription.SubscriptionId, "phone number", oldPhone, phoneNumber);
+                /*await _context.SaveChangesAsync();
+                await LogUpdate(table, subscription.SubscriptionId, "phone number", oldPhone, phoneNumber);*/
             }
         }
         public async Task Activate(Subscription subscription, string table)
@@ -79,8 +82,8 @@ namespace CMDB.Services
             subscription.LastModfiedAdmin = Admin;
             subscription.Active = State.Active;
             subscription.DeactivateReason = "";
-            await _context.SaveChangesAsync();
-            await LogActivate(table, subscription.SubscriptionId, Value);
+            /*await _context.SaveChangesAsync();
+            await LogActivate(table, subscription.SubscriptionId, Value);*/
         }
         public async Task Deactivate(Subscription subscription, string reason, string table)
         {
@@ -88,33 +91,34 @@ namespace CMDB.Services
             subscription.LastModfiedAdmin = Admin;
             subscription.Active = State.Inactive;
             subscription.DeactivateReason = reason;
-            await _context.SaveChangesAsync();
-            await LogDeactivate(table, subscription.SubscriptionId, Value, reason);
+            /*await _context.SaveChangesAsync();
+            await LogDeactivate(table, subscription.SubscriptionId, Value, reason);*/
         }
         public async Task<SubscriptionType> GetSubscriptionTypeById(int id)
         {
-            SubscriptionType type = await _context.SubscriptionTypes
+            /*SubscriptionType type = await _context.SubscriptionTypes
                 .Include(x=> x.Category)
                 .Where(x => x.Id == id)
                 .FirstOrDefaultAsync();
-            return type;
+            return type;*/
+            return new();
         }
         public List<SelectListItem> GetSubscriptionTypes()
         {
             List<SelectListItem> types = new();
-            var subscriptions = _context.SubscriptionTypes
+            /*var subscriptions = _context.SubscriptionTypes
                 .Include(x => x.Category)
                 .Where(x => x.active == 1)
                 .ToList();
             foreach (var subscription in subscriptions)
             {
                 types.Add(new SelectListItem($"{subscription}",$"{subscription.Id}"));
-            }
+            }*/
             return types;
         }
         public async Task<bool> IsSubscritionExisting(SubscriptionType subscriptionType, string phoneNumber, int id =0)
         {
-            if(id > 0)
+            /*if(id > 0)
             {
                 var subs = await GetByID(id);
                 Subscription sub = subs.First();
@@ -138,7 +142,7 @@ namespace CMDB.Services
                     .ToList();
                 if(subs.Count > 0)
                     return true;
-            }
+            }*/
             return false;
         }
         public async Task ReleaseIdenity(Subscription subscription, Identity identity,string table)
@@ -147,20 +151,19 @@ namespace CMDB.Services
             subscription.LastModfiedAdmin = Admin;
             subscription.IdentityId = 1;
             identity.Subscriptions.Remove(subscription);
-            await _context.SaveChangesAsync();
+            /*await _context.SaveChangesAsync();
             await LogReleaseIdentityFromSubscription("identity", identity,subscription);
-            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);
+            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);*/
         }
         public async Task AssignIdentity(Subscription subscription, Identity identity, string table)
         {
             identity.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             identity.Subscriptions.Add(subscription);
-            await _context.SaveChangesAsync();
+            /*await _context.SaveChangesAsync();
             await LogAssignIdentity2Subscription("identity", identity, subscription);
-            await LogAssignSubsciption2Identity(table, subscription, identity);
+            await LogAssignSubsciption2Identity(table, subscription, identity);*/
         }
-
         internal Task ReleaseIdenity(Subscription subscription, Identity identity)
         {
             throw new NotImplementedException();

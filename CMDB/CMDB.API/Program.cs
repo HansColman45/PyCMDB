@@ -1,4 +1,3 @@
-using CMDB.API.Helper;
 using CMDB.API.Services;
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +10,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
 // configure strongly typed settings object
-builder.Services.AddDbContext<CMDBContext>(options => SqlServerDbContextOptionsExtensions.UseSqlServer(options,connectionString), ServiceLifetime.Singleton);
+builder.Services.AddDbContext<CMDBContext>(options => {
+    options.UseSqlServer(connectionString);
+    options.EnableSensitiveDataLogging();
+    }
+);
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<JwtService>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -27,23 +32,14 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"]
         };
     });
-builder.Services.AddScoped<JwtService>();
-//builder.Services.AddSingleton<IAdminService, AdminService>();
-builder.Services.AddTransient<IMenuService, MenuService>();
-builder.Services.AddTransient<ILogService, LogService>();
-builder.Services.AddTransient<IIdentityService, IdentityService>();
-builder.Services.AddTransient<IAccountService, AccountService>();
-builder.Services.AddTransient<IAdminService, AdminService>();
-builder.Services.AddTransient<IApplicationService, ApplicationService>();
-builder.Services.AddTransient<IAccountTypeService, AccountTypeService>();
 builder.Services.AddSwaggerGen(swagger =>
 {
     //This is to generate the Default UI of Swagger Documentation  
     swagger.SwaggerDoc("v1", new OpenApiInfo
     {
         Version = "v1",
-        Title = "JWT Token Authentication API",
-        Description = "CMDB API"
+        Title = "CMDB API",
+        Description = "CMDB API with JWT"
     });
     // To Enable authorization using Swagger (JWT)  
     swagger.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()

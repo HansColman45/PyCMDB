@@ -1,11 +1,9 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
 using CMDB.Services;
-using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Fluent;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -15,9 +13,9 @@ namespace CMDB.Controllers
     public class AccountController : CMDBController
     {
         private new readonly AccountService service;
-        public AccountController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public AccountController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Account";
             Table = "account";
         }
@@ -68,7 +66,6 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["Controller"] = @"\Account\Create";
             await BuildMenu();
-            Account account = new();
             ViewBag.Types = await service.ListActiveAccountTypes();
             ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
@@ -113,12 +110,11 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListActiveAccountTypes();
             ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.FirstOrDefault();
+            var account = await service.GetByID((int)id);
             if (account == null)
                 NotFound();
             ViewData["UserID"] = account.UserID;
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -159,13 +155,12 @@ namespace CMDB.Controllers
             {
                 return NotFound();
             }
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.FirstOrDefault();
-            if (accounts == null)
+            var account = await service.GetByID((int)id);
+            if (account == null)
                 return NotFound();
             if (account == null)
                 NotFound();
-            return View(accounts);
+            return View(account);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
@@ -176,13 +171,12 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.FirstOrDefault();
-            if (accounts == null)
+            var account = await service.GetByID((int)id);
+            if (account == null)
                 return NotFound();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Account";
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 ViewData["reason"] = values["reason"];
                 try
@@ -197,19 +191,18 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(accounts);
+            return View(account);
         }
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Account";
-            ViewData["Controller"] = @$"\Account\Edit\{id}";
+            ViewData["Controller"] = @$"\Account\Activate\{id}";
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.FirstOrDefault();
+            var account = await service.GetByID((int)id);
             if (account == null)
                 NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
@@ -232,14 +225,13 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.FirstOrDefault();
+            var account = await service.GetByID((int)id);
             if (account == null)
                 NotFound();
             ViewBag.Account = account;
             ViewBag.Identities = await service.ListAllFreeIdentities();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 int IdenID = Convert.ToInt32(values["Identity"]);
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
@@ -247,7 +239,7 @@ namespace CMDB.Controllers
                 service.IsPeriodOverlapping((int)id, from, until);
                 if (ModelState.IsValid)
                 {
-                    await service.AssignIdentity2Account(account, IdenID, from, until, Table);
+                    await service.AssignIdentity2Account(account, IdenID, from, until);
                     return RedirectToAction("AssignForm", "Account", new { id });
                 }
             }
@@ -257,11 +249,11 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign Identity in {0}", Table);
             ViewData["Title"] = "Release Identity";
+            ViewData["Controller"] = @$"\Account\ReleaseIdentity\{id}";
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var idenAccounts = await service.GetIdenAccountByID((int)id);
-            IdenAccount idenAccount = idenAccounts.FirstOrDefault();
+            IdenAccountDTO idenAccount = await service.GetIdenAccountByID((int)id);
             if (idenAccount == null)
                 return NotFound();
             ViewData["backUrl"] = "Account";
@@ -278,7 +270,7 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -292,7 +284,7 @@ namespace CMDB.Controllers
                     PDFGenerator.SetAccontInfo(idenAccount);
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
-                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table, pdfFile);
+                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -306,10 +298,10 @@ namespace CMDB.Controllers
                 return NotFound();
             }
             ViewData["Title"] = "Assign Identity";
+            ViewData["Controller"] = @$"\Account\AssignForm\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var accounts = await service.GetByID((int)id);
-            Account account = accounts.First();
+            var account = await service.GetByID((int)id);
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";
@@ -320,7 +312,7 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                /*PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -333,10 +325,10 @@ namespace CMDB.Controllers
                 PDFGenerator.SetAccontInfo(account.Identities.First());
                 string pdfFile = PDFGenerator.GeneratePath(_env);
                 PDFGenerator.GeneratePdf(pdfFile);
-                await service.LogPdfFile(Table, account, pdfFile);
+                await service.LogPdfFile(Table, account, pdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
-            return View(accounts);
+            return View(account);
         }
     }
 }

@@ -16,9 +16,9 @@ namespace CMDB.Controllers
     public class LaptopController : CMDBController
     {
         private new readonly DevicesService service;
-        public LaptopController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public LaptopController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Laptop";
             Table = "laptop";
         }
@@ -157,7 +157,6 @@ namespace CMDB.Controllers
             Laptop laptop = laptops.FirstOrDefault();
             if (laptop == null)
                 return NotFound();
-            service.GetLogs(Table, laptop.AssetTag, laptop);
             service.GetAssignedIdentity(laptop);
             return View(laptop);
         }
@@ -184,7 +183,7 @@ namespace CMDB.Controllers
                     {
                         if (laptop.IdentityId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
+                           /* PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
                                 Singer = laptop.Identity.Name,
@@ -198,7 +197,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePath(_env);
                             PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
+                            await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
                             await service.ReleaseIdenity(laptop, laptop.Identity, Table);
                         }
                         await service.Deactivate(laptop, values["reason"], Table);
@@ -300,7 +299,7 @@ namespace CMDB.Controllers
                 if (ModelState.IsValid)
                 {
                     await service.ReleaseIdenity(laptop, laptop.Identity, Table);
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -315,7 +314,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -344,7 +343,7 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -358,7 +357,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }

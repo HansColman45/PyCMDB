@@ -8,7 +8,6 @@ namespace CMDB.Infrastructure
         public CMDBContext(DbContextOptions<CMDBContext> options) : base(options)
         {
         }
-        public Admin Admin { get; set; }
         public virtual DbSet<Account> Accounts { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Application> Applications { get; set; }
@@ -28,7 +27,7 @@ namespace CMDB.Infrastructure
         public virtual DbSet<RolePerm> RolePerms { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
-        public virtual DbSet<CMDB.Domain.Entities.Configuration> Configurations { get; set; }
+        public virtual DbSet<Domain.Entities.Configuration> Configurations { get; set; }
         public virtual DbSet<RAM> RAMs { get; set; }
         public virtual DbSet<IdentityAccountInfo> IdentityAccountInfos { get; set; }
 

@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CMDB.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Microsoft.AspNetCore.Hosting;
+﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class AccountTypeController : CMDBController
     {
         private new readonly AccountTypeService service;
-        public AccountTypeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public AccountTypeController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Account Type";
             Table = "accounttype";
         }
@@ -40,7 +37,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using search for {0}", SitePart);
             await BuildMenu();
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
                 var types = await service.ListAll(search);
@@ -61,22 +58,25 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
-            AccountType accountType = new();
             ViewData["Title"] = "Create Accounttype";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            TypeDTO type = new();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
-                    accountType.Type = values["Type"];
-                    accountType.Description = values["Description"];
-                    if (service.IsExisting(accountType))
+                    type = new()
+                    {
+                        Type = values["Type"],
+                        Description = values["Description"]
+                    };
+                    if (service.IsExisting(type))
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
-                        await service.Create(accountType, Table);
+                        await service.Create(type);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -87,7 +87,7 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(accountType);
+            return View(type);
         }
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
@@ -96,13 +96,12 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Edit Accounttype";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            var accountTypes = await service.GetAccountTypeByID((int)id);
-            var accountType = accountTypes.FirstOrDefault();
+            var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -133,20 +132,19 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Delete Accounttype";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "AccountType";
-            var accountTypes = await service.GetAccountTypeByID((int)id);
-            var accountType = accountTypes.FirstOrDefault();
+            var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(accountType, ViewData["reason"].ToString(), Table);
+                        await service.Deactivate(accountType, ViewData["reason"].ToString());
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -157,7 +155,7 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(accountTypes);
+            return View(accountType);
         }
         public async Task<IActionResult> Activate(int? id)
         {
@@ -167,8 +165,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var accountTypes = await service.GetAccountTypeByID((int)id);
-            var accountType = accountTypes.FirstOrDefault();
+            var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
@@ -191,12 +188,10 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
                 return NotFound();
-            var accountTypes = await service.GetAccountTypeByID((int)id);
-            var accountType = accountTypes.FirstOrDefault();
+            var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
-            service.GetLogs(Table, (int)id, accountType);
-            return View(accountTypes);
+            return View(accountType);
         }
     }
 }

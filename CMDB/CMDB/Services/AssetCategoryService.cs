@@ -12,39 +12,42 @@ namespace CMDB.Services
 {
     public class AssetCategoryService : LogService
     {
-        public AssetCategoryService(CMDBContext context) : base(context)
+        public AssetCategoryService() : base()
         {
         }
         public async Task<List<AssetCategory>> ListAll()
         {
-            var categories = await _context.AssetCategories.ToListAsync();
-            return categories;
+            /*var categories = await _context.AssetCategories.ToListAsync();
+            return categories;*/
+            return [];
         }
         public async Task<List<AssetCategory>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
+            /*string searhterm = "%" + searchString + "%";
             var categories = await _context.AssetCategories
                 .Where(x => EF.Functions.Like(x.Category, searhterm) && EF.Functions.Like(x.Prefix, searhterm))
                 .ToListAsync();
-            return categories;
+            return categories;*/
+            return [];
         }
         public async Task<List<AssetCategory>> ListByID(int id)
         {
-            var categories = await _context.AssetCategories.Where(x => x.Id == id).ToListAsync();
-            return categories;
+            /*var categories = await _context.AssetCategories.Where(x => x.Id == id).ToListAsync();
+            return categories;*/
+            return [];
         }
         public async Task Create(AssetCategory category, string table)
         {
-            category.LastModfiedAdmin = Admin;
+            /*category.LastModfiedAdmin = Admin;
             _context.AssetCategories.Add(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            await LogCreate(table, category.Id, Value);
+            await LogCreate(table, category.Id, Value);*/
         }
         public async Task Update(AssetCategory category, string Category, string prefix, string Table)
         {
             category.LastModfiedAdmin = Admin;
-            if (String.Compare(category.Category, Category) != 0)
+            /*if (String.Compare(category.Category, Category) != 0)
             {
                 category.Category = Category;
                 _context.AssetCategories.Update(category);
@@ -61,34 +64,34 @@ namespace CMDB.Services
                 if (String.IsNullOrEmpty(prefix))
                     prefix = "Empty";
                 await LogUpdate(Table, category.Id, "Prefix", category.Prefix, prefix);
-            }
+            }*/
         }
         public async Task Deactivate(AssetCategory category, string Reason, string Table)
         {
-            category.LastModfiedAdmin = Admin;
+            /*category.LastModfiedAdmin = Admin;
             category.Active = State.Inactive;
             category.DeactivateReason = Reason;
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            await LogDeactivate(Table, category.Id, Value, Reason);
+            await LogDeactivate(Table, category.Id, Value, Reason);*/
         }
         public async Task Activate(AssetCategory category, string Table)
         {
-            category.LastModfiedAdmin = Admin;
+            /*category.LastModfiedAdmin = Admin;
             category.Active = State.Active;
             category.DeactivateReason = "";
             _context.AssetCategories.Update(category);
             await _context.SaveChangesAsync();
             string Value = String.Format("Assetcategory {0} with prefix {1}", category.Category, category.Prefix);
-            await LogActivate(Table, category.Id, Value);
+            await LogActivate(Table, category.Id, Value);*/
         }
         public bool IsExisting(AssetCategory category, string Category = "")
         {
             List<AssetCategory> Catogories;
             bool result = false;
             bool changed = false;
-            if (String.IsNullOrEmpty(Category))
+            /*if (String.IsNullOrEmpty(Category))
                 Catogories = _context.AssetCategories.Where(x => x.Category == category.Category).ToList();
             else if (String.Compare(category.Category, Category) != 0)
             {
@@ -100,7 +103,7 @@ namespace CMDB.Services
             if (Catogories.Count > 0)
             {
                 result = true;
-            }
+            }*/
             if (!changed)
                 result = false;
             return result;

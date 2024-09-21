@@ -14,9 +14,9 @@ namespace CMDB.Controllers
     public class AssetCategoryController : CMDBController
     {
         private new readonly AssetCategoryService service;
-        public AssetCategoryController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public AssetCategoryController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Asset Category";
             Table = "assetcategory";
         }
@@ -137,7 +137,6 @@ namespace CMDB.Controllers
             AssetCategory category = categories.FirstOrDefault();
             if (category == null)
                 return NotFound();
-            service.GetLogs(Table, category.Id, category);
             return View(category);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)

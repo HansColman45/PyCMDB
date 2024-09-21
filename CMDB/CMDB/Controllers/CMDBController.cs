@@ -13,17 +13,15 @@ namespace CMDB.Controllers
     public class CMDBController : Controller
     {
         protected CMDBServices service;
-        protected CMDBContext _context;
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected readonly IWebHostEnvironment _env;
         protected string SitePart { get; set; }
         protected string Table { get; set; }
         protected string Token { get; set; }
-        public CMDBController(CMDBContext context, IWebHostEnvironment env)
+        public CMDBController(IWebHostEnvironment env)
         {
-            _context = context;
             _env = env;
-            service = new(context);
+            service = new();
         }
         protected async Task BuildMenu()
         {
@@ -35,7 +33,7 @@ namespace CMDB.Controllers
                 m.Children = mL2;
                 foreach (Menu m1 in mL2)
                 {
-                    m1.Children = await  service.ListPersonalMenu(Token,m1.MenuId);
+                    m1.Children = await service.ListPersonalMenu(Token,m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;

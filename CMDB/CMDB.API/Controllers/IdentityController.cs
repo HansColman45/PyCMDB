@@ -1,5 +1,5 @@
-﻿using CMDB.API.Services;
-using CMDB.Domain.Requests;
+﻿using CMDB.API.Models;
+using CMDB.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -10,14 +10,12 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class IdentityController : ControllerBase
     {
-        private readonly IIdentityService identityService;
-        private readonly IAccountService _accountService;
-        public IdentityController(IIdentityService service, IAccountService accountService)
+        private readonly IUnitOfWork _uow;
+        public IdentityController(IUnitOfWork uow)
         {
-            identityService = service;
-            _accountService = accountService;
+            _uow = uow;
         }
-        [HttpGet]
+        [HttpGet("GetAll")]
         [Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -29,7 +27,7 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await identityService.GetAll());
+            return Ok(await _uow.IdentityRepository.GetAll());
         }
         [HttpGet]
         [Route("GetAll/{searchstr}")]
@@ -44,7 +42,7 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await identityService.GetAll(searchstr));
+            return Ok(await _uow.IdentityRepository.GetAll(searchstr));
         }
         [HttpGet("{id:int}")]
         [Authorize]
@@ -58,12 +56,11 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            var identity = await identityService.GetById(id);
-            return Ok(identity);
+            return Ok(await _uow.IdentityRepository.GetById(id));
         }
         [HttpPost("AssignAccount")]
         [Authorize]
-        public async Task<IActionResult> AssignAccount(AssignAccountRequest model)
+        public async Task<IActionResult> AssignAccount(IdenAccountDTO request)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -73,8 +70,8 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("AssignAccount")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            var Iden = await GetById(model.IdenityId);
-            var account = await _accountService.GetById(model.AccountId);
+            var Iden = await _uow.IdentityRepository.GetById(request.Identity.IdenId);
+            var account = await _uow.AccountRepository.GetById(request.Account.AccID);
             if (Iden is null || account is null)
                 return NotFound();
             //ToDO
@@ -91,7 +88,7 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await identityService.ListAllFreeIdentities());
+            return Ok(await _uow.IdentityRepository.ListAllFreeIdentities());
         }
     }
 }

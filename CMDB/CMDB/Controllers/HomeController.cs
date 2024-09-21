@@ -9,7 +9,7 @@ namespace CMDB.Controllers
 {
     public class HomeController : CMDBController
     {
-        public HomeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public HomeController(IWebHostEnvironment env) : base(env)
         {
         }
         public async Task<IActionResult> Index()

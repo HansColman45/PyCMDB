@@ -1,70 +1,74 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using CMDB.Infrastructure;
+using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
     public class IdentityService : LogService
     {
-        public IdentityService(CMDBContext context) : base(context)
+        public IdentityService() : base()
         {
         }
         public async Task<ICollection<Identity>> ListAll()
         {
-            List<Identity> identities = await _context.Identities
-                .Include(x => x.Type)
-                .ToListAsync();
-            return identities;
+            BaseUrl = _url + $"api/Identity/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<ICollection<Identity>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
-            List<Identity> list = await _context.Identities
-                .Include(x => x.Type)
-                .Where(x => EF.Functions.Like(x.Name, searhterm) || EF.Functions.Like(x.UserID, searhterm)
-                    || EF.Functions.Like(x.EMail, searhterm) || EF.Functions.Like(x.Type.Type, searhterm))
-                .ToListAsync();
-            return list;
+            BaseUrl = _url + $"api/Identity/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<ICollection<Identity>> GetByID(int id)
         {
-            List<Identity> identities = await _context.Identities
-                .Include(x => x.Type)
-                .Include(x => x.Language)
-                .Where(x => x.IdenId == id)
-                .ToListAsync();
-            return identities;
+            BaseUrl = _url + $"api/Identity/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public List<SelectListItem> ListActiveIdentityTypes()
         {
             List<SelectListItem> identityTypes = new();
-            List<IdentityType> types = _context.Types.OfType<IdentityType>().Where(x => x.active == 1).ToList();
+            /*List<IdentityType> types = _context.Types.OfType<IdentityType>().Where(x => x.active == 1).ToList();
             foreach (var type in types)
             {
                 identityTypes.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeId.ToString()));
-            }
+            }*/
             return identityTypes;
         }
         public List<SelectListItem> ListAllActiveLanguages()
         {
             List<SelectListItem> langs = new();
-            List<Language> languages = _context.Languages.ToList();
+            /*List<Language> languages = _context.Languages.ToList();
             foreach (var language in languages)
             {
                 langs.Add(new SelectListItem(language.Description, language.Code));
-            }
+            }*/
             return langs;
         }
         public async Task<List<Device>> ListAllFreeDevices()
         {
             List<Device> devices = new();
-
-            var Laptops = await _context.Devices.OfType<Laptop>()
+            /*var Laptops = await _context.Devices.OfType<Laptop>()
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.IdentityId == 1)
@@ -108,21 +112,22 @@ namespace CMDB.Services
             foreach (var token in tokens)
             {
                 devices.Add(token);
-            }
+            }*/
             return devices;
         }
         public async Task<List<Mobile>> ListAllFreeMobiles()
         {
-            var mobiles = await _context.Mobiles
-                .Include(x => x.MobileType)
-                .Include(x => x.Category)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            return mobiles;
+            /* var mobiles = await _context.Mobiles
+                 .Include(x => x.MobileType)
+                 .Include(x => x.Category)
+                 .Where(x => x.IdentityId == 1)
+                 .ToListAsync();
+             return mobiles;*/
+            return [];
         }
         public void GetAssingedDevices(Identity identity)
         {
-            identity.Devices = _context.Identities
+            /*identity.Devices = _context.Identities
                 .Include(x => x.Devices)
                 .ThenInclude(x => x.Category)
                 .Include(x => x.Devices)
@@ -142,21 +147,21 @@ namespace CMDB.Services
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Category)
                 .Where(x => x.IdentityId == identity.IdenId)
-                .ToList();
+                .ToList();*/
         }
         public void GetAssignedAccounts(Identity identity)
         {
-            var accounts = _context.Identities
+            /*var accounts = _context.Identities
                 .Include(x => x.Language)
                 .Include(x => x.Accounts)
                 .ThenInclude(d => d.Account)
                 .SelectMany(x => x.Accounts)
                 .Where(x => x.Identity.IdenId == identity.IdenId)
-                .ToList();
+                .ToList();*/
         }
         public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
-            var Type = GetIdenityTypeByID(type).First();
+            /*var Type = GetIdenityTypeByID(type).First();
             var Lang = _context.Languages.
                 Where(x => x.Code == Language)
                 .SingleOrDefault();
@@ -174,11 +179,11 @@ namespace CMDB.Services
             _context.Identities.Add(identity);
             await _context.SaveChangesAsync();
             string Value = "Identity width name: " + firstName + ", " + LastName;
-            await LogCreate(Table, identity.IdenId, Value);
+            await LogCreate(Table, identity.IdenId, Value);*/
         }
         public async Task Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             if (String.Compare(identity.FirstName, firstName) != 0)
             {
                 await LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
@@ -218,32 +223,32 @@ namespace CMDB.Services
                 identity.Type = newType;
             }
             _context.Identities.Update(identity);
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();*/
         }
         public async Task Deactivate(Identity identity, string Reason, string Table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = Reason;
             identity.Active = State.Inactive;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.Name}";
-            await LogDeactivate(Table, identity.IdenId, value, Reason);
+            await LogDeactivate(Table, identity.IdenId, value, Reason);*/
         }
         public async Task Activate(Identity identity, string Table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             identity.DeactivateReason = null;
             identity.Active = State.Active;
             _context.Identities.Update(identity);
             await _context.SaveChangesAsync();
             string value = $"Identity width name: {identity.Name}";
-            await LogActivate(Table, identity.IdenId, value);
+            await LogActivate(Table, identity.IdenId, value);*/
         }
         public bool IsExisting(Identity identity, string UserID = "")
         {
             bool result = false;
-            if (String.IsNullOrEmpty(UserID) && String.Compare(identity.UserID, UserID) != 0)
+            /*if (String.IsNullOrEmpty(UserID) && String.Compare(identity.UserID, UserID) != 0)
             {
                 var idenities = _context.Identities
                 .Where(x => x.UserID == UserID)
@@ -252,21 +257,22 @@ namespace CMDB.Services
                     result = true;
                 else
                     result = false;
-            }
+            }*/
             return result;
         }
         public ICollection<IdentityType> GetIdenityTypeByID(int id)
         {
-            var types = _context.Types
+            /*var types = _context.Types
                 .OfType<IdentityType>()
                 .Where(x => x.TypeId == id)
                 .ToList();
-            return types;
+            return types;*/
+            return [];
         }
         public async Task ReleaseDevices(Identity identity, List<Device> devices, string table)
         {
             identity.LastModfiedAdmin = Admin;
-            foreach (Device device in devices)
+            /*foreach (Device device in devices)
             {
                 device.IdentityId = 1;
                 device.LastModfiedAdmin = Admin;
@@ -293,28 +299,28 @@ namespace CMDB.Services
                         throw new Exception("Category not know");
                 }
                 await LogReleaseDeviceFromIdenity(table, device,identity);
-            }
+            }*/
         }
         public async Task ReleaseMobile(Identity identity, Mobile mobile, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
             identity.Mobiles.Remove(mobile);
             mobile.IdentityId = 1;
             await _context.SaveChangesAsync();
             await LogReleaseMobileFromIdenity("mobile", mobile, identity);
-            await LogReleaseIdentityFromMobile(table, identity, mobile);
+            await LogReleaseIdentityFromMobile(table, identity, mobile);*/
         }
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
             List<SelectListItem> accounts = new();
-            
-            var test = await _context.IdentityAccountInfos.FromSqlRaw(
+
+            /*var test = await _context.IdentityAccountInfos.FromSqlRaw(
                 $"select distinct a.AccID, a.UserID, ap.Name from Account a " +
                 "left join Application ap on a.ApplicationId = ap.AppID " +
                 "left join IdenAccount ia on ia.AccountId = a.AccID " +
                 "where ia.IdentityId is null or ia.ValidUntil <= GETDATE()")
-                .ToListAsync();/*
+                .ToListAsync();
             var freeAccounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(y => y.Identities)
@@ -322,17 +328,17 @@ namespace CMDB.Services
                 .Where(x => x.Identities.Any(y => y.ValidUntil <= DateTime.UtcNow))
                 .Where(x => x.Identities.Any(y => y.IdentityId != null))
                 .Select(x => new { x.AccID, x.UserID, x.Application.Name }).Distinct()
-                .ToListAsync();*/
+                .ToListAsync();
             foreach (var account in test)
             {
                 accounts.Add(new(account.UserId + " " + account.Name, account.AccId.ToString()));
-            }
+            }*/
             return accounts;
         }
         public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            if (IdenID == null)
+            /*if (IdenID == null)
                 throw new Exception("Missing required id");
             else
             {
@@ -344,12 +350,12 @@ namespace CMDB.Services
                     result = true;
                 else
                     result = false;
-            }
+            }*/
             return result;
         }
         public async Task AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
         {
-            var Accounts = await GetAccountByID(AccID);
+            /*var Accounts = await GetAccountByID(AccID);
             var Account = Accounts.First<Account>();
             identity.Accounts.Add(new()
             {
@@ -362,13 +368,13 @@ namespace CMDB.Services
             Account.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             await LogAssignIden2Account(Table, identity.IdenId, identity, Account);
-            await LogAssignAccount2Identity("account", AccID, Account, identity);
+            await LogAssignAccount2Identity("account", AccID, Account, identity);*/
         }
         public async Task AssignDevice(Identity identity, List<Device> devicesToAdd, string table)
         {
             identity.LastModfiedAdmin = Admin;
             identity.Devices = devicesToAdd;
-            foreach (var device in devicesToAdd)
+            /*foreach (var device in devicesToAdd)
             {
                 device.LastModfiedAdmin = Admin;
                 switch (device.Category.Category)
@@ -392,24 +398,24 @@ namespace CMDB.Services
                         throw new Exception("Category not know");
                 }
                 await LogAssignDevice2Identity(table, device, identity);
-            }
-            await _context.SaveChangesAsync();
+            }*/
+            //await _context.SaveChangesAsync();
         }
-        public async Task AssignMobiles(Identity identity, List<Mobile> mobiles, string Table)
+        public void AssignMobiles(Identity identity, List<Mobile> mobiles, string Table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             identity.Mobiles = mobiles;
             foreach (var mobile in mobiles)
             {
                 mobile.LastModfiedAdmin = Admin;
                 await LogAssignIdentity2Mobile("idenity", identity, mobile);
                 await LogAssignMobile2Identity(Table,mobile, identity);
-            }
-            await _context.SaveChangesAsync();
+            }*/
+            //await _context.SaveChangesAsync();
         }
         public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
         {
-            var idenAccount = _context.IdenAccounts.
+            /*var idenAccount = _context.IdenAccounts.
                 Include(x => x.Identity)
                 .Where(x => x.ID == idenAccountID)
                 .Single<IdenAccount>();
@@ -419,20 +425,21 @@ namespace CMDB.Services
             identity.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             await LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
-            await LogReleaseIdentity4Account("account", account.AccID, identity, account);
+            await LogReleaseIdentity4Account("account", account.AccID, identity, account);*/
         }
         public async Task<List<Account>> GetAccountByID(int ID)
         {
-            List<Account> accounts = await _context.Accounts
+            /*List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
                 .ToListAsync();
-            return accounts;
+            return accounts;*/
+            return [];
         }
         public async Task<List<IdenAccount>> GetIdenAccountByID(int id)
         {
-            var idenAccounts = await _context.IdenAccounts
+            /*var idenAccounts = await _context.IdenAccounts
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
                 .Include(x => x.Account)
@@ -441,25 +448,28 @@ namespace CMDB.Services
                 .ThenInclude(x => x.Language)
                 .Where(x => x.ID == id)
                 .ToListAsync();
-            return idenAccounts;
+            return idenAccounts;*/
+            return [];
         }
         public async Task<Device> GetDevice(string assetTag)
         {
-            Device device = await _context.Devices
+            /*Device device = await _context.Devices
                 .Include(x => x.Category)
                 .Include(x => x.Type)
                 .Where(x => x.AssetTag == assetTag)
                 .FirstOrDefaultAsync();
-            return device;
+            return device;*/
+            return new();
         }
         public async Task<Mobile> GetMobile(int mobileId)
         {
-            Mobile mobile = await _context.Mobiles
+            /*Mobile mobile = await _context.Mobiles
                 .Include(x => x.MobileType)
                 .Include(x => x.Category)
                 .Where(x => x.MobileId == mobileId)
                 .FirstOrDefaultAsync();
-            return mobile;
+            return mobile;*/
+            return new();
         }
     }
 }

@@ -6,8 +6,8 @@ namespace CMDB.API.Models
     {
         public int TypeId { get; set; }
         [Required(ErrorMessage = "Please fill in a Type")]
-        public required string Type { get; set; }
+        public string Type { get; set; }
         [Required(ErrorMessage = "Please fill in a Description")]
-        public required string Description { get; set; }
+        public string Description { get; set; }
     }
 }

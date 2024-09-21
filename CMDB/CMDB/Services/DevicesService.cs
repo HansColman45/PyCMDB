@@ -1,23 +1,20 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using CMDB.Domain.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
     public class DevicesService : LogService
     {
-        public DevicesService(CMDBContext context) : base(context)
+        public DevicesService() : base()
         {
         }
         public async Task<List<Device>> ListAll(string category)
         {
             List<Device> devices = new();
-            switch (category)
+            /*switch (category)
             {
                 case "Laptop":
                     var laptops = await _context.Devices
@@ -81,14 +78,14 @@ namespace CMDB.Services
                     break;
                 default:
                     break;
-            }
+            }*/
             return devices;
         }
         public async Task<List<Device>> ListAll(string category, string searchString)
         {
             string searhterm = "%" + searchString + "%";
             List<Device> devices = new();
-            switch (category)
+            /*switch (category)
             {
                 case "Laptop":
                     var laptops = await _context.Devices
@@ -156,31 +153,31 @@ namespace CMDB.Services
                     break;
                 default:
                     break;
-            }
+            }*/
             return devices;
         }
         public List<SelectListItem> ListRams()
         {
             List<SelectListItem> assettypes = new();
-            var rams = _context.RAMs.ToList();
+            /*var rams = _context.RAMs.ToList();
             foreach (var ram in rams)
             {
                 assettypes.Add(new(ram.Display, ram.Value.ToString()));
-            }
+            }*/
             return assettypes;
         }
         public async Task CreateNewDevice(Device device, string table)
         {
-            device.LastModfiedAdmin = Admin;
+            /*device.LastModfiedAdmin = Admin;
             device.IdentityId = 1;
             _context.Devices.Add(device);
             await _context.SaveChangesAsync();
             string value = $"{device.Category.Category} with type {device.Type}";
-            await LogCreate(table,device.AssetTag,value);
+            await LogCreate(table,device.AssetTag,value);*/
         }
         public async Task UpdateDesktop(Desktop desktop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
-            desktop.LastModfiedAdmin = Admin;
+           /* desktop.LastModfiedAdmin = Admin;
             string oldRam, oldMac, oldSerial;
             oldMac = desktop.MAC;
             oldRam = desktop.RAM;
@@ -210,11 +207,11 @@ namespace CMDB.Services
                 desktop.Type = newAssetType;
                 await _context.SaveChangesAsync();
                 await LogUpdate(Table, desktop.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
-            }
+            }*/
         }
         public async Task UpdateLaptop(Laptop laptop, string newRam, string newMAC, AssetType newAssetType, string newSerialNumber, string Table)
         {
-            laptop.LastModfiedAdmin = Admin;
+            /*laptop.LastModfiedAdmin = Admin;
             string oldRam, oldMac, oldSerial;
             oldMac = laptop.MAC;
             oldRam = laptop.RAM;
@@ -243,11 +240,11 @@ namespace CMDB.Services
                 laptop.Type = newAssetType;
                 await _context.SaveChangesAsync();
                 await LogUpdate(Table, laptop.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
-            }
+            }*/
         }
         public async Task UpdateScreen(Screen screen, string newSerialNumber, AssetType newAssetType, string Table)
         {
-            screen.LastModfiedAdmin = Admin;
+           /* screen.LastModfiedAdmin = Admin;
             string oldSerial = screen.SerialNumber;
             AssetType oldType = screen.Type;
             if (String.Compare(screen.SerialNumber, newSerialNumber) != 0)
@@ -261,12 +258,12 @@ namespace CMDB.Services
                 screen.Type = newAssetType;
                 await _context.SaveChangesAsync();
                 await LogUpdate(Table, screen.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
-            }
+            }*/
         }
 
         public async Task UpdateDocking(Docking docking, string newSerialNumber, AssetType newAssetType, string Table)
         {
-            docking.LastModfiedAdmin = Admin;
+            /*docking.LastModfiedAdmin = Admin;
             string oldSerial = docking.SerialNumber;
             AssetType oldType = docking.Type;
             if (String.Compare(docking.SerialNumber, newSerialNumber) != 0)
@@ -280,11 +277,11 @@ namespace CMDB.Services
                 docking.Type = newAssetType;
                 await _context.SaveChangesAsync();
                 await LogUpdate(Table, docking.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
-            }
+            }*/
         }
         public async Task UpdateToken(Token token, string newSerialNumber, AssetType newAssetType,string table)
         {
-            token.LastModfiedAdmin = Admin;
+           /* token.LastModfiedAdmin = Admin;
             string oldSerial = token.SerialNumber;
             AssetType oldType = token.Type;
             if (String.Compare(token.SerialNumber, newSerialNumber) != 0)
@@ -298,96 +295,101 @@ namespace CMDB.Services
                 token.Type = newAssetType;
                 await _context.SaveChangesAsync();
                 await LogUpdate(table, token.AssetTag, "Type", oldType.ToString(), newAssetType.ToString());
-            }
+            }*/
         }
         public async Task Deactivate(Device device, string Reason, string table)
         {
-            device.LastModfiedAdmin = Admin;
+            /*device.LastModfiedAdmin = Admin;
             device.DeactivateReason = Reason;
             device.Active = State.Inactive;
             await _context.SaveChangesAsync();
             string Value = $"{device.Category.Category} with type {device.Type}";
-            await LogDeactivated(table, device.AssetTag, Value, Reason);
+            await LogDeactivated(table, device.AssetTag, Value, Reason);*/
         }
         public async Task Activate(Device device, string table)
         {
-            device.LastModfiedAdmin = Admin;
+            /*device.LastModfiedAdmin = Admin;
             device.DeactivateReason = "";
             device.Active = State.Active;
             await _context.SaveChangesAsync();
             string Value = $"{device.Category.Category} with type {device.Type}";
-            await LogActivate(table, device.AssetTag, Value);
+            await LogActivate(table, device.AssetTag, Value);*/
         }
         public async Task<List<Desktop>> ListDekstopByID(string assetTag)
         {
-            var desktops = await _context.Devices
+            /*var desktops = await _context.Devices
                 .OfType<Desktop>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
                 .ToListAsync();
-            return desktops;
+            return desktops;*/
+            return [];
         }
         public async Task<List<Laptop>> ListLaptopByID(string assetTag)
         {
-            var laptops = await _context.Devices
+            /*var laptops = await _context.Devices
                 .OfType<Laptop>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
                 .ToListAsync();
-            return laptops;
+            return laptops;*/
+            return [];
         }
         public async Task<List<Docking>> ListDockingByID(string assetTag)
         {
-            var dockings = await _context.Devices
+            /*var dockings = await _context.Devices
                 .OfType<Docking>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
                 .ToListAsync();
-            return dockings;
+            return dockings;*/
+            return [];
         }
         public async Task<List<Screen>> ListScreensByID(string assetTag)
         {
-            var screens = await _context.Devices
+            /*var screens = await _context.Devices
                 .OfType<Screen>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
                 .ToListAsync();
-            return screens;
+            return screens;*/
+            return new List<Screen>();
         }
         public async Task<List<Token>> ListTokenByID(string assetTag)
         {
-            var tokens = await _context.Devices
+            /*var tokens = await _context.Devices
                 .OfType<Token>()
                 .Include(x => x.Category)
                 .Include(x => x.Identity)
                 .Where(x => x.AssetTag == assetTag)
                 .ToListAsync();
-            return tokens;
+            return tokens;*/
+            return new List<Token>();
         }
         public bool IsDeviceExisting(Device device) 
         {
             bool result = false;
-            var devices = _context.Devices.Where(x => x.AssetTag == device.AssetTag).ToList();
+            /*var devices = _context.Devices.Where(x => x.AssetTag == device.AssetTag).ToList();
             if (devices.Count > 0)
-                result = true;
+                result = true;*/
             return result;
         }
         public bool IsDeviceFree(Device device)
         {
             bool result = false;
-            var _device = _context.Devices.Where(x => x.AssetTag == device.AssetTag).First();
+            /*var _device = _context.Devices.Where(x => x.AssetTag == device.AssetTag).First();
             if (_device.Identity is null || _device.IdentityId == 1)
-                result = true;
+                result = true;*/
             return result;
         }
         public List<SelectListItem> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
-            var idens = _context.Identities
+            /*var idens = _context.Identities
                 .Include(x => x.Devices)
                 .Where(x => !x.Devices.Any())
                 .Where(x => x.IdenId != 1)
@@ -395,48 +397,50 @@ namespace CMDB.Services
             foreach (var identity in idens)
             {
                 identites.Add(new(identity.Name + " "+ identity.UserID, identity.IdenId.ToString()));
-            }
+            }*/
             return identites;
         }
         public AssetType ListAssetTypeById(int id)
         {
-            var assettype = _context.AssetTypes
+            /*var assettype = _context.AssetTypes
                 .Include(x => x.Category)
                 .Where(x => x.TypeID == id)
                 .First();
-            return assettype;
+            return assettype;*/
+            return new();
         }
         public void GetAssignedIdentity(Device device)
         {
-            device.Identity =  _context.Devices
+            /*device.Identity =  _context.Devices
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language)
                 .Where(x => x.AssetTag == device.AssetTag)
-                .Select(x => x.Identity).First();
+                .Select(x => x.Identity).First();*/
         }
         public Identity GetAssignedIdentity(int idenId)
         {
-            Identity identity = _context.Identities.FirstOrDefault(x => x.IdenId == idenId);
-            return identity;
+            /*Identity identity = _context.Identities.FirstOrDefault(x => x.IdenId == idenId);
+            return identity;*/
+            return new();
         }
         public async Task AssignIdentity2Device(Identity identity, Device device,string table)
         {
-            identity.LastModfiedAdmin = Admin;
+           /* identity.LastModfiedAdmin = Admin;
             device.LastModfiedAdmin = Admin;
             identity.Devices.Add(device);
             await _context.SaveChangesAsync();
             await LogAssignIdentity2Device(table, identity, device);
-            await LogAssignDevice2Identity("identity", device, identity);
+            await LogAssignDevice2Identity("identity", device, identity);*/
         }
         public async Task ReleaseIdenity(Device device, Identity identity, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             device.LastModfiedAdmin = Admin;
             identity.Devices.Remove(device);
             device.IdentityId = 1;
             await _context.SaveChangesAsync();
             await LogReleaseIdentityFromDevice(table, identity, device);
-            await LogReleaseDeviceFromIdenity("identity", device, identity);
+            await LogReleaseDeviceFromIdenity("identity", device, identity);*/
         }
     }
 }

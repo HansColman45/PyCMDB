@@ -10,7 +10,7 @@ namespace CMDB.Services
 {
     public class PermissionService : LogService
     {
-        public PermissionService(CMDBContext context) : base(context)
+        public PermissionService() : base()
         {
         }
 

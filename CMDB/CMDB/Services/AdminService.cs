@@ -11,32 +11,35 @@ namespace CMDB.Services
 {
     public class AdminService : LogService
     {
-        public AdminService(CMDBContext context) : base(context)
+        public AdminService() : base()
         {
         }
         public async Task<List<Admin>> ListAll()
         {
-            List<Admin> admins = await _context.Admins
+            /*List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
                 .ToListAsync();
-            return admins;
+            return admins;*/
+            return [];
         }
         public async Task<List<Admin>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
+            /*string searhterm = "%" + searchString + "%";
             List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
                 .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm))
                 .ToListAsync();
-            return admins;
+            return admins;*/
+            return [];
         }
         public async Task<List<Admin>> GetByID(int id)
         {
-            List<Admin> admins = await _context.Admins
+            /*List<Admin> admins = await _context.Admins
                 .Include(x => x.Account)
                 .Where(x => x.AdminId == id)
                 .ToListAsync();
-            return admins;
+            return admins;*/
+            return [];
         }
         public List<SelectListItem> ListAllLevels()
         {
@@ -50,7 +53,7 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListActiveCMDBAccounts()
         {
             List<SelectListItem> Levels = new();
-            var accounts = await _context.Accounts
+            /*var accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Identities)
                 .Where(x => x.Application.Name == "CMDB")
@@ -61,64 +64,65 @@ namespace CMDB.Services
                 {
                     Levels.Add(new SelectListItem(idenAcc.Account.UserID, idenAcc.Account.AccID.ToString()));
                 }
-            }
+            }*/
             return Levels;
         }
         public async Task Create(Admin admin, string Table)
         {
             string pwd = new PasswordHasher().EncryptPassword("cmdb");
-            admin.Password = pwd;
+            /*admin.Password = pwd;
             admin.DateSet = DateTime.Now;
             admin.LastModfiedAdmin = Admin;
             _context.Admins.Add(admin);
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogCreate(Table, Admin.AdminId, Value);
+            await LogCreate(Table, Admin.AdminId, Value);*/
         }
         public async Task Update(Admin admin, int level, string Table)
         {
             if (admin.Level != level)
             {
-                admin.Level = level;
+                /*admin.Level = level;
                 admin.LastModfiedAdmin = Admin;
                 await _context.SaveChangesAsync();
-                await LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());
+                await LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());*/
             }
         }
         public async Task Deactivate(Admin admin, string reason, string table)
         {
-            admin.Active = State.Inactive;
+            /*admin.Active = State.Inactive;
             admin.DeactivateReason = reason;
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogDeactivate(table, admin.AdminId, Value, reason);
+            await LogDeactivate(table, admin.AdminId, Value, reason);*/
         }
         public async Task Activate(Admin admin, string table)
         {
-            admin.Active = State.Active;
+            /*admin.Active = State.Active;
             admin.DeactivateReason = "";
             admin.LastModfiedAdmin = Admin;
             await _context.SaveChangesAsync();
             string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogActivate(table, admin.AdminId, Value);
+            await LogActivate(table, admin.AdminId, Value);*/
         }
         public bool IsExisting(Admin admin)
         {
             bool result = false;
-            var admins = _context.Admins.Include(x => x.Account).Where(x => x.Account.UserID == admin.Account.UserID);
+            /*var admins = _context.Admins.Include(x => x.Account).Where(x => x.Account.UserID == admin.Account.UserID);
             if(admins.Any())
-                result = true;
+                result = true;*/
             return result;
         }
         public async Task<List<Account>> GetAccountByID(int ID)
         {
-            List<Account> accounts = await _context.Accounts
+            /*List<Account> accounts = await _context.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == ID)
                 .ToListAsync();
-            return accounts;
+            return accounts;*/
+            return [];
         }
     }
 }

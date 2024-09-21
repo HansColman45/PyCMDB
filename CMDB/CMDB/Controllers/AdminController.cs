@@ -14,9 +14,9 @@ namespace CMDB.Controllers
     public class AdminController : CMDBController
     {
         private new readonly AdminService service;
-        public AdminController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public AdminController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             Table = "admin";
             SitePart = "Admin";
         }
@@ -141,7 +141,6 @@ namespace CMDB.Controllers
             Admin admin = admins.FirstOrDefault();
             if (admin == null)
                 return NotFound();
-            service.GetLogs(Table, (int)id, admin);
             return View(admins);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)

@@ -1,7 +1,6 @@
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,12 +17,7 @@ namespace CMDB
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False";
             services.AddMvc();
-            services.AddDbContext<CMDBContext>(
-                options => SqlServerDbContextOptionsExtensions.UseSqlServer(options, connectionstring),
-                ServiceLifetime.Singleton
-            );
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
             services.AddTransient<ITokenStore, TokenStore>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -51,7 +45,7 @@ namespace CMDB
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
+                /*endpoints.MapControllerRoute(
                     name: "ReleaseMobile",
                     pattern: "{controller}/{action}/{id?}/{MobileId}",
                     new { controller = "Identity", action = "ReleaseMobile" }
@@ -65,7 +59,7 @@ namespace CMDB
                     name: "ReleaseSubscription",
                     pattern: "{controller}/{action}/{id?}/{SubscriptionId}",
                     new { controller = "Identity", action = "ReleaseSubscription" }
-                    );
+                    );*/
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");

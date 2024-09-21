@@ -16,9 +16,9 @@ namespace CMDB.Controllers
     {
         private new readonly DevicesService service;
 
-        public DockingController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public DockingController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Docking station";
             Table = "docking";
         }
@@ -83,7 +83,7 @@ namespace CMDB.Controllers
                     {
                         if (docking.IdentityId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
+                            /*PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
                                 Singer = docking.Identity.Name,
@@ -97,7 +97,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePath(_env);
                             PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                            await service.LogPdfFile(Table, docking.AssetTag, pdfFile);*/
                             await service.ReleaseIdenity(docking, docking.Identity, Table);
                         }
                         await service.Deactivate(docking, values["reason"], Table);
@@ -154,7 +154,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, docking.AssetTag, docking);
             service.GetAssignedIdentity(docking);
             return View(docking);
         }
@@ -283,7 +282,7 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -297,7 +296,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -329,7 +328,7 @@ namespace CMDB.Controllers
                 if (ModelState.IsValid)
                 {
                     await service.ReleaseIdenity(docking, identity, Table);
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -343,7 +342,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }

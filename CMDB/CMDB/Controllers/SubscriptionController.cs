@@ -19,9 +19,9 @@ namespace CMDB.Controllers
     public class SubscriptionController : CMDBController
     {
         private new readonly SubscriptionService service;
-        public SubscriptionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public SubscriptionController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Subscription";
             Table = "subscription";
         }
@@ -151,7 +151,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseMobile");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, (int)id, subscription);
             return View(subscription);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
@@ -175,7 +174,7 @@ namespace CMDB.Controllers
                     if (ModelState.IsValid) { 
                         if(subscription.IdentityId > 1 || subscription.Mobile.IdentityId >1)
                         {
-                            PDFGenerator PDFGenerator = new()
+                            /*PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
                                 Singer = subscription.Identity is not null ? subscription.Identity.Name : subscription.Mobile.Identity.Name,
@@ -190,7 +189,7 @@ namespace CMDB.Controllers
                             PDFGenerator.GeneratePdf(pdfFile);
                             int intID = subscription.Identity is not null ? (int)subscription.Identity.IdenId : (int)subscription.Mobile.IdentityId;
                             await service.LogPdfFile("identity", intID, pdfFile);
-                            await service.LogPdfFile(Table, subscription.SubscriptionId, pdfFile);
+                            await service.LogPdfFile(Table, subscription.SubscriptionId, pdfFile);*/
                             await service.ReleaseIdenity(subscription, subscription.Identity is not null ? subscription.Identity : subscription.Mobile.Identity);
                         }
                         await service.Deactivate(subscription, ViewData["reason"].ToString(), Table);

@@ -18,9 +18,9 @@ namespace CMDB.Controllers
     public class IdentityController : CMDBController
     {
         private new readonly IdentityService service;
-        public IdentityController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public IdentityController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             Table = "identity";
             SitePart = "Identity";
         }
@@ -28,6 +28,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Identity overview";
+            ViewData["Controller"] = @"\Identity\Create";
             await BuildMenu();
             var list = await service.ListAll();
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -49,6 +50,7 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var list = await service.ListAll(search);
                 ViewData["Title"] = "Identity overview";
+                ViewData["Controller"] = @"\Identity\Create";
                 await BuildMenu();
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
                 ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
@@ -88,13 +90,13 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             service.GetAssingedDevices(list.First());
             service.GetAssignedAccounts(list.First());
-            service.GetLogs(Table, (int)id, list.First());
             return View(list);
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
             ViewData["Title"] = "Create Identity";
+            ViewData["Controller"] = @"\Identity\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             ViewBag.Types = service.ListActiveIdentityTypes();
@@ -144,6 +146,7 @@ namespace CMDB.Controllers
                 return NotFound();
             log.Debug("Using Edit in {0}", Table);
             ViewData["Title"] = "Edit Identity";
+            ViewData["Controller"] = @"\Identity\Create";
             await BuildMenu();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewBag.Types = service.ListActiveIdentityTypes();
@@ -272,7 +275,7 @@ namespace CMDB.Controllers
                         if(devicesToAdd.Count > 0)
                             await service.AssignDevice(identity, devicesToAdd, Table);
                         if (mobilesToAdd.Count > 0)
-                            await service.AssignMobiles(identity, mobilesToAdd, Table);
+                            service.AssignMobiles(identity, mobilesToAdd, Table);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                     catch (Exception ex)
@@ -364,7 +367,6 @@ namespace CMDB.Controllers
                     PDFGenerator.SetAccontInfo(idenAccount);
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile(Table, idenAccount.Identity.IdenId, pdfFile);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -396,7 +398,7 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                /*PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -423,11 +425,12 @@ namespace CMDB.Controllers
                 }
                 string PdfFile = PDFGenerator.GeneratePath(_env);
                 PDFGenerator.GeneratePdf(PdfFile);
-                await service.LogPdfFile(Table, identity.IdenId, PdfFile);
+                await service.LogPdfFile(Table, identity.IdenId, PdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
             return View(list);
         }
+        [Route("ReleaseDevice/{id}/{AssetTag}")]
         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
         {
             if (id == null)
@@ -457,7 +460,7 @@ namespace CMDB.Controllers
                 };
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+               /* PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -472,11 +475,12 @@ namespace CMDB.Controllers
                 string PdfFile = PDFGenerator.GeneratePath(_env);
                 PDFGenerator.GeneratePdf(PdfFile);
                 await service.ReleaseDevices(identity, devices2Remove, Table);
-                await service.LogPdfFile(Table,identity.IdenId, PdfFile);
+                await service.LogPdfFile(Table,identity.IdenId, PdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
         }
+        [Route("ReleaseMobile/{id}/{MobileId}")]
         public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int MobileId)
         {
             if (id == null && MobileId == 0)
@@ -502,7 +506,7 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                /*PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -518,7 +522,7 @@ namespace CMDB.Controllers
                 PDFGenerator.GeneratePdf(PdfFile);
                 await service.ReleaseMobile(identity, mobile, Table);
                 await service.LogPdfFile(Table,identity.IdenId,PdfFile);
-                await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);
+                await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -593,7 +597,7 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                PDFGenerator PDFGenerator = new()
+                /*PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,
                     Singer = Employee,
@@ -604,13 +608,13 @@ namespace CMDB.Controllers
                     Receiver = identity.Name,
                     Type = "Release"
                 };
-               /* foreach (var device in devices)
+               *//* foreach (var device in devices)
                 {
                     PDFGenerator.SetAssetInfo(device);
-                }*/
+                }*//*
                 string PdfFile = PDFGenerator.GeneratePath(_env);
                 PDFGenerator.GeneratePdf(PdfFile);
-                await service.LogPdfFile(Table, identity.IdenId, PdfFile);
+                await service.LogPdfFile(Table, identity.IdenId, PdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);

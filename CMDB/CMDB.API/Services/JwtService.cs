@@ -1,4 +1,5 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Helper;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -6,24 +7,22 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace CMDB.API.Helper
+namespace CMDB.API.Services
 {
     public class JwtService
     {
         private readonly JwtSettings _jwtSettings;
-        private readonly CMDBContext _CMDBContext;
 
-        public JwtService(IConfiguration configuration, CMDBContext context)
+        public JwtService(IConfiguration configuration)
         {
             _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
-            _CMDBContext = context;
         }
         /// <summary>
-        /// 
+        /// This function will generate the JWT token
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public string GenerateToken(Admin user)
+        public string GenerateToken(CMDBContext context, Admin user)
         {
             var claims = new List<Claim>
             {
@@ -31,7 +30,8 @@ namespace CMDB.API.Helper
                 new(ClaimTypes.UserData, user.Account.UserID),
                 new(ClaimTypes.Name, user.Level.ToString()),
             };
-            var menus = _CMDBContext.RolePerms
+            var menus = context.RolePerms
+                .AsNoTracking()
                 .Include(x => x.Menu)
                 .Include(x => x.Permission)
                 .Where(x => x.Level == user.Level)

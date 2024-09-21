@@ -1,7 +1,6 @@
 ﻿using CMDB.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Drives.Item.Items.Item.Workbook.Functions.Second;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers
@@ -10,23 +9,23 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class MenuController : ControllerBase
     {
-        private readonly IMenuService _menuService;
-        public MenuController(IMenuService menuService)
+        private readonly IUnitOfWork _uow;
+        public MenuController(IUnitOfWork uow)
         {
-            _menuService = menuService;   
+            _uow = uow;
         }
         [HttpGet("FirstLevel")]
         [AllowAnonymous]
         public async Task<ActionResult> GetFirstLevelMenu()
         {
-            return Ok(await _menuService.ListFirstMenuLevel());
+            return Ok(await _uow.MenuRepository.GetFirstLevel());
         }
         [HttpGet]
         [Route("SecondLevel/{id:int}")]
         [AllowAnonymous]
         public async Task<ActionResult> GetSecondLevel(int id)
         {
-            return Ok(await _menuService.ListSecondMenuLevel(id));
+            return Ok(await _uow.MenuRepository.GetSecondLevel(id));
         }
         [HttpGet()]
         [Route("PersonalMenu/{menuId:int}")]
@@ -37,7 +36,7 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             int level = Int32.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value);
-            return Ok(await _menuService.ListPersonalMenu(level,menuId));
+            return Ok(await _uow.MenuRepository.GetPestonalMenu(menuId,level));
         }
     }
 }

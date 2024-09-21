@@ -16,11 +16,11 @@ namespace CMDB.Controllers
     public class MobileController : CMDBController
     {
         private new readonly MobileService service;
-        public MobileController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public MobileController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Mobile";
             Table = "mobile";
-            service = new(context);
+            service = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -118,7 +118,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseSubscription");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, (int)id, mobile);
             service.GetAssignedIdentity(mobile);
             service.GetAssignedSubscription(mobile);
             return View(mobile);
@@ -184,7 +183,7 @@ namespace CMDB.Controllers
                     {
                         if (mobile.IdentityId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
+                            /*PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
                                 Singer = mobile.Identity.Name,
@@ -198,7 +197,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePath(_env);
                             PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                            await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
                             await service.ReleaseIdenity(mobile, mobile.Identity, Table);
                         }
                         await service.Deactivate(mobile, reason, Table);
@@ -308,7 +307,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        PDFGenerator PDFGenerator = new()
+                        /*PDFGenerator PDFGenerator = new()
                         {
                             ITEmployee = ITPerson,
                             Singer = Employee,
@@ -323,7 +322,7 @@ namespace CMDB.Controllers
                         string pdfFile = PDFGenerator.GeneratePath(_env);
                         PDFGenerator.GeneratePdf(pdfFile);
                         await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
                         await service.ReleaseIdenity(mobile, identity, Table);
                         return RedirectToAction(nameof(Index));
                     }
@@ -401,7 +400,7 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
                     if (mobile.Identity != null) {
-                        PDFGenerator _PDFGenerator = new()
+                        /*PDFGenerator _PDFGenerator = new()
                         {
                             ITEmployee = ITPerson,
                             Singer = Employee,
@@ -414,11 +413,11 @@ namespace CMDB.Controllers
                         _PDFGenerator.SetMobileInfo(mobile);
                         string pdfFile = _PDFGenerator.GeneratePath(_env);
                         await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
                     }
                     else if (mobile.Subscriptions.Count > 0)
                     {
-                        PDFGenerator _PDFGenerator = new()
+                        /*PDFGenerator _PDFGenerator = new()
                         {
                             ITEmployee = ITPerson,
                             Singer = Employee
@@ -428,7 +427,7 @@ namespace CMDB.Controllers
                         string pdfFile = _PDFGenerator.GeneratePath(_env);
                         _PDFGenerator.GeneratePdf(pdfFile);
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
-                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);
+                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);*/
                     }
                     return RedirectToAction(nameof(Index));
                 }

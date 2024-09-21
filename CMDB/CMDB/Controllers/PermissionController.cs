@@ -14,9 +14,9 @@ namespace CMDB.Controllers
     public class PermissionController : CMDBController
     {
         private new readonly PermissionService service;
-        public PermissionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public PermissionController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Permission";
             Table = "permission";
         }

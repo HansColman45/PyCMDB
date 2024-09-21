@@ -8,7 +8,7 @@ namespace CMDB.Controllers
 {
     public class LoginController : CMDBController
     {
-        public LoginController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public LoginController(IWebHostEnvironment env) : base(env)
         {
         }
         public IActionResult Index()

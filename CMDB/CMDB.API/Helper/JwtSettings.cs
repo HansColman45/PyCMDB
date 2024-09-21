@@ -9,5 +9,13 @@
         public string Audience { get; set; }
 
         public int TokenExpiryInMinutes { get; set; }
+
+        public JwtSettings()
+        {
+            Secret = "";
+            Issuer = "";
+            Audience = "";
+            TokenExpiryInMinutes = 1;
+        }
     }
 }

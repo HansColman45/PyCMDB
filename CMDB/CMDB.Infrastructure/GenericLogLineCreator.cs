@@ -1,4 +1,4 @@
-﻿namespace CMDB.UI.Specflow.Tasks
+﻿namespace CMDB.Infrastructure
 {
     public static class GenericLogLineCreator
     {
@@ -34,7 +34,7 @@
         /// <param name="reason">The Reason that the deleter entered</param>
         /// <param name="table">The table where the deletion took place</param>
         /// <returns></returns>
-        public static string DeleteLogLine(string value, string deleter, string reason ,string table)
+        public static string DeleteLogLine(string value, string deleter, string reason, string table)
         {
             return $"The {value} is deleted due to {reason} by {deleter} in table {table}";
         }
@@ -45,7 +45,7 @@
         /// <param name="activator">The person that did the activation</param>
         /// <param name="table">The table where the activation took place</param>
         /// <returns></returns>
-        public static string ActivateLogLine(string value,string activator, string table)
+        public static string ActivateLogLine(string value, string activator, string table)
         {
             return $"The {value} is activated by {activator} in table {table}";
         }

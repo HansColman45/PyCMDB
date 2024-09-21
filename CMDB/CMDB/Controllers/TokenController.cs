@@ -17,9 +17,9 @@ namespace CMDB.Controllers
     public class TokenController : CMDBController
     {
         private new readonly DevicesService service;
-        public TokenController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        public TokenController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Token";
             Table = "token";
         }
@@ -84,7 +84,7 @@ namespace CMDB.Controllers
                     {
                         if (token.IdentityId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
+                            /*PDFGenerator PDFGenerator = new()
                             {
                                 ITEmployee = service.Admin.Account.UserID,
                                 Singer = token.Identity.Name,
@@ -98,7 +98,7 @@ namespace CMDB.Controllers
                             string pdfFile = PDFGenerator.GeneratePath(_env);
                             PDFGenerator.GeneratePdf(pdfFile);
                             await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                            await service.LogPdfFile(Table, token.AssetTag, pdfFile);*/
                             await service.ReleaseIdenity(token, token.Identity, Table);
                         }
                         await service.Deactivate(token, values["reason"], Table);
@@ -155,7 +155,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, token.AssetTag, token);
             service.GetAssignedIdentity(token);
             return View(token);
         }
@@ -292,7 +291,7 @@ namespace CMDB.Controllers
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) { 
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -306,7 +305,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -337,7 +336,7 @@ namespace CMDB.Controllers
                 Identity identity = token.Identity;
                 if (ModelState.IsValid) {
                     await service.ReleaseIdenity(token, identity, Table);
-                    PDFGenerator PDFGenerator = new()
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -351,7 +350,7 @@ namespace CMDB.Controllers
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);
                     await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }

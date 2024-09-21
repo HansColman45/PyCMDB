@@ -3,6 +3,7 @@ using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -14,7 +15,6 @@ namespace CMDB.Services
     public class CMDBServices
     {
         protected string _url = "https://localhost:7055/";
-        protected CMDBContext _context;
         protected HttpClient _Client;
         protected string BaseUrl { get; set; }
         public Admin Admin
@@ -29,19 +29,9 @@ namespace CMDB.Services
                 else
                     return null;
             }
-            /*set
-            {
-                if (_context.Admin != null && value != null)
-                {
-                    if (_context.Admin.AdminId != value.AdminId)
-                        _context.Admin = _context.Admins.Where(x => x.AdminId == value.AdminId).SingleOrDefault();
-                }
-                else if (value is null)
-                    _context.Admin = null;
-            }*/
         }
 
-        public CMDBServices(CMDBContext context)
+        public CMDBServices()
         {
             HttpClientHandler clientHandler = new()
             {
@@ -51,17 +41,27 @@ namespace CMDB.Services
                 }
             };
             _Client = new HttpClient(clientHandler);
-            _context = context;
         }
         #region generic app things
         public string LogDateFormat
         {
             get
             {
-                string format = "dd/MM/yyyy";
-                Configuration config = _context.Configurations
-                    .Where(x => x.Code == "General" && x.SubCode == "LogDateFormat").SingleOrDefault();
-                format = config.CFN_Tekst;
+                string format;
+                ConfigurationRequest request = new()
+                {
+                    Code = "General",
+                    SubCode = "LogDateFormat"
+                }; 
+                BaseUrl = _url + $"api/Configuration";
+                var response = _Client.PostAsJsonAsync(BaseUrl,request).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    format = config.CFN_Tekst;
+                }
+                else
+                    format = "dd/MM/yyyy";
                 return format;
             }
         }
@@ -69,10 +69,21 @@ namespace CMDB.Services
         {
             get
             {
-                string format = "dd/MM/yyyy";
-                Configuration config = _context.Configurations
-                    .Where(x => x.Code == "General" && x.SubCode == "DateFormat").SingleOrDefault();
-                format = config.CFN_Tekst;
+                string format;
+                ConfigurationRequest request = new()
+                {
+                    Code = "General",
+                    SubCode = "DateFormat"
+                };
+                BaseUrl = _url + $"api/Configuration";
+                var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    format = config.CFN_Tekst;
+                }
+                else
+                    format = "dd/MM/yyyy";
                 return format;
             }
         }
@@ -80,10 +91,21 @@ namespace CMDB.Services
         {
             get
             {
-                string format = "";
-                Configuration config = _context.Configurations
-                    .Where(x => x.Code == "General" && x.SubCode == "Company").SingleOrDefault();
-                format = config.CFN_Tekst;
+                string format;
+                ConfigurationRequest request = new()
+                {
+                    Code = "General",
+                    SubCode = "Company"
+                };
+                BaseUrl = _url + $"api/Configuration";
+                var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    format = config.CFN_Tekst;
+                }
+                else
+                    format = "";
                 return format;
             }
         }
@@ -135,7 +157,7 @@ namespace CMDB.Services
         public async Task<ICollection<Menu>> ListPersonalMenu(string token, int menuID)
         {
             BaseUrl = _url + $"api/Menu/PersonalMenu/{menuID}";
-            _Client.SetBearerToken(token);
+            _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {
@@ -146,5 +168,15 @@ namespace CMDB.Services
                 return new List<Menu>();
         }
         #endregion
+        public List<SelectListItem> ListAssetTypes(string category)
+        {
+            List<SelectListItem> assettypes = new();
+            /*var types = _context.AssetTypes.Include(x => x.Category).Where(x => x.Category.Category == category).ToList();
+            foreach (var type in types)
+            {
+                assettypes.Add(new(type.Vendor + " " + type.Type, type.TypeID.ToString()));
+            }*/
+            return assettypes;
+        }
     }
 }

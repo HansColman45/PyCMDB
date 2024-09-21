@@ -10,12 +10,10 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private IAccountService _accountService;
-        private IIdentityService _identityService;
-        public AccountController(IAccountService accountService, IIdentityService identityService)
+        private readonly IUnitOfWork _uow;
+        public AccountController(IUnitOfWork uow)
         {
-            _accountService = accountService;
-            _identityService = identityService;
+            _uow = uow;
         }
         [HttpGet("GetAll")]
         [Authorize]
@@ -29,7 +27,8 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await _accountService.ListAll());
+            var accounts = await _uow.AccountRepository.GetAll();
+            return Ok(accounts);
         }
         [HttpGet]
         [Route("GetAll/{searchstr}")]
@@ -44,7 +43,8 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await _accountService.ListAll(searchstr));
+            var accounts = await _uow.AccountRepository.GetAll(searchstr);
+            return Ok(accounts);
         }
         [HttpGet("{id:int}")]
         [Authorize]
@@ -58,7 +58,8 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await _accountService.GetById(id));
+            var account = await _uow.AccountRepository.GetById(id);
+            return Ok(account);
         }
         [HttpPost]
         [Authorize]
@@ -69,18 +70,18 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Account")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Create")).FirstOrDefault();
+            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Edit")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            if (await _accountService.IsAccountExisting(account)) 
+            if (await _uow.AccountRepository.IsExisitng(account)) 
             { 
                 ModelState.AddModelError("UserExisits", "User allready exists");
                 return NotFound(ModelState);
             }
             try
             {
-                var admin = await _accountService.CreateNew(account);
-                return Ok(admin);
+                var acc = await _uow.AccountRepository.Create(account);
+                return Ok(acc);
             }
             catch (Exception ex)
             {
@@ -96,12 +97,13 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Account")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Delete")).FirstOrDefault();
+            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Deactivate")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
             try
             {
-                return Ok(await _accountService.Deactivate(account, reason));
+                var acc = await _uow.AccountRepository.DeActivate(account, reason);
+                return Ok(acc);
             }
             catch (Exception ex)
             {
@@ -122,7 +124,8 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                return Ok(await _accountService.Activate(account));
+                var acc = await _uow.AccountRepository.Activate(account);
+                return Ok(acc);
             }
             catch (Exception ex)
             {
@@ -139,8 +142,8 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Account")).FirstOrDefault();
             if (role is null)
-                return Unauthorized();
-            return Ok(await _accountService.IsAccountExisting(account));
+                return Unauthorized(); 
+            return Ok(await _uow.AccountRepository.IsExisitng(account));
         }
         [HttpPost("AssingIdentity")]
         [Authorize]
@@ -151,14 +154,16 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Account")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Activate")).FirstOrDefault();
+            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("AssignIdentity")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            var account = await GetById(request.Account.AccID);
-            var idenityt = await _identityService.GetById(request.Identity.IdenId);
-            if (account is null || idenityt is null)
+            var accountdto = await _uow.AccountRepository.GetById(request.Account.AccID);
+            var idenityt = await _uow.IdentityRepository.GetById(request.Identity.IdenId);
+            if (accountdto is null || idenityt is null)
                 return NotFound();
-            return Ok(await _accountService.AssignIdentity(request));
+            await _uow.AccountRepository.AssignAccount2Identity(request);
+            await _uow.SaveChangesAsync();
+            return Ok(accountdto);
         }
         [HttpPut]
         [Authorize]
@@ -172,7 +177,15 @@ namespace CMDB.API.Controllers
             var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Edit")).FirstOrDefault();
             if (role is null && per is null)
                 return Unauthorized();
-            return Ok(await _accountService.Update(account));
+            try
+            {
+                var acc = await _uow.AccountRepository.Update(account);
+                return Ok(acc);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
         }
     }
 }
