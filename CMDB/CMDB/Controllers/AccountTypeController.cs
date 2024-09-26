@@ -1,5 +1,4 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +30,7 @@ namespace CMDB.Controllers
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\AccountType\Search";
+            ViewData["Controller"] = @"\AccountType\Create";
             return View(types);
         }
         public async Task<IActionResult> Search(string search)
@@ -48,6 +48,7 @@ namespace CMDB.Controllers
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["actionUrl"] = @"\AccountType\Search";
+                ViewData["Controller"] = @"\AccountType\Create";
                 return View(types);
             }
             else
@@ -59,6 +60,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Accounttype";
+            ViewData["Controller"] = @"\AccountType\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             TypeDTO type = new();
             await BuildMenu();
@@ -72,7 +74,7 @@ namespace CMDB.Controllers
                         Type = values["Type"],
                         Description = values["Description"]
                     };
-                    if (service.IsExisting(type))
+                    if (await service.IsExisting(type))
                         ModelState.AddModelError("", "Account type existing");
                     if (ModelState.IsValid)
                     {
@@ -95,6 +97,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Edit Accounttype";
+            ViewData["Controller"] = @$"\AccountType\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
@@ -107,11 +110,11 @@ namespace CMDB.Controllers
                 {
                     string newType = values["Type"];
                     string newDescription = values["Description"];
-                    if (service.IsExisting(accountType, newType, newDescription))
+                    if (await service.IsExisting(accountType, newType, newDescription))
                         ModelState.AddModelError("", "Account type already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.Update(accountType, newType, newDescription, Table);
+                        await service.Update(accountType, newType, newDescription);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -130,6 +133,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Accounttype";
+            ViewData["Controller"] = @$"\AccountType\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "AccountType";
             var accountType = await service.GetAccountTypeByID((int)id);
@@ -170,7 +174,7 @@ namespace CMDB.Controllers
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(accountType, Table);
+                await service.Activate(accountType);
                 return RedirectToAction(nameof(Index));
             }
             else

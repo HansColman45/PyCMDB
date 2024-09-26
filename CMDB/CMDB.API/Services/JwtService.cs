@@ -30,18 +30,6 @@ namespace CMDB.API.Services
                 new(ClaimTypes.UserData, user.Account.UserID),
                 new(ClaimTypes.Name, user.Level.ToString()),
             };
-            var menus = context.RolePerms
-                .AsNoTracking()
-                .Include(x => x.Menu)
-                .Include(x => x.Permission)
-                .Where(x => x.Level == user.Level)
-                .Select(x => new { x.Menu.Label, x.Permission.Rights })
-                .ToList();
-            foreach (var menu in menus)
-            {
-                claims.Add(new(ClaimTypes.Role, menu.Label));
-                claims.Add(new(ClaimTypes.NameIdentifier, menu.Rights));
-            }
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
             var tokenDescriptor = new SecurityTokenDescriptor

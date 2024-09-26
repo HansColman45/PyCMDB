@@ -11,6 +11,7 @@ namespace CMDB.Domain.Entities
             Logs = new List<Log>();
         }
         public virtual ICollection<Log> Logs { get; set; }
+        [NotMapped]
         public virtual State Active
         {
             get

@@ -97,9 +97,8 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpPost("login")]
-        [AllowAnonymous]
-        public async Task<IActionResult> login(AuthenticateRequest model)
+        [HttpPost("Login"), AllowAnonymous]
+        public async Task<IActionResult> Login(AuthenticateRequest model)
         {
             var response = await _uow.AdminRepository.Authenticate(model);
 

@@ -14,7 +14,7 @@ namespace CMDB.Services
 {
     public class CMDBServices
     {
-        protected string _url = "https://localhost:7055/";
+        protected string _url => "https://localhost:7055/";
         protected HttpClient _Client;
         protected string BaseUrl { get; set; }
         public Admin Admin
@@ -118,7 +118,7 @@ namespace CMDB.Services
                 Username = userID,
                 Password = pwd
             };
-            BaseUrl = _url + "api/Admin/login";
+            BaseUrl = _url + "api/Admin/Login";
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (response.IsSuccessStatusCode)
             {

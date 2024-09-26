@@ -7,7 +7,7 @@ namespace CMDB.API.Services
 {
     public interface IAccountRepository
     {
-        Task<AccountDTO> Create(AccountDTO account);
+        AccountDTO Create(AccountDTO account);
         Task<AccountDTO?> GetById(int id);
         Task<List<AccountDTO>> GetAll();
         Task<List<AccountDTO>> GetAll(string searchstr);
@@ -23,19 +23,32 @@ namespace CMDB.API.Services
         public AccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
-        public async Task<AccountDTO> Create(AccountDTO account)
+        public AccountDTO Create(AccountDTO account)
         {
-            var acc = ConvertDto(account);
-            string value = $"Account with UserID: {acc.UserID} and type {acc.Type.Description}";
+            Account acc = new()
+            {
+                LastModifiedAdminId = TokenStore.AdminId,
+                active = 1,
+                ApplicationId = account.ApplicationId,
+                TypeId = account.TypeId,
+                UserID = account.UserID
+            };
+            string value = $"Account with UserID: {acc.UserID} and type {account.Type.Description}";
             string logline = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, table);
             try
             {
-                string sql = $"insert into {table} (TypeId,ApplicationId,UserID, LastModifiedAdminId) " +
+                acc.Logs.Add(new()
+                {
+                    LogDate = DateTime.UtcNow,
+                    LogText = logline,
+                });
+                _context.Accounts.Add(acc);
+                /*string sql = $"insert into {table} (TypeId,ApplicationId,UserID, LastModifiedAdminId) " +
                         $"values ({account.TypeId},{account.ApplicationId},'{account.UserID}',{TokenStore.Admin.AdminId})";
                 await _context.Database.ExecuteSqlRawAsync(sql);
                 var newacc = _context.Accounts.FirstOrDefault(x => x.UserID == account.UserID);
                 sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{newacc.AccID})";
-                await _context.Database.ExecuteSqlRawAsync(sql);
+                await _context.Database.ExecuteSqlRawAsync(sql);*/
             }
             catch (Exception e)
             {
@@ -132,35 +145,33 @@ namespace CMDB.API.Services
             bool result = false;
             if (oldAccount is null)
             {
-                var accounts = _context.Accounts.Include(x => x.Application)
-                    .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID)
-                    .AsNoTracking()
+                var accounts = _context.Accounts
+                    .Include(x => x.Application).AsNoTracking()
+                    .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).AsNoTracking()
                     .ToList();
                 if (accounts.Count > 0)
                     result = true;
             }
             else
             {
-                if (String.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID == oldAccount.Application.AppID)
+                if (string.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID == oldAccount.Application.AppID)
                 {
                     var accounts = _context.Accounts
-                        .Include(x => x.Application)
-                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID)
-                        .AsNoTracking()
+                        .Include(x => x.Application).AsNoTracking()
+                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).AsNoTracking()
                         .ToList();
                     if (accounts.Count > 0)
                         result = true;
                 }
-                else if (String.Compare(account.UserID, oldAccount.UserID) == 0 && account.Application.AppID == oldAccount.Application.AppID)
+                else if (string.Compare(account.UserID, oldAccount.UserID) == 0 && account.Application.AppID == oldAccount.Application.AppID)
                 {
                     result = false;
                 }
-                else if (String.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID != oldAccount.Application.AppID)
+                else if (string.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID != oldAccount.Application.AppID)
                 {
                     var accounts = _context.Accounts
-                        .Include(x => x.Application)
-                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID)
-                        .AsNoTracking()
+                        .Include(x => x.Application).AsNoTracking()
+                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).AsNoTracking()
                         .ToList();
                     if (accounts.Count > 0)
                         result = true;

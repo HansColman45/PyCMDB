@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Services;
+using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -9,10 +10,12 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class ApplicationController : ControllerBase
     {
-        private readonly IUnitOfWork _uof;
+        private readonly IUnitOfWork _uow;
+        private readonly string site = "Application";
+        private HasAdminAccessRequest request;
         public ApplicationController(IUnitOfWork uow)
         {
-            _uof = uow;
+            _uow = uow;
         }
 
         [HttpGet]
@@ -23,11 +26,16 @@ namespace CMDB.API.Controllers
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Application")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if(!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uof.ApplicationRepository.GetAll());
+            return Ok(await _uow.ApplicationRepository.GetAll());
         }
         [HttpGet("{id:int}")]
         [Authorize]
@@ -37,11 +45,16 @@ namespace CMDB.API.Controllers
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Application")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uof.ApplicationRepository.GetById(id));
+            return Ok(await _uow.ApplicationRepository.GetById(id));
         }
     }
 }

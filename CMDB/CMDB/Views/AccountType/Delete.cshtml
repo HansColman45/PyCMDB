@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.AccountType>
+﻿@model CMDB.API.Models.TypeDTO
 @{
     Layout = "_Layout";
 }
@@ -10,18 +10,15 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Type)</th>
                 <th>@Html.DisplayNameFor(model => model.Description)</th>
-                <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th>@Html.DisplayNameFor(model => model.State)</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="Type">@Html.DisplayFor(modelItem => item.Type)</td>
-                    <td id="Description">@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td id="Active">@Html.DisplayFor(modelItem => item.Active)</td>
-                </tr>
-            }
+            <tr>
+                <td id="Type">@Html.DisplayFor(model => model.Type)</td>
+                <td id="Description">@Html.DisplayFor(model => model.Description)</td>
+                <td id="Active">@Html.DisplayFor(model => model.State)</td>
+            </tr>
         </tbody>
     </table>
     <partial name="_deleteForm" />

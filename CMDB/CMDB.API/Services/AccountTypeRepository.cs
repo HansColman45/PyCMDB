@@ -10,10 +10,11 @@ namespace CMDB.API.Services
         Task<List<TypeDTO>> GetAll();
         Task<List<TypeDTO>> GetAll(string searchStr);
         Task<TypeDTO?> GetById(int id);
-        AccountType Create(TypeDTO typeDTO);
-        Task<AccountType> DeActivate(TypeDTO type, string reason);
-        Task<AccountType> Activate(TypeDTO type);
-        Task<AccountType> Update(TypeDTO type);
+        TypeDTO Create(TypeDTO typeDTO);
+        Task<TypeDTO> DeActivate(TypeDTO type, string reason);
+        Task<TypeDTO> Activate(TypeDTO type);
+        Task<TypeDTO> Update(TypeDTO type);
+        Task<bool> IsExisitng(TypeDTO type);
     }
     public class AccountTypeRepository : GenericRepository, IAccountTypeRepository
     {
@@ -41,74 +42,145 @@ namespace CMDB.API.Services
         }
         public async Task<TypeDTO?> GetById(int id)
         {
-            return await _context.Types.OfType<AccountType>().AsNoTracking()
+            var type =  await _context.Types.OfType<AccountType>().AsNoTracking()
                 .Where(x => x.TypeId == id).AsNoTracking()
                 .Select(x => ConvertType(x))
                 .FirstAsync();
-        }
-        public AccountType Create(TypeDTO typeDTO)
-        {
-            var type = ConvertDTO(typeDTO);
-            type.Logs.Add(new()
+            if(type is not null)
             {
-                LogText = GenericLogLineCreator.CreateLogLine($"accounttype with {type.Type} and {type.Description}",TokenStore.Admin.Account.UserID,table),
-                LogDate = DateTime.UtcNow,
-            });
-            _context.Types.Add(type);
+                GetLogs(table,id,type);
+            }
             return type;
         }
-        public async Task<AccountType> DeActivate(TypeDTO type, string reason)
+        public TypeDTO Create(TypeDTO typeDTO)
+        {
+            string logline = GenericLogLineCreator.CreateLogLine($"accounttype with {typeDTO.Type} and {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
+            try
+            {
+                AccountType type = ConvertDTO(typeDTO);
+                type.LastModifiedAdminId = TokenStore.Admin.AdminId;
+                type.active = 1;
+                type.Logs.Add(new()
+                {
+                    LogDate = DateTime.UtcNow,
+                    LogText = logline,
+                });
+                _context.Types.Add(type);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Db error {e}", e);
+                throw;
+            }
+            return typeDTO;
+        }
+        public async Task<TypeDTO> DeActivate(TypeDTO type, string reason)
         {
             var acctype = await GetTypeById(type.TypeId);
-            acctype.DeactivateReason = reason;
-            acctype.Active = State.Inactive;
-            acctype.Logs.Add(new()
+            string logline = GenericLogLineCreator.DeleteLogLine($"accounttype with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, reason, table);
+            try
             {
-                LogText = GenericLogLineCreator.DeleteLogLine($"accounttype with {type.Type} and {type.Description}", 
-                    TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.UtcNow,
-            });
-            _context.Types.Update(acctype);
-            return acctype;
+                string sql = $"update type set LastModifiedAdminId = {TokenStore.Admin.AdminId}, active = 0, Deactivate_reason = '{reason}' where TypeId = {type.TypeId}";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+                sql = $"insert into log(LogDate,LogText,TypeId) values (GETDATE(),'{logline}',{type.TypeId})";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Db error {e}", e);
+                throw;
+            }
+            return type;
         }
-        public async Task<AccountType> Activate(TypeDTO type)
+        public async Task<TypeDTO> Activate(TypeDTO type)
         {
             var acctype = await GetTypeById(type.TypeId);
-            acctype.DeactivateReason = null;
-            acctype.Active = State.Active;
-            acctype.Logs.Add(new()
+            string logline = GenericLogLineCreator.ActivateLogLine($"accounttype with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, table);
+            try
             {
-                LogText = GenericLogLineCreator.ActivateLogLine($"accounttype with {type.Type} and {type.Description}",
-                    TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow
-            });
-            _context.Types.Update(acctype);
-            return acctype;
+                string sql = $"update type set LastModifiedAdminId = {TokenStore.Admin.AdminId}, active = 1, Deactivate_reason = '' where TypeId = {type.TypeId}";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+                sql = $"insert into log(LogDate,LogText,TypeId) values (GETDATE(),'{logline}',{type.TypeId})";
+                await _context.Database.ExecuteSqlRawAsync(sql);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Db error {e}", e);
+                throw;
+            }
+            return type;
         }
-        public async Task<AccountType> Update(TypeDTO type)
+        public async Task<TypeDTO> Update(TypeDTO type)
         {
             var oldType = await GetTypeById(type.TypeId);
             var newType = ConvertDTO(type);
             if (string.Compare(oldType.Type, newType.Type)!= 0)
             {
-                oldType.Type = newType.Type;
-                newType.Logs.Add(new()
+                string logline = GenericLogLineCreator.UpdateLogLine("type", oldType.Type, newType.Type, TokenStore.Admin.Account.UserID, table);
+                try
                 {
-                    LogDate = DateTime.UtcNow,
-                    LogText = GenericLogLineCreator.UpdateLogLine("type",oldType.Type,newType.Type,TokenStore.Admin.Account.UserID,table)
-                });
+                    string sql = $"update type set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Type = '{newType.Type}' where TypeId = {type.TypeId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    sql = $"insert into log(LogDate,LogText,TypeId) values (GETDATE(),'{logline}',{type.TypeId})";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Db error {e}", e);
+                    throw;
+                }
             }
-            if (string.Compare(newType.Description, newType.Description) != 0)
+            if (string.Compare(oldType.Description, newType.Description) != 0)
             {
-                oldType.Description = newType.Description;
-                newType.Logs.Add(new()
+                string logline = GenericLogLineCreator.UpdateLogLine("description", oldType.Description, newType.Description, TokenStore.Admin.Account.UserID, table);
+                try
                 {
-                    LogDate = DateTime.UtcNow,
-                    LogText = GenericLogLineCreator.UpdateLogLine("description", oldType.Description, newType.Description, TokenStore.Admin.Account.UserID, table)
-                });
+                    string sql = $"update type set LastModifiedAdminId = {TokenStore.Admin.AdminId}, description = '{newType.Description}' where TypeId = {type.TypeId}";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    sql = $"insert into log(LogDate,LogText,TypeId) values (GETDATE(),'{logline}',{type.TypeId})";
+                    await _context.Database.ExecuteSqlRawAsync(sql);
+                }
+                catch (Exception e)
+                {
+                    _logger.LogError("Db error {e}", e);
+                    throw;
+                }
             }
             _context.Types.Update(oldType);
-            return oldType;
+            return type;
+        }
+        public async Task<bool> IsExisitng(TypeDTO type)
+        {
+            bool result = false;
+            var oldtype = await GetTypeById(type.TypeId);
+            if (oldtype is null)
+            {
+                var types = await _context.Types.OfType<AccountType>()
+                    .Where(x => x.Type == type.Type || x.Description == type.Description).AsNoTracking()
+                    .ToListAsync();
+                if (types.Count > 0)
+                    result = true;
+            }
+            else
+            {
+                if(string.Compare(oldtype.Type,type.Type) != 0)
+                {
+                    var types = await _context.Types.OfType<AccountType>()
+                    .Where(x => x.Type == type.Type).AsNoTracking()
+                    .ToListAsync();
+                    if (types.Count > 0)
+                        result = true;
+                }
+                else if(string.Compare(oldtype.Description,type.Description) != 0)
+                {
+                    var types = await _context.Types.OfType<AccountType>()
+                    .Where(x => x.Description == type.Description).AsNoTracking()
+                    .ToListAsync();
+                    if (types.Count > 0)
+                        result = true;
+                }
+            }
+            return result;
         }
         public static TypeDTO ConvertType(in AccountType type)
         {
