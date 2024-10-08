@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using CMDB.Domain.Entities;
 using CMDB.Services;
 using System.Threading.Tasks;
+using CMDB.API.Models;
 
 namespace CMDB.Controllers
 {
@@ -25,6 +26,7 @@ namespace CMDB.Controllers
             log.Debug("Using List all in {0}", Table);
             var list = await service.ListAll();
             ViewData["Title"] = "Identitytype overview";
+            ViewData["Controller"] = @"\Identitytype\Create";
             await BuildMenu();
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
@@ -42,6 +44,7 @@ namespace CMDB.Controllers
                 ViewData["search"] = search;
                 var list = await service.ListAll(search);
                 ViewData["Title"] = "Identitytype overview";
+                ViewData["Controller"] = @"\Identitytype\Create";
                 await BuildMenu();
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
                 ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
@@ -61,27 +64,28 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Identitytype Details";
             await BuildMenu();
+            ViewData["Controller"] = @"\Identitytype\Create";
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            var idenTypes = await service.GetByID((int)id);
-            var idenType = idenTypes.FirstOrDefault();
+            var idenType = await service.GetByID((int)id);
             if (idenType == null)
                 return NotFound();
             if (idenType == null)
             {
                 return NotFound();
             }
-            return View(idenTypes);
+            return View(idenType);
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
             ViewData["Title"] = "Create Identitytype";
+            ViewData["Controller"] = @"\Identitytype\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            IdentityType idenType = new();
+            TypeDTO idenType = new();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -89,11 +93,11 @@ namespace CMDB.Controllers
                 {
                     idenType.Type = values["Type"];
                     idenType.Description = values["Description"];
-                    if (service.IsExisting(idenType))
+                    if (await service.IsExisting(idenType))
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        await service.Create(idenType, Table);
+                        await service.Create(idenType);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -112,10 +116,10 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Edit Identitytype";
+            ViewData["Controller"] = @$"\Identitytype\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
-            var idenTypes = await service.GetByID((int)id);
-            var idenType = idenTypes.FirstOrDefault();
+            var idenType = await service.GetByID((int)id);
             if (idenType == null)
                 return NotFound();
             string FormSubmit = values["form-submitted"];
@@ -125,11 +129,11 @@ namespace CMDB.Controllers
                 {
                     string newTpe = values["Type"];
                     string newDescription = values["Description"];
-                    if (service.IsExisting(idenType, newTpe, newDescription))
+                    if (await service.IsExisting(idenType, newTpe, newDescription))
                         ModelState.AddModelError("", "Idenity type existing");
                     if (ModelState.IsValid)
                     {
-                        await service.Update(idenType, newTpe, newDescription, Table);
+                        await service.Update(idenType, newTpe, newDescription);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -150,8 +154,8 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Delete Identitytype";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "IdentityType";
-            var idenTypes = await service.GetByID((int)id);
-            var idenType = idenTypes.FirstOrDefault();
+            ViewData["Controller"] = @$"\Identitytype\Delete\{id}";
+            var idenType = await service.GetByID((int)id);
             if (idenType == null)
                 return NotFound();
             await BuildMenu();
@@ -163,7 +167,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(idenType, values["reason"], Table);
+                        await service.Deactivate(idenType, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -174,23 +178,23 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(idenTypes);
+            return View(idenType);
         }
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Identitytype";
+            ViewData["Controller"] = @$"\Identitytype\Activate\{id}";
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var idenTypes = await service.GetByID((int)id);
-            var idenType = idenTypes.FirstOrDefault();
+            var idenType = await service.GetByID((int)id);
             if (idenType == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(idenType, Table);
+                await service.Activate(idenType);
                 return RedirectToAction(nameof(Index));
             }
             else

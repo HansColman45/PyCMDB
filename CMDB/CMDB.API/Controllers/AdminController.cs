@@ -12,52 +12,63 @@ namespace CMDB.API.Controllers
     public class AdminController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private HasAdminAccessRequest request;
+        private readonly string site = "Admin";
         public AdminController(IUnitOfWork unitOfWork, JwtService jwtService)
         {
             _uow = unitOfWork;
         }
-        [HttpGet]
-        [Authorize]
+        [HttpGet, Authorize]
         public async Task<IActionResult> GetAll()
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null) 
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Admin")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
             var admins = await _uow.AdminRepository.GetAll();
             return Ok(admins);
         }
-        [HttpGet("{id:int}")]
-        [Authorize]
+        [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> Get(int id)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Admin")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Read")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
-            var admin = await _uow.AdminRepository.GetById(id);
-            if (admin is null)
-                return NotFound();
-            return Ok(admin);
+            return Ok(await _uow.AdminRepository.GetById(id));
         }
-        [HttpPost]
-        [Authorize]
+        [HttpPost, Authorize]
         public async Task<IActionResult> Create(Admin admin)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Admin")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Add")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Add"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
             if (_uow.AdminRepository.IsExisting(admin))
             {
@@ -75,17 +86,21 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpPut("{id:int}")]
+        [HttpPut("{id:int}"), Authorize]
         public async Task<IActionResult> Update(int id,Admin admin)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var role = User.Claims.Where(x => x.Type == ClaimTypes.Role && x.Value.Contains("Admin")).FirstOrDefault();
-            var per = User.Claims.Where(x => x.Type == ClaimTypes.NameIdentifier && x.Value.Contains("Add")).FirstOrDefault();
-            if (role is null && per is null)
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Edit"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
-
             try 
             {
                 var ad = await _uow.AdminRepository.Update(admin, id);
@@ -107,8 +122,7 @@ namespace CMDB.API.Controllers
 
             return Ok(response);
         }
-        [HttpPost("HasAdminAccess")]
-        [Authorize]
+        [HttpPost("HasAdminAccess"), Authorize]
         public async Task<IActionResult> HasAdminAccess(HasAdminAccessRequest request)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;

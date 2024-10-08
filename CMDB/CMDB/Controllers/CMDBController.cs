@@ -12,12 +12,12 @@ namespace CMDB.Controllers
 {
     public class CMDBController : Controller
     {
-        protected CMDBServices service;
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected readonly IWebHostEnvironment _env;
         protected string SitePart { get; set; }
         protected string Table { get; set; }
         protected string Token { get; set; }
+        protected readonly CMDBServices service;
         public CMDBController(IWebHostEnvironment env)
         {
             _env = env;

@@ -29,9 +29,10 @@ namespace CMDB.API.Services
         {
             bool result = false;
             var admins = _context.Admins.AsNoTracking()
-                .Include(x => x.Account).AsNoTracking()
-                .Where(x => x.Account.UserID == admin.Account.UserID)
-                .AsNoTracking();
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application).AsNoTracking();
             if (admins.Any())
                 result = true;
             return result;
@@ -110,33 +111,39 @@ namespace CMDB.API.Services
         public async Task<IEnumerable<AdminDTO>> GetAll()
         {
             return await _context.Admins.AsNoTracking()
-                .Include(x => x.Account).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application).AsNoTracking()
                 .Select(x => ConvertAdmin(x))
                 .ToListAsync();
         }
         public async Task<AdminDTO?> GetById(int id)
         {
             return await _context.Admins.AsNoTracking()
-               .Include(x => x.Account).AsNoTracking()
-               .Select(x => ConvertAdmin(x))
-               .FirstOrDefaultAsync(x => x.AccountId == id);
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application).AsNoTracking()
+                .Where(x => x.AdminId == id)
+                .Select(x => ConvertAdmin(x))
+                .FirstOrDefaultAsync();
         }
         public async Task<IEnumerable<AdminDTO>> GetAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
             return await _context.Admins.AsNoTracking()
-                .Include(x => x.Account).AsNoTracking()
-                .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm))
-                .AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application).AsNoTracking()
+                .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm)).AsNoTracking()
                 .Select(x => ConvertAdmin(x))
                 .ToListAsync();
         }
         private async Task<Admin?> GetAdminByID(int Id)
         {
-            return await _context.Admins
-                .Include(x => x.Account)
-                .Where(x => x.AdminId == Id)
-                .FirstOrDefaultAsync();
+            return await _context.Admins.Where(x => x.AdminId == Id).FirstOrDefaultAsync();
         }
         public static AdminDTO ConvertAdmin(in Admin admin)
         {
@@ -147,7 +154,35 @@ namespace CMDB.API.Services
                 DateSet = admin.DateSet,
                 DeactivateReason = admin.DeactivateReason,
                 LastModifiedAdminId = admin.LastModifiedAdminId,
-                Level = admin.Level
+                Level = admin.Level,
+                AdminId = admin.AdminId,
+                Account = new()
+                {
+                    AccID = admin.Account.AccID,
+                    Active = admin.Account.active,
+                    ApplicationId = admin.Account.ApplicationId,
+                    DeactivateReason = admin.Account.DeactivateReason,
+                    LastModifiedAdminId = admin.Account.LastModifiedAdminId,
+                    TypeId = admin.Account.TypeId,
+                    UserID = admin.Account.UserID,
+                    Type = new()
+                    {
+                        TypeId = admin.Account.Type.TypeId,
+                        Type = admin.Account.Type.Type,
+                        Description = admin.Account.Type.Description,
+                        Active = admin.Account.Type.active,
+                        DeactivateReason = admin.Account.Type.DeactivateReason,
+                        LastModifiedAdminId= admin.Account.LastModifiedAdminId
+                    },
+                    Application = new()
+                    {
+                        AppID = admin.Account.Application.AppID,
+                        Active = admin.Account.Application.active,
+                        DeactivateReason= admin.Account.Application.DeactivateReason,
+                        LastModifiedAdminId = admin.Account.Application.LastModifiedAdminId,
+                        Name = admin.Account.Application.Name
+                    }
+                }
             };
         }
     }

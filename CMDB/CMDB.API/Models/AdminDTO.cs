@@ -10,5 +10,6 @@ namespace CMDB.API.Models
         public int Level { get; set; }
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
+        public AccountDTO Account { get; set; }
     }
 }

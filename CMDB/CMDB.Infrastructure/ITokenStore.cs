@@ -5,6 +5,8 @@ namespace CMDB.Infrastructure
     public interface ITokenStore
     {
         static string Token { get; set; }
+        static Admin Admin { get; set; }
+        static int AdminId { get; set; }
     }
     public class TokenStore : ITokenStore
     {

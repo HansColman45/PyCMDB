@@ -87,13 +87,13 @@ namespace CMDB.Services
             }
             if (changed)
             {
-                subscriptionType.LastModfiedAdmin = Admin;
-                //await _context.SaveChangesAsync();
+                /*subscriptionType.LastModfiedAdmin = Admin;
+                //await _context.SaveChangesAsync();*/
             }
         }
         public async Task Delete(SubscriptionType subscriptionType, string reason, string table)
         {
-            subscriptionType.LastModfiedAdmin = Admin;
+            /*subscriptionType.LastModfiedAdmin = Admin;
             subscriptionType.Active = State.Inactive;
             subscriptionType.DeactivateReason = reason;
             /*await _context.SaveChangesAsync();
@@ -101,7 +101,7 @@ namespace CMDB.Services
         }
         public async Task Activate(SubscriptionType subscriptionType, string table)
         {
-            subscriptionType.LastModfiedAdmin = Admin;
+            /*subscriptionType.LastModfiedAdmin = Admin;
             subscriptionType.Active = State.Active;
             subscriptionType.DeactivateReason = "";
             /*await _context.SaveChangesAsync();

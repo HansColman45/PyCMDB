@@ -58,6 +58,7 @@ namespace CMDB.Domain.Entities
         public IdentityType Type { get; set; }
 
         public int? TypeId { get; set; }
+        public string LanguageCode { get; set; }
         public ICollection<Device> Devices { get; set; }
         public ICollection<Mobile> Mobiles { get; set; }
         public virtual ICollection<IdenAccount> Accounts { get; set; }

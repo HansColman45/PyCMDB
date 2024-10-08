@@ -51,7 +51,7 @@ namespace CMDB.Services
         }
         public async Task Create(SubscriptionType type, string phoneNumber, string table)
         {
-            Subscription subscription = new()
+            /*Subscription subscription = new()
             {
                 LastModfiedAdmin = Admin,
                 Category = type.Category,
@@ -70,7 +70,7 @@ namespace CMDB.Services
             string oldPhone = subscription.PhoneNumber;
             if(String.Compare(oldPhone,phoneNumber) != 0)
             {
-                subscription.PhoneNumber = phoneNumber;
+                /*subscription.PhoneNumber = phoneNumber;
                 subscription.LastModfiedAdmin = Admin;
                 /*await _context.SaveChangesAsync();
                 await LogUpdate(table, subscription.SubscriptionId, "phone number", oldPhone, phoneNumber);*/
@@ -78,7 +78,7 @@ namespace CMDB.Services
         }
         public async Task Activate(Subscription subscription, string table)
         {
-            string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+            /*string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
             subscription.LastModfiedAdmin = Admin;
             subscription.Active = State.Active;
             subscription.DeactivateReason = "";
@@ -87,7 +87,7 @@ namespace CMDB.Services
         }
         public async Task Deactivate(Subscription subscription, string reason, string table)
         {
-            string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+            /*string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
             subscription.LastModfiedAdmin = Admin;
             subscription.Active = State.Inactive;
             subscription.DeactivateReason = reason;
@@ -147,7 +147,7 @@ namespace CMDB.Services
         }
         public async Task ReleaseIdenity(Subscription subscription, Identity identity,string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             subscription.IdentityId = 1;
             identity.Subscriptions.Remove(subscription);
@@ -157,7 +157,7 @@ namespace CMDB.Services
         }
         public async Task AssignIdentity(Subscription subscription, Identity identity, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             identity.Subscriptions.Add(subscription);
             /*await _context.SaveChangesAsync();

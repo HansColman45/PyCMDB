@@ -271,7 +271,8 @@ namespace CMDB.Controllers
             if (monitor == null)
                 return NotFound();
             ViewData["Name"] = monitor.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             service.GetAssignedIdentity(monitor);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -313,7 +314,8 @@ namespace CMDB.Controllers
             if (monitor == null)
                 return NotFound();
             ViewData["Name"] = monitor.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

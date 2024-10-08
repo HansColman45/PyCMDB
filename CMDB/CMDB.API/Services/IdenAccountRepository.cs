@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -7,24 +8,28 @@ namespace CMDB.API.Services
     public interface IIdenAccountRepository
     {
         Task<IdenAccountDTO> GetById(int id);
+        Task<IdenAccount> GetIdenAccountById(int id);
     }
     public class IdenAccountRepository : GenericRepository, IIdenAccountRepository
     {
         public IdenAccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
-        public Task<IdenAccountDTO> GetById(int id)
+        public async Task<IdenAccountDTO> GetById(int id) 
         {
             _logger.LogInformation("Get by Id");
-            var iden = _context.IdenAccounts.AsNoTracking()
+            var iden = await _context.IdenAccounts.AsNoTracking()
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application).AsNoTracking()
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Type).AsNoTracking()
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Type).AsNoTracking()
-                .Select(x => new IdenAccountDTO() 
-                { 
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
+                .Where(x => x.ID == id).AsNoTracking()
+                .Select(x => new IdenAccountDTO()
+                {
                     ValidFrom = x.ValidFrom,
                     ValidUntil = x.ValidUntil,
                     Id = id,
@@ -40,6 +45,7 @@ namespace CMDB.API.Services
                         {
                             AppID = x.Account.Application.AppID,
                             Active = x.Account.Application.active,
+                            Name = x.Account.Application.Name,
                             DeactivateReason = x.Account.Application.DeactivateReason,
                             LastModifiedAdminId = x.Account.Application.LastModifiedAdminId,
                         },
@@ -62,18 +68,35 @@ namespace CMDB.API.Services
                         Name = x.Identity.Name,
                         DeactivateReason = x.Identity.DeactivateReason,
                         UserID = x.Identity.UserID,
-                        Type = new TypeDTO() 
-                        { 
+                        Type = new TypeDTO()
+                        {
                             Description = x.Identity.Type.Description,
                             Active = x.Identity.Type.active,
                             DeactivateReason = x.Identity.Type.DeactivateReason,
                             LastModifiedAdminId = x.Identity.Type.LastModifiedAdminId,
                             Type = x.Identity.Type.Type,
-                            TypeId= x.Identity.Type.TypeId,
+                            TypeId = x.Identity.Type.TypeId,
+                        },
+                        Language = new() {
+                            Code = x.Identity.Language.Code,
+                            Description = x.Identity.Language.Description
                         }
                     }
                 })
-                .Where(x => x.Id == id).AsNoTracking()
+                .FirstAsync();
+            return iden;
+        }
+        public async Task<IdenAccount> GetIdenAccountById(int id)
+        {
+            var iden = await _context.IdenAccounts.AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application).AsNoTracking()
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .FirstAsync();
             return iden;
         }

@@ -11,6 +11,11 @@ namespace CMDB.API.Services
         Task<IEnumerable<IdentityDTO>> GetAll();
         Task<IEnumerable<IdentityDTO>> GetAll(string searchStr);
         Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities();
+        IdentityDTO Create(IdentityDTO identityDTO);
+        Task LogPdfFile(string pdfFile, int id);
+        Task<IdentityDTO> Deactivate(IdentityDTO identity, string reason);
+        Task<IdentityDTO> Activate(IdentityDTO identity);
+        Task<IdentityDTO> Update(IdentityDTO identity);
     }
     public class IdentityRepository : GenericRepository, IIdentityRepository
     {
@@ -20,57 +25,101 @@ namespace CMDB.API.Services
         }
         public async Task<IdentityDTO?> GetById(int id)
         {
-            var iden = await _context.Identities
-                .Include(x => x.Type)
-                .Include(x => x.Language)
-                .Where(x => x.IdenId == id)
+            var iden = await _context.Identities.AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
+                .Where(x => x.IdenId == id).AsNoTracking()
                 .Select(x => ConvertIdentity(x))
                 .FirstOrDefaultAsync();
+            if (iden is not null)
+            {
+                GetLogs(table, id, iden);
+                GetAssignedAccounts(id);
+            }
             return iden;
+        }
+        public async Task LogPdfFile(string pdfFile, int id)
+        {
+            Identity iden = await _context.Identities.Where(x => x.IdenId == id).FirstAsync();
+            iden.Logs.Add(new()
+            {
+                LogDate = DateTime.UtcNow,
+                LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
+            });
+            _context.Identities.Update(iden);
         }
         public async Task<IEnumerable<IdentityDTO>> GetAll()
         {
-            return await _context.Identities
-                .Include(x => x.Type)
-                .Include(x => x.Language)
+            return await _context.Identities.AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
                 .Select(x => ConvertIdentity(x)).ToListAsync();
         }
         public async Task<IEnumerable<IdentityDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
-            return await _context.Identities
-                .Include(x => x.Type)   
+            return await _context.Identities.AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
                 .Where(x => EF.Functions.Like(x.Name, searhterm) || EF.Functions.Like(x.UserID, searhterm)
-                    || EF.Functions.Like(x.EMail, searhterm) || EF.Functions.Like(x.Type.Type, searhterm))
+                    || EF.Functions.Like(x.EMail, searhterm) || EF.Functions.Like(x.Type.Type, searhterm)).AsNoTracking()
                 .Select(x => ConvertIdentity(x))
                 .ToListAsync();
         }
+        public IdentityDTO Create(IdentityDTO identityDTO)
+        {
+            Identity iden = new()
+            {
+                active = 1,
+                Company = identityDTO.Company,
+                EMail = identityDTO.EMail,
+                Name = identityDTO.Name,
+                UserID = identityDTO.UserID,
+                LastModifiedAdminId = TokenStore.AdminId,
+                TypeId = identityDTO.Type.TypeId,
+                LanguageCode = identityDTO.Language.Code,
+                DeactivateReason = ""
+            };
+            string logLine = GenericLogLineCreator.CreateLogLine($"Identity width name: {identityDTO.Name}", TokenStore.Admin.Account.UserID, table);
+            iden.Logs.Add(new()
+            {
+                LogDate = DateTime.UtcNow,
+                LogText = logLine
+            });
+            _context.Identities.Add(iden);
+            return identityDTO;
+        }
         public async Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities()
         {
-            var identities = await _context.Identities
-                .Include(x => x.Accounts)
-                .Include(x => x.Type)
-                .Include(x => x.Language)
-                .Where(x => x.active == 1 && x.IdenId != 1)
-                .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now))
+            var identities = await _context.Identities.AsNoTracking()
+                .Include(x => x.Accounts).AsNoTracking().AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
+                .Where(x => x.active == 1 && x.IdenId != 1).AsNoTracking()
+                .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now)).AsNoTracking()
                 .Select(x => ConvertIdentity(x))
                 .ToListAsync();
             return identities;
         }
-        public async Task<Identity> Update(IdentityDTO dTO)
+        public async Task<IdentityDTO> Update(IdentityDTO dTO)
         {
-            var oldIden = await GetIdenByID(dTO.IdenId);
+            var oldIden = await TrackedIden(dTO.IdenId);
             oldIden.LastModifiedAdminId = TokenStore.Admin.AdminId;
             string logline;
-            if(string.Compare(oldIden.Name,dTO.Name) != 0)
+            if (string.Compare(oldIden.Name, dTO.Name) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("Name", oldIden.Name, dTO.Name, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Name='{dTO.Name}' where IdenId={dTO.IdenId}";
+                    oldIden.Name = dTO.Name;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Name='{dTO.Name}' where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -78,15 +127,21 @@ namespace CMDB.API.Services
                     throw;
                 }
             }
-            if (string.Compare(oldIden.EMail, dTO.EMail) != 0) 
+            if (string.Compare(oldIden.EMail, dTO.EMail) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("EMail", oldIden.EMail, dTO.EMail, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, EMail='{dTO.EMail}' where IdenId={dTO.IdenId}";
+                    oldIden.EMail = dTO.EMail;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, EMail='{dTO.EMail}' where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -99,10 +154,16 @@ namespace CMDB.API.Services
                 logline = GenericLogLineCreator.UpdateLogLine("Company", oldIden.Company, dTO.Company, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Company='{dTO.Company}' where IdenId={dTO.IdenId}";
+                    oldIden.Company = dTO.Company;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Company='{dTO.Company}' where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -110,15 +171,24 @@ namespace CMDB.API.Services
                     throw;
                 }
             }
-            if (oldIden.Type.TypeId != dTO.Type.TypeId)
+            if (oldIden.TypeId != dTO.Type.TypeId)
             {
-                logline = GenericLogLineCreator.UpdateLogLine("Type", oldIden.Type.Type, dTO.Type.Type, TokenStore.Admin.Account.UserID, table);
+                var oldType = _context.Types.OfType<IdentityType>()
+                    .AsNoTracking()
+                    .First(x => x.TypeId == oldIden.TypeId);
+                logline = GenericLogLineCreator.UpdateLogLine("Type", oldType.Type, dTO.Type.Type, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, TypeId={dTO.Type.TypeId} where IdenId={dTO.IdenId}";
+                    oldIden.TypeId = dTO.Type.TypeId;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, TypeId={dTO.Type.TypeId} where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -126,15 +196,22 @@ namespace CMDB.API.Services
                     throw;
                 }
             }
-            if(string.Compare(oldIden.Language.Code, dTO.Language.Code) != 0)
+            if (string.Compare(oldIden.LanguageCode, dTO.Language.Code) != 0)
             {
-                logline = GenericLogLineCreator.UpdateLogLine("Language", oldIden.Language.Description, dTO.Language.Description, TokenStore.Admin.Account.UserID, table);
+                var oldLang = _context.Languages.AsNoTracking().First(x => x.Code == oldIden.LanguageCode);
+                logline = GenericLogLineCreator.UpdateLogLine("Language", oldLang.Description, dTO.Language.Description, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, LanguageCode='{dTO.Language.Code}' where IdenId={dTO.IdenId}";
+                    oldIden.LanguageCode = dTO.Language.Code;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, LanguageCode='{dTO.Language.Code}' where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -147,10 +224,16 @@ namespace CMDB.API.Services
                 logline = GenericLogLineCreator.UpdateLogLine("UserID", oldIden.UserID, dTO.UserID, TokenStore.Admin.Account.UserID, table);
                 try
                 {
-                    string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, UserId='{dTO.UserID}' where IdenId={dTO.IdenId}";
+                    oldIden.UserID = dTO.UserID;
+                    oldIden.Logs.Add(new()
+                    {
+                        LogDate = DateTime.UtcNow,
+                        LogText = logline,
+                    });
+                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, UserId='{dTO.UserID}' where IdenId={dTO.IdenId}";
                     await _context.Database.ExecuteSqlRawAsync(sql);
                     sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
+                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -158,9 +241,10 @@ namespace CMDB.API.Services
                     throw;
                 }
             }
-            return oldIden;
+            _context.Identities.Update(oldIden);
+            return dTO;
         }
-        public static IdentityDTO ConvertIdentity(in Identity identity) 
+        public static IdentityDTO ConvertIdentity(in Identity identity)
         {
             return new IdentityDTO()
             {
@@ -218,13 +302,55 @@ namespace CMDB.API.Services
             };
             return iden;
         }
+        public async Task<IdentityDTO> Deactivate(IdentityDTO identity, string reason)
+        {
+            Identity iden = await TrackedIden(identity.IdenId);
+            iden.active = 0;
+            iden.DeactivateReason = reason;
+            iden.LastModifiedAdminId = identity.LastModifiedAdminId;
+            iden.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, reason, table),
+                LogDate = DateTime.UtcNow,
+            });
+            _context.Identities.Update(iden);
+            return identity;
+        }
+        public async Task<IdentityDTO> Activate(IdentityDTO identity)
+        {
+            Identity iden = await TrackedIden(identity.IdenId);
+            iden.active = 1;
+            iden.DeactivateReason = "";
+            iden.LastModifiedAdminId = identity.LastModifiedAdminId;
+            iden.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.UtcNow,
+            });
+            _context.Identities.Update(iden);
+            return identity;
+        }
+        private async Task<Identity> TrackedIden(int id)
+        {
+            return await _context.Identities.FirstAsync(x => x.IdenId == id);
+        }
         private async Task<Identity?> GetIdenByID(int id)
         {
-            return await _context.Identities
-                .Include(x => x.Accounts)
-                .Include(x => x.Type)
-                .Include(x => x.Language)
+            return await _context.Identities.AsNoTracking()
+                .Include(x => x.Accounts).AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IdenId == id);
+        }
+        private void GetAssignedAccounts(int id)
+        {
+            var accounts = _context.Identities.AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
+                .Include(x => x.Accounts)
+                .ThenInclude(d => d.Account).AsNoTracking()
+                .SelectMany(x => x.Accounts).AsNoTracking()
+                .Where(x => x.Identity.IdenId == id).AsNoTracking()
+                .ToList();
         }
     }
 }

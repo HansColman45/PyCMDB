@@ -287,7 +287,8 @@ namespace CMDB.Controllers
                 return NotFound();
             service.GetAssignedIdentity(desktop);
             ViewData["Name"] = desktop.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -332,7 +333,8 @@ namespace CMDB.Controllers
             service.GetAssignedIdentity(desktop);
             Identity identity = desktop.Identity;
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

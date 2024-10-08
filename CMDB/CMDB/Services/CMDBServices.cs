@@ -1,11 +1,11 @@
-﻿using CMDB.Domain.Entities;
+﻿using Azure;
+using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -17,18 +17,17 @@ namespace CMDB.Services
         protected string _url => "https://localhost:7055/";
         protected HttpClient _Client;
         protected string BaseUrl { get; set; }
-        public Admin Admin
+        public async Task<Admin> Admin()
         {
-            get
+            var admin = new Admin();
+            BaseUrl = _url + $"api/Admin/{TokenStore.AdminId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                BaseUrl = _url + $"api/Admin/{TokenStore.AdminId}";
-                _Client.SetBearerToken(TokenStore.Token);
-                var response = _Client.GetAsync(BaseUrl).Result;
-                if (response.IsSuccessStatusCode)
-                    return response.Content.ReadAsJsonAsync<Admin>().Result;
-                else
-                    return null;
+                admin = await response.Content.ReadAsJsonAsync<Admin>();
             }
+            return admin;
         }
 
         public CMDBServices()

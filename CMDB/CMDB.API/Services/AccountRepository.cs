@@ -5,23 +5,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public interface IAccountRepository
-    {
-        AccountDTO Create(AccountDTO account);
-        Task<AccountDTO?> GetById(int id);
-        Task<List<AccountDTO>> GetAll();
-        Task<List<AccountDTO>> GetAll(string searchstr);
-        Task<AccountDTO> DeActivate(AccountDTO account, string reason);
-        Task<AccountDTO> Activate(AccountDTO account);
-        Task<bool> IsExisitng(AccountDTO account);
-        Task<AccountDTO> Update(AccountDTO account);
-        Task AssignAccount2Identity(IdenAccountDTO request);
-    }
     public class AccountRepository : GenericRepository, IAccountRepository
     {
         private readonly string table = "account";
         public AccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
+        }
+        public async Task LogPdfFile(string pdfFile, int id)
+        {
+            Account acc = await TrackedAccount(id);
+            acc.Logs.Add(new()
+            {
+                LogDate = DateTime.UtcNow,
+                LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
+            });
+            _context.Accounts.Update(acc);
         }
         public AccountDTO Create(AccountDTO account)
         {
@@ -43,12 +41,6 @@ namespace CMDB.API.Services
                     LogText = logline,
                 });
                 _context.Accounts.Add(acc);
-                /*string sql = $"insert into {table} (TypeId,ApplicationId,UserID, LastModifiedAdminId) " +
-                        $"values ({account.TypeId},{account.ApplicationId},'{account.UserID}',{TokenStore.Admin.AdminId})";
-                await _context.Database.ExecuteSqlRawAsync(sql);
-                var newacc = _context.Accounts.FirstOrDefault(x => x.UserID == account.UserID);
-                sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{newacc.AccID})";
-                await _context.Database.ExecuteSqlRawAsync(sql);*/
             }
             catch (Exception e)
             {
@@ -97,46 +89,36 @@ namespace CMDB.API.Services
         }
         public async Task<AccountDTO> DeActivate(AccountDTO account,string reason)
         {
-            var _account = await GetAccountById(account.AccID);
+            var _account = await TrackedAccount(account.AccID);
             _account.DeactivateReason = reason;
             _account.active = 0;
+            _account.LastModifiedAdminId = TokenStore.AdminId;
             string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             string logLine = GenericLogLineCreator.DeleteLogLine(value, $"{TokenStore.Admin.Account.UserID}", reason, table);
             _account.LastModfiedAdmin = TokenStore.Admin;
-            try
+            _account.Logs.Add(new()
             {
-                string sql = $"update {table} set active = 0, Deactivate_reason='{reason}', LastModifiedAdminId= {TokenStore.Admin.AdminId} where AccId= {account.AccID}";
-                await _context.Database.ExecuteSqlRawAsync(sql);
-                sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logLine}',{account.AccID})";
-                await _context.Database.ExecuteSqlRawAsync(sql);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Db error {e}", e);
-                throw;
-            }
+                LogDate = DateTime.UtcNow,
+                LogText = logLine,
+            });
+            _context.Accounts.Update(_account);
             return account;
         }
         public async Task<AccountDTO> Activate(AccountDTO account) 
         {
-            var _account = await GetAccountById(account.AccID);
+            var _account = await TrackedAccount(account.AccID);
             _account.DeactivateReason = "";
             _account.Active = State.Active;
             string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             string logline = GenericLogLineCreator.ActivateLogLine(value, $"{TokenStore.Admin.Account.UserID}", table);
             _account.LastModfiedAdmin = TokenStore.Admin;
-            try
+            _account.LastModifiedAdminId= TokenStore.AdminId;
+            _account.Logs.Add(new()
             {
-                string sql = $"update {table} set active = 1, Deactivate_reason='', LastModifiedAdminId= {TokenStore.Admin.AdminId} where AccId= {account.AccID}";
-                await _context.Database.ExecuteSqlRawAsync(sql);
-                sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{account.AccID})";
-                await _context.Database.ExecuteSqlRawAsync(sql);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Db error {e}", e);
-                throw;
-            }
+                LogText = logline,
+                LogDate = DateTime.UtcNow,
+            });
+            _context.Accounts.Update(_account);
             return account;
         }
         public async Task<bool> IsExisitng(AccountDTO account)
@@ -181,96 +163,103 @@ namespace CMDB.API.Services
         }
         public async Task<AccountDTO> Update(AccountDTO account)
         {
-            var _account = await GetAccountById(account.AccID);
+            var _account = await TrackedAccount(account.AccID); 
             string logline;
-            _account.LastModfiedAdmin = TokenStore.Admin;
             if (string.Compare(_account.UserID, account.UserID) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("UserId", _account.UserID, account.UserID, $"{TokenStore.Admin.Account.UserID}", table);
                 _account.UserID = account.UserID;
-                try
+                _account.LastModifiedAdminId = TokenStore.AdminId;
+                _account.Logs.Add(new()
                 {
-                    string sql = $"update Account set UserId='{account.UserID}', LastModifiedAdminId={TokenStore.Admin.AdminId} where AccID={account.AccID}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{account.AccID})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("DB error {e}", e);
-                    throw;
-                }
+                    LogText = logline,
+                    LogDate = DateTime.UtcNow,
+                });
             }
-            if (_account.Type.TypeId != account.Type.TypeId)
+            if (_account.TypeId != account.Type.TypeId)
             {
-                var type = AccountTypeRepository.ConvertDTO(account.Type);
-                logline = GenericLogLineCreator.UpdateLogLine("Type", _account.Type.Type, account.Type.Type, $"{TokenStore.Admin.Account.UserID}", table);
+                var Oldtype = _context.Types.OfType<AccountType>().AsNoTracking().First(x => x.TypeId == _account.TypeId);
+                logline = GenericLogLineCreator.UpdateLogLine("Type", Oldtype.Type, account.Type.Type, $"{TokenStore.Admin.Account.UserID}", table);
                 _account.TypeId = account.Type.TypeId;
-                _account.Type = type;
-                try
+                _account.LastModifiedAdminId = TokenStore.AdminId;
+                _account.Logs.Add(new()
                 {
-                    string sql = $"update Account set TypeId={account.Type.TypeId}, LastModifiedAdminId={TokenStore.Admin.AdminId} where AccID={account.AccID}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{account.AccID})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("DB error {e}", e);
-                    throw;
-                }
+                    LogText = logline,
+                    LogDate = DateTime.UtcNow,
+                });
             }
-            if (_account.Application.AppID != account.Application.AppID)
+            if (_account.ApplicationId != account.Application.AppID)
             {
-                logline = GenericLogLineCreator.UpdateLogLine("Application", _account.Application.Name, account.Application.Name, $"{TokenStore.Admin.Account.UserID}", table);
-                _account.Application = ApplicationRepository.ConvertDTO(account.Application);
+                var oldApp = _context.Applications.First(x => x.AppID == _account.ApplicationId);
+                logline = GenericLogLineCreator.UpdateLogLine("Application", oldApp.Name, account.Application.Name, $"{TokenStore.Admin.Account.UserID}", table);
                 _account.ApplicationId = account.Application.AppID;
-                try
+                _account.LastModifiedAdminId = TokenStore.AdminId;
+                _account.Logs.Add(new()
                 {
-                    string sql = $"update Account set ApplicationId={account.Application.AppID}, LastModifiedAdminId={TokenStore.Admin.AdminId} where AccID={account.AccID}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,AccountId) values (GETDATE(),'{logline}',{account.AccID})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                }
-                catch (Exception e) 
-                { 
-                    _logger.LogError("DB error {e}", e); 
-                    throw; 
-                }
+                    LogText = logline,
+                    LogDate = DateTime.UtcNow,
+                });
             }
-            //_context.Accounts.Update(_account);
+            _context.Accounts.Update(_account);
             return account;
         }
         public async Task AssignAccount2Identity(IdenAccountDTO request)
         {
-            var iden = IdentityRepository.ConvertDTO(request.Identity);
-            var acc = await GetAccountById(request.Account.AccID);
+            var iden = _context.Identities.First(x => x.IdenId == request.Identity.IdenId);
+            var acc = await TrackedAccount(request.Account.AccID);
             IdenAccount IdenAcc = new()
             {
-                Identity = iden,
-                Account = acc,
+                IdentityId = iden.IdenId,
+                AccountId = acc.AccID,
                 ValidFrom = request.ValidFrom,
                 ValidUntil = request.ValidUntil,
             };
-            acc.LastModfiedAdmin = TokenStore.Admin;
-            iden.LastModfiedAdmin = TokenStore.Admin;
+            acc.LastModifiedAdminId = TokenStore.AdminId;
+            iden.LastModifiedAdminId = TokenStore.AdminId;
             _context.IdenAccounts.Add(IdenAcc);
+            _context.Accounts.Update(acc);
+            _context.Identities.Update(iden);
             string accountInfo = $"Account with UserID: {acc.UserID}";
             string indenInfo = $"Identity with name: {iden.Name}";
             Log log = new()
             {
                 LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(accountInfo, indenInfo, TokenStore.Admin.Account.UserID, table),
                 LogDate = DateTime.UtcNow,
-                Account = acc
+                AccountId = acc.AccID
             };
             _context.Logs.Add(log);
             log = new()
             {
-                LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine( indenInfo, accountInfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine( indenInfo, accountInfo, TokenStore.Admin.Account.UserID, "identity"),
                 LogDate = DateTime.UtcNow,
-                Identity = iden
+                IdentityId = iden.IdenId
             };
             _context.Logs.Add(log);
+        }
+        public async Task ReleaseAccountFromIdentity(IdenAccountDTO request)
+        {
+            var idenacc = await _context.IdenAccounts.Where(x => x.ID == request.Id).FirstAsync();
+            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
+            idenacc.LastModifiedAdminId = TokenStore.AdminId;
+            _context.IdenAccounts.Update(idenacc);
+            var acc = await TrackedAccount(request.Account.AccID);
+            var iden = _context.Identities.First(x => x.IdenId == request.Identity.IdenId);
+            string accountInfo = $"Account with UserID: {acc.UserID}";
+            string indenInfo = $"Identity with name: {iden.Name}";
+            acc.LastModifiedAdminId = TokenStore.AdminId;
+            acc.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountInfo, indenInfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.UtcNow
+            });
+            _context.Accounts.Update(acc);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            iden.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(indenInfo, accountInfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.UtcNow
+            });
+            _context.Identities.Update(iden);
         }
         public static Account ConvertDto(AccountDTO accountDTO)
         {
@@ -330,6 +319,16 @@ namespace CMDB.API.Services
                 }
             };
         }
+        public async Task<IEnumerable<IdentityAccountInfo>> ListAllFreeAccounts()
+        {
+            var ideninfo = await _context.IdentityAccountInfos.FromSqlRaw(
+                $"select distinct a.AccID, a.UserID, ap.Name from Account a " +
+                "left join Application ap on a.ApplicationId = ap.AppID " +
+                "left join IdenAccount ia on ia.AccountId = a.AccID " +
+                "where ia.IdentityId is null or ia.ValidUntil <= GETDATE()")
+                .ToListAsync();
+            return ideninfo;
+        }
         private void GetAssignedIdentitiesForAccount(AccountDTO accountDTO)
         {
             var Accounts = _context.Accounts.AsNoTracking()
@@ -344,15 +343,20 @@ namespace CMDB.API.Services
                 .SelectMany(x => x.Identities)
                 .Where(x => x.Account.AccID == accountDTO.AccID)
                 .ToList();
+            foreach (var acc in Accounts)
+            {
+                accountDTO.Identities.Add(new()
+                {
+                    Id = acc.ID,
+                    Identity = IdentityRepository.ConvertIdentity(acc.Identity),
+                    ValidFrom = acc.ValidFrom,
+                    ValidUntil = acc.ValidUntil,
+                });
+            }
         }
-        private async Task<Account?> GetAccountById(int id)
+        private async Task<Account> TrackedAccount(int accId)
         {
-            var account = await _context.Accounts.AsNoTracking()
-                .Include(x => x.Application).AsNoTracking()
-                .Include(x => x.Type).AsNoTracking()
-                .Where(x => x.AccID == id).AsNoTracking()
-                .FirstOrDefaultAsync();
-            return account;
+            return await _context.Accounts.FirstAsync(x => x.AccID == accId);
         }
     }
 }

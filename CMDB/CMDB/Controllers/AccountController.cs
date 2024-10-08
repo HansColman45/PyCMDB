@@ -12,10 +12,12 @@ namespace CMDB.Controllers
 {
     public class AccountController : CMDBController
     {
-        private new readonly AccountService service;
+        private readonly AccountService service;
+        private readonly PDFService PDFservice;
         public AccountController(IWebHostEnvironment env) : base(env)
         {
             service = new();
+            PDFservice = new();
             SitePart = "Account";
             Table = "account";
         }
@@ -261,8 +263,9 @@ namespace CMDB.Controllers
             ViewBag.Identity = idenAccount.Identity;
             ViewBag.Account = idenAccount.Account;
             ViewData["Name"] = idenAccount.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -270,21 +273,17 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = idenAccount.Identity.UserID,
-                        FirstName = idenAccount.Identity.FirstName,
-                        LastName = idenAccount.Identity.LastName,
-                        Language = idenAccount.Identity.Language.Code,
-                        Receiver = idenAccount.Identity.Name,
-                        Type = "Release"
-                    };
-                    PDFGenerator.SetAccontInfo(idenAccount);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.ReleaseIdentity4Acount(idenAccount.Account, idenAccount.Identity, (int)id, Table, pdfFile);*/
+                    await PDFservice.SetUserinfo(idenAccount.Identity.UserID, 
+                        ITPerson,
+                        Employee,
+                        idenAccount.Identity.FirstName,
+                        idenAccount.Identity.LastName,
+                        idenAccount.Identity.Name, 
+                        idenAccount.Identity.Language.Code,
+                        "Release");
+                    await PDFservice.SetAccontInfo(idenAccount);
+                    await PDFservice.GenratPDFFile(Table,idenAccount.Account.AccID);
+                    await service.ReleaseIdentity4Acount(idenAccount);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -307,11 +306,22 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Account";
             ViewData["Action"] = "AssignForm";
             ViewData["Name"] = account.Identities.Last().Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
+                await PDFservice.SetUserinfo(
+                    account.Identities.Last().Identity.UserID, 
+                    ITPerson, 
+                    Employee, 
+                    account.Identities.Last().Identity.FirstName,
+                    account.Identities.Last().Identity.LastName,
+                    account.Identities.Last().Identity.Name, 
+                    account.Identities.Last().Identity.Language.Code);
+                await PDFservice.SetAccontInfo(account.Identities.Last());
+                await PDFservice.GenratPDFFile(Table, account.AccID);
                 /*PDFGenerator PDFGenerator = new()
                 {
                     ITEmployee = ITPerson,

@@ -100,6 +100,86 @@ namespace CMDB.API.Controllers
             //ToDO
             return Ok();
         }
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Create(IdentityDTO identity)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Add"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            _uow.IdentityRepository.Create(identity);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpDelete("{reason:alpha}"), Authorize]
+        public async Task<IActionResult> Delete(IdentityDTO identity, string reason)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Deactivate"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.Deactivate(identity,reason);
+            await _uow.SaveChangesAsync();
+            return Ok(iden);
+        }
+        [HttpPost("Activate"), Authorize]
+        public async Task<IActionResult> Activate(IdentityDTO identity)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Activate"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.Activate(identity);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPut, Authorize]
+        public async Task<IActionResult> Update(IdentityDTO identity)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Edit"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var acc = await _uow.IdentityRepository.Update(identity);
+            await _uow.SaveChangesAsync();
+            return Ok(acc);
+        }
         [HttpGet("ListAllFreeIdentities"), Authorize]
         public async Task<IActionResult> ListAllFreeIdentities()
         {

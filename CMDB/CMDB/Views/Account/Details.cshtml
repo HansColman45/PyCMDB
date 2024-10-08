@@ -62,7 +62,7 @@
                             {
                                 @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
                                 {
-                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@idenAccount.Id" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                    <td class="small"><a class="btn btn-danger" href="\Account\ReleaseIdentity\@idenAccount.Id" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                                 }
                                 else
                                 {

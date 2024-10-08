@@ -139,19 +139,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task ReleaseIdentity4Acount(AccountDTO account, IdentityDTO identity, int idenAccountID, string Table, string pdfFile)
+        public async Task ReleaseIdentity4Acount(IdenAccountDTO idenAccount)
         {
-            /*var IdenAccount = _context.IdenAccounts.Where(x => x.ID == idenAccountID).First();
-            IdenAccount.LastModifiedAdmin = Admin;
-            IdenAccount.ValidUntil = DateTime.Now.AddDays(-1);
-            _context.IdenAccounts.Update(IdenAccount);
-            await LogReleaseAccountFromIdentity("identity", identity.IdenId, identity, account);
-            await LogReleaseIdentity4Account(Table, account.AccID, identity, account);
-            await LogPdfFile("identity",identity.IdenId, pdfFile);
-            await LogPdfFile(Table,account.AccID, pdfFile);
-            account.LastModfiedAdmin = Admin;
-            identity.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();*/
+            BaseUrl = _url + $"api/Account/ReleaseIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, idenAccount);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<ApplicationDTO> GetApplicationByID(int id)
         {

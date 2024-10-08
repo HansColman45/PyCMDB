@@ -283,8 +283,9 @@ namespace CMDB.Controllers
             if (token == null)
                 return NotFound();
             service.GetAssignedIdentity(token);
-            ViewData["Name"] = token.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            ViewData["Name"] = token.Identity.Name; 
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -327,7 +328,8 @@ namespace CMDB.Controllers
                 return NotFound();
             service.GetAssignedIdentity(token);
             ViewData["Name"] = token.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

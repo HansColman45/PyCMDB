@@ -1,10 +1,6 @@
-﻿using CMDB.Domain.Entities;
-using CMDB.Domain.Requests;
+﻿using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CMDB.Services

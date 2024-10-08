@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Identity>
+﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
     List<CMDB.Domain.Entities.Device> devices = (List<CMDB.Domain.Entities.Device>)ViewBag.Devices;
@@ -15,21 +15,18 @@
                 <th>E Mail</th>
                 <th>Language</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="Name">@Html.DisplayTextFor(modelItem => item.Name)</td>
-                    <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                    <td id="EMail">@Html.DisplayTextFor(modelItem => item.EMail)</td>
-                    <td id="Language">@Html.DisplayTextFor(modelItem => item.Language.Description)</td>
-                    <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Description)</td>
-                    <td id="State">@Html.DisplayTextFor(modelItem => item.Active)</td>
-                </tr>
-            }
+            <tr>
+                <td id="Name">@Html.DisplayTextFor(modelItem => modelItem.Name)</td>
+                <td id="UserId">@Html.DisplayTextFor(modelItem => modelItem.UserID)</td>
+                <td id="EMail">@Html.DisplayTextFor(modelItem => modelItem.EMail)</td>
+                <td id="Language">@Html.DisplayTextFor(modelItem => modelItem.Language.Description)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => modelItem.Type.Description)</td>
+                <td id="State">@Html.DisplayTextFor(modelItem => modelItem.State)</td>
+            </tr>
         </tbody>
     </table>
     <p>

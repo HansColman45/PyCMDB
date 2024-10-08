@@ -9,16 +9,15 @@ namespace CMDB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AccountTypeController : ControllerBase
+    public class IdentityTypeController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly string site = "Account Type";
+        private readonly string site = "Identity Type";
         private HasAdminAccessRequest request;
-        public AccountTypeController(IUnitOfWork uow)
+        public IdentityTypeController(IUnitOfWork uow)
         {
-            _uow = uow;
+                _uow = uow;
         }
-
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -35,7 +34,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AccountTypeRepository.GetAll());
+            return Ok(await _uow.IdentityTypeRepository.GetAll());
         }
         [HttpGet, Authorize]
         [Route("GetAll/{searchstr}")]
@@ -54,7 +53,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AccountTypeRepository.GetAll(searchstr));
+            return Ok(await _uow.IdentityTypeRepository.GetAll(searchstr));
         }
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
@@ -72,7 +71,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AccountTypeRepository.GetById(id));
+            return Ok(await _uow.IdentityTypeRepository.GetById(id));
         }
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(TypeDTO account)
@@ -92,7 +91,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = _uow.AccountTypeRepository.Create(account);
+                var acc = _uow.IdentityTypeRepository.Create(account);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -119,7 +118,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.AccountTypeRepository.DeActivate(account, reason);
+                var acc = await _uow.IdentityTypeRepository.DeActivate(account, reason);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -146,7 +145,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.AccountTypeRepository.Activate(account);
+                var acc = await _uow.IdentityTypeRepository.Activate(account);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -173,7 +172,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.AccountTypeRepository.Update(account);
+                var acc = await _uow.IdentityTypeRepository.Update(account);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -189,7 +188,7 @@ namespace CMDB.API.Controllers
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            return Ok(await _uow.AccountTypeRepository.IsExisitng(type));
+            return Ok(await _uow.IdentityTypeRepository.IsExisitng(type));
         }
     }
 }

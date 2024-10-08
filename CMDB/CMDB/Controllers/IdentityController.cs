@@ -1,17 +1,14 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
-using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Fluent;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Device = CMDB.Domain.Entities.Device;
-using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Controllers
 {
@@ -69,11 +66,12 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            if (list == null)
+            var identity = await service.GetByID((int)id);
+            if (identity == null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Identity Details";
+            ViewData["Controller"] = @"\Identity\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -88,9 +86,7 @@ namespace CMDB.Controllers
             ViewData["SubscriptionOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "SubscriptionOverview");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetAssingedDevices(list.First());
-            service.GetAssignedAccounts(list.First());
-            return View(list);
+            return View(identity);
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
@@ -99,9 +95,9 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Identity\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            ViewBag.Types = service.ListActiveIdentityTypes();
-            ViewBag.Languages = service.ListAllActiveLanguages();
-            Identity identity = new();
+            ViewBag.Types = await service.ListActiveIdentityTypes();
+            ViewBag.Languages = await service.ListAllActiveLanguages();
+            IdentityDTO identity = new();
             string FormSubmit = values["form-submitted"];
             try
             {
@@ -123,7 +119,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
-                        await service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language, Table);
+                        await service.Create(FirstName, LastName, Convert.ToInt32(Type), UserID, Company, EMail, Language);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -140,17 +136,16 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Edit in {0}", Table);
             ViewData["Title"] = "Edit Identity";
-            ViewData["Controller"] = @"\Identity\Create";
+            ViewData["Controller"] = @$"\Identity\Edit\{id}";
             await BuildMenu();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            ViewBag.Types = service.ListActiveIdentityTypes();
-            ViewBag.Languages = service.ListAllActiveLanguages();
+            ViewBag.Types = await service.ListActiveIdentityTypes();
+            ViewBag.Languages = await service.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -167,7 +162,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.Edit(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage, Table);
+                        await service.Edit(identity, NewFirstName, NewLastName, Convert.ToInt32(NewType), NewUserID, NewCompany, NewEMail, NewLanguage);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -184,12 +179,12 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Identity";
+            ViewData["Controller"] = @$"\Identity\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
@@ -199,7 +194,7 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    await service.Deactivate(identity, ViewData["reason"].ToString(), Table);
+                    await service.Deactivate(identity, ViewData["reason"].ToString());
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -209,23 +204,23 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View(list);
+            return View(identity);
         }
         public async Task<IActionResult> Activate(int? id)
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Identity";
+            ViewData["Controller"] = @$"\Identity\Activate\{id}";
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(identity, Table);
+                await service.Activate(identity);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -236,8 +231,7 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var List = await service.GetByID((int)id);
-            Identity identity = List.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
@@ -250,7 +244,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-                List<Device> devicesToAdd = new();
+                List<DeviceDTO> devicesToAdd = new();
                 List<Mobile> mobilesToAdd = new();
                 var devices = await service.ListAllFreeDevices();
                 foreach (var device in devices)
@@ -273,9 +267,9 @@ namespace CMDB.Controllers
                     try
                     {
                         if(devicesToAdd.Count > 0)
-                            await service.AssignDevice(identity, devicesToAdd, Table);
+                            await service.AssignDevice(identity, devicesToAdd);
                         if (mobilesToAdd.Count > 0)
-                            service.AssignMobiles(identity, mobilesToAdd, Table);
+                            service.AssignMobiles(identity, mobilesToAdd);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                     catch (Exception ex)
@@ -286,14 +280,13 @@ namespace CMDB.Controllers
                     }
                 }
             }
-            return View(List);
+            return View(identity);
         }
         public async Task<IActionResult> AssignAccount(IFormCollection values, int? id)
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Assign Account in {0}", Table);
@@ -314,7 +307,7 @@ namespace CMDB.Controllers
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
-                        await service.AssignAccount2Idenity(identity, AccId, from, until, Table);
+                        await service.AssignAccount2Idenity(identity, AccId, from, until);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                 }
@@ -331,8 +324,7 @@ namespace CMDB.Controllers
         {
             if (id == 0)
                 return NotFound();
-            var idenAccounts = await service.GetIdenAccountByID(id);
-            IdenAccount idenAccount = idenAccounts.FirstOrDefault();
+            var idenAccount = await service.GetIdenAccountByID(id);
             if (idenAccount == null)
                 return NotFound();
             log.Debug("Using Release Account in {0}", Table);
@@ -344,7 +336,8 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseAccount";
             ViewData["Name"] = idenAccount.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -352,8 +345,8 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseAccount4Identity(idenAccount.Identity, idenAccount.Account, id, Table);
-                    PDFGenerator PDFGenerator = new()
+                    await service.ReleaseAccount4Identity(idenAccount.Identity, idenAccount.Account, id);
+                    /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
                         Singer = Employee,
@@ -366,7 +359,7 @@ namespace CMDB.Controllers
                     };
                     PDFGenerator.SetAccontInfo(idenAccount);
                     string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
+                    PDFGenerator.GeneratePdf(pdfFile);*/
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -376,21 +369,19 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Assign Form in {0}", Table);
             ViewData["Title"] = "Assign form";
             ViewData["AssignDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
             ViewData["AssignAccount"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignAccount");
-            service.GetAssingedDevices(list.First());
-            service.GetAssignedAccounts(list.First());
             await BuildMenu();
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "AssignForm";
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             string FormSubmit = values["form-submitted"];
@@ -428,15 +419,14 @@ namespace CMDB.Controllers
                 await service.LogPdfFile(Table, identity.IdenId, PdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
-            return View(list);
+            return View(identity);
         }
         [Route("ReleaseDevice/{id}/{AssetTag}")]
         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
@@ -450,7 +440,8 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseDevice";
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -485,8 +476,7 @@ namespace CMDB.Controllers
         {
             if (id == null && MobileId == 0)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             Mobile mobile = await service.GetMobile(MobileId);
@@ -500,7 +490,8 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseMobile";
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -531,19 +522,18 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release devices from identity";
             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
-            service.GetAssingedDevices(list.First());
+            service.GetAssingedDevices(identity);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
-                List<Device> devicesToRelease = new();
+                List<DeviceDTO> devicesToRelease = new();
                 foreach (var device in identity.Devices)
                 {
                     if (!String.IsNullOrEmpty(values[device.AssetTag])) { 
@@ -552,8 +542,8 @@ namespace CMDB.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseDevices(identity, devicesToRelease, Table);
-                    PDFGenerator PDFGenerator = new()
+                    await service.ReleaseDevices(identity, devicesToRelease);
+                   /* PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = service.Admin.Account.UserID,
                         Singer = identity.Name,
@@ -569,7 +559,7 @@ namespace CMDB.Controllers
                         PDFGenerator.SetAssetInfo(device);
                     }
                     string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
+                    PDFGenerator.GeneratePdf(pdfFile);*/
                     return RedirectToAction(nameof(Index));
                     //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }
@@ -580,8 +570,7 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetByID((int)id);
-            Identity identity = list.FirstOrDefault();
+            IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
             log.Debug("Using Releasefrom in {0}", Table);
@@ -591,7 +580,8 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseDevice";
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

@@ -40,9 +40,9 @@ namespace CMDB.Services
         }
         public async Task CreateNew(Mobile mobile, string table)
         {
-            mobile.LastModfiedAdmin = Admin;
+            /*mobile.LastModfiedAdmin = Admin;
             mobile.IdentityId = 1;
-            /*_context.Mobiles.Add(mobile);
+            _context.Mobiles.Add(mobile);
             await _context.SaveChangesAsync();*/
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
         }
@@ -59,26 +59,26 @@ namespace CMDB.Services
                 mobile.MobileType = newAssetType;
                 mobile.Category = newAssetType.Category;
             }
-            mobile.LastModfiedAdmin = Admin;
-            /*_context.Mobiles.Update(mobile);
+            /*mobile.LastModfiedAdmin = Admin;
+            _context.Mobiles.Update(mobile);
             await _context.SaveChangesAsync();*/
         }
         public async Task Deactivate(Mobile mobile, string reason, string table)
         {
-            mobile.LastModfiedAdmin = Admin;
+            /*mobile.LastModfiedAdmin = Admin;
             mobile.Active = State.Inactive;
             mobile.DeactivateReason = reason;
-            /*_context.Mobiles.Update(mobile);
+            _context.Mobiles.Update(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
             await LogDeactivate(table,mobile.MobileId,value,reason);*/
         }
         public async Task Activate(Mobile mobile, string table)
         {
-            mobile.LastModfiedAdmin = Admin;
+            /*mobile.LastModfiedAdmin = Admin;
             mobile.Active = State.Active;
             mobile.DeactivateReason = null;
-            /*_context.Mobiles.Update(mobile);
+            _context.Mobiles.Update(mobile);
             await _context.SaveChangesAsync();
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
             await LogActivate(table, mobile.MobileId, value);*/
@@ -179,20 +179,20 @@ namespace CMDB.Services
         }
         public async Task AssignIdentity2Mobile(Identity identity, Mobile mobile, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
             identity.Mobiles.Add(mobile);
-            /*await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             await LogAssignMobile2Identity("identity",mobile,identity);
             await LogAssignIdentity2Mobile(table, identity, mobile);*/
         }
         public async Task ReleaseIdenity(Mobile mobile, Identity identity, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
             identity.Mobiles.Remove(mobile);
             mobile.Identity = null;
-            /*await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             await LogReleaseMobileFromIdenity(table,mobile,identity);
             await LogReleaseIdentityFromMobile("identity", identity, mobile);*/
         }
@@ -210,10 +210,10 @@ namespace CMDB.Services
         }
         public async Task AssignSubscription(Mobile mobile, Subscription subscription, string table)
         {
-            mobile.LastModfiedAdmin = Admin;
+            /*mobile.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             mobile.Subscriptions.Add(subscription);
-            /*await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
             await LogAssignSubscription2Mobile(table, mobile, subscription);
             await LogAssignMobile2Subscription("mobile",subscription,mobile);*/
         }

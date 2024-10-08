@@ -46,8 +46,8 @@ namespace CMDB.Services
         }
         public async Task Update(AssetCategory category, string Category, string prefix, string Table)
         {
-            category.LastModfiedAdmin = Admin;
-            /*if (String.Compare(category.Category, Category) != 0)
+            /*category.LastModfiedAdmin = Admin;
+            if (String.Compare(category.Category, Category) != 0)
             {
                 category.Category = Category;
                 _context.AssetCategories.Update(category);

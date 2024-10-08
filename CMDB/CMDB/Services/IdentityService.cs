@@ -6,6 +6,7 @@ using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -15,104 +16,75 @@ namespace CMDB.Services
         public IdentityService() : base()
         {
         }
-        public async Task<ICollection<Identity>> ListAll()
+        public async Task<ICollection<IdentityDTO>> ListAll()
         {
             BaseUrl = _url + $"api/Identity/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+                return await response.Content.ReadAsJsonAsync<List<IdentityDTO>>();
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<Identity>> ListAll(string searchString)
+        public async Task<ICollection<IdentityDTO>> ListAll(string searchString)
         {
             BaseUrl = _url + $"api/Identity/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+                return await response.Content.ReadAsJsonAsync<List<IdentityDTO>>();
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<Identity>> GetByID(int id)
+        public async Task<IdentityDTO> GetByID(int id)
         {
             BaseUrl = _url + $"api/Identity/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-                return await response.Content.ReadAsJsonAsync<List<Identity>>();
+                return await response.Content.ReadAsJsonAsync<IdentityDTO>();
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public List<SelectListItem> ListActiveIdentityTypes()
+        public async Task<List<SelectListItem>> ListActiveIdentityTypes()
         {
             List<SelectListItem> identityTypes = new();
-            /*List<IdentityType> types = _context.Types.OfType<IdentityType>().Where(x => x.active == 1).ToList();
-            foreach (var type in types)
-            {
-                identityTypes.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeId.ToString()));
-            }*/
+            BaseUrl = _url + $"api/IdentityType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) {
+                var types = await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
+                foreach (var type in types.Where(x => x.Active == 1))
+                {
+                    identityTypes.Add(new SelectListItem(type.Type + " " + type.Description, type.TypeId.ToString()));
+                }
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
             return identityTypes;
         }
-        public List<SelectListItem> ListAllActiveLanguages()
+        public async Task<List<SelectListItem>> ListAllActiveLanguages()
         {
             List<SelectListItem> langs = new();
-            /*List<Language> languages = _context.Languages.ToList();
-            foreach (var language in languages)
+            BaseUrl = _url + $"api/Language/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                langs.Add(new SelectListItem(language.Description, language.Code));
-            }*/
+                var languages = await response.Content.ReadAsJsonAsync<List<LanguageDTO>>();
+                foreach (var language in languages)
+                {
+                    langs.Add(new SelectListItem(language.Description, language.Code));
+                }
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
             return langs;
         }
-        public async Task<List<Device>> ListAllFreeDevices()
+        public async Task<List<DeviceDTO>> ListAllFreeDevices()
         {
-            List<Device> devices = new();
-            /*var Laptops = await _context.Devices.OfType<Laptop>()
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            foreach (var laptop in Laptops)
-            {
-                devices.Add(laptop);
-            }
-            var Desktops = await _context.Devices.OfType<Desktop>()
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            foreach (var desktop in Desktops)
-            {
-                devices.Add(desktop);
-            }
-            var screens = await _context.Devices.OfType<Screen>()
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            foreach (var screen in screens)
-            {
-                devices.Add(screen);
-            }
-            var dockings = await _context.Devices.OfType<Docking>()
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            foreach(var docking in dockings)
-            {
-                devices.Add(docking);
-            }
-            var tokens = await _context.Devices.OfType<Token>()
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.IdentityId == 1)
-                .ToListAsync();
-            foreach (var token in tokens)
-            {
-                devices.Add(token);
-            }*/
+            List<DeviceDTO> devices = new();
+            /**/
             return devices;
         }
         public async Task<List<Mobile>> ListAllFreeMobiles()
@@ -125,7 +97,7 @@ namespace CMDB.Services
              return mobiles;*/
             return [];
         }
-        public void GetAssingedDevices(Identity identity)
+        public void GetAssingedDevices(IdentityDTO identity)
         {
             /*identity.Devices = _context.Identities
                 .Include(x => x.Devices)
@@ -149,103 +121,63 @@ namespace CMDB.Services
                 .Where(x => x.IdentityId == identity.IdenId)
                 .ToList();*/
         }
-        public void GetAssignedAccounts(Identity identity)
+        public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language)
         {
-            /*var accounts = _context.Identities
-                .Include(x => x.Language)
-                .Include(x => x.Accounts)
-                .ThenInclude(d => d.Account)
-                .SelectMany(x => x.Accounts)
-                .Where(x => x.Identity.IdenId == identity.IdenId)
-                .ToList();*/
-        }
-        public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
-        {
-            /*var Type = GetIdenityTypeByID(type).First();
-            var Lang = _context.Languages.
-                Where(x => x.Code == Language)
-                .SingleOrDefault();
-            Identity identity = new()
+            var typeDTO = await GetTypeById(type);
+            var langDTO = await GetLanguageByCode(Language);
+            IdentityDTO identity = new()
             {
-                FirstName = firstName,
-                LastName = LastName,
-                UserID = UserID,
                 Company = Company,
                 EMail = EMail,
-                Type = Type,
-                Language = Lang,
-                LastModfiedAdmin = Admin
+                UserID = UserID,
+                Active = 1,
+                DeactivateReason = "",
+                LastModifiedAdminId = TokenStore.AdminId,
+                FirstName = firstName,
+                LastName = LastName,
+                Type = typeDTO,
+                Language = langDTO
             };
-            _context.Identities.Add(identity);
-            await _context.SaveChangesAsync();
-            string Value = "Identity width name: " + firstName + ", " + LastName;
-            await LogCreate(Table, identity.IdenId, Value);*/
+            BaseUrl = _url + "api/Identity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identity);
+            if(!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Edit(Identity identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language, string Table)
+        public async Task Edit(IdentityDTO identity, string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            if (String.Compare(identity.FirstName, firstName) != 0)
-            {
-                await LogUpdate(Table, identity.IdenId, "FirstName", identity.FirstName, firstName);
-                identity.FirstName = firstName;
-            }
-            if (String.Compare(identity.LastName, LastName) != 0)
-            {
-                await LogUpdate(Table, identity.IdenId, "LastName", identity.LastName, LastName);
-                identity.LastName = LastName;
-            }
-            if (String.Compare(identity.Company, Company) != 0)
-            {
-                await LogUpdate(Table, identity.IdenId, "Company", identity.Company, Company);
-                identity.Company = Company;
-            }
-            if (String.Compare(identity.Language.Code, Language) != 0)
-            {
-                var language = _context.Languages.Where(x => x.Code == Language).First();
-                await LogUpdate(Table, identity.IdenId, "Language", identity.Language.Code, Language);
-                identity.Language = language;
-            }
-            if (string.Compare(identity.EMail, EMail) != 0)
-            {
-                await LogUpdate(Table, identity.IdenId, "Email", identity.EMail, EMail);
-                identity.EMail = EMail;
-            }
-            if (String.Compare(identity.UserID, UserID) != 0)
-            {
-                await LogUpdate(Table, identity.IdenId, "UserID", identity.UserID, UserID);
-                identity.UserID = UserID;
-            }
-            if (identity.Type.TypeId != type)
-            {
-                var Type = GetIdenityTypeByID(type);
-                IdentityType newType = Type.First();
-                await LogUpdate(Table, identity.IdenId, "Type", identity.Type.Type, newType.Type);
-                identity.Type = newType;
-            }
-            _context.Identities.Update(identity);
-            await _context.SaveChangesAsync();*/
+            var typeDTO = await GetTypeById(type);
+            var langDTO = await GetLanguageByCode(Language);
+            identity.Type = typeDTO;
+            identity.Language = langDTO;
+            identity.FirstName = firstName;
+            identity.LastName = LastName;
+            identity.UserID = UserID;
+            identity.Company = Company;
+            identity.EMail = EMail;
+            BaseUrl = _url + "api/Identity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl, identity);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Deactivate(Identity identity, string Reason, string Table)
+        public async Task Deactivate(IdentityDTO identity, string reason)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            identity.DeactivateReason = Reason;
-            identity.Active = State.Inactive;
-            _context.Identities.Update(identity);
-            await _context.SaveChangesAsync();
-            string value = $"Identity width name: {identity.Name}";
-            await LogDeactivate(Table, identity.IdenId, value, Reason);*/
+            BaseUrl = _url + $"api/Identity/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, identity);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Activate(Identity identity, string Table)
+        public async Task Activate(IdentityDTO identity)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            identity.DeactivateReason = null;
-            identity.Active = State.Active;
-            _context.Identities.Update(identity);
-            await _context.SaveChangesAsync();
-            string value = $"Identity width name: {identity.Name}";
-            await LogActivate(Table, identity.IdenId, value);*/
+            BaseUrl = _url + "api/Identity/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identity);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsExisting(Identity identity, string UserID = "")
+        public bool IsExisting(IdentityDTO identity, string UserID = "")
         {
             bool result = false;
             /*if (String.IsNullOrEmpty(UserID) && String.Compare(identity.UserID, UserID) != 0)
@@ -269,9 +201,8 @@ namespace CMDB.Services
             return types;*/
             return [];
         }
-        public async Task ReleaseDevices(Identity identity, List<Device> devices, string table)
+        public async Task ReleaseDevices(IdentityDTO identity, List<DeviceDTO> devices)
         {
-            identity.LastModfiedAdmin = Admin;
             /*foreach (Device device in devices)
             {
                 device.IdentityId = 1;
@@ -301,7 +232,7 @@ namespace CMDB.Services
                 await LogReleaseDeviceFromIdenity(table, device,identity);
             }*/
         }
-        public async Task ReleaseMobile(Identity identity, Mobile mobile, string table)
+        public async Task ReleaseMobile(IdentityDTO identity, Mobile mobile, string table)
         {
             /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
@@ -314,25 +245,19 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
             List<SelectListItem> accounts = new();
-
-            /*var test = await _context.IdentityAccountInfos.FromSqlRaw(
-                $"select distinct a.AccID, a.UserID, ap.Name from Account a " +
-                "left join Application ap on a.ApplicationId = ap.AppID " +
-                "left join IdenAccount ia on ia.AccountId = a.AccID " +
-                "where ia.IdentityId is null or ia.ValidUntil <= GETDATE()")
-                .ToListAsync();
-            var freeAccounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(y => y.Identities)
-                .ThenInclude(x => x.Identity)
-                .Where(x => x.Identities.Any(y => y.ValidUntil <= DateTime.UtcNow))
-                .Where(x => x.Identities.Any(y => y.IdentityId != null))
-                .Select(x => new { x.AccID, x.UserID, x.Application.Name }).Distinct()
-                .ToListAsync();
-            foreach (var account in test)
+            BaseUrl = _url + "api/Account/ListAllFreeAccounts";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                accounts.Add(new(account.UserId + " " + account.Name, account.AccId.ToString()));
-            }*/
+                var infos = await response.Content.ReadAsJsonAsync<List<IdentityAccountInfo>>();
+                foreach (var info in infos) 
+                {
+                    accounts.Add(new(info.UserId + " " + info.Name, info.AccId.ToString()));
+                }
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
             return accounts;
         }
         public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
@@ -353,7 +278,7 @@ namespace CMDB.Services
             }*/
             return result;
         }
-        public async Task AssignAccount2Idenity(Identity identity, int AccID, DateTime ValidFrom, DateTime ValidUntil, string Table)
+        public async Task AssignAccount2Idenity(IdentityDTO identity, int AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             /*var Accounts = await GetAccountByID(AccID);
             var Account = Accounts.First<Account>();
@@ -370,10 +295,8 @@ namespace CMDB.Services
             await LogAssignIden2Account(Table, identity.IdenId, identity, Account);
             await LogAssignAccount2Identity("account", AccID, Account, identity);*/
         }
-        public async Task AssignDevice(Identity identity, List<Device> devicesToAdd, string table)
+        public async Task AssignDevice(IdentityDTO identity, List<DeviceDTO> devicesToAdd)
         {
-            identity.LastModfiedAdmin = Admin;
-            identity.Devices = devicesToAdd;
             /*foreach (var device in devicesToAdd)
             {
                 device.LastModfiedAdmin = Admin;
@@ -401,7 +324,7 @@ namespace CMDB.Services
             }*/
             //await _context.SaveChangesAsync();
         }
-        public void AssignMobiles(Identity identity, List<Mobile> mobiles, string Table)
+        public void AssignMobiles(IdentityDTO identity, List<Mobile> mobiles)
         {
             /*identity.LastModfiedAdmin = Admin;
             identity.Mobiles = mobiles;
@@ -413,7 +336,7 @@ namespace CMDB.Services
             }*/
             //await _context.SaveChangesAsync();
         }
-        public async Task ReleaseAccount4Identity(Identity identity, Account account, int idenAccountID, string Table)
+        public async Task ReleaseAccount4Identity(IdentityDTO identity, AccountDTO account, int idenAccountID)
         {
             /*var idenAccount = _context.IdenAccounts.
                 Include(x => x.Identity)
@@ -437,19 +360,17 @@ namespace CMDB.Services
             return accounts;*/
             return [];
         }
-        public async Task<List<IdenAccount>> GetIdenAccountByID(int id)
+        public async Task<IdenAccountDTO> GetIdenAccountByID(int id)
         {
-            /*var idenAccounts = await _context.IdenAccounts
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Application)
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Type)
-                .Include(x => x.Identity)
-                .ThenInclude(x => x.Language)
-                .Where(x => x.ID == id)
-                .ToListAsync();
-            return idenAccounts;*/
-            return [];
+            BaseUrl = _url + $"api/IdenAccount/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<IdenAccountDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
         public async Task<Device> GetDevice(string assetTag)
         {
@@ -470,6 +391,29 @@ namespace CMDB.Services
                 .FirstOrDefaultAsync();
             return mobile;*/
             return new();
+        }
+        private async Task<TypeDTO> GetTypeById(int typeId)
+        {
+            BaseUrl = _url + $"api/IdentityType/{typeId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) {
+                return await response.Content.ReadAsJsonAsync<TypeDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
+        }
+        private async Task<LanguageDTO> GetLanguageByCode(string code)
+        {
+            BaseUrl = _url + $"api/Language/{code}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<LanguageDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
     }
 }

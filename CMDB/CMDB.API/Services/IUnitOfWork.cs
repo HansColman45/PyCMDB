@@ -12,6 +12,8 @@ namespace CMDB.API.Services
         public IIdentityRepository IdentityRepository { get; }
         public IIdenAccountRepository IdenAccountRepository { get; }
         public IConfigurationRepository ConfigurationRepository { get; }
+        public IIdentityTypeRepository IdentityTypeRepository { get; }
+        public ILanguageRepository LanguageRepository { get; }
         public Task SaveChangesAsync();
     }
     public class UnitOfWork : IUnitOfWork
@@ -32,6 +34,8 @@ namespace CMDB.API.Services
             IdentityRepository = new IdentityRepository(_context, _logger);
             IdenAccountRepository = new IdenAccountRepository(_context, _logger);
             ConfigurationRepository = new ConfigurationRepository(_context, _logger);
+            IdentityTypeRepository = new IdentityTypeRepository(_context, _logger);
+            LanguageRepository = new LanguageRepository(_context, _logger);
         }
         public IAccountRepository AccountRepository { get; private set; }
         public IMenuRepository MenuRepository { get; private set; }
@@ -41,6 +45,8 @@ namespace CMDB.API.Services
         public IIdenAccountRepository IdenAccountRepository { get; private set; }
         public IIdentityRepository IdentityRepository { get; private set; }
         public IConfigurationRepository ConfigurationRepository { get; private set; }
+        public IIdentityTypeRepository IdentityTypeRepository { get; private set; }
+        public ILanguageRepository LanguageRepository { get; private set; }
         public async Task SaveChangesAsync()
         {
             try

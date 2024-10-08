@@ -3,8 +3,6 @@ using CMDB.API.Services;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Diagnostics;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers
@@ -89,7 +87,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Edit"
+                Action = "Add"
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -130,6 +128,7 @@ namespace CMDB.API.Controllers
             try
             {
                 var acc = await _uow.AccountRepository.DeActivate(account, reason);
+                await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
             catch (Exception ex)
@@ -156,6 +155,7 @@ namespace CMDB.API.Controllers
             try
             {
                 var acc = await _uow.AccountRepository.Activate(account);
+                await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
             catch (Exception ex)
@@ -189,12 +189,36 @@ namespace CMDB.API.Controllers
             if (!hasAdminAcces)
                 return Unauthorized();
             var accountdto = await _uow.AccountRepository.GetById(idenAccount.Account.AccID);
-            var idenityt = await _uow.IdentityRepository.GetById(idenAccount.Identity.IdenId);
-            if (accountdto is null || idenityt is null)
+            var identity = await _uow.IdentityRepository.GetById(idenAccount.Identity.IdenId);
+            if (accountdto is null || identity is null)
                 return NotFound();
             await _uow.AccountRepository.AssignAccount2Identity(idenAccount);
             await _uow.SaveChangesAsync();
             return Ok(accountdto);
+        }
+        [HttpPost("ReleaseIdentity"), Authorize]
+        public async Task<IActionResult> ReleaseIdentity(IdenAccountDTO idenAccount)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseIdentity"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var accountdto = await _uow.AccountRepository.GetById(idenAccount.Account.AccID);
+            var identity = await _uow.IdentityRepository.GetById(idenAccount.Identity.IdenId);
+            if (accountdto is null || identity is null)
+                return NotFound();
+            await _uow.AccountRepository.ReleaseAccountFromIdentity(idenAccount);
+            await _uow.SaveChangesAsync();
+            return Ok(idenAccount);
         }
         [HttpPut, Authorize]
         public async Task<IActionResult> Update(AccountDTO account)
@@ -215,12 +239,23 @@ namespace CMDB.API.Controllers
             try
             {
                 var acc = await _uow.AccountRepository.Update(account);
+                await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
+        }
+
+        [HttpGet("ListAllFreeAccounts"), Authorize]
+        public async Task<IActionResult> ListAllFreeAccounts()
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            return Ok(await _uow.AccountRepository.ListAllFreeAccounts());
         }
     }
 }

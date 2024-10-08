@@ -109,5 +109,17 @@
         {
             return $"The {IdentityInfo} is released from {deviceInfo} by {releaser} in table {table}";
         }
+        /// <summary>
+        /// This function will generate the PDF log line
+        /// </summary>
+        /// <param name="pdfFile">The pdf File Path</param>
+        /// <returns></returns>
+        public static string LogPDFFileLine(string pdfFile)
+        {
+            pdfFile = pdfFile[36..];
+            pdfFile = pdfFile.Replace('\\', '/');
+            pdfFile = "../.." + pdfFile;
+            return $"Please find the PDFFile <a href='{pdfFile}' target='_blank'>here</a>";
+        }
     }
 }

@@ -19,7 +19,7 @@ namespace CMDB
         {
             services.AddMvc();
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
-            services.AddTransient<ITokenStore, TokenStore>();
+            services.AddScoped<ITokenStore, TokenStore>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
         }
 

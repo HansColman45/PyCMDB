@@ -297,7 +297,8 @@ namespace CMDB.Controllers
             service.GetAssignedIdentity(mobile);
             Identity identity = mobile.Identity;
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -392,7 +393,8 @@ namespace CMDB.Controllers
             service.GetAssignedIdentity(mobile);
             service.GetAssignedSubscription(mobile);
             ViewData["Name"] = mobile.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

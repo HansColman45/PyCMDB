@@ -2,10 +2,11 @@
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
-    public interface IAccountTypeRepository
+    public interface IIdentityTypeRepository
     {
         Task<List<TypeDTO>> GetAll();
         Task<List<TypeDTO>> GetAll(string searchStr);
@@ -16,39 +17,34 @@ namespace CMDB.API.Services
         Task<TypeDTO> Update(TypeDTO type);
         Task<bool> IsExisitng(TypeDTO type);
     }
-    public class AccountTypeRepository : GenericRepository, IAccountTypeRepository
+    public class IdentityTypeRepository : GenericRepository, IIdentityTypeRepository
     {
-        private readonly string table = "accounttype";
+        private readonly string table = "identitytype";
+        public IdentityTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
+        {
+        }
 
-        public AccountTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
+        public async Task<TypeDTO> Activate(TypeDTO type)
         {
-        }
-        public async Task<List<TypeDTO>> GetAll()
-        {
-            List<TypeDTO> accountTypes = await _context.Types.OfType<AccountType>().AsNoTracking()
-                .Select(x => ConvertType(x))
-                .ToListAsync();
-            return accountTypes;
-        }
-        public async Task<List<TypeDTO>> GetAll(string searchStr)
-        {
-            string searhterm = "%" + searchStr + "%";
-            List<TypeDTO> accountTypes = await _context.Types.OfType<AccountType>().AsNoTracking()
-                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm))
-                .AsNoTracking()
-                .Select(x => ConvertType(x))
-                .ToListAsync();
-            return accountTypes;
-        }
-        public async Task<TypeDTO?> GetById(int id)
-        {
-            var type =  await _context.Types.OfType<AccountType>().AsNoTracking()
-                .Where(x => x.TypeId == id).AsNoTracking()
-                .Select(x => ConvertType(x))
-                .FirstAsync();
-            if(type is not null)
+            var acctype = await GetTypeById(type.TypeId);
+            string logline = GenericLogLineCreator.ActivateLogLine($"identity type with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, table);
+            try
             {
-                GetLogs(table,id,type);
+                acctype.active = 1;
+                acctype.DeactivateReason = "";
+                acctype.LastModifiedAdminId = TokenStore.Admin.AdminId;
+                acctype.Logs.Add(new()
+                {
+                    LogDate = DateTime.UtcNow,
+                    LogText = logline,
+                }
+                );
+                _context.Types.Update(acctype);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError("Db error {e}", e);
+                throw;
             }
             return type;
         }
@@ -57,7 +53,7 @@ namespace CMDB.API.Services
             string logline = GenericLogLineCreator.CreateLogLine($"accounttype with {typeDTO.Type} and {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
             try
             {
-                AccountType type = ConvertDTO(typeDTO);
+                IdentityType type = ConvertDTO(typeDTO);
                 type.LastModifiedAdminId = TokenStore.Admin.AdminId;
                 type.active = 1;
                 type.Logs.Add(new()
@@ -84,30 +80,6 @@ namespace CMDB.API.Services
                 acctype.DeactivateReason = reason;
                 acctype.LastModifiedAdminId = TokenStore.Admin.AdminId;
                 acctype.Logs.Add(new()
-                { 
-                    LogDate = DateTime.UtcNow,
-                    LogText = logline,
-                }
-                );
-                _context.Types.Update(acctype);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError("Db error {e}", e);
-                throw;
-            }
-            return type;
-        }
-        public async Task<TypeDTO> Activate(TypeDTO type)
-        {
-            var acctype = await GetTypeById(type.TypeId);
-            string logline = GenericLogLineCreator.ActivateLogLine($"accounttype with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, table);
-            try
-            {
-                acctype.active = 1;
-                acctype.DeactivateReason = "";
-                acctype.LastModifiedAdminId = TokenStore.Admin.AdminId;
-                acctype.Logs.Add(new()
                 {
                     LogDate = DateTime.UtcNow,
                     LogText = logline,
@@ -122,11 +94,73 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        public async Task<List<TypeDTO>> GetAll()
+        {
+            List<TypeDTO> accountTypes = await _context.Types.OfType<IdentityType>().AsNoTracking()
+               .Select(x => ConvertType(x))
+               .ToListAsync();
+            return accountTypes;
+        }
+        public async Task<List<TypeDTO>> GetAll(string searchStr)
+        {
+            string searhterm = "%" + searchStr + "%";
+            List<TypeDTO> accountTypes = await _context.Types.OfType<IdentityType>()
+                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm))
+                .AsNoTracking()
+                .Select(x => ConvertType(x))
+                .ToListAsync();
+            return accountTypes;
+        }
+        public async Task<TypeDTO?> GetById(int id)
+        {
+            var type = await _context.Types.OfType<IdentityType>().AsNoTracking()
+                .Where(x => x.TypeId == id).AsNoTracking()
+                .Select(x => ConvertType(x))
+                .FirstAsync();
+            if (type is not null)
+            {
+                GetLogs(table, id, type);
+            }
+            return type;
+        }
+        public async Task<bool> IsExisitng(TypeDTO type)
+        {
+            bool result = false;
+            var oldtype = await GetTypeById(type.TypeId);
+            if (oldtype is null)
+            {
+                var types = await _context.Types.OfType<IdentityType>()
+                    .Where(x => x.Type == type.Type || x.Description == type.Description).AsNoTracking()
+                    .ToListAsync();
+                if (types.Count > 0)
+                    result = true;
+            }
+            else
+            {
+                if (string.Compare(oldtype.Type, type.Type) != 0)
+                {
+                    var types = await _context.Types.OfType<IdentityType>()
+                    .Where(x => x.Type == type.Type).AsNoTracking()
+                    .ToListAsync();
+                    if (types.Count > 0)
+                        result = true;
+                }
+                else if (string.Compare(oldtype.Description, type.Description) != 0)
+                {
+                    var types = await _context.Types.OfType<IdentityType>()
+                    .Where(x => x.Description == type.Description).AsNoTracking()
+                    .ToListAsync();
+                    if (types.Count > 0)
+                        result = true;
+                }
+            }
+            return result;
+        }
         public async Task<TypeDTO> Update(TypeDTO type)
         {
             var oldType = await GetTypeById(type.TypeId);
             var newType = ConvertDTO(type);
-            if (string.Compare(oldType.Type, newType.Type)!= 0)
+            if (string.Compare(oldType.Type, newType.Type) != 0)
             {
                 string logline = GenericLogLineCreator.UpdateLogLine("type", oldType.Type, newType.Type, TokenStore.Admin.Account.UserID, table);
                 try
@@ -171,40 +205,7 @@ namespace CMDB.API.Services
             _context.Types.Update(oldType);
             return type;
         }
-        public async Task<bool> IsExisitng(TypeDTO type)
-        {
-            bool result = false;
-            var oldtype = await GetTypeById(type.TypeId);
-            if (oldtype is null)
-            {
-                var types = await _context.Types.OfType<AccountType>()
-                    .Where(x => x.Type == type.Type || x.Description == type.Description).AsNoTracking()
-                    .ToListAsync();
-                if (types.Count > 0)
-                    result = true;
-            }
-            else
-            {
-                if(string.Compare(oldtype.Type,type.Type) != 0)
-                {
-                    var types = await _context.Types.OfType<AccountType>()
-                    .Where(x => x.Type == type.Type).AsNoTracking()
-                    .ToListAsync();
-                    if (types.Count > 0)
-                        result = true;
-                }
-                else if(string.Compare(oldtype.Description,type.Description) != 0)
-                {
-                    var types = await _context.Types.OfType<AccountType>()
-                    .Where(x => x.Description == type.Description).AsNoTracking()
-                    .ToListAsync();
-                    if (types.Count > 0)
-                        result = true;
-                }
-            }
-            return result;
-        }
-        public static TypeDTO ConvertType(in AccountType type)
+        public static TypeDTO ConvertType(IdentityType type)
         {
             return new()
             {
@@ -216,7 +217,7 @@ namespace CMDB.API.Services
                 TypeId = type.TypeId
             };
         }
-        public static AccountType ConvertDTO(TypeDTO typeDTO) 
+        public static IdentityType ConvertDTO(TypeDTO typeDTO)
         {
             return new()
             {
@@ -228,9 +229,9 @@ namespace CMDB.API.Services
                 TypeId = typeDTO.TypeId
             };
         }
-        private async Task<AccountType?> GetTypeById(int id)
+        private async Task<IdentityType?> GetTypeById(int id)
         {
-            return await _context.Types.OfType<AccountType>()
+            return await _context.Types.OfType<IdentityType>()
                 .Where(x => x.TypeId == id)
                 .FirstAsync();
         }
