@@ -30,7 +30,10 @@ namespace CMDB.API.Models
                 if (string.IsNullOrEmpty(Name))
                     return "";
                 else
-                    return Name.Split(',')[0];
+                    if (Name == "Stock")
+                        return Name;
+                    else
+                        return Name.Split(',')[0];
             }
             set => Name = value + ", " + LastName;
         }

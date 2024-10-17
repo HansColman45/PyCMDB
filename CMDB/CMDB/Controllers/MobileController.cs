@@ -1,15 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
 using CMDB.Services;
-using System.Threading.Tasks;
-using System;
-using CMDB.Domain.Entities;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
-using CMDB.Util;
-using QuestPDF.Fluent;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
@@ -68,7 +65,7 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             Mobile mobile = new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -134,7 +131,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit mobile";
             await BuildMenu();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {

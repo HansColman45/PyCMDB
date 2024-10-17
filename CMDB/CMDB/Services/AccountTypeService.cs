@@ -1,12 +1,8 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.CustomExeptions;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services

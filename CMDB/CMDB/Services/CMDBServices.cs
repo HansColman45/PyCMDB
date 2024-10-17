@@ -1,4 +1,4 @@
-﻿using Azure;
+﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
@@ -167,14 +167,20 @@ namespace CMDB.Services
                 return new List<Menu>();
         }
         #endregion
-        public List<SelectListItem> ListAssetTypes(string category)
+        public async Task<List<SelectListItem>> ListAssetTypes(string category)
         {
             List<SelectListItem> assettypes = new();
-            /*var types = _context.AssetTypes.Include(x => x.Category).Where(x => x.Category.Category == category).ToList();
-            foreach (var type in types)
+            BaseUrl = _url + $"api/AssetType/GetByCategory/{category}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) 
             {
-                assettypes.Add(new(type.Vendor + " " + type.Type, type.TypeID.ToString()));
-            }*/
+                var types = await response.Content.ReadAsJsonAsync<List<AssetTypeDTO>>();
+                foreach (var type in types)
+                {
+                    assettypes.Add(new(type.ToString(), type.TypeID.ToString()));
+                }
+            }
             return assettypes;
         }
     }

@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.AssetCategory;
+﻿@model CMDB.API.Models.AssetCategoryDTO;
 @{
     Layout = "_Layout";
 }
@@ -10,14 +10,14 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Category)</th>
                 <th>@Html.DisplayNameFor(model => model.Prefix)</th>
-                <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th>@Html.DisplayNameFor(model => model.State)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td id="Category">@Html.DisplayFor(model => model.Category)</td>
                 <td id="Prefix">@Html.DisplayFor(model => model.Prefix)</td>
-                <td id="State">@Html.DisplayFor(model => model.Active)</td>
+                <td id="State">@Html.DisplayFor(model => model.State)</td>
             </tr>
         </tbody>
     </table>

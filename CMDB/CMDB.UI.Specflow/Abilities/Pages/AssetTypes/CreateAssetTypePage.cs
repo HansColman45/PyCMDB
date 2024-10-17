@@ -7,7 +7,7 @@
         }
         public string Category
         {
-            set => SelectTektInDropDownByXpath("//select[@id='Category']", value);
+            set => SelectTektInDropDownByXpath("//select[@id='AssetCategory']", value);
         }
         public string Vendor
         {

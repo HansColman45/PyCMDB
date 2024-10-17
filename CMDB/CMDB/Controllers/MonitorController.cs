@@ -1,13 +1,10 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
 using CMDB.Services;
-using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QuestPDF.Fluent;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
@@ -15,11 +12,13 @@ namespace CMDB.Controllers
     public class MonitorController : CMDBController
     {
         private new readonly DevicesService service;
+        private readonly PDFService _PDFservice;
         public MonitorController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             SitePart = "Monitor";
             Table = "screen";
+            _PDFservice = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -68,8 +67,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
+            var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -79,26 +77,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (monitor.IdentityId > 1)
+                        if (monitor.Identity.IdenId > 1)
                         {
-                            /*PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = monitor.Identity.Name,
-                                UserID = monitor.Identity.UserID,
-                                FirstName = monitor.Identity.FirstName,
-                                LastName = monitor.Identity.LastName,
-                                Language = monitor.Identity.Language.Code,
-                                Receiver = monitor.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(monitor);
-                            string pdfFile = PDFGenerator.GeneratePath(_env);
-                            PDFGenerator.GeneratePdf(pdfFile);
-                            await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);*/
-                            await service.ReleaseIdenity(monitor, monitor.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: monitor.Identity.UserID, 
+                                ITEmployee: admin.Account.UserID, 
+                                Singer: monitor.Identity.Name,
+                                FirstName:monitor.Identity.FirstName, 
+                                LastName:monitor.Identity.LastName,
+                                Language: monitor.Identity.Language.Code,
+                                Receiver: monitor.Identity.Name,
+                                type: "Release");
+                            await _PDFservice.SetDeviceInfo(monitor);
+                            await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
+                            await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
+                            await service.ReleaseIdenity(monitor);
                         }
-                        await service.Deactivate(monitor, values["reason"], Table);
+                        await service.Deactivate(monitor, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -119,13 +115,12 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
+            var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(moniror, Table);
+                await service.Activate(moniror);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -140,9 +135,9 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Create monitor";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Desktop";
-            Screen screen = new();
+            DeviceDTO screen = new();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -151,14 +146,15 @@ namespace CMDB.Controllers
                     screen.AssetTag = values["AssetTag"];
                     screen.SerialNumber = values["SerialNumber"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    screen.Type = AssetType;
-                    screen.Category = AssetType.Category;
-                    if (service.IsDeviceExisting(screen))
+                    var AssetType = await service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Monitor");
+                    screen.AssetType = AssetType;
+                    screen.Category = category;
+                    if (await service.IsDeviceExisting(screen))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(screen, Table);
+                        await service.CreateNewDevice(screen);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -175,10 +171,9 @@ namespace CMDB.Controllers
         {
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var screens = await service.ListScreensByID(id);
-            if (screens == null)
+            var screen = await service.GetDeviceById(SitePart, id);
+            if (screen == null)
                 return NotFound();
-            Screen screen = screens.FirstOrDefault();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Monitor details";
             await BuildMenu();
@@ -189,7 +184,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetAssignedIdentity(screen);
             return View(screen);
         }
         public async Task<IActionResult> Edit(string id, IFormCollection values)
@@ -197,24 +191,23 @@ namespace CMDB.Controllers
             log.Debug("Using Edit in {0}", SitePart);
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var screens = await service.ListScreensByID(id);
-            if (screens == null)
+            var screen = await service.GetDeviceById(SitePart, id);
+            if (screen == null)
                 return NotFound();
             await BuildMenu();
-            Screen screen = screens.FirstOrDefault();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["Title"] = "Edit monitor";
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Monitor";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["Type.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type);
+                var AssetType = await service.GetAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {
-                    await service.UpdateScreen(screen, newSerial, AssetType, Table);
+                    await service.UpdateDevice(screen, newSerial, AssetType);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -229,11 +222,10 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
+            var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -241,10 +233,10 @@ namespace CMDB.Controllers
                 {   
                     if (!service.IsDeviceFree(moniror))
                         ModelState.AddModelError("", "Monitor can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity, moniror, Table);
+                        await service.AssignIdentity2Device(identity, moniror);
                         return RedirectToAction("AssignForm", "Monitor", new { id });
                     }
                 }
@@ -266,34 +258,29 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
+            var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
             ViewData["Name"] = monitor.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
-            service.GetAssignedIdentity(monitor);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = monitor.Identity.UserID,
-                        FirstName = monitor.Identity.FirstName,
-                        LastName = monitor.Identity.LastName,
-                        Language = monitor.Identity.Language.Code,
-                        Receiver = monitor.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: monitor.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: monitor.Identity.Name,
+                        FirstName: monitor.Identity.FirstName,
+                        LastName: monitor.Identity.LastName,
+                        Language: monitor.Identity.Language.Code,
+                        Receiver: monitor.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(monitor);
+                    await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -309,8 +296,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
+            var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
             ViewData["Name"] = monitor.Identity.Name;
@@ -321,24 +307,21 @@ namespace CMDB.Controllers
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                Identity identity = monitor.Identity;
+                var identity = monitor.Identity;
                 if (ModelState.IsValid) {
-                    await service.ReleaseIdenity(monitor, identity, Table);
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: monitor.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: monitor.Identity.Name,
+                        FirstName: monitor.Identity.FirstName,
+                        LastName: monitor.Identity.LastName,
+                        Language: monitor.Identity.Language.Code,
+                        Receiver: monitor.Identity.Name,
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(monitor);
+                    await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
+                    await service.ReleaseIdenity(monitor);
                     return RedirectToAction(nameof(Index));
                 }
             }

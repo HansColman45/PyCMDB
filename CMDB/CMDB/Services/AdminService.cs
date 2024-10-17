@@ -1,10 +1,10 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
+using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -16,30 +16,39 @@ namespace CMDB.Services
         }
         public async Task<List<Admin>> ListAll()
         {
-            /*List<Admin> admins = await _context.Admins
-                .Include(x => x.Account)
-                .ToListAsync();
-            return admins;*/
-            return [];
+            BaseUrl = _url + $"api/Admin/ListAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<Admin>>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<Admin>> ListAll(string searchString)
         {
-            /*string searhterm = "%" + searchString + "%";
-            List<Admin> admins = await _context.Admins
-                .Include(x => x.Account)
-                .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm))
-                .ToListAsync();
-            return admins;*/
-            return [];
+            BaseUrl = _url + $"api/Admin/ListAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<Admin>>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<Admin>> GetByID(int id)
         {
-            /*List<Admin> admins = await _context.Admins
-                .Include(x => x.Account)
-                .Where(x => x.AdminId == id)
-                .ToListAsync();
-            return admins;*/
-            return [];
+            BaseUrl = _url + $"api/Admin/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<Admin>>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public List<SelectListItem> ListAllLevels()
         {

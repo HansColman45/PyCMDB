@@ -1,26 +1,24 @@
-﻿using System;
-using System.Linq;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
-using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
     public class DesktopController : CMDBController
     {
         private new readonly DevicesService service;
+        private readonly PDFService _PDFservice;
         public DesktopController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             SitePart = "Desktop";
             Table = "desktop";
+            _PDFservice = new PDFService();
         }
         public async Task<IActionResult> Index()
         {
@@ -30,11 +28,12 @@ namespace CMDB.Controllers
             var Desktops = await service.ListAll(SitePart);
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
-            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete").ConfigureAwait(false);
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Desktop\Search";
+            ViewData["Controller"] = @"\Desktop\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
@@ -52,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Desktop\Search";
+                ViewData["Controller"] = @"\Desktop\Create";
                 return View(Desktops);
             }
             else
@@ -64,10 +64,11 @@ namespace CMDB.Controllers
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Desktop";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["Controller"] = @"\Desktop\Create";
             await BuildMenu();
-            Desktop desktop = new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
-            ViewBag.Rams = service.ListRams();
+            DeviceDTO desktop = new();
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
+            ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -76,16 +77,17 @@ namespace CMDB.Controllers
                     desktop.AssetTag = values["AssetTag"];
                     desktop.SerialNumber = values["SerialNumber"];
                     desktop.RAM = values["RAM"];
-                    int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    desktop.Type = AssetType;
-                    desktop.Category = AssetType.Category;
+                    int Type = Convert.ToInt32(values["AssetType"]);
+                    var AssetType = await service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Desktop");
+                    desktop.AssetType = AssetType;
+                    desktop.Category = category;
                     desktop.MAC = values["MAC"];
-                    if (service.IsDeviceExisting(desktop))
+                    if (await service.IsDeviceExisting(desktop))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(desktop, Table);
+                        await service.CreateNewDevice(desktop);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -102,16 +104,16 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Desktop";
+            ViewData["Controller"] = @$"\Desktop\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart,id); 
             if (desktop == null)
                 return NotFound();
-            ViewBag.AssetTypes = service.ListAssetTypes(SitePart);
-            ViewBag.Rams = service.ListRams();
+            ViewBag.AssetTypes = await service.ListAssetTypes(SitePart);
+            ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -119,12 +121,12 @@ namespace CMDB.Controllers
                 {
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
-                    int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type);
+                    int Type = Convert.ToInt32(values["AssetType.TypeID"]);
+                    var newAssetType = await service.GetAssetTypeById(Type);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateDesktop(desktop, newRam, newMAC, newAssetType, newSerialNumber, Table);
+                        await service.UpdateDevice(desktop, newRam, newMAC, newAssetType, newSerialNumber);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -142,6 +144,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Desktop details";
+            ViewData["Controller"] = @"\Desktop\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -152,11 +155,9 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
-            service.GetAssignedIdentity(desktop);
             return View(desktop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
@@ -169,8 +170,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -180,26 +180,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (desktop.IdentityId > 1)
+                        if (desktop.Identity.IdenId > 1)
                         {
-                            /*PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = desktop.Identity.Name,
-                                UserID = desktop.Identity.UserID,
-                                FirstName = desktop.Identity.FirstName,
-                                LastName = desktop.Identity.LastName,
-                                Language = desktop.Identity.Language.Code,
-                                Receiver = desktop.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(desktop);
-                            string pdfFile = PDFGenerator.GeneratePath(_env);
-                            PDFGenerator.GeneratePdf(pdfFile);
-                            await service.LogPdfFile("identity", desktop.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, desktop.AssetTag, pdfFile)*/;
-                            await service.ReleaseIdenity(desktop, desktop.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: desktop.Identity.UserID,
+                                ITEmployee: admin.Account.UserID,
+                                Singer: desktop.Identity.Name,
+                                FirstName: desktop.Identity.FirstName,
+                                LastName: desktop.Identity.LastName,
+                                Language: desktop.Identity.Language.Code,
+                                Receiver: desktop.Identity.Name,
+                                type: "Release");
+                            await _PDFservice.SetDeviceInfo(desktop);
+                            await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
+                            await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
+                            await service.ReleaseIdenity(desktop);
                         }
-                        await service.Deactivate(desktop, values["reason"], Table);
+                        await service.Deactivate(desktop, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -220,13 +218,12 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(desktop, Table);
+                await service.Activate(desktop);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -244,11 +241,10 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -256,10 +252,10 @@ namespace CMDB.Controllers
                 {
                     if (!service.IsDeviceFree(desktop))
                         ModelState.AddModelError("", "Desktop can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity, desktop, Table);
+                        await service.AssignIdentity2Device(identity, desktop);
                         return RedirectToAction("AssignForm", "Desktop", new { id });
                     }
                 }
@@ -281,11 +277,9 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
-            service.GetAssignedIdentity(desktop);
             ViewData["Name"] = desktop.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -296,21 +290,17 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = desktop.Identity.UserID,
-                        FirstName = desktop.Identity.FirstName,
-                        LastName = desktop.Identity.LastName,
-                        Language = desktop.Identity.Language.Code,
-                        Receiver = desktop.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(desktop);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile("identity", desktop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, desktop.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: desktop.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: desktop.Identity.Name,
+                        FirstName: desktop.Identity.FirstName,
+                        LastName: desktop.Identity.LastName,
+                        Language: desktop.Identity.Language.Code,
+                        Receiver: desktop.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(desktop);
+                    await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -326,12 +316,10 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var desktops = await service.ListDekstopByID(id);
-            Desktop desktop = desktops.FirstOrDefault();
+            var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
-            service.GetAssignedIdentity(desktop);
-            Identity identity = desktop.Identity;
+            var identity = desktop.Identity;
             ViewData["Name"] = identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -342,23 +330,19 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseIdenity(desktop, desktop.Identity, Table);
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name,
-                        Type = "Release"
-                    };
-                    PDFGenerator.SetAssetInfo(desktop);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile("identity", desktop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, desktop.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: desktop.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: desktop.Identity.Name,
+                        FirstName: desktop.Identity.FirstName,
+                        LastName: desktop.Identity.LastName,
+                        Language: desktop.Identity.Language.Code,
+                        Receiver: desktop.Identity.Name, 
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(desktop);
+                    await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
+                    await service.ReleaseIdenity(desktop);
                     return RedirectToAction(nameof(Index));
                 }
             }

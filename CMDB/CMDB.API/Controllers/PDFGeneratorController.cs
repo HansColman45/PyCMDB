@@ -88,5 +88,29 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpGet("{entity:alpha}/{assetTag}"),Authorize]
+        public async Task<IActionResult> GeneratePDF(string entity, string assetTag)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            string pdfFile = PDFGenerator.GeneratePath(_env);
+            PDFGenerator.GeneratePdf(pdfFile);
+            switch (entity) 
+            {
+                case "monitor":
+                case "screen":
+                case "laptop":
+                case "desktop":
+                case "docking":
+                case "docking station":
+                    await _uow.DeviceRepository.LogPdfFile(entity, pdfFile, assetTag);
+                    break;
+                default:
+                    throw new NotImplementedException($"The {entity} is not implemented");
+            }
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

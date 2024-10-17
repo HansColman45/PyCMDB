@@ -58,15 +58,17 @@ namespace CMDB.API.Services
         {
             model.Logs = table switch
             {
-                "laptop" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                "Laptop" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
                     .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
-                "desktop" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                "Desktop" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
                     .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
-                "docking" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                "Docking station" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
                     .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
-                "token" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                "Token" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
                     .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
-                "screen" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                "Screen" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
+                    .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
+                "Monitor" => _context.Logs.AsNoTracking().Include(x => x.Device).Where(x => x.Device.AssetTag == AssetTag).OrderByDescending(x => x.LogDate)
                     .Select(x => new LogDTO() { Id = x.Id, LogDate = x.LogDate, LogText = x.LogText }).ToList(),
                 _ => throw new Exception("No get log statement created for table: " + table),
             };

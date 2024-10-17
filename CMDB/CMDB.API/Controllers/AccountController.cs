@@ -38,7 +38,7 @@ namespace CMDB.API.Controllers
             return Ok(accounts);
         }
         [HttpGet, Authorize]
-        [Route("GetAll/{searchstr}")]
+        [Route("GetAll/{searchstr:alpha}")]
         public async Task<IActionResult> GetAll(string searchstr)
         {
             // Retrieve userId from the claims

@@ -1,12 +1,11 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System;
-using System.Text;
-using System.Collections.Generic;
+using CMDB.Infrastructure;
+using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -16,84 +15,77 @@ namespace CMDB.Services
         public AssetTypeService() : base()
         {
         }
-        public async Task<List<AssetType>> ListAllAssetTypes()
+        public async Task<List<AssetTypeDTO>> ListAllAssetTypes()
         {
-            /*var devices = await _context.AssetTypes
-                .Include(x => x.Category)
-                .ToListAsync();
-            return devices;*/
-            return [];
-        }
-        public async Task<List<AssetType>> ListAllAssetTypes(string searchString)
-        {
-            /*string searhterm = "%" + searchString + "%";
-            var devices = await _context.AssetTypes
-                .Include(x => x.Category)
-                .Where(x => EF.Functions.Like(x.Vendor, searhterm)
-                    || EF.Functions.Like(x.Type, searhterm)
-                    || EF.Functions.Like(x.Category.Category, searhterm))
-                .ToListAsync();
-            return devices;*/
-            return [];
-        }
-        public async Task<List<AssetType>> ListById(int id)
-        {
-            /*var devices = await _context.AssetTypes
-                .Include(x => x.Category)
-                .Where(x => x.TypeID == id)
-                .ToListAsync();
-            return devices;*/
-            return [];
-        }
-        public async Task CreateNewAssetType(AssetType assetType, string Table)
-        {
-            /*assetType.LastModfiedAdmin = Admin;
-            _context.AssetTypes.Add(assetType);
-            await _context.SaveChangesAsync();
-            string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            await LogCreate(Table, assetType.TypeID, Value);*/
-        }
-        public async Task UpdateAssetType(AssetType assetType, string Vendor, string Type, string Table)
-        {
-            /*assetType.LastModfiedAdmin = Admin;
-            string OldType = assetType.Type;
-            string OldVendor = assetType.Vendor;
-            if (String.Compare(assetType.Vendor, Vendor) != 0)
+            BaseUrl = _url + $"api/AssetType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                assetType.Vendor = Vendor;
-                _context.AssetTypes.Update(assetType);
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, assetType.TypeID, "Vendor", OldVendor, Vendor);
+                return await response.Content.ReadAsJsonAsync<List<AssetTypeDTO>>();
             }
-            if (String.Compare(assetType.Type, Type) != 0)
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task<List<AssetTypeDTO>> ListAllAssetTypes(string searchString)
+        {
+            BaseUrl = _url + $"api/AssetType/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                assetType.Type = Type;
-                _context.AssetTypes.Update(assetType);
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, assetType.TypeID, "Type", OldType, Type);
-            }*/
+                return await response.Content.ReadAsJsonAsync<List<AssetTypeDTO>>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task DeactivateAssetType(AssetType assetType, string reason, string Table)
+        public async Task<AssetTypeDTO> GetById(int id)
         {
-           /* assetType.Active = State.Inactive;
-            assetType.DeactivateReason = reason;
-            assetType.LastModfiedAdmin = Admin;
-            _context.AssetTypes.Update(assetType);
-            await _context.SaveChangesAsync();
-            string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            await LogDeactivate(Table, assetType.TypeID, Value, reason);*/
+            BaseUrl = _url + $"api/AssetType/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<AssetTypeDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task ActivateAssetType(AssetType assetType, string Table)
+        public async Task CreateNewAssetType(AssetTypeDTO assetType)
         {
-            /*assetType.Active = State.Active;
-            assetType.DeactivateReason = "";
-            assetType.LastModfiedAdmin = Admin;
-            _context.AssetTypes.Update(assetType);
-            await _context.SaveChangesAsync();
-            string Value = $"{assetType.Category.Category} type Vendor: {assetType.Vendor} and type {assetType.Type}";
-            await LogActivate(Table, assetType.TypeID, Value);*/
+            BaseUrl = _url + $"api/AssetType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl,assetType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsAssetTypeExisting(AssetType assetType, string Vendor = "", string type = "")
+        public async Task UpdateAssetType(AssetTypeDTO assetType, string Vendor, string Type)
+        {
+            assetType.Type = Type;
+            assetType.Vendor = Vendor;
+            BaseUrl = _url + $"api/AssetType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl, assetType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
+        }
+        public async Task DeactivateAssetType(AssetTypeDTO assetType, string reason)
+        {
+            BaseUrl = _url + $"api/AssetType/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, assetType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task ActivateAssetType(AssetTypeDTO assetType)
+        {
+            BaseUrl = _url + $"api/AssetType/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, assetType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public bool IsAssetTypeExisting(AssetTypeDTO assetType, string Vendor = "", string type = "")
         {
             bool result = false;
             /*List<AssetType> assetTypes = new();
@@ -125,21 +117,35 @@ namespace CMDB.Services
             }*/
             return result;
         }
-        public List<SelectListItem> ListActiveCategories()
+        public async Task<List<SelectListItem>> ListActiveCategories()
         {
             List<SelectListItem> assettypes = new();
-            /*var Categories = _context.AssetCategories.Where(x => x.active == 1 && x.Id != 3 && x.Id != 4).ToList();
-            foreach (var category in Categories)
+            BaseUrl = _url + $"api/AssetCategory/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                assettypes.Add(new(category.Category, category.Id.ToString()));
-            }*/
-            return assettypes;
+                var categories = await response.Content.ReadAsJsonAsync<List<AssetCategoryDTO>>();
+                foreach (var category in categories.Where(x => x.Active == 1 && x.Id != 3 && x.Id != 4))
+                {
+                    assettypes.Add(new(category.Category, category.Id.ToString()));
+                }
+                return assettypes;
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public List<AssetCategory> ListAssetCategoryByID(int id)
+        public async Task<AssetCategoryDTO> ListAssetCategoryByID(int id)
         {
-            /*var categories = _context.AssetCategories.Where(x => x.Id == id).ToList();
-            return categories;*/
-            return new();
+            BaseUrl = _url + $"api/AssetCategory/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<AssetCategoryDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
     }
 }

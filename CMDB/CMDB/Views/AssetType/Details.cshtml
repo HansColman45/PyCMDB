@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.AssetType;
+﻿@model CMDB.API.Models.AssetTypeDTO;
 @{
     Layout = "_Layout";
 }
@@ -9,19 +9,19 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Category)</th>
+                <th>@Html.DisplayNameFor(model => model.AssetCategory)</th>
                 <th>@Html.DisplayNameFor(model => model.Vendor)</th>
                 <th>@Html.DisplayNameFor(model => model.Type)</th>
-                <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th>@Html.DisplayNameFor(model => model.State)</th>
                 <th class="d-none">@Html.DisplayNameFor(model => model.TypeID)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td id="Category">@Html.DisplayFor(model => model.Category.Category)</td>
+                <td id="Category">@Html.DisplayFor(model => model.AssetCategory.Category)</td>
                 <td id="Vendor">@Html.DisplayFor(model => model.Vendor)</td>
                 <td id="Type">@Html.DisplayFor(model => model.Type)</td>
-                <td id="Active">@Html.DisplayFor(model => model.Active)</td>
+                <td id="Active">@Html.DisplayFor(model => model.State)</td>
                 <td id="Id" class="d-none">@Html.DisplayFor(model => model.TypeID)</td>
             </tr>
         </tbody>
@@ -38,7 +38,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (CMDB.Domain.Entities.Log log in Model.Logs)
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

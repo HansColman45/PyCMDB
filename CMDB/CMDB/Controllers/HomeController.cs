@@ -1,8 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using CMDB.Services;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers

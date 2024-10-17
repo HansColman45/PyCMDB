@@ -28,7 +28,10 @@ namespace CMDB.Domain.Entities
                 if (string.IsNullOrEmpty(Name))
                     return "";
                 else
-                    return Name.Split(',')[1].Trim();
+                    if (Name == "Stock")
+                        return Name;
+                    else
+                        return Name.Split(',')[1].Trim();
             }
             set => Name = FirstName + ", " + value;
         }
@@ -41,7 +44,10 @@ namespace CMDB.Domain.Entities
                 if (string.IsNullOrEmpty(Name))
                     return "";
                 else
-                    return Name.Split(',')[0];
+                    if (Name == "Stock")
+                        return Name;
+                    else
+                        return Name.Split(',')[0];
             }
             set => Name = value + ", " + LastName;
         }

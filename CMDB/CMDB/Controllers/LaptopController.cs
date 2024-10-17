@@ -1,32 +1,31 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
-using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {
     public class LaptopController : CMDBController
     {
         private new readonly DevicesService service;
+        private readonly PDFService _PDFservice;
         public LaptopController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             SitePart = "Laptop";
             Table = "laptop";
+            _PDFservice = new();
         }
 
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
             ViewData["Title"] = "Laptop overview";
+            ViewData["Controller"] = @"\Laptop\Create";
             await BuildMenu();
             var Desktops = await service.ListAll(SitePart);
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -44,6 +43,7 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Laptop overview";
+                ViewData["Controller"] = @"\Laptop\Create";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -64,11 +64,12 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Laptop";
+            ViewData["Controller"] = @"\Laptop\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            Laptop laptop = new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
-            ViewBag.Rams = service.ListRams();
+            DeviceDTO laptop = new();
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
+            ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -78,15 +79,16 @@ namespace CMDB.Controllers
                     laptop.SerialNumber = values["SerialNumber"];
                     laptop.RAM = values["RAM"];
                     int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    laptop.Type = AssetType;
-                    laptop.Category = AssetType.Category;
+                    var AssetType = await service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Laptop");
+                    laptop.AssetType = AssetType;
+                    laptop.Category = category;
                     laptop.MAC = values["MAC"];
-                    if (service.IsDeviceExisting(laptop))
+                    if (await service.IsDeviceExisting(laptop))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(laptop, Table);
+                        await service.CreateNewDevice(laptop);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -103,16 +105,16 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit Laptop";
+            ViewData["Controller"] = @$"\Laptop\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
-            ViewBag.AssetTypes =  service.ListAssetTypes(SitePart);
-            ViewBag.Rams = service.ListRams();
+            ViewBag.AssetTypes = await service.ListAssetTypes(SitePart);
+            ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -121,11 +123,11 @@ namespace CMDB.Controllers
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
                     int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type);
+                    var newAssetType = await service.GetAssetTypeById(Type);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateLaptop(laptop, newRam, newMAC, newAssetType, newSerialNumber, Table);
+                        await service.UpdateDevice(laptop, newRam, newMAC, newAssetType, newSerialNumber);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -143,6 +145,7 @@ namespace CMDB.Controllers
         {
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Laptop details";
+            ViewData["Controller"] = @"\Laptop\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -153,11 +156,9 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
-            service.GetAssignedIdentity(laptop);
             return View(laptop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
@@ -166,12 +167,12 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete Laptop";
+            ViewData["Controller"] = @$"\Laptop\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Laptop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -181,26 +182,24 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (laptop.IdentityId > 1)
+                        if (laptop.Identity.IdenId > 1)
                         {
-                           /* PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = laptop.Identity.Name,
-                                UserID = laptop.Identity.UserID,
-                                FirstName = laptop.Identity.FirstName,
-                                LastName = laptop.Identity.LastName,
-                                Language = laptop.Identity.Language.Code,
-                                Receiver = laptop.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(laptop);
-                            string pdfFile = PDFGenerator.GeneratePath(_env);
-                            PDFGenerator.GeneratePdf(pdfFile);
-                            await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
-                            await service.ReleaseIdenity(laptop, laptop.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: laptop.Identity.UserID,
+                                ITEmployee: admin.Account.UserID,
+                                Singer: laptop.Identity.Name,
+                                FirstName: laptop.Identity.FirstName,
+                                LastName: laptop.Identity.LastName,
+                                Language: laptop.Identity.Language.Code,
+                                Receiver: laptop.Identity.Name,
+                                type:"Release");
+                            await _PDFservice.SetDeviceInfo(laptop);
+                            await _PDFservice.GenratPDFFile(Table, laptop.AssetTag);
+                            await _PDFservice.GenratPDFFile("identity", laptop.Identity.IdenId);
+                            await service.ReleaseIdenity(laptop);
                         }
-                        await service.Deactivate(laptop, values["reason"], Table);
+                        await service.Deactivate(laptop, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -221,13 +220,12 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(laptop, Table);
+                await service.Activate(laptop);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -242,14 +240,14 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Assign identity to Laptop";
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Laptop";
+            ViewData["Controller"] = @$"\Laptop\AssignIdentity\{id}";
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -257,10 +255,10 @@ namespace CMDB.Controllers
                 {
                     if (!service.IsDeviceFree(laptop))
                         ModelState.AddModelError("", "Laptop can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity,laptop,Table);
+                        await service.AssignIdentity2Device(identity,laptop);
                         return RedirectToAction("AssignForm", "Laptop", new { id });
                     }
                 }
@@ -280,15 +278,14 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Laptop";
             ViewData["Action"] = "ReleaseIdentity";
+            ViewData["Controller"] = @$"\Laptop\ReleaseIdentity\{id}";
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
-            service.GetAssignedIdentity(laptop);
-            Identity identity = laptop.Identity;
+            var identity = laptop.Identity;
             ViewData["Name"] = identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -299,23 +296,18 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseIdenity(laptop, laptop.Identity, Table);
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name,
-                        Type = "Release"
-                    };
-                    PDFGenerator.SetAssetInfo(laptop);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: laptop.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: laptop.Identity.Name,
+                        FirstName: laptop.Identity.FirstName,
+                        LastName: laptop.Identity.LastName,
+                        Language: laptop.Identity.Language.Code,
+                        Receiver: laptop.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(laptop);
+                    await _PDFservice.GenratPDFFile(Table, laptop.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", laptop.Identity.IdenId);
+                    await service.ReleaseIdenity(laptop);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -330,11 +322,9 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var laptops = await service.ListLaptopByID(id);
-            Laptop laptop = laptops.FirstOrDefault();
+            var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
-            service.GetAssignedIdentity(laptop);
             ViewData["Name"] = laptop.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -345,21 +335,18 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = laptop.Identity.UserID,
-                        FirstName = laptop.Identity.FirstName,
-                        LastName = laptop.Identity.LastName,
-                        Language = laptop.Identity.Language.Code,
-                        Receiver = laptop.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(laptop);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);
-                    await service.LogPdfFile("identity", laptop.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, laptop.AssetTag, pdfFile);*/
+                    await _PDFservice.SetUserinfo(
+                        UserId: laptop.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: laptop.Identity.Name,
+                        FirstName: laptop.Identity.FirstName,
+                        LastName: laptop.Identity.LastName,
+                        Language: laptop.Identity.Language.Code,
+                        Receiver: laptop.Identity.Name,
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(laptop);
+                    await _PDFservice.GenratPDFFile(Table, laptop.AssetTag);
+                    await _PDFservice.GenratPDFFile("identity", laptop.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }

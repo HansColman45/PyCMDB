@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.Desktop;
+﻿@model CMDB.API.Models.DeviceDTO;
 @{
     CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
     Layout = "_Layout";
@@ -11,7 +11,7 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.AssetTag)</th>
                 <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
-                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(model => model.AssetType)</th>
                 <th>@Html.DisplayNameFor(model => model.MAC)</th>
                 <th>@Html.DisplayNameFor(model => model.RAM)</th>
             </tr>
@@ -20,7 +20,7 @@
             <tr>
                 <td id="AssetTag">@Html.DisplayFor(model => model.AssetTag)</td>
                 <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
-                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.AssetType.Vendor) @Html.DisplayFor(model => model.AssetType.Type)</td>
                 <td id="MAC">@Html.DisplayFor(model => model.MAC)</td>
                 <td id="RAM">@Html.DisplayFor(model => model.RAM)</td>
             </tr>
@@ -71,7 +71,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (CMDB.Domain.Entities.Log log in Model.Logs)
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

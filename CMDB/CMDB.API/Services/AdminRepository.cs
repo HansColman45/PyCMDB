@@ -7,17 +7,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public interface IAdminRepository
-    {
-        bool IsExisting(Admin admin);
-        Admin Add(Admin entity);
-        Task<Admin> Update(Admin admin, int adminId);
-        Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model);
-        Task<bool> HasAdminAccess(HasAdminAccessRequest request);
-        Task<IEnumerable<AdminDTO>> GetAll();
-        Task<IEnumerable<AdminDTO>> GetAll(string searchString);
-        Task<AdminDTO?> GetById(int id);
-    }
     public class AdminRepository : GenericRepository, IAdminRepository
     {
         private readonly JwtService _jwtService;

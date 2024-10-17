@@ -12,7 +12,7 @@ namespace CMDB.Controllers
 {
     public class AccountController : CMDBController
     {
-        private readonly AccountService service;
+        private new readonly AccountService service;
         private readonly PDFService PDFservice;
         public AccountController(IWebHostEnvironment env) : base(env)
         {
@@ -322,20 +322,6 @@ namespace CMDB.Controllers
                     account.Identities.Last().Identity.Language.Code);
                 await PDFservice.SetAccontInfo(account.Identities.Last());
                 await PDFservice.GenratPDFFile(Table, account.AccID);
-                /*PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = account.Identities.Last().Identity.UserID,
-                    FirstName = account.Identities.Last().Identity.FirstName,
-                    LastName = account.Identities.Last().Identity.LastName,
-                    Language = account.Identities.Last().Identity.Language.Code,
-                    Receiver = account.Identities.Last().Identity.Name
-                };
-                PDFGenerator.SetAccontInfo(account.Identities.First());
-                string pdfFile = PDFGenerator.GeneratePath(_env);
-                PDFGenerator.GeneratePdf(pdfFile);
-                await service.LogPdfFile(Table, account, pdfFile);*/
                 return RedirectToAction(nameof(Index));
             }
             return View(account);

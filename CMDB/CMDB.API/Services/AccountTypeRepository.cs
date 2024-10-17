@@ -5,17 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public interface IAccountTypeRepository
-    {
-        Task<List<TypeDTO>> GetAll();
-        Task<List<TypeDTO>> GetAll(string searchStr);
-        Task<TypeDTO?> GetById(int id);
-        TypeDTO Create(TypeDTO typeDTO);
-        Task<TypeDTO> DeActivate(TypeDTO type, string reason);
-        Task<TypeDTO> Activate(TypeDTO type);
-        Task<TypeDTO> Update(TypeDTO type);
-        Task<bool> IsExisitng(TypeDTO type);
-    }
     public class AccountTypeRepository : GenericRepository, IAccountTypeRepository
     {
         private readonly string table = "accounttype";
@@ -34,8 +23,7 @@ namespace CMDB.API.Services
         {
             string searhterm = "%" + searchStr + "%";
             List<TypeDTO> accountTypes = await _context.Types.OfType<AccountType>().AsNoTracking()
-                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm))
-                .AsNoTracking()
+                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm)).AsNoTracking()
                 .Select(x => ConvertType(x))
                 .ToListAsync();
             return accountTypes;
@@ -45,7 +33,7 @@ namespace CMDB.API.Services
             var type =  await _context.Types.OfType<AccountType>().AsNoTracking()
                 .Where(x => x.TypeId == id).AsNoTracking()
                 .Select(x => ConvertType(x))
-                .FirstAsync();
+                .FirstOrDefaultAsync();
             if(type is not null)
             {
                 GetLogs(table,id,type);

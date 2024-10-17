@@ -3,7 +3,7 @@
     public class AssetCategoryDTO: ModelDTO
     {
         public int Id { get; set; }
-        public required string Category { get; set; }
-        public required string Prefix { get; set; }
+        public string Category { get; set; }
+        public string? Prefix { get; set; }
     }
 }

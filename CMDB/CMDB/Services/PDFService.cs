@@ -60,7 +60,7 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task SetDeviceInfo(Device device)
+        public async Task SetDeviceInfo(DeviceDTO device)
         {
             BaseUrl = _url + path + "/AddAssetInfo";
             _Client.SetBearerToken(TokenStore.Token);
@@ -91,6 +91,16 @@ namespace CMDB.Services
             var response = await _Client.GetAsync(BaseUrl);
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url,response.StatusCode);
+            else
+                return await response.Content.ReadAsJsonAsync<string>();
+        }
+        public async Task<string> GenratPDFFile(string entity, string assetTag)
+        {
+            BaseUrl = _url + path + $"/{entity}/{assetTag}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
             else
                 return await response.Content.ReadAsJsonAsync<string>();
         }

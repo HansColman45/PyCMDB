@@ -14,6 +14,9 @@ namespace CMDB.API.Services
         public IConfigurationRepository ConfigurationRepository { get; }
         public IIdentityTypeRepository IdentityTypeRepository { get; }
         public ILanguageRepository LanguageRepository { get; }
+        public IDeviceRepository DeviceRepository { get; }
+        public IAssetTypeRepository AssetTypeRepository { get; }
+        public IAssetCategoryRepository AssetCategoryRepository { get; }
         public Task SaveChangesAsync();
     }
     public class UnitOfWork : IUnitOfWork
@@ -36,6 +39,9 @@ namespace CMDB.API.Services
             ConfigurationRepository = new ConfigurationRepository(_context, _logger);
             IdentityTypeRepository = new IdentityTypeRepository(_context, _logger);
             LanguageRepository = new LanguageRepository(_context, _logger);
+            DeviceRepository = new DeviceRepository(_context, _logger);
+            AssetTypeRepository = new AssetTypeRepository(_context, _logger);
+            AssetCategoryRepository = new AssetCategoryRepository(_context, _logger);
         }
         public IAccountRepository AccountRepository { get; private set; }
         public IMenuRepository MenuRepository { get; private set; }
@@ -47,6 +53,9 @@ namespace CMDB.API.Services
         public IConfigurationRepository ConfigurationRepository { get; private set; }
         public IIdentityTypeRepository IdentityTypeRepository { get; private set; }
         public ILanguageRepository LanguageRepository { get; private set; }
+        public IDeviceRepository DeviceRepository { get; private set; }
+        public IAssetTypeRepository AssetTypeRepository { get; private set; }
+        public IAssetCategoryRepository AssetCategoryRepository { get; private set; }
         public async Task SaveChangesAsync()
         {
             try

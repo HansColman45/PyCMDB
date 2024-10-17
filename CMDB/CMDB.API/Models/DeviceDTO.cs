@@ -5,10 +5,13 @@ namespace CMDB.API.Models
     public class DeviceDTO : ModelDTO
     {
         [Required(ErrorMessage = "Please enter a Assettag")]
-        public required string AssetTag { get; set; }
+        public string AssetTag { get; set; }
         [Required(ErrorMessage = "Please fill in a Serial number")]
-        public required string SerialNumber { get; set; }
-        public required AssetCategoryDTO Category { get; set; }
-        public required AssetTypeDTO AssetType { get; set; }
+        public string SerialNumber { get; set; }
+        public AssetCategoryDTO Category { get; set; }
+        public AssetTypeDTO AssetType { get; set; }
+        public string? MAC { get; set; }
+        public string? RAM { get; set; }
+        public IdentityDTO? Identity { get; set; }
     }
 }
