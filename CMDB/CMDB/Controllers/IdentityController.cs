@@ -529,7 +529,6 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Release devices from identity";
             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
-            service.GetAssingedDevices(identity);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

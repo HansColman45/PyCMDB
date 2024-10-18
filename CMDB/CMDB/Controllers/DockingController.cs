@@ -165,7 +165,7 @@ namespace CMDB.Controllers
                 {
                     docking.AssetTag = values["AssetTag"];
                     docking.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
+                    int Type = Convert.ToInt32(values["AssetType"]);
                     var AssetType = await service.GetAssetTypeById(Type);
                     var category = await service.GetAsstCategoryByCategory("Docking station");
                     docking.AssetType = AssetType;
@@ -204,7 +204,7 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
-                int Type = Convert.ToInt32(values["Type.TypeID"]);
+                int Type = Convert.ToInt32(values["AssetType.TypeID"]);
                 var AssetType = await service.GetAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {

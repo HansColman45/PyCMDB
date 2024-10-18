@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
@@ -37,39 +36,22 @@ namespace CMDB.Domain.Entities
         public int Level { get; set; }
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Device> Devices { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Mobile> Mobiles { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Kensington> Kensingtons { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Subscription> Subscriptions { get; set; }
-        [JsonIgnore]
         public virtual ICollection<SubscriptionType> SubscriptionTypes { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Identity> Identities { get; set; }
-        [JsonIgnore]
         public virtual ICollection<GeneralType> Types { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Account> Accounts { get; set; }
-        [JsonIgnore]
         public virtual ICollection<AccountType> AccountTypes { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Admin> Admins { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Application> Applications { get; set; }
-        [JsonIgnore]
         public virtual ICollection<AssetCategory> AssetCategories { get; set; }
-        [JsonIgnore]
         public virtual ICollection<AssetType> AssetTypes { get; set; }
-        [JsonIgnore]
         public virtual ICollection<IdenAccount> IdenAccounts { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Permission> Permissions { get; set; }
-        [JsonIgnore]
         public virtual ICollection<RolePerm> RolePerms { get; set; }
-        [JsonIgnore]
         public virtual ICollection<Role> Roles { get; set; }
     }
 }

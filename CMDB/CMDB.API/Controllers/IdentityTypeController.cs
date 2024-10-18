@@ -36,8 +36,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityTypeRepository.GetAll());
         }
-        [HttpGet, Authorize]
-        [Route("GetAll/{searchstr}")]
+        [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
             // Retrieve userId from the claims

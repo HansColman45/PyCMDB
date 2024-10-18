@@ -18,8 +18,7 @@ namespace CMDB.API.Controllers
         {
             _uow = uow;
         }
-        [HttpGet("GetAll")]
-        [Authorize]
+        [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
             // Retrieve userId from the claims
@@ -37,9 +36,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetAll());
         }
-        [HttpGet]
-        [Route("GetAll/{searchstr}")]
-        [Authorize]
+        [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
             // Retrieve userId from the claims
@@ -57,8 +54,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetAll(searchstr));
         }
-        [HttpGet("{id:int}")]
-        [Authorize]
+        [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             // Retrieve userId from the claims
@@ -76,8 +72,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetById(id));
         }
-        [HttpPost("AssignAccount")]
-        [Authorize]
+        [HttpPost("AssignAccount"), Authorize]
         public async Task<IActionResult> AssignAccount(IdenAccountDTO idenAccount)
         {
             // Retrieve userId from the claims

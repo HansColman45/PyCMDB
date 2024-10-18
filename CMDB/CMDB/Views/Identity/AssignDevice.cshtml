@@ -1,7 +1,7 @@
 ﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
-    List<CMDB.Domain.Entities.Device> devices = (List<CMDB.Domain.Entities.Device>)ViewBag.Devices;
+    List<CMDB.API.Models.DeviceDTO> devices = (List<CMDB.API.Models.DeviceDTO>)ViewBag.Devices;
     List<CMDB.Domain.Entities.Mobile> mobiles = (List<CMDB.Domain.Entities.Mobile>)ViewBag.Mobiles;
 }
 @if ((bool)ViewData["AssignDevice"])
@@ -38,7 +38,7 @@
         {
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="1" name="@device.AssetTag" id="@device.AssetTag">
-                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.Type.Vendor @device.Type.Type AssetTag: @device.AssetTag</label>
+                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.AssetType.Vendor @device.AssetType.Type AssetTag: @device.AssetTag</label>
             </div>
         }
         @foreach(var mobile in mobiles){

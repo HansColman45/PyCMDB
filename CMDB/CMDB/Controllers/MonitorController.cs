@@ -145,7 +145,7 @@ namespace CMDB.Controllers
                 {
                     screen.AssetTag = values["AssetTag"];
                     screen.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
+                    int Type = Convert.ToInt32(values["AssetType"]);
                     var AssetType = await service.GetAssetTypeById(Type);
                     var category = await service.GetAsstCategoryByCategory("Monitor");
                     screen.AssetType = AssetType;
@@ -203,7 +203,7 @@ namespace CMDB.Controllers
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
-                int Type = Convert.ToInt32(values["Type.TypeID"]);
+                int Type = Convert.ToInt32(values["AssetType.TypeID"]);
                 var AssetType = await service.GetAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {

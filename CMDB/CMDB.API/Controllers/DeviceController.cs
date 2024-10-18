@@ -37,7 +37,7 @@ namespace CMDB.API.Controllers
             return Ok(await _uow.DeviceRepository.GetAll(category));
         }
         [HttpGet, Authorize]
-        [Route("{category:alpha}/GetAll/{searchstr:alpha}")]
+        [Route("{category:alpha}/GetAll/{searchstr}")]
         public async Task<IActionResult> GetAll(string category, string searchstr)
         {
             // Retrieve userId from the claims
@@ -211,6 +211,15 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.IsDeviceExising(device));
+        }
+        [HttpGet("AllFreeDevices"), Authorize]
+        public async Task<IActionResult> ListAllFreeDevices()
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            return Ok(await _uow.DeviceRepository.ListAllFreeDevices());
         }
     }
 }

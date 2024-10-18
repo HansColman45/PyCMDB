@@ -43,7 +43,7 @@ namespace CMDB.API.Services
             type.Logs.Add(new()
             {
                 LogDate = DateTime.UtcNow,
-                LogText = GenericLogLineCreator.CreateLogLine($"{type}",TokenStore.Admin.Account.UserID,table)
+                LogText = GenericLogLineCreator.CreateLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {type.Vendor} and type {type.Type}",TokenStore.Admin.Account.UserID,table)
             });
             _context.AssetTypes.Add(type);
             return assetTypeDTO;
@@ -82,7 +82,7 @@ namespace CMDB.API.Services
             oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
             oldType.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.DeleteLogLine($"{oldType}", TokenStore.Admin.Account.UserID, reason, table),
+                LogText = GenericLogLineCreator.DeleteLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {assetTypeDTO.Vendor} and type {assetTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason, table),
                 LogDate = DateTime.UtcNow
             });
             _context.AssetTypes.Update(oldType);
@@ -97,7 +97,7 @@ namespace CMDB.API.Services
             oldType.Logs.Add(new()
             {
                 LogDate = DateTime.UtcNow,
-                LogText = GenericLogLineCreator.ActivateLogLine($"{oldType}", TokenStore.Admin.Account.UserID, table)
+                LogText = GenericLogLineCreator.ActivateLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {assetTypeDTO.Vendor} and type {assetTypeDTO.Type}", TokenStore.Admin.Account.UserID, table)
             });
             return assetTypeDTO;
         }

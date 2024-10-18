@@ -83,9 +83,15 @@ namespace CMDB.Services
         }
         public async Task<List<DeviceDTO>> ListAllFreeDevices()
         {
-            List<DeviceDTO> devices = new();
-            /**/
-            return devices;
+            BaseUrl = _url + $"api/Device/AllFreeDevices";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<Mobile>> ListAllFreeMobiles()
         {
@@ -96,30 +102,6 @@ namespace CMDB.Services
                  .ToListAsync();
              return mobiles;*/
             return [];
-        }
-        public void GetAssingedDevices(IdentityDTO identity)
-        {
-            /*identity.Devices = _context.Identities
-                .Include(x => x.Devices)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Devices)
-                .ThenInclude(x => x.Type)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Devices)
-                .ToList();
-            identity.Mobiles = _context.Identities
-                .Include(x => x.Mobiles)
-                .ThenInclude(x => x.Subscriptions)
-                .Include(x => x.Mobiles)
-                .ThenInclude(x => x.MobileType)
-                .Where(x => x.IdenId == identity.IdenId)
-                .SelectMany(x => x.Mobiles)
-                .ToList();
-            identity.Subscriptions = _context.Subscriptions
-                .Include(x => x.SubscriptionType)
-                .Include(x => x.Category)
-                .Where(x => x.IdentityId == identity.IdenId)
-                .ToList();*/
         }
         public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language)
         {
@@ -191,15 +173,6 @@ namespace CMDB.Services
                     result = false;
             }*/
             return result;
-        }
-        public ICollection<IdentityType> GetIdenityTypeByID(int id)
-        {
-            /*var types = _context.Types
-                .OfType<IdentityType>()
-                .Where(x => x.TypeId == id)
-                .ToList();
-            return types;*/
-            return [];
         }
         public async Task ReleaseDevices(IdentityDTO identity, List<DeviceDTO> devices)
         {

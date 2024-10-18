@@ -14,22 +14,23 @@ namespace CMDB.API.Controllers
         {
             _uow = uow;
         }
-        [HttpGet("FirstLevel")]
-        [AllowAnonymous]
+        [HttpGet("FirstLevel"), Authorize]
         public async Task<ActionResult> GetFirstLevelMenu()
         {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
             return Ok(await _uow.MenuRepository.GetFirstLevel());
         }
-        [HttpGet]
-        [Route("SecondLevel/{id:int}")]
-        [AllowAnonymous]
+        [HttpGet("SecondLevel/{id:int}"), Authorize]
         public async Task<ActionResult> GetSecondLevel(int id)
         {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
             return Ok(await _uow.MenuRepository.GetSecondLevel(id));
         }
-        [HttpGet()]
-        [Route("PersonalMenu/{menuId:int}")]
-        [Authorize]
+        [HttpGet("PersonalMenu/{menuId:int}"), Authorize]
         public async Task<IActionResult> GetPersonalMenu(int menuId)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;

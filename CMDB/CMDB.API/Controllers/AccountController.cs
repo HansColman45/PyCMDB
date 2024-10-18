@@ -37,8 +37,7 @@ namespace CMDB.API.Controllers
             var accounts = await _uow.AccountRepository.GetAll();
             return Ok(accounts);
         }
-        [HttpGet, Authorize]
-        [Route("GetAll/{searchstr:alpha}")]
+        [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
             // Retrieve userId from the claims

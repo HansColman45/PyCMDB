@@ -18,8 +18,7 @@ namespace CMDB.API.Controllers
             _uow = uow;
         }
 
-        [HttpGet]
-        [Authorize]
+        [HttpGet, Authorize]
         public async Task<IActionResult> GetAll()
         {
             // Retrieve userId from the claims
@@ -37,8 +36,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.ApplicationRepository.GetAll());
         }
-        [HttpGet("{id:int}")]
-        [Authorize]
+        [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
             // Retrieve userId from the claims

@@ -109,7 +109,14 @@ namespace CMDB.Services
             }
         }
         #endregion
-
+        public async Task ReAuthenticate()
+        {
+            var token = await Login(TokenStore.UserName, TokenStore.Password);
+            if(token is not null)
+            {
+                _Client.SetBearerToken(token);
+            }
+        }
         public async Task<string> Login(string userID, string pwd)
         {
             AuthenticateRequest request = new()
@@ -124,6 +131,8 @@ namespace CMDB.Services
                 AuthenticateResponse authenticateResponse = await response.Content.ReadAsJsonAsync<AuthenticateResponse>();
                 TokenStore.AdminId = authenticateResponse.Id;
                 TokenStore.Token = authenticateResponse.Token;
+                TokenStore.UserName = userID;
+                TokenStore.Password = pwd;
                 return TokenStore.Token;
             }
             else
@@ -133,6 +142,7 @@ namespace CMDB.Services
         public async Task<ICollection<Menu>> ListFirstMenuLevel()
         {
             BaseUrl = _url + "api/Menu/FirstLevel";
+            _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {
@@ -144,6 +154,7 @@ namespace CMDB.Services
         public async Task<ICollection<Menu>> ListSecondMenuLevel(int menuID)
         {
             BaseUrl = _url + $"api/Menu/SecondLevel/{menuID}";
+            _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {

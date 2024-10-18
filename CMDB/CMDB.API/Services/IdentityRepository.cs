@@ -22,7 +22,8 @@ namespace CMDB.API.Services
             if (iden is not null)
             {
                 GetLogs(table, id, iden);
-                GetAssignedAccounts(id);
+                await GetAssignedAccounts(id);
+                await GetAssignedDevices(iden);
             }
             return iden;
         }
@@ -104,10 +105,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Name='{dTO.Name}' where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -126,10 +123,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, EMail='{dTO.EMail}' where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -148,10 +141,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, Company='{dTO.Company}' where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -173,10 +162,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, TypeId={dTO.Type.TypeId} where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -196,10 +181,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, LanguageCode='{dTO.Language.Code}' where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -218,10 +199,6 @@ namespace CMDB.API.Services
                         LogDate = DateTime.UtcNow,
                         LogText = logline,
                     });
-                    /*string sql = $"Update {table} set LastModifiedAdminId = {TokenStore.Admin.AdminId}, UserId='{dTO.UserID}' where IdenId={dTO.IdenId}";
-                    await _context.Database.ExecuteSqlRawAsync(sql);
-                    sql = $"insert into log(LogDate,LogText,IdentityId) values (GETDATE(),'{logline}',{dTO.IdenId})";
-                    await _context.Database.ExecuteSqlRawAsync(sql);*/
                 }
                 catch (Exception e)
                 {
@@ -330,15 +307,40 @@ namespace CMDB.API.Services
                 .Include(x => x.Language).AsNoTracking()
                 .FirstOrDefaultAsync(x => x.IdenId == id);
         }
-        private void GetAssignedAccounts(int id)
+        private async Task GetAssignedAccounts(int id)
         {
-            var accounts = _context.Identities.AsNoTracking()
+            var accounts = await _context.Identities.AsNoTracking()
                 .Include(x => x.Language).AsNoTracking()
                 .Include(x => x.Accounts)
                 .ThenInclude(d => d.Account).AsNoTracking()
                 .SelectMany(x => x.Accounts).AsNoTracking()
                 .Where(x => x.Identity.IdenId == id).AsNoTracking()
+                .ToListAsync();
+        }
+        private async Task GetAssignedDevices(IdentityDTO identity)
+        {
+            identity.Devices = await _context.Identities.AsNoTracking()
+                .Include(x => x.Devices)
+                .ThenInclude(x => x.Category).AsNoTracking()
+                .Include(x => x.Devices)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Where(x => x.IdenId == identity.IdenId).AsNoTracking()
+                .SelectMany(x => x.Devices)
+                .Select(x => DeviceRepository.ConvertDevice(x))
+                .ToListAsync();
+            /*identity.Mobiles = _context.Identities
+                .Include(x => x.Mobiles)
+                .ThenInclude(x => x.Subscriptions)
+                .Include(x => x.Mobiles)
+                .ThenInclude(x => x.MobileType)
+                .Where(x => x.IdenId == identity.IdenId)
+                .SelectMany(x => x.Mobiles)
                 .ToList();
+            identity.Subscriptions = _context.Subscriptions
+                .Include(x => x.SubscriptionType)
+                .Include(x => x.Category)
+                .Where(x => x.IdentityId == identity.IdenId)
+                .ToList();*/
         }
     }
 }

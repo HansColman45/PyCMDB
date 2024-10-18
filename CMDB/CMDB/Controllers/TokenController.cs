@@ -171,7 +171,7 @@ namespace CMDB.Controllers
                 {
                     token.AssetTag = values["AssetTag"];
                     token.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
+                    int Type = Convert.ToInt32(values["AssetType"]);
                     var AssetType = await  service.GetAssetTypeById(Type);
                     var category = await service.GetAsstCategoryByCategory("Token");
                     token.AssetType = AssetType;
@@ -212,7 +212,7 @@ namespace CMDB.Controllers
                 try
                 {
                     string newSerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type.TypeID"]);
+                    int Type = Convert.ToInt32(values["AssetType.TypeID"]);
                     var newAssetType = await service.GetAssetTypeById(Type);
                     if (ModelState.IsValid)
                     {

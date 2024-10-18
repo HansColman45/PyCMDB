@@ -78,7 +78,7 @@ namespace CMDB.Controllers
                     laptop.AssetTag = values["AssetTag"];
                     laptop.SerialNumber = values["SerialNumber"];
                     laptop.RAM = values["RAM"];
-                    int Type = Convert.ToInt32(values["Type"]);
+                    int Type = Convert.ToInt32(values["AssetType"]);
                     var AssetType = await service.GetAssetTypeById(Type);
                     var category = await service.GetAsstCategoryByCategory("Laptop");
                     laptop.AssetType = AssetType;
@@ -122,7 +122,7 @@ namespace CMDB.Controllers
                 {
                     string newSerialNumber = values["SerialNumber"];
                     string newRam = values["RAM"];
-                    int Type = Convert.ToInt32(values["Type.TypeID"]);
+                    int Type = Convert.ToInt32(values["AssetType.TypeID"]);
                     var newAssetType = await service.GetAssetTypeById(Type);
                     string newMAC = values["MAC"];
                     if (ModelState.IsValid)
