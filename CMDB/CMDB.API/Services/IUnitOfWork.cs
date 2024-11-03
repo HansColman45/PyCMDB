@@ -15,6 +15,8 @@
         public IDeviceRepository DeviceRepository { get; }
         public IAssetTypeRepository AssetTypeRepository { get; }
         public IAssetCategoryRepository AssetCategoryRepository { get; }
+        public IMobileRepository MobileRepository { get; }
+        public ISubscriptionRepository SubscriptionRepository { get; }
         public Task SaveChangesAsync();
     }
 }

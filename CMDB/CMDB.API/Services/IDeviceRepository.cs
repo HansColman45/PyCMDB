@@ -31,6 +31,12 @@ namespace CMDB.API.Services
         /// <returns></returns>
         Task<DeviceDTO?> GetByAssetTag(string category, string assetTag);
         /// <summary>
+        /// This will return the detail of a Device using only the AssetTag
+        /// </summary>
+        /// <param name="assetTag"></param>
+        /// <returns></returns>
+        Task<DeviceDTO?> GetByAssetTag(string assetTag);
+        /// <summary>
         /// This will create a new device
         /// </summary>
         /// <param name="deviceDTO"></param>

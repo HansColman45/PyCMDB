@@ -1,6 +1,7 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
+using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -93,15 +94,17 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<List<Mobile>> ListAllFreeMobiles()
+        public async Task<List<MobileDTO>> ListAllFreeMobiles()
         {
-            /* var mobiles = await _context.Mobiles
-                 .Include(x => x.MobileType)
-                 .Include(x => x.Category)
-                 .Where(x => x.IdentityId == 1)
-                 .ToListAsync();
-             return mobiles;*/
-            return [];
+            BaseUrl = _url + $"api/Mobile/ListAllFreeMobiles";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task Create(string firstName, string LastName, int type, string UserID, string Company, string EMail, string Language)
         {
@@ -159,53 +162,32 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsExisting(IdentityDTO identity, string UserID = "")
+        public async Task<bool> IsExisting(IdentityDTO identity, string UserID = "")
         {
             bool result = false;
-            /*if (String.IsNullOrEmpty(UserID) && String.Compare(identity.UserID, UserID) != 0)
-            {
-                var idenities = _context.Identities
-                .Where(x => x.UserID == UserID)
-                .ToList();
-                if (idenities.Count > 0)
-                    result = true;
-                else
-                    result = false;
-            }*/
+            BaseUrl = _url + "api/Identity/IsIdentityExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            if(!string.IsNullOrEmpty(UserID))
+                identity.UserID = UserID;
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identity);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<bool>();
             return result;
         }
         public async Task ReleaseDevices(IdentityDTO identity, List<DeviceDTO> devices)
         {
-            /*foreach (Device device in devices)
+            AssignDeviceRequest request = new()
             {
-                device.IdentityId = 1;
-                device.LastModfiedAdmin = Admin;
-                identity.Devices.Remove(device);
-                await _context.SaveChangesAsync();
-                switch (device.Category.Category)
-                {
-                    case "Laptop":
-                        await LogReleaseIdentityFromDevice("laptop", identity, device);
-                        break;
-                    case "Desktop":
-                        await LogReleaseIdentityFromDevice("desktop", identity, device);
-                        break;
-                    case "Token":
-                        await LogReleaseIdentityFromDevice("token", identity, device);
-                        break;
-                    case "Docking station":
-                        await LogReleaseIdentityFromDevice("docking", identity, device);
-                        break;
-                    case "Monitor":
-                        await LogReleaseIdentityFromDevice("screen", identity, device);
-                        break;
-                    default:
-                        throw new Exception("Category not know");
-                }
-                await LogReleaseDeviceFromIdenity(table, device,identity);
-            }*/
+                IdentityId = identity.IdenId,
+                AssetTags = devices.Select(x => x.AssetTag).ToList(),
+            };
+            BaseUrl = _url + "api/Identity/ReleaseDevices";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task ReleaseMobile(IdentityDTO identity, Mobile mobile, string table)
+        public async Task ReleaseMobile(IdentityDTO identity, MobileDTO mobile, string table)
         {
             /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
@@ -253,51 +235,34 @@ namespace CMDB.Services
         }
         public async Task AssignAccount2Idenity(IdentityDTO identity, int AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
-            /*var Accounts = await GetAccountByID(AccID);
-            var Account = Accounts.First<Account>();
-            identity.Accounts.Add(new()
+            var Account = await GetAccountByID(AccID);
+            IdenAccountDTO idenAccount = new()
             {
+                Identity = identity,
                 Account = Account,
                 ValidFrom = ValidFrom,
-                ValidUntil = ValidUntil,
-                LastModifiedAdmin = Admin
-            });
-            identity.LastModfiedAdmin = Admin;
-            Account.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            await LogAssignIden2Account(Table, identity.IdenId, identity, Account);
-            await LogAssignAccount2Identity("account", AccID, Account, identity);*/
+                ValidUntil = ValidUntil
+            };
+            BaseUrl = _url + $"api/Identity/AssignAccount";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, idenAccount);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task AssignDevice(IdentityDTO identity, List<DeviceDTO> devicesToAdd)
         {
-            /*foreach (var device in devicesToAdd)
+            AssignDeviceRequest request = new()
             {
-                device.LastModfiedAdmin = Admin;
-                switch (device.Category.Category)
-                {
-                    case "Laptop":
-                        await LogAssignIdentity2Device("laptop", identity, device);
-                        break;
-                    case "Desktop":
-                        await LogAssignIdentity2Device("desktop", identity, device);
-                        break;
-                    case "Token":
-                        await LogAssignIdentity2Device("token", identity, device);
-                        break;
-                    case "Docking station":
-                        await LogAssignIdentity2Device("docking", identity, device);
-                        break;
-                    case "Monitor":
-                        await LogAssignIdentity2Device("screen", identity, device);
-                        break;
-                    default:
-                        throw new Exception("Category not know");
-                }
-                await LogAssignDevice2Identity(table, device, identity);
-            }*/
-            //await _context.SaveChangesAsync();
+                IdentityId = identity.IdenId,
+                AssetTags = devicesToAdd.Select(x => x.AssetTag).ToList(),
+            };
+            BaseUrl = _url + "api/Identity/AssignDevices";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl,request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public void AssignMobiles(IdentityDTO identity, List<Mobile> mobiles)
+        public void AssignMobiles(IdentityDTO identity, List<MobileDTO> mobiles)
         {
             /*identity.LastModfiedAdmin = Admin;
             identity.Mobiles = mobiles;
@@ -309,29 +274,26 @@ namespace CMDB.Services
             }*/
             //await _context.SaveChangesAsync();
         }
-        public async Task ReleaseAccount4Identity(IdentityDTO identity, AccountDTO account, int idenAccountID)
+        public async Task ReleaseAccount4Identity(IdenAccountDTO idenAccount)
         {
-            /*var idenAccount = _context.IdenAccounts.
-                Include(x => x.Identity)
-                .Where(x => x.ID == idenAccountID)
-                .Single<IdenAccount>();
-            idenAccount.ValidUntil = DateTime.Now;
-            idenAccount.LastModifiedAdmin = Admin;
-            account.LastModfiedAdmin = Admin;
-            identity.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            await LogReleaseAccountFromIdentity(Table, identity.IdenId, identity, account);
-            await LogReleaseIdentity4Account("account", account.AccID, identity, account);*/
+            BaseUrl = _url + $"api/Identity/ReleaseAccount";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, idenAccount);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<List<Account>> GetAccountByID(int ID)
+        public async Task<AccountDTO> GetAccountByID(int ID)
         {
-            /*List<Account> accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Type)
-                .Where(x => x.AccID == ID)
-                .ToListAsync();
-            return accounts;*/
-            return [];
+            BaseUrl = _url + $"api/Account/{ID}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var account = await response.Content.ReadAsJsonAsync<AccountDTO>();
+                return account;
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<IdenAccountDTO> GetIdenAccountByID(int id)
         {
@@ -345,17 +307,19 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task<Device> GetDevice(string assetTag)
+        public async Task<DeviceDTO> GetDevice(string assetTag)
         {
-            /*Device device = await _context.Devices
-                .Include(x => x.Category)
-                .Include(x => x.Type)
-                .Where(x => x.AssetTag == assetTag)
-                .FirstOrDefaultAsync();
-            return device;*/
-            return new();
+            BaseUrl = _url + $"api/Device/{assetTag}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<DeviceDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task<Mobile> GetMobile(int mobileId)
+        public async Task<MobileDTO> GetMobile(int mobileId)
         {
             /*Mobile mobile = await _context.Mobiles
                 .Include(x => x.MobileType)

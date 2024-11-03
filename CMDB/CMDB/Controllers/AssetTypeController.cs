@@ -95,7 +95,7 @@ namespace CMDB.Controllers
                     int id = Convert.ToInt32(category);
                     var assetCat = await service.ListAssetCategoryByID(id);
                     assetType.AssetCategory = assetCat;
-                    if (service.IsAssetTypeExisting(assetType))
+                    if (await service.IsAssetTypeExisting(assetType))
                     {
                         ModelState.AddModelError("", "Asset type already exist");
                     }
@@ -114,18 +114,24 @@ namespace CMDB.Controllers
             }
             return View(assetType);
         }
+        /// <summary>
+        /// The edit view
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            ViewData["Title"] = "Edit assettype";
-            ViewData["Controller"] = @$"\AssetType\Edit\{id}";
-            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             AssetTypeDTO assetType = await service.GetById((int)id);
             if (assetType == null)
                 return NotFound();
+            ViewData["Title"] = "Edit assettype";
+            ViewData["Controller"] = @$"\AssetType\Edit\{id}";
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            await BuildMenu();
             ViewBag.Catgories = await service.ListActiveCategories();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -134,7 +140,7 @@ namespace CMDB.Controllers
                 {
                     string newVendor = values["Vendor"];
                     string newType = values["Type"];
-                    if (service.IsAssetTypeExisting(assetType, newVendor, newType))
+                    if (await service.IsAssetTypeExisting(assetType, newVendor, newType))
                     {
                         ModelState.AddModelError("", "Asset type already exist");
                     }
@@ -153,9 +159,19 @@ namespace CMDB.Controllers
             }
             return View(assetType);
         }
+        /// <summary>
+        /// The detail view
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (id == null)
+                return NotFound();
+            AssetTypeDTO assetType = await service.GetById((int)id);
+            if (assetType == null)
+                return NotFound();
             ViewData["Title"] = "Assettype details";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
@@ -163,25 +179,26 @@ namespace CMDB.Controllers
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["Controller"] = @"\AssetType\Create";
-            if (id == null)
-                return NotFound();
-            var assetType = await service.GetById((int)id);
-            if (assetType == null)
-                return NotFound();
             return View(assetType);
         }
+        /// <summary>
+        /// The Delete view
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
+            if (id == null)
+                return NotFound();
+            AssetTypeDTO assetType = await service.GetById((int)id);
+            if (assetType == null)
+                return NotFound();
             ViewData["Title"] = "Deactivate Assettype";
             ViewData["Controller"] = @$"\AssetType\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             await BuildMenu();
-            if (id == null)
-                return NotFound();
-            var assetType = await service.GetById((int)id);
-            if (assetType == null)
-                return NotFound();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "AssetType";
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -204,17 +221,22 @@ namespace CMDB.Controllers
             }
             return View(assetType);
         }
+        /// <summary>
+        /// The activate
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Account";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var assetType = await service.GetById((int)id);
             if (assetType == null)
                 return NotFound();
+            ViewData["Title"] = "Activate Account";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.ActivateAssetType(assetType);

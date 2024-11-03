@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.Mobile;
+﻿@model CMDB.API.Models.MobileDTO;
 @{
     Layout = "_Layout";
 }
@@ -20,7 +20,7 @@
         </tbody>
     </table>
     <p></p>
-    <form class="form-horizontal" asp-action="AssignIdentity" method="post">
+    <form class="form-horizontal" action="@ViewData["Controller"]" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label">Identity <span style="color:red;">*</span></label>

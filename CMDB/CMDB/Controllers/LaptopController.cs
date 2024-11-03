@@ -71,7 +71,7 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -104,19 +104,19 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            ViewData["Title"] = "Edit Laptop";
-            ViewData["Controller"] = @$"\Laptop\Edit\{id}";
-            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            await BuildMenu();
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
+            ViewData["Title"] = "Edit Laptop";
+            ViewData["Controller"] = @$"\Laptop\Edit\{id}";
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            await BuildMenu();
             ViewBag.AssetTypes = await service.ListAssetTypes(SitePart);
             ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -144,6 +144,11 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(string id)
         {
             log.Debug("Using details in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var laptop = await service.GetDeviceById(SitePart, id);
+            if (laptop == null)
+                return NotFound();
             ViewData["Title"] = "Laptop details";
             ViewData["Controller"] = @"\Laptop\Create";
             await BuildMenu();
@@ -154,17 +159,15 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (id == null)
-                return NotFound();
-            var laptop = await service.GetDeviceById(SitePart, id);
-            if (laptop == null)
-                return NotFound();
             return View(laptop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var laptop = await service.GetDeviceById(SitePart, id);
+            if (laptop == null)
                 return NotFound();
             ViewData["Title"] = "Delete Laptop";
             ViewData["Controller"] = @$"\Laptop\Delete\{id}";
@@ -172,10 +175,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Laptop";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var laptop = await service.GetDeviceById(SitePart, id);
-            if (laptop == null)
-                return NotFound();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -215,14 +215,14 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
+            ViewData["Title"] = "Activate Laptop";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(laptop);
@@ -237,16 +237,16 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var laptop = await service.GetDeviceById(SitePart, id);
+            if (laptop == null)
+                return NotFound();
             ViewData["Title"] = "Assign identity to Laptop";
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Laptop";
             ViewData["Controller"] = @$"\Laptop\AssignIdentity\{id}";
             await BuildMenu();
-            if (id == null)
-                return NotFound();
-            var laptop = await service.GetDeviceById(SitePart, id);
-            if (laptop == null)
-                return NotFound();
             ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -274,17 +274,17 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var laptop = await service.GetDeviceById(SitePart, id);
+            if (laptop == null)
+                return NotFound();
             ViewData["Title"] = "Release identity from Laptop";
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Laptop";
             ViewData["Action"] = "ReleaseIdentity";
             ViewData["Controller"] = @$"\Laptop\ReleaseIdentity\{id}";
             await BuildMenu();
-            if (id == null)
-                return NotFound();
-            var laptop = await service.GetDeviceById(SitePart, id);
-            if (laptop == null)
-                return NotFound();
             var identity = laptop.Identity;
             ViewData["Name"] = identity.Name;
             var admin = await service.Admin();
@@ -316,20 +316,20 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
-            ViewData["Title"] = "Assign form";
-            ViewData["backUrl"] = "Laptop";
-            ViewData["Action"] = "AssignForm";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var laptop = await service.GetDeviceById(SitePart, id);
             if (laptop == null)
                 return NotFound();
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Laptop";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
             ViewData["Name"] = laptop.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];

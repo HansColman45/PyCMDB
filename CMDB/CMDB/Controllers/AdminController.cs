@@ -32,6 +32,7 @@ namespace CMDB.Controllers
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Admin\Search";
+            ViewData["Controller"] = @"\Admin\Create";
             return View(list);
         }
         public async Task<IActionResult> Search(string search)
@@ -49,6 +50,7 @@ namespace CMDB.Controllers
                 ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Admin\Search";
+                ViewData["Controller"] = @"\Admin\Create";
                 return View(list);
             }
             else
@@ -62,6 +64,7 @@ namespace CMDB.Controllers
             Admin admin = new();
             ViewData["Title"] = "Create Admin";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["Controller"] = @"\Admin\Create";
             ViewBag.Accounts = await service.ListActiveCMDBAccounts();
             ViewBag.Levels = service.ListAllLevels();
             await BuildMenu();

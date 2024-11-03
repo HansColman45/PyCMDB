@@ -9,13 +9,12 @@ namespace CMDB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetTypeController : ControllerBase
+    public class MobileController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly string site = "Asset Type";
+        private readonly string site = "Mobile";
         private HasAdminAccessRequest request;
-
-        public AssetTypeController(IUnitOfWork uow)
+        public MobileController(IUnitOfWork uow)
         {
             _uow = uow;
         }
@@ -35,7 +34,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetAll());
+            return Ok(await _uow.MobileRepository.GetAll());
         }
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
@@ -53,85 +52,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetAll(searchstr));
-        }
-        [HttpGet("GetByCategory/{category:alpha}"), Authorize]
-        public async Task<IActionResult> GetByAssetCategory(string category)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Read"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetByCategory(category));
-        }
-        [HttpPost, Authorize]
-        public async Task<IActionResult> Create(AssetTypeDTO assetTypeDTO)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Add"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = _uow.AssetTypeRepository.Create(assetTypeDTO);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
-        }
-        [HttpPut, Authorize]
-        public async Task<IActionResult> Update(AssetTypeDTO assetTypeDTO)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Edit"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Update(assetTypeDTO);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
-        }
-        [HttpDelete("{reason}"), Authorize]
-        public async Task<IActionResult> Deactivate(AssetTypeDTO assetTypeDTO, string reason)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Deactivate"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Deactivate(assetTypeDTO, reason);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
+            return Ok(await _uow.MobileRepository.GetAll(searchstr));
         }
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
@@ -149,10 +70,30 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetById(id));
+            return Ok(await _uow.MobileRepository.GetById(id));
+        }
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Create(MobileDTO mobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Add"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            mobile = _uow.MobileRepository.Create(mobile);
+            await _uow.SaveChangesAsync();
+            return Ok(mobile);
         }
         [HttpPost("Activate"), Authorize]
-        public async Task<IActionResult> Activate(AssetTypeDTO assetTypeDTO)
+        public async Task<IActionResult> Activate(MobileDTO mobile)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -167,9 +108,67 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Activate(assetTypeDTO);
+            mobile = await _uow.MobileRepository.Activate(mobile);
             await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
+            return Ok(mobile);
+        }
+        [HttpDelete("{reason}"), Authorize]
+        public async Task<IActionResult> Delete(MobileDTO mobile, string reason)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Deactivate"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            mobile = await _uow.MobileRepository.Delete(mobile,reason); 
+            await _uow.SaveChangesAsync();
+            return Ok(mobile);
+        }
+        [HttpPut, Authorize]
+        public async Task<IActionResult> Update(MobileDTO mobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Edit"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            mobile = await _uow.MobileRepository.Update(mobile);
+            await _uow.SaveChangesAsync();
+            return Ok(mobile);
+        }
+        [HttpGet("ListAllFreeMobiles"), Authorize]
+        public async Task<IActionResult> ListAllFreeMobiles()
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.MobileRepository.ListAllFreeMobiles());
         }
     }
 }

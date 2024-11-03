@@ -22,7 +22,7 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.Application, app)
                 .With(x => x.Type, accounttype)
                 .With(x => x.LastModfiedAdmin, admin)
-                .With(x => x.active, active ? 1 : 0)
+                .With(x => x.active,1)
                 .Build();
 
             Account.Logs.Add(new LogBuilder()
@@ -34,9 +34,10 @@ namespace CMDB.Testing.Helpers
             await context.SaveChangesAsync();
             if (!active)
             {
-                //For some reason the savechanges above changes the state
+                //Change the state to deactive
                 Account.active = 0;
-                context.SaveChanges();
+                Account.DeactivateReason = "Test";
+                await context.SaveChangesAsync();
             }
             return Account;
         }

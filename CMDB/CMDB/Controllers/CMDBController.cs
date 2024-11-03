@@ -17,7 +17,7 @@ namespace CMDB.Controllers
         protected string SitePart { get; set; }
         protected string Table { get; set; }
         protected string Token { get; set; }
-        protected readonly CMDBServices service;
+        private readonly CMDBServices service;
         public CMDBController(IWebHostEnvironment env)
         {
             _env = env;

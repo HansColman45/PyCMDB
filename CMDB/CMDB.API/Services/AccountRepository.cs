@@ -16,7 +16,7 @@ namespace CMDB.API.Services
             Account acc = await TrackedAccount(id);
             acc.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
             });
             _context.Accounts.Update(acc);
@@ -37,7 +37,7 @@ namespace CMDB.API.Services
             {
                 acc.Logs.Add(new()
                 {
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logline,
                 });
                 _context.Accounts.Add(acc);
@@ -95,10 +95,9 @@ namespace CMDB.API.Services
             _account.LastModifiedAdminId = TokenStore.AdminId;
             string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             string logLine = GenericLogLineCreator.DeleteLogLine(value, $"{TokenStore.Admin.Account.UserID}", reason, table);
-            _account.LastModfiedAdmin = TokenStore.Admin;
             _account.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = logLine,
             });
             _context.Accounts.Update(_account);
@@ -111,12 +110,11 @@ namespace CMDB.API.Services
             _account.Active = State.Active;
             string value = $"Account with UserID: {account.UserID} and type {account.Type.Description}";
             string logline = GenericLogLineCreator.ActivateLogLine(value, $"{TokenStore.Admin.Account.UserID}", table);
-            _account.LastModfiedAdmin = TokenStore.Admin;
             _account.LastModifiedAdminId= TokenStore.AdminId;
             _account.Logs.Add(new()
             {
                 LogText = logline,
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
             });
             _context.Accounts.Update(_account);
             return account;
@@ -173,7 +171,7 @@ namespace CMDB.API.Services
                 _account.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now
                 });
             }
             if (_account.TypeId != account.Type.TypeId)
@@ -185,7 +183,7 @@ namespace CMDB.API.Services
                 _account.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now
                 });
             }
             if (_account.ApplicationId != account.Application.AppID)
@@ -197,7 +195,7 @@ namespace CMDB.API.Services
                 _account.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now
                 });
             }
             _context.Accounts.Update(_account);
@@ -224,14 +222,14 @@ namespace CMDB.API.Services
             Log log = new()
             {
                 LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(accountInfo, indenInfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 AccountId = acc.AccID
             };
             _context.Logs.Add(log);
             log = new()
             {
                 LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine( indenInfo, accountInfo, TokenStore.Admin.Account.UserID, "identity"),
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 IdentityId = iden.IdenId
             };
             _context.Logs.Add(log);
@@ -256,7 +254,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(indenInfo, accountInfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(indenInfo, accountInfo, TokenStore.Admin.Account.UserID, "identity"),
                 LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);

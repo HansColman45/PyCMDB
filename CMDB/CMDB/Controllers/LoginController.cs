@@ -1,4 +1,5 @@
 ﻿using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -8,8 +9,10 @@ namespace CMDB.Controllers
 {
     public class LoginController : CMDBController
     {
+        private readonly CMDBServices service;
         public LoginController(IWebHostEnvironment env) : base(env)
         {
+            service = new();
         }
         public IActionResult Index()
         {
@@ -28,7 +31,6 @@ namespace CMDB.Controllers
             }
             if (ModelState.IsValid)
             {
-                //_context.Admin = admin;
                 string stringFullUrl = @"\Home";
                 return Redirect(stringFullUrl);
             }

@@ -33,12 +33,13 @@ namespace CMDB.Controllers
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Monitor\Search";
+            ViewData["Controller"] = @"\Monitor\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Monitor overview";
                 await BuildMenu();
@@ -50,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Monitor\Search";
+                ViewData["Controller"] = @"\Monitor\Create";
                 return View(Desktops);
             }
             else
@@ -60,17 +62,18 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var monitor = await service.GetDeviceById(SitePart, id);
+            if (monitor == null)
                 return NotFound();
             ViewData["Title"] = "Delete Monitor";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
+            ViewData["Controller"] = @$"\Monitor\Delete\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var monitor = await service.GetDeviceById(SitePart, id);
-            if (monitor == null)
-                return NotFound();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -109,15 +112,15 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
+            log.Debug("Using Activate in {0}", Table);
+            ViewData["Title"] = "Activate Laptop";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(moniror);
@@ -132,14 +135,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
+            await BuildMenu();
             ViewData["Title"] = "Create monitor";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
-            await BuildMenu();
             ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Desktop";
+            ViewData["Controller"] = @"\Monitor\Create";
             DeviceDTO screen = new();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -169,13 +173,14 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var screen = await service.GetDeviceById(SitePart, id);
             if (screen == null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Monitor details";
+            ViewData["Controller"] = @"\Monitor\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -189,7 +194,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var screen = await service.GetDeviceById(SitePart, id);
             if (screen == null)
@@ -199,6 +204,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit monitor";
             ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Monitor";
+            ViewData["Controller"] = @$"\Monitor\Edit\{id}";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -216,18 +222,19 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to Monitor";
-            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
-            ViewData["backUrl"] = "Monitor";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
+            ViewData["Title"] = "Assign identity to Monitor";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Monitor";
+            await BuildMenu();
+            ViewData["Controller"] = @$"\Monitor\AssignIdentity\{id}";
             ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {   
@@ -252,15 +259,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
-            ViewData["Title"] = "Assign form";
-            ViewData["backUrl"] = "Monitor";
-            ViewData["Action"] = "AssignForm";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
             ViewData["Name"] = monitor.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -289,16 +296,17 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity from Monitor";
-            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
-            ViewData["backUrl"] = "Monitor";
-            ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
+            ViewData["Title"] = "Release identity from Monitor";
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Action"] = "ReleaseIdentity";
+            ViewData["Controller"] = @$"\Monitor\ReleaseIdentity\{id}";
             ViewData["Name"] = monitor.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;

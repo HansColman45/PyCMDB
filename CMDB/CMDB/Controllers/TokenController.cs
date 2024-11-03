@@ -39,6 +39,7 @@ namespace CMDB.Controllers
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
+            ViewData["Controller"] = @"\Token\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
@@ -57,6 +58,7 @@ namespace CMDB.Controllers
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
+                ViewData["Controller"] = @"\Token\Create";
                 return View(Desktops);
             }
             else
@@ -72,12 +74,13 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Delete token";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
+            ViewData["Controller"] = @$"\Token\Delete\{id}";
             var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -153,6 +156,7 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
+            ViewData["Controller"] = @"\Token\Create";
             return View(token);
         }
         public async Task<IActionResult> Create(IFormCollection values)
@@ -163,6 +167,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             DeviceDTO token= new();
             ViewBag.Types = await service.ListAssetTypes(SitePart);
+            ViewData["Controller"] = @"\Token\Create";
             ViewData["backUrl"] = "Token";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -199,6 +204,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit token";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["backUrl"] = "Token";
+            ViewData["Controller"] = @$"\Token\Edit\{id}";
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();

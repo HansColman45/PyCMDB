@@ -92,7 +92,32 @@ namespace CMDB.API.Controllers
             var account = await _uow.AccountRepository.GetById(idenAccount.Account.AccID);
             if (Iden is null || account is null)
                 return NotFound();
-            //ToDO
+            await _uow.IdentityRepository.AssignAccount(idenAccount);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseAccount"), Authorize]
+        public async Task<IActionResult> ReleaseAccount(IdenAccountDTO idenAccount)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseAccount"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var Iden = await _uow.IdentityRepository.GetById(idenAccount.Identity.IdenId);
+            var account = await _uow.AccountRepository.GetById(idenAccount.Account.AccID);
+            if (Iden is null || account is null)
+                return NotFound();
+            await _uow.IdentityRepository.ReleaseAccount(idenAccount);
+            await _uow.SaveChangesAsync();
             return Ok();
         }
         [HttpPost, Authorize]
@@ -115,7 +140,7 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
-        [HttpDelete("{reason:alpha}"), Authorize]
+        [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(IdentityDTO identity, string reason)
         {
             // Retrieve userId from the claims
@@ -192,6 +217,70 @@ namespace CMDB.API.Controllers
             if (!hasAdminAcces)
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.ListAllFreeIdentities());
+        }
+        [HttpPost("IsIdentityExisting"), Authorize]
+        public async Task<IActionResult> IsIdentityExisting(IdentityDTO identity)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.IdentityRepository.IsExisting(identity));
+        }
+        [HttpPost("AssignDevices"), Authorize]
+        public async Task<IActionResult> AssignDevices(AssignDeviceRequest assignDevice)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignDevice"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignDevice.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.AssignDevices(iden, assignDevice.AssetTags);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseDevices"), Authorize]
+        public async Task<IActionResult> ReleaseDevices(AssignDeviceRequest assignDevice)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseDevice"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignDevice.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.ReleaseDevices(iden, assignDevice.AssetTags);
+            await _uow.SaveChangesAsync();
+            return Ok();
         }
     }
 }

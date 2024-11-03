@@ -36,8 +36,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.GetAll(category));
         }
-        [HttpGet, Authorize]
-        [Route("{category:alpha}/GetAll/{searchstr}")]
+        [HttpGet("{category:alpha}/GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string category, string searchstr)
         {
             // Retrieve userId from the claims
@@ -73,6 +72,18 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             var device = await _uow.DeviceRepository.GetByAssetTag(category, assetTag);
             return Ok(device);
+        }
+        [HttpGet("{assetTag}"),Authorize]
+        public async Task<IActionResult> GetByAssetTag(string assetTag)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.DeviceRepository.GetByAssetTag(assetTag));
         }
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(DeviceDTO device)
@@ -114,7 +125,7 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(device);
         }
-        [HttpDelete("{reason:alpha}"),Authorize]
+        [HttpDelete("{reason}"),Authorize]
         public async Task<IActionResult> Deactivate(string reason, DeviceDTO device)
         {
             // Retrieve userId from the claims

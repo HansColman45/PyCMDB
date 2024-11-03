@@ -2,7 +2,7 @@
 @{
     Layout = "_Layout";
     List<CMDB.API.Models.DeviceDTO> devices = (List<CMDB.API.Models.DeviceDTO>)ViewBag.Devices;
-    List<CMDB.Domain.Entities.Mobile> mobiles = (List<CMDB.Domain.Entities.Mobile>)ViewBag.Mobiles;
+    List<CMDB.API.Models.MobileDTO> mobiles = (List<CMDB.API.Models.MobileDTO>)ViewBag.Mobiles;
 }
 @if ((bool)ViewData["AssignDevice"])
 {

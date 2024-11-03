@@ -109,7 +109,7 @@ namespace CMDB.API.Services
             };
             category.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.CreateLogLine($"Assetcategory {assetCategoryDTO.Category} with prefix {assetCategoryDTO.Prefix}", TokenStore.Admin.Account.UserID, table)
             });
             _context.AssetCategories.Add(category);
@@ -125,7 +125,7 @@ namespace CMDB.API.Services
                 oldType.LastModifiedAdminId = TokenStore.AdminId;
                 oldType.Logs.Add(new()
                 {
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logText,
                 });
 
@@ -137,7 +137,7 @@ namespace CMDB.API.Services
                 oldType.LastModifiedAdminId = TokenStore.AdminId;
                 oldType.Logs.Add(new()
                 {
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logText,
                 });
             }
@@ -152,7 +152,7 @@ namespace CMDB.API.Services
             cat.LastModifiedAdminId = TokenStore.AdminId;
             cat.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.DeleteLogLine($"Assetcategory {assetCategoryDTO.Category} with prefix {assetCategoryDTO.Prefix}", TokenStore.Admin.Account.UserID, reason, table)
             });
             return assetCategoryDTO;
@@ -165,7 +165,7 @@ namespace CMDB.API.Services
             cat.LastModifiedAdminId = TokenStore.AdminId;
             cat.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.ActivateLogLine($"Assetcategory {assetCategoryDTO.Category} with prefix {assetCategoryDTO.Prefix}", TokenStore.Admin.Account.UserID, table)
             });
             return assetCategoryDTO;

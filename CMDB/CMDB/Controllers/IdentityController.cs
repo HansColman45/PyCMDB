@@ -5,6 +5,7 @@ using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,11 +16,13 @@ namespace CMDB.Controllers
     public class IdentityController : CMDBController
     {
         private new readonly IdentityService service;
+        private readonly PDFService _PDFservice;
         public IdentityController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             Table = "identity";
             SitePart = "Identity";
+            _PDFservice = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -42,7 +45,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", Table);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
                 var list = await service.ListAll(search);
@@ -101,7 +104,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             try
             {
-                if (!String.IsNullOrEmpty(FormSubmit))
+                if (!string.IsNullOrEmpty(FormSubmit))
                 {
                     string FirstName = values["FirstName"];
                     identity.FirstName = FirstName;
@@ -115,7 +118,7 @@ namespace CMDB.Controllers
                     string EMail = values["EMail"];
                     identity.EMail = EMail;
                     string Language = values["Language"];
-                    if (service.IsExisting(identity))
+                    if (await service.IsExisting(identity))
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
@@ -147,7 +150,7 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListActiveIdentityTypes();
             ViewBag.Languages = await service.ListAllActiveLanguages();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string NewFirstName = values["FirstName"];
                 string NewLastName = values["LastName"];
@@ -156,7 +159,7 @@ namespace CMDB.Controllers
                 string NewType = values["Type.TypeId"];
                 string NewLanguage = values["Language.Code"];
                 string NewEMail = values["EMail"];
-                if (service.IsExisting(identity, NewUserID))
+                if (await service.IsExisting(identity, NewUserID))
                     ModelState.AddModelError("", "Idenity alreday existing");
                 try
                 {
@@ -189,7 +192,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Identity";
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 ViewData["reason"] = values["reason"];
                 try
@@ -242,20 +245,20 @@ namespace CMDB.Controllers
             ViewBag.Devices = await service.ListAllFreeDevices();
             ViewBag.Mobiles = await service.ListAllFreeMobiles();
             ViewData["backUrl"] = "Identity";
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 List<DeviceDTO> devicesToAdd = new();
-                List<Mobile> mobilesToAdd = new();
+                List<MobileDTO> mobilesToAdd = new();
                 var devices = await service.ListAllFreeDevices();
                 foreach (var device in devices)
                 {
-                    if (!String.IsNullOrEmpty(values[device.AssetTag]))
+                    if (!string.IsNullOrEmpty(values[device.AssetTag]))
                         devicesToAdd.Add(device);
                 }
                 var mobiles = await service.ListAllFreeMobiles();
                 foreach (var mobile in mobiles)
                 {
-                    if (!String.IsNullOrEmpty(values[mobile.IMEI.ToString()]))
+                    if (!string.IsNullOrEmpty(values[mobile.IMEI.ToString()]))
                         mobilesToAdd.Add(mobile);
                 }
                 if (devicesToAdd.Count == 0 && mobilesToAdd.Count == 0)
@@ -296,7 +299,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             ViewBag.Identity = identity;
             ViewBag.Accounts = await service.ListAllFreeAccounts();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 int AccId = Convert.ToInt32(values["Account"]);
                 DateTime from = DateTime.Parse(values["ValidFrom"]);
@@ -339,13 +342,12 @@ namespace CMDB.Controllers
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseAccount4Identity(idenAccount.Identity, idenAccount.Account, id);
                     /*PDFGenerator PDFGenerator = new()
                     {
                         ITEmployee = ITPerson,
@@ -360,6 +362,7 @@ namespace CMDB.Controllers
                     PDFGenerator.SetAccontInfo(idenAccount);
                     string pdfFile = PDFGenerator.GeneratePath(_env);
                     PDFGenerator.GeneratePdf(pdfFile);*/
+                    await service.ReleaseAccount4Identity(idenAccount);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -385,93 +388,83 @@ namespace CMDB.Controllers
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                /*PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = identity.UserID,
-                    FirstName = identity.FirstName,
-                    LastName = identity.LastName,
-                    Language = identity.Language.Code,
-                    Receiver = identity.Name
-                };
+                await _PDFservice.SetUserinfo(identity.UserID,
+                        ITPerson,
+                        Employee,
+                        identity.FirstName,
+                        identity.LastName,
+                        identity.Name,
+                        identity.Language.Code);
                 if (identity.Accounts.Count > 0)
                 {
                     foreach (var account in identity.Accounts)
-                        PDFGenerator.SetAccontInfo(account);
+                        await _PDFservice.SetAccontInfo(account);
                 }
                 if (identity.Devices.Count > 0)
                 {
-                    foreach (Device d in identity.Devices)
-                        PDFGenerator.SetAssetInfo(d);
+                    foreach (var d in identity.Devices)
+                        await _PDFservice.SetDeviceInfo(d);
                 }
-                if(identity.Mobiles.Count > 0) 
-                {
-                    foreach (Mobile mobile in identity.Mobiles)
-                        PDFGenerator.SetMobileInfo(mobile);
-                }
-                string PdfFile = PDFGenerator.GeneratePath(_env);
-                PDFGenerator.GeneratePdf(PdfFile);
-                await service.LogPdfFile(Table, identity.IdenId, PdfFile);*/
+                /* if(identity.Mobiles.Count > 0) 
+                 {
+                     foreach (Mobile mobile in identity.Mobiles)
+                         PDFGenerator.SetMobileInfo(mobile);
+                 }*/
+                 await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                 return RedirectToAction(nameof(Index));
+             }
+             return View(identity);
+         }
+         [Route("ReleaseDevice/{id:int}/{AssetTag}")]
+         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
+         {
+             if (id == null)
+                 return NotFound();
+             IdentityDTO identity = await service.GetByID((int)id);
+             if (identity == null)
+                 return NotFound();
+             log.Debug("Using Release from in {0}", Table);
+             ViewData["Title"] = "Release device from identity";
+             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
+             await BuildMenu();
+             var device = await service.GetDevice(AssetTag);
+             if (device == null) 
+                 return NotFound();
+             ViewBag.Device = device;
+             ViewData["backUrl"] = "Identity";
+             ViewData["Action"] = "ReleaseDevice";
+             ViewData["Name"] = identity.Name;
+             var admin = await service.Admin();
+             ViewData["AdminName"] = admin.Account.UserID;
+             string FormSubmit = values["form-submitted"];
+             if (!string.IsNullOrEmpty(FormSubmit))
+             {
+                 List<DeviceDTO> devices2Remove = new()
+                 {
+                     device
+                 };
+                 string Employee = values["Employee"];
+                 string ITPerson = values["ITEmp"];
+                await _PDFservice.SetUserinfo(identity.UserID,
+                        ITPerson,
+                        Employee,
+                        identity.FirstName,
+                        identity.LastName,
+                        identity.Name,
+                        identity.Language.Code,
+                        "Release");
+                await _PDFservice.SetDeviceInfo(device);
+                await service.ReleaseDevices(identity, devices2Remove);
+                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
         }
-        [Route("ReleaseDevice/{id}/{AssetTag}")]
-        public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
-        {
-            if (id == null)
-                return NotFound();
-            IdentityDTO identity = await service.GetByID((int)id);
-            if (identity == null)
-                return NotFound();
-            log.Debug("Using Release from in {0}", Table);
-            ViewData["Title"] = "Release device from identity";
-            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
-            await BuildMenu();
-            Device device = await service.GetDevice(AssetTag);
-            if (device == null) 
-                return NotFound();
-            ViewBag.Device = device;
-            ViewData["backUrl"] = "Identity";
-            ViewData["Action"] = "ReleaseDevice";
-            ViewData["Name"] = identity.Name;
-            var admin = await service.Admin();
-            ViewData["AdminName"] = admin.Account.UserID;
-            string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
-            {
-                List<Device> devices2Remove = new()
-                {
-                    device
-                };
-                string Employee = values["Employee"];
-                string ITPerson = values["ITEmp"];
-               /* PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = identity.UserID,
-                    FirstName = identity.FirstName,
-                    LastName = identity.LastName,
-                    Language = identity.Language.Code,
-                    Receiver = identity.Name,
-                    Type = "Release"
-                };
-                PDFGenerator.SetAssetInfo(device);
-                string PdfFile = PDFGenerator.GeneratePath(_env);
-                PDFGenerator.GeneratePdf(PdfFile);
-                await service.ReleaseDevices(identity, devices2Remove, Table);
-                await service.LogPdfFile(Table,identity.IdenId, PdfFile);*/
-                return RedirectToAction(nameof(Index));
-            }
-            return View(identity);
-        }
-        [Route("ReleaseMobile/{id}/{MobileId}")]
+        [Route("ReleaseMobile/{id:int}/{MobileId}")]
         public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int MobileId)
         {
             if (id == null && MobileId == 0)
@@ -479,7 +472,7 @@ namespace CMDB.Controllers
             IdentityDTO identity = await service.GetByID((int)id);
             if (identity == null)
                 return NotFound();
-            Mobile mobile = await service.GetMobile(MobileId);
+            MobileDTO mobile = await service.GetMobile(MobileId);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Release from in {0}", Table);
@@ -493,27 +486,23 @@ namespace CMDB.Controllers
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                /*PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = identity.UserID,
-                    FirstName = identity.FirstName,
-                    LastName = identity.LastName,
-                    Language = identity.Language.Code,
-                    Receiver = identity.Name,
-                    Type = "Release"
-                };
+                await _PDFservice.SetUserinfo(identity.UserID,
+                    ITPerson,
+                    Employee,
+                    identity.FirstName,
+                    identity.LastName,
+                    identity.Name,
+                    identity.Language.Code,
+                    "Release");
+                /*
                 PDFGenerator.SetMobileInfo(mobile);
-                string PdfFile = PDFGenerator.GeneratePath(_env);
-                PDFGenerator.GeneratePdf(PdfFile);
                 await service.ReleaseMobile(identity, mobile, Table);
-                await service.LogPdfFile(Table,identity.IdenId,PdfFile);
                 await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);*/
+                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -530,35 +519,32 @@ namespace CMDB.Controllers
             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 List<DeviceDTO> devicesToRelease = new();
                 foreach (var device in identity.Devices)
                 {
-                    if (!String.IsNullOrEmpty(values[device.AssetTag])) { 
+                    if (!string.IsNullOrEmpty(values[device.AssetTag])) { 
                         devicesToRelease.Add(device);
                     }
                 }
                 if (ModelState.IsValid)
                 {
+                    var admin = await service.Admin();
                     await service.ReleaseDevices(identity, devicesToRelease);
-                   /* PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = service.Admin.Account.UserID,
-                        Singer = identity.Name,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name,
-                        Type = "Release"
-                    };
-                    foreach (var device in devicesToRelease)
-                    {
-                        PDFGenerator.SetAssetInfo(device);
-                    }
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);*/
+                    await _PDFservice.SetUserinfo(identity.UserID,
+                        admin.Account.UserID,
+                        identity.Name,
+                        identity.FirstName,
+                        identity.LastName,
+                        identity.Name,
+                        identity.Language.Code
+                        ,"Release");
+                     foreach (var device in devicesToRelease)
+                     {
+                         await _PDFservice.SetDeviceInfo(device);
+                     }
+                    await _PDFservice.GenratPDFFile(Table, identity.IdenId);
                     return RedirectToAction(nameof(Index));
                     //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }
@@ -582,22 +568,18 @@ namespace CMDB.Controllers
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                /*PDFGenerator PDFGenerator = new()
-                {
-                    ITEmployee = ITPerson,
-                    Singer = Employee,
-                    UserID = identity.UserID,
-                    FirstName = identity.FirstName,
-                    LastName = identity.LastName,
-                    Language = identity.Language.Code,
-                    Receiver = identity.Name,
-                    Type = "Release"
-                };
-               *//* foreach (var device in devices)
+                await _PDFservice.SetUserinfo(identity.UserID,
+                ITPerson,
+                Employee,
+                identity.FirstName,
+                identity.LastName,
+                identity.Name,
+                identity.Language.Code);
+                /* foreach (var device in devices)
                 {
                     PDFGenerator.SetAssetInfo(device);
                 }*//*

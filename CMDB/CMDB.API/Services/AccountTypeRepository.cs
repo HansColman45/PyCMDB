@@ -50,7 +50,7 @@ namespace CMDB.API.Services
                 type.active = 1;
                 type.Logs.Add(new()
                 {
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logline,
                 });
                 _context.Types.Add(type);
@@ -73,7 +73,7 @@ namespace CMDB.API.Services
                 acctype.LastModifiedAdminId = TokenStore.Admin.AdminId;
                 acctype.Logs.Add(new()
                 { 
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logline,
                 }
                 );
@@ -97,7 +97,7 @@ namespace CMDB.API.Services
                 acctype.LastModifiedAdminId = TokenStore.Admin.AdminId;
                 acctype.Logs.Add(new()
                 {
-                    LogDate = DateTime.UtcNow,
+                    LogDate = DateTime.Now,
                     LogText = logline,
                 }
                 );
@@ -123,7 +123,7 @@ namespace CMDB.API.Services
                     oldType.LastModifiedAdminId = TokenStore.Admin.AdminId;
                     oldType.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     }
                     );
@@ -144,7 +144,7 @@ namespace CMDB.API.Services
                     oldType.LastModifiedAdminId = TokenStore.Admin.AdminId;
                     oldType.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     }
                     );

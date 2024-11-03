@@ -33,7 +33,7 @@ namespace CMDB.API.Services
             entity.Logs.Add(new()
             {
                 LogText = logLine,
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 AdminId = entity.AdminId
             });
             _context.Admins.Add(entity);

@@ -13,5 +13,10 @@ namespace CMDB.API.Services
         Task<IdentityDTO> Deactivate(IdentityDTO identity, string reason);
         Task<IdentityDTO> Activate(IdentityDTO identity);
         Task<IdentityDTO> Update(IdentityDTO identity);
+        Task<bool> IsExisting(IdentityDTO identity);
+        Task AssignDevices(IdentityDTO identity, List<string> assetTags);
+        Task ReleaseDevices(IdentityDTO identity, List<string> assetTags);
+        Task AssignAccount(IdenAccountDTO idenAccount);
+        Task ReleaseAccount(IdenAccountDTO idenAccount);
     }
 }

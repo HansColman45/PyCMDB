@@ -96,12 +96,12 @@ namespace CMDB.Controllers
             log.Debug("Using Edit in {0}", SitePart);
             if (id == null)
                 return NotFound();
-            ViewData["Title"] = "Edit Accounttype";
-            ViewData["Controller"] = @$"\AccountType\Edit\{id}";
-            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
+            ViewData["Title"] = "Edit Accounttype";
+            ViewData["Controller"] = @$"\AccountType\Edit\{id}";
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
@@ -132,13 +132,13 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
+            var accountType = await service.GetAccountTypeByID((int)id);
+            if (accountType == null)
+                return NotFound();
             ViewData["Title"] = "Delete Accounttype";
             ViewData["Controller"] = @$"\AccountType\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "AccountType";
-            var accountType = await service.GetAccountTypeByID((int)id);
-            if (accountType == null)
-                return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
@@ -164,14 +164,14 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Accounttype";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var accountType = await service.GetAccountTypeByID((int)id);
             if (accountType == null)
                 return NotFound();
+            ViewData["Title"] = "Activate Accounttype";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(accountType);
@@ -184,17 +184,18 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (id == null)
+                return NotFound();
+            var accountType = await service.GetAccountTypeByID((int)id);
+            if (accountType == null)
+                return NotFound();
             ViewData["Title"] = "Accounttype details";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (id == null)
-                return NotFound();
-            var accountType = await service.GetAccountTypeByID((int)id);
-            if (accountType == null)
-                return NotFound();
+            ViewData["Controller"] = @"\AccountType\Create";
             return View(accountType);
         }
     }

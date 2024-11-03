@@ -9,13 +9,12 @@ namespace CMDB.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AssetTypeController : ControllerBase
+    public class SubscriptionController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly string site = "Asset Type";
+        private readonly string site = "Subscription";
         private HasAdminAccessRequest request;
-
-        public AssetTypeController(IUnitOfWork uow)
+        public SubscriptionController(IUnitOfWork uow)
         {
             _uow = uow;
         }
@@ -35,7 +34,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetAll());
+            return Ok(await _uow.SubscriptionRepository.GetAll());
         }
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
@@ -53,85 +52,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetAll(searchstr));
-        }
-        [HttpGet("GetByCategory/{category:alpha}"), Authorize]
-        public async Task<IActionResult> GetByAssetCategory(string category)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Read"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetByCategory(category));
-        }
-        [HttpPost, Authorize]
-        public async Task<IActionResult> Create(AssetTypeDTO assetTypeDTO)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Add"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = _uow.AssetTypeRepository.Create(assetTypeDTO);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
-        }
-        [HttpPut, Authorize]
-        public async Task<IActionResult> Update(AssetTypeDTO assetTypeDTO)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Edit"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Update(assetTypeDTO);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
-        }
-        [HttpDelete("{reason}"), Authorize]
-        public async Task<IActionResult> Deactivate(AssetTypeDTO assetTypeDTO, string reason)
-        {
-            // Retrieve userId from the claims
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
-            if (userIdClaim == null)
-                return Unauthorized();
-            request = new()
-            {
-                AdminId = Int32.Parse(userIdClaim),
-                Site = site,
-                Action = "Deactivate"
-            };
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Deactivate(assetTypeDTO, reason);
-            await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
+            return Ok(await _uow.SubscriptionRepository.GetAll(searchstr));
         }
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
@@ -149,10 +70,10 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.AssetTypeRepository.GetById(id));
+            return Ok(await _uow.SubscriptionRepository.GetById(id));
         }
-        [HttpPost("Activate"), Authorize]
-        public async Task<IActionResult> Activate(AssetTypeDTO assetTypeDTO)
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Create(SubscriptionDTO subscription)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -162,14 +83,34 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Activate"
+                Action = "Add"
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            assetTypeDTO = await _uow.AssetTypeRepository.Activate(assetTypeDTO);
+            subscription = _uow.SubscriptionRepository.Create(subscription);
             await _uow.SaveChangesAsync();
-            return Ok(assetTypeDTO);
+            return Ok();
+        }
+        [HttpDelete("{reason}"), Authorize]
+        public async Task<IActionResult> Delete(SubscriptionDTO subscription,string reason)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Deactivate"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            subscription =  await _uow.SubscriptionRepository.Delete(subscription,reason);
+            await _uow.SaveChangesAsync();
+            return Ok(subscription);
         }
     }
 }

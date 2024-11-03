@@ -71,7 +71,7 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListActiveAccountTypes();
             ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -103,18 +103,18 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (id == null)
+                return NotFound();
+            var account = await service.GetByID((int)id);
+            if (account == null)
+                NotFound();
             ViewData["Title"] = "Edit Account";
             ViewData["Controller"] = @$"\Account\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
-            if (id == null)
-                return NotFound();
             ViewBag.Types = await service.ListActiveAccountTypes();
             ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
-            var account = await service.GetByID((int)id);
-            if (account == null)
-                NotFound();
             ViewData["UserID"] = account.UserID;
             if (!string.IsNullOrEmpty(FormSubmit))
             {
@@ -143,6 +143,13 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var account = await service.GetByID((int)id);
+            if (account == null)
+                return NotFound();
             ViewData["Title"] = "Account Details";
             ViewData["Controller"] = @"\Account\Create";
             await BuildMenu();
@@ -153,29 +160,20 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (id == null)
-            {
-                return NotFound();
-            }
-            var account = await service.GetByID((int)id);
-            if (account == null)
-                return NotFound();
-            if (account == null)
-                NotFound();
             return View(account);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
-            ViewData["Title"] = "Deactivate Account";
-            ViewData["Controller"] = @$"\Account\Delete\{id}"; 
-            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var account = await service.GetByID((int)id);
             if (account == null)
                 return NotFound();
+            ViewData["Title"] = "Deactivate Account";
+            ViewData["Controller"] = @$"\Account\Delete\{id}"; 
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Account";
             if (!string.IsNullOrEmpty(FormSubmit))
@@ -198,15 +196,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Account";
-            ViewData["Controller"] = @$"\Account\Activate\{id}";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var account = await service.GetByID((int)id);
             if (account == null)
                 NotFound();
+            ViewData["Title"] = "Activate Account";
+            ViewData["Controller"] = @$"\Account\Activate\{id}";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(account);
@@ -221,15 +219,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Identity in {0}", Table);
-            ViewData["Title"] = "Assign Identity";
-            ViewData["Controller"] = @$"\Account\AssignIdentity\{id}";
-            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var account = await service.GetByID((int)id);
             if (account == null)
                 NotFound();
+            ViewData["Title"] = "Assign Identity";
+            ViewData["Controller"] = @$"\Account\AssignIdentity\{id}";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            await BuildMenu();
             ViewBag.Account = account;
             ViewBag.Identities = await service.ListAllFreeIdentities();
             string FormSubmit = values["form-submitted"];
@@ -250,14 +248,14 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Identity in {0}", Table);
-            ViewData["Title"] = "Release Identity";
-            ViewData["Controller"] = @$"\Account\ReleaseIdentity\{id}";
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             IdenAccountDTO idenAccount = await service.GetIdenAccountByID((int)id);
             if (idenAccount == null)
                 return NotFound();
+            ViewData["Title"] = "Release Identity";
+            ViewData["Controller"] = @$"\Account\ReleaseIdentity\{id}";
+            await BuildMenu();
             ViewData["backUrl"] = "Account";
             ViewData["Action"] = "ReleaseIdentity";
             ViewBag.Identity = idenAccount.Identity;
@@ -293,14 +291,14 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign Form in {0}", Table);
             if (id == null)
-            {
                 return NotFound();
-            }
+            var account = await service.GetByID((int)id);
+            if (account == null)
+                return NotFound();
             ViewData["Title"] = "Assign Identity";
             ViewData["Controller"] = @$"\Account\AssignForm\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var account = await service.GetByID((int)id);
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             ViewData["backUrl"] = "Account";

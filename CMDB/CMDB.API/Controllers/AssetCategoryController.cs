@@ -73,7 +73,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetCategoryRepository.GetAll(searchstr));
         }
-        [HttpGet("{category:alpha}"),Authorize]
+        [HttpGet("{category}"),Authorize]
         public async Task<IActionResult> GetBycategory(string category)
         {
             // Retrieve userId from the claims
@@ -131,7 +131,7 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetCategory);
         }
-        [HttpDelete("{reason:alpha}")]
+        [HttpDelete("{reason}")]
         public async Task<IActionResult> Delete(AssetCategoryDTO assetCategory, string reason)
         {
             // Retrieve userId from the claims

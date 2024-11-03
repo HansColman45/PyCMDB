@@ -89,15 +89,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            ViewData["Title"] = "Edit Account";
-            ViewData["Controller"] = @$"\AssetCategory\Edit\{id}";
-            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var category = await service.ListByID((int)id); ;
             if (category == null)
                 return NotFound();
+            ViewData["Title"] = "Edit Account";
+            ViewData["Controller"] = @$"\AssetCategory\Edit\{id}";
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -126,6 +126,11 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (id == null)
+                return NotFound();
+            var category = await service.ListByID((int)id);
+            if (category == null)
+                return NotFound();
             ViewData["Title"] = "Category Details";
             ViewData["Controller"] = @"\AssetCategory\Create";
             await BuildMenu();
@@ -133,25 +138,20 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (id == null)
-                return NotFound();
-            var category = await service.ListByID((int)id);
-            if (category == null)
-                return NotFound();
             return View(category);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
-            ViewData["Title"] = "Deactivate Account";
-            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
-            ViewData["Controller"] = @$"\AssetCategory\Delete\{id}";
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var category = await service.ListByID((int)id);
             if (category == null)
                 return NotFound();
+            ViewData["Title"] = "Deactivate Account";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["Controller"] = @$"\AssetCategory\Delete\{id}";
+            await BuildMenu();
             string FormSubmit = values["form-submitted"];
             ViewData["backUrl"] = "Account";
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -177,14 +177,14 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Category";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var category = await service.ListByID((int)id);
             if (category == null)
                 return NotFound();
+            ViewData["Title"] = "Activate Category";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(category, Table);

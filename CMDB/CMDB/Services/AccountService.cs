@@ -217,19 +217,6 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
         }
-        public async Task LogPdfFile(string table, AccountDTO account, string pdfFile)
-        {
-            BaseUrl = _url + $"api/Logger/LogPDFFileGenerated/identity/{account.Identities.Last().Identity.IdenId}/{pdfFile}";
-            var response = await _Client.PostAsync(BaseUrl, null);
-            if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
-            BaseUrl = _url + $"api/Logger/LogPDFFileGenerated/{table}/{account.AccID}/{pdfFile}";
-            response = await _Client.PostAsync(BaseUrl, null);
-            if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
-            //await LogPdfFile("identity", account.Identities.Last().Identity.IdenId, pdfFile);
-            //await LogPdfFile(table, account.AccID, pdfFile);
-        }
         private async Task<List<TypeDTO>> GetAllAccountTypes()
         {
             BaseUrl = _url + $"api/AccountType/GetAll";

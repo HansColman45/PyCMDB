@@ -99,7 +99,7 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpDelete("{reason:alpha}"), Authorize]
+        [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(TypeDTO account, string reason)
         {
             // Retrieve userId from the claims

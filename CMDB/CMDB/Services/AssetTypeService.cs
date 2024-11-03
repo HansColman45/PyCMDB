@@ -84,36 +84,18 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsAssetTypeExisting(AssetTypeDTO assetType, string Vendor = "", string type = "")
+        public async Task<bool> IsAssetTypeExisting(AssetTypeDTO assetType, string Vendor = "", string type = "")
         {
             bool result = false;
-            /*List<AssetType> assetTypes = new();
-            if (String.IsNullOrEmpty(Vendor) && String.IsNullOrEmpty(type))
-            {
-                if (String.Compare(assetType.Type, type) != 0)
-                    assetTypes = _context.AssetTypes
-                        .Include(x => x.Category)
-                        .Where(x => x.Type == assetType.Type && x.Category.Id == assetType.Category.Id).ToList();
-                if (String.Compare(assetType.Vendor, Vendor) != 0)
-                    assetTypes = _context.AssetTypes
-                        .Include(x => x.Category)
-                        .Where(x => x.Vendor == assetType.Vendor && x.Category.Id == assetType.Category.Id).ToList();
-            }
-            else
-            {
-                if (String.Compare(assetType.Type, type) != 0)
-                    assetTypes = _context.AssetTypes
-                        .Include(x => x.Category)
-                        .Where(x => x.Type == type && x.Category.Id == assetType.Category.Id).ToList();
-                if (String.Compare(assetType.Vendor, Vendor) != 0)
-                    assetTypes = _context.AssetTypes
-                        .Include(x => x.Category)
-                        .Where(x => x.Vendor == Vendor && x.Category.Id == assetType.Category.Id).ToList();
-            }
-            if (assetTypes.Count >= 1)
-            {
-                result = true;
-            }*/
+            if(!string.IsNullOrEmpty(Vendor))
+                assetType.Vendor = Vendor;
+            if(!string.IsNullOrEmpty(type))
+                assetType.Type = type;
+            BaseUrl = _url + $"api/AssetType/IsTypeExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, assetType);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<bool>();
             return result;
         }
         public async Task<List<SelectListItem>> ListActiveCategories()

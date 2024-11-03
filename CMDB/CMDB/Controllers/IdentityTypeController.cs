@@ -39,7 +39,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using List all in {0}", Table);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
                 var list = await service.ListAll(search);
@@ -62,6 +62,9 @@ namespace CMDB.Controllers
             log.Debug("Using details in {0}", Table);
             if (id == null)
                 return NotFound();
+            var idenType = await service.GetByID((int)id);
+            if (idenType == null)
+                return NotFound();
             ViewData["Title"] = "Identitytype Details";
             await BuildMenu();
             ViewData["Controller"] = @"\Identitytype\Create";
@@ -69,9 +72,6 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            var idenType = await service.GetByID((int)id);
-            if (idenType == null)
-                return NotFound();
             if (idenType == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             TypeDTO idenType = new();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -115,13 +115,13 @@ namespace CMDB.Controllers
             log.Debug("Using Edit in {0}", SitePart);
             if (id == null)
                 return NotFound();
+            var idenType = await service.GetByID((int)id);
+            if (idenType == null)
+                return NotFound();
             ViewData["Title"] = "Edit Identitytype";
             ViewData["Controller"] = @$"\Identitytype\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             await BuildMenu();
-            var idenType = await service.GetByID((int)id);
-            if (idenType == null)
-                return NotFound();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -151,13 +151,13 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
+            var idenType = await service.GetByID((int)id);
+            if (idenType == null)
+                return NotFound();
             ViewData["Title"] = "Delete Identitytype";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "IdentityType";
             ViewData["Controller"] = @$"\Identitytype\Delete\{id}";
-            var idenType = await service.GetByID((int)id);
-            if (idenType == null)
-                return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -183,15 +183,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Identitytype";
-            ViewData["Controller"] = @$"\Identitytype\Activate\{id}";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var idenType = await service.GetByID((int)id);
             if (idenType == null)
                 return NotFound();
+            ViewData["Title"] = "Activate Identitytype";
+            ViewData["Controller"] = @$"\Identitytype\Activate\{id}";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(idenType);

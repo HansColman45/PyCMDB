@@ -11,6 +11,28 @@ namespace CMDB.API.Services
         public IdentityRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        public async Task<bool> IsExisting(IdentityDTO identity)
+        {
+            bool result = false;
+            List<Identity> idens;
+            var iden = await GetById(identity.IdenId);
+            if(iden is null)
+            {
+                idens = _context.Identities.Where(x => x.UserID == identity.UserID).ToList();
+                if(idens.Count > 0)
+                    result = true;
+            }
+            else
+            {
+                if(string.Compare(iden.UserID, iden.UserID) != 0)
+                {
+                    idens = _context.Identities.Where(x => x.UserID == identity.UserID).ToList();
+                    if (idens.Count > 0)
+                        result = true;
+                }
+            }
+            return result;
+        }
         public async Task<IdentityDTO?> GetById(int id)
         {
             var iden = await _context.Identities.AsNoTracking()
@@ -32,7 +54,7 @@ namespace CMDB.API.Services
             Identity iden = await _context.Identities.Where(x => x.IdenId == id).FirstAsync();
             iden.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
             });
             _context.Identities.Update(iden);
@@ -71,7 +93,7 @@ namespace CMDB.API.Services
             string logLine = GenericLogLineCreator.CreateLogLine($"Identity width name: {identityDTO.Name}", TokenStore.Admin.Account.UserID, table);
             iden.Logs.Add(new()
             {
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now,
                 LogText = logLine
             });
             _context.Identities.Add(iden);
@@ -102,7 +124,7 @@ namespace CMDB.API.Services
                     oldIden.Name = dTO.Name;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -120,7 +142,7 @@ namespace CMDB.API.Services
                     oldIden.EMail = dTO.EMail;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -138,7 +160,7 @@ namespace CMDB.API.Services
                     oldIden.Company = dTO.Company;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -159,7 +181,7 @@ namespace CMDB.API.Services
                     oldIden.TypeId = dTO.Type.TypeId;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -178,7 +200,7 @@ namespace CMDB.API.Services
                     oldIden.LanguageCode = dTO.Language.Code;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -196,7 +218,7 @@ namespace CMDB.API.Services
                     oldIden.UserID = dTO.UserID;
                     oldIden.Logs.Add(new()
                     {
-                        LogDate = DateTime.UtcNow,
+                        LogDate = DateTime.Now,
                         LogText = logline,
                     });
                 }
@@ -208,6 +230,104 @@ namespace CMDB.API.Services
             }
             _context.Identities.Update(oldIden);
             return dTO;
+        }
+        public async Task AssignDevices(IdentityDTO identity, List<string> assetTags)
+        {
+            string ideninfo = $"Identity width name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (string assetTag in assetTags)
+            {
+                var device = await _context.Devices
+                    .Include(x => x.Category)
+                    .Where(x => x.AssetTag == assetTag)
+                    .FirstAsync();
+                var deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
+                device.IdentityId = identity.IdenId;
+                device.LastModifiedAdminId = TokenStore.AdminId;
+                device.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo,TokenStore.Admin.Account.UserID, $"{device.Category.Category.ToLower()}"),
+                    LogDate = DateTime.Now
+                });
+                _context.Devices.Update(device);
+                iden.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.Now
+                });
+            }
+            _context.Identities.Update(iden);
+        }
+        public async Task ReleaseDevices(IdentityDTO identity, List<string> assetTags)
+        {
+            string ideninfo = $"Identity width name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (string assetTag in assetTags)
+            {
+                var device = await _context.Devices
+                    .Include(x => x.Category)
+                    .Where(x => x.AssetTag == assetTag)
+                    .FirstAsync();
+                var deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
+                device.IdentityId = 1;
+                device.LastModifiedAdminId = TokenStore.AdminId;
+                device.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, $"{device.Category.Category.ToLower()}"),
+                    LogDate = DateTime.Now
+                });
+                _context.Devices.Update(device);
+                iden.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.Now
+                });
+            }
+            _context.Identities.Update(iden);
+        }
+        public async Task AssignAccount(IdenAccountDTO idenAccount)
+        {
+            var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
+            var iden = await TrackedIden(idenAccount.Identity.IdenId);
+            string ideninfo = $"Identity width name: {iden.Name}";
+            string accountinfo = $"Account with UserID: {acc.UserID}";
+            IdenAccount idenacc = new()
+            {
+                AccountId = idenAccount.Account.AccID,
+                LastModifiedAdminId = TokenStore.AdminId,
+                IdentityId  = idenAccount.Identity.IdenId,
+                ValidFrom = idenAccount.ValidFrom,
+                ValidUntil = idenAccount.ValidUntil
+            };
+            _context.IdenAccounts.Add(idenacc);
+            acc.LastModifiedAdminId = TokenStore.AdminId;
+            acc.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
+                LogDate = DateTime.Now
+            });
+            _context.Accounts.Update(acc);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            iden.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.Now
+            });
+            _context.Identities.Update(iden);
+        }
+        public async Task ReleaseAccount(IdenAccountDTO idenAccount)
+        {
+            var idenacc = await _context.IdenAccounts.Where(x => x.ID == idenAccount.Id).FirstAsync();
+            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
+            idenacc.LastModifiedAdminId = TokenStore.AdminId;
+            _context.IdenAccounts.Update(idenacc);
+            var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
+            var iden = await TrackedIden(idenAccount.Identity.IdenId);
+            string ideninfo = $"Identity width name: {iden.Name}";
+            string accountinfo = $"Account with UserID: {acc.UserID}";
+
         }
         public static IdentityDTO ConvertIdentity(in Identity identity)
         {
@@ -276,7 +396,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
             return identity;
@@ -290,7 +410,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow,
+                LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
             return identity;
@@ -298,14 +418,6 @@ namespace CMDB.API.Services
         private async Task<Identity> TrackedIden(int id)
         {
             return await _context.Identities.FirstAsync(x => x.IdenId == id);
-        }
-        private async Task<Identity?> GetIdenByID(int id)
-        {
-            return await _context.Identities.AsNoTracking()
-                .Include(x => x.Accounts).AsNoTracking()
-                .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Language).AsNoTracking()
-                .FirstOrDefaultAsync(x => x.IdenId == id);
         }
         private async Task GetAssignedAccounts(int id)
         {
@@ -328,15 +440,16 @@ namespace CMDB.API.Services
                 .SelectMany(x => x.Devices)
                 .Select(x => DeviceRepository.ConvertDevice(x))
                 .ToListAsync();
-            /*identity.Mobiles = _context.Identities
+            identity.Mobiles = await _context.Identities.AsNoTracking()
                 .Include(x => x.Mobiles)
-                .ThenInclude(x => x.Subscriptions)
+                .ThenInclude(x => x.Subscriptions).AsNoTracking()
                 .Include(x => x.Mobiles)
-                .ThenInclude(x => x.MobileType)
-                .Where(x => x.IdenId == identity.IdenId)
+                .ThenInclude(x => x.MobileType).AsNoTracking()
+                .Where(x => x.IdenId == identity.IdenId).AsNoTracking()
                 .SelectMany(x => x.Mobiles)
-                .ToList();
-            identity.Subscriptions = _context.Subscriptions
+                .Select(x => MobileRepository.ConvertMobile(x))
+                .ToListAsync();
+            /*identity.Subscriptions = _context.Subscriptions
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Category)
                 .Where(x => x.IdentityId == identity.IdenId)

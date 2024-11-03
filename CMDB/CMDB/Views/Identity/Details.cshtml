@@ -32,15 +32,15 @@
     <partial name="_AddNew" />
     @if ((bool)ViewData["AssignDevice"] && Model.IdenId > 1)
     {
-        <a class="btn icon-btn btn-success" asp-action="AssignDevice" asp-route-id="@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="@ViewBag.AddDeviceIcon"></span></a>
+        <a class="btn icon-btn btn-success" href="\Identity\AssignDevice\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="@ViewBag.AddDeviceIcon"></span></a>
     }
     @if ((bool)ViewData["AssignAccount"])
     {
-        <a class="btn icon-btn btn-success" asp-action="AssignAccount" asp-route-id="@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="@ViewBag.AddIdentityIcon"></span></a>
+        <a class="btn icon-btn btn-success" href="\Identity\AssignAccount\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="@ViewBag.AddIdentityIcon"></span></a>
     }
     @if (Model.Active == 1 && Model.Devices.Count > 0 && (bool)ViewData["ReleaseDevice"])
     {
-        <a class="btn btn-danger" asp-action="ReleaseDevices" asp-route-id="@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
+        <a class="btn btn-danger" href="\Identity\ReleaseDevices\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
     }
     @if ((bool)ViewData["AccountOverview"])
     {
@@ -72,7 +72,7 @@
                             {
                                 @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
                                 {
-                                    <td class="small"><a class="btn btn-danger" asp-action="ReleaseAccount" asp-route-id="@idenAccount.Id" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                    <td class="small"><a class="btn btn-danger" href="\Identity\ReleaseAccount\@idenAccount.Id" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                                 }
                                 else
                                 {
@@ -136,29 +136,29 @@
     @if ((bool)ViewData["MobileOverview"])
     {
         <H3>Mobile overview</H3>
-        @* @if (Model.Mobiles.Count > 0)
+        @if (Model.Mobiles.Count > 0)
         {
             <table class="table table-striped table-bordered">
                 <thead class="thead-light">
                     <tr>
                         <th>IMEI</th>
                         <th>Type</th>
-                        @if ((bool)ViewData["ReleaseMobile"] && item.IdenId > 1)
+                        @if ((bool)ViewData["ReleaseMobile"] && Model.IdenId > 1)
                         {
                             <th>Action</th>
                         }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (CMDB.Domain.Entities.Mobile mobile in item.Mobiles)
+                    @foreach (CMDB.API.Models.MobileDTO mobile in Model.Mobiles)
                     {
                         <tr>
                             <td class="small">@mobile.IMEI</td>
                             <td class="small">@mobile.MobileType.Vendor @mobile.MobileType.Type</td>
-                            @if ((bool)ViewData["ReleaseMobile"] && item.IdenId > 1)
+                            @if ((bool)ViewData["ReleaseMobile"] && Model.IdenId > 1)
                             {
                                 <td class="small">
-                                    <a class="btn btn-danger" asp-controller="Identity" asp-action="ReleaseMobile" asp-route-id="@item.IdenId" asp-route-MobileId="@mobile.MobileId" id="ReleaseMobile" data-toggle="tooltip" data-placement="top" title="ReleaseMobile">
+                                    <a class="btn btn-danger" href="\Identity\ReleaseMobile\@Model.IdenId\@mobile.MobileId" id="ReleaseMobile" data-toggle="tooltip" data-placement="top" title="ReleaseMobile">
                                         <span class="@ViewBag.AddDeviceIcon"></span>
                                     </a>
                                 </td>
@@ -171,7 +171,7 @@
         else
         {
             <p>No Mobiles assigned to this Identity</p>
-        } *@
+        }
     }
     <H3>Log overview</H3>
     @if (Model.Logs.Count > 0)

@@ -8,6 +8,9 @@ using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
+using CMDB.Util;
 
 namespace CMDB.Services
 {
@@ -16,83 +19,74 @@ namespace CMDB.Services
         public MobileService() : base()
         {
         }
-        public async Task<List<Mobile>> ListAll()
+        public async Task<List<MobileDTO>> ListAll()
         {
-            /*List<Mobile> mobiles = await _context.Mobiles
-                .Include(x => x.Identity)
-                .Include(x => x.Category)
-                .Include(x => x.MobileType)
-                .ToListAsync();
-            return mobiles;*/
-            return [];
+            BaseUrl = _url + $"api/Mobile/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<List<Mobile>> ListAll(string searchString)
+        public async Task<List<MobileDTO>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
-            /*List<Mobile> mobiles = await _context.Mobiles
-                .Include(x => x.Identity)
-                .Include(x => x.Category)
-                .Include(x => x.MobileType)
-                .Where(x => EF.Functions.Like(x.IMEI.ToString(), searhterm) || EF.Functions.Like(x.MobileType.Type, searhterm) || EF.Functions.Like(x.MobileType.Vendor, searhterm))
-                .ToListAsync();
-            return mobiles;*/
-            return [];
+            BaseUrl = _url + $"api/Mobile/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task CreateNew(Mobile mobile, string table)
+        public async Task CreateNew(MobileDTO mobile)
         {
-            /*mobile.LastModfiedAdmin = Admin;
-            mobile.IdentityId = 1;
-            _context.Mobiles.Add(mobile);
-            await _context.SaveChangesAsync();*/
             string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
+            BaseUrl = _url + $"api/Mobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Update(Mobile mobile, long newImei, AssetType newAssetType, string table)
+        public async Task Update(MobileDTO mobile, long newImei, AssetTypeDTO newAssetType)
         {
-            var oldImei = mobile.IMEI;
-            var oldAssetType = mobile.MobileType;
-            if(mobile.IMEI != newImei)
+            mobile.IMEI = newImei;
+            mobile.MobileType = newAssetType;
+            BaseUrl = _url + $"api/Mobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl, mobile);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task Deactivate(MobileDTO mobile, string reason)
+        {
+            BaseUrl = _url + $"api/Mobile/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, mobile);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task Activate(MobileDTO mobile)
+        {
+            BaseUrl = _url + $"api/Mobile/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task<AssetTypeDTO> ListAssetTypeById(int id)
+        {
+            BaseUrl = _url + $"api/AssetType/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                mobile.IMEI = newImei;
+                return await response.Content.ReadAsJsonAsync<AssetTypeDTO>();
             }
-            if(mobile.MobileType != newAssetType)
-            {
-                mobile.MobileType = newAssetType;
-                mobile.Category = newAssetType.Category;
-            }
-            /*mobile.LastModfiedAdmin = Admin;
-            _context.Mobiles.Update(mobile);
-            await _context.SaveChangesAsync();*/
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Deactivate(Mobile mobile, string reason, string table)
-        {
-            /*mobile.LastModfiedAdmin = Admin;
-            mobile.Active = State.Inactive;
-            mobile.DeactivateReason = reason;
-            _context.Mobiles.Update(mobile);
-            await _context.SaveChangesAsync();
-            string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
-            await LogDeactivate(table,mobile.MobileId,value,reason);*/
-        }
-        public async Task Activate(Mobile mobile, string table)
-        {
-            /*mobile.LastModfiedAdmin = Admin;
-            mobile.Active = State.Active;
-            mobile.DeactivateReason = null;
-            _context.Mobiles.Update(mobile);
-            await _context.SaveChangesAsync();
-            string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
-            await LogActivate(table, mobile.MobileId, value);*/
-        }
-        public AssetType ListAssetTypeById(int id)
-        {
-            /*var devices = _context.AssetTypes
-                .Include(x => x.Category)
-                .Where(x => x.TypeID == id)
-                .FirstOrDefault();
-            return devices;*/
-            return new();
-        }
-        public bool IsMobileExisting(Mobile mobile, long? imei = null)
+        public bool IsMobileExisting(MobileDTO mobile, long? imei = null)
         {
             bool result = false;
             /*if (imei != null && mobile.IMEI != imei)
@@ -111,55 +105,43 @@ namespace CMDB.Services
             }*/
             return result;
         }
-        public List<Mobile> GetMobileById(int id)
+        public async Task<MobileDTO> GetMobileById(int id)
         {
-            /* List<Mobile> mobiles = _context.Mobiles
-                 .Include(x => x.Identity)
-                 .Include(x => x.Category)
-                 .Include(x => x.MobileType)
-                 .Where(x => x.MobileId == id)
-                 .ToList();
-             return mobiles;*/
-            return [];
+            BaseUrl = _url + $"api/Mobile/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<MobileDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public void GetAssignedIdentity(Mobile mobile)
-        {
-            /*mobile.Identity = _context.Mobiles
-                .Include(x => x.Identity)
-                .ThenInclude(x => x.Language)
-                .Where(x => x.MobileId == mobile.MobileId)
-                .Select(x => x.Identity).First();*/
-        }
-        public void GetAssignedSubscription(Mobile mobile)
-        {
-            /*mobile.Subscriptions = _context.Subscriptions
-                .Include(x => x.SubscriptionType)
-                .Include(x => x.Mobile)
-                .Where(x => x.Mobile.MobileId == mobile.MobileId)
-                .ToList();*/
-        }
-        public List<SelectListItem> ListFreeIdentities()
+        public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
-            /*var idens = _context.Identities
-                .Include(x => x.Mobiles)
-                .Where(x => !x.Mobiles.Any())
-                .Where(x => x.IdenId != 1)
-                .ToList();
-            foreach (var identity in idens)
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                identites.Add(new(identity.Name + " " + identity.UserID, identity.IdenId.ToString()));
-            }*/
+                var idens = await response.Content.ReadAsJsonAsync<List<IdentityDTO>>();
+                foreach (var identity in idens)
+                {
+                    identites.Add(new(identity.Name + " " + identity.UserID, identity.IdenId.ToString()));
+                }
+            }
             return identites;
         }
-        public async Task<Identity> GetIdentity(int IdenId) 
+        public async Task<IdentityDTO> GetIdentity(int IdenId) 
         {
-            /*IdentityService identityService = new(_context);
-            var idenitities = await identityService.GetByID(IdenId);
-            return idenitities.FirstOrDefault();*/
-            return new();
+            BaseUrl = _url + $"api/Identity/{IdenId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<IdentityDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public bool IsDeviceFree(Mobile mobile, bool checkSub = false)
+        public bool IsDeviceFree(MobileDTO mobile, bool checkSub = false)
         {
             bool result = false;
            /* if (!checkSub) { 
@@ -177,8 +159,9 @@ namespace CMDB.Services
             }*/
             return result;
         }
-        public async Task AssignIdentity2Mobile(Identity identity, Mobile mobile, string table)
+        public async Task AssignIdentity2Mobile(MobileDTO mobile, IdentityDTO identity)
         {
+            mobile.Identity = identity;
             /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
             identity.Mobiles.Add(mobile);
@@ -186,7 +169,7 @@ namespace CMDB.Services
             await LogAssignMobile2Identity("identity",mobile,identity);
             await LogAssignIdentity2Mobile(table, identity, mobile);*/
         }
-        public async Task ReleaseIdenity(Mobile mobile, Identity identity, string table)
+        public async Task ReleaseIdenity(MobileDTO mobile)
         {
             /*identity.LastModfiedAdmin = Admin;
             mobile.LastModfiedAdmin = Admin;
@@ -196,20 +179,25 @@ namespace CMDB.Services
             await LogReleaseMobileFromIdenity(table,mobile,identity);
             await LogReleaseIdentityFromMobile("identity", identity, mobile);*/
         }
-        public List<SelectListItem> ListFreeMobileSubscriptions()
+        public async Task<List<SelectListItem>> ListFreeMobileSubscriptions()
         {
             List<SelectListItem> identites = new();
-            /*var subscriptions = _context.Subscriptions
-                .Include(x => x.SubscriptionType)
-                .Where(x => x.Category.Category == "Mobile Subscription" && x.Mobile == null).ToList();
-            foreach(var subscription in subscriptions)
+            BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                identites.Add(new($"Type: {subscription.SubscriptionType} on phonenumber: {subscription.PhoneNumber}",$"{subscription.SubscriptionId}"));
-            }*/
+                var subscriptions = await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
+                foreach (var subscription in subscriptions)
+                {
+                    identites.Add(new($"Type: {subscription.SubscriptionType} on phonenumber: {subscription.PhoneNumber}", $"{subscription.SubscriptionId}"));
+                }
+            }
             return identites;
         }
-        public async Task AssignSubscription(Mobile mobile, Subscription subscription, string table)
+        public async Task AssignSubscription(MobileDTO mobile, SubscriptionDTO subscription)
         {
+            subscription.Mobile = mobile;
             /*mobile.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             mobile.Subscriptions.Add(subscription);
@@ -218,12 +206,17 @@ namespace CMDB.Services
             await LogAssignMobile2Subscription("mobile",subscription,mobile);*/
         }
 
-        public async Task<Subscription> GetSubribtion(int id)
+        public async Task<SubscriptionDTO?> GetSubribtion(int id)
         {
-            /*SubscriptionService subscriptionService = new(_context);
-            var subscriptions = await subscriptionService.GetByID(id);
-            return subscriptions.FirstOrDefault();*/
-            return new();
+            BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<SubscriptionDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
     }
 }

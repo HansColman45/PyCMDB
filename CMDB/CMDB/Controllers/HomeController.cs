@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
@@ -6,8 +7,10 @@ namespace CMDB.Controllers
 {
     public class HomeController : CMDBController
     {
+        private readonly CMDBServices service;
         public HomeController(IWebHostEnvironment env) : base(env)
         {
+            service = new();
         }
         public async Task<IActionResult> Index()
         {

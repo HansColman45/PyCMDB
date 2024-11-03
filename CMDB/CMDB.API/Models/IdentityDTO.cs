@@ -47,13 +47,17 @@ namespace CMDB.API.Models
         public LanguageDTO Language { get; set; }
         [Required(ErrorMessage = "Please select a Type")]
         public TypeDTO Type { get; set; }
-        public ICollection<IdenAccountDTO> Accounts { get; set; }
-        public ICollection<DeviceDTO> Devices { get; set; }
+        public virtual ICollection<IdenAccountDTO> Accounts { get; set; }
+        public virtual ICollection<DeviceDTO> Devices { get; set; }
+        public virtual ICollection<MobileDTO> Mobiles { get; set; }
+        public virtual ICollection<SubscriptionDTO> Subscriptions { get; set; }
 
         public IdentityDTO()
         {
             Accounts = new List<IdenAccountDTO>();
             Devices = new List<DeviceDTO>();
+            Mobiles = new List<MobileDTO>();
+            Subscriptions = new List<SubscriptionDTO>();
         }
     }
 }

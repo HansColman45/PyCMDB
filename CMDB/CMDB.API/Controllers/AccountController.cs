@@ -107,7 +107,7 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpDelete("{reason:alpha}"), Authorize]
+        [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(AccountDTO account,string reason)
         {
             // Retrieve userId from the claims
@@ -246,7 +246,6 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-
         [HttpGet("ListAllFreeAccounts"), Authorize]
         public async Task<IActionResult> ListAllFreeAccounts()
         {

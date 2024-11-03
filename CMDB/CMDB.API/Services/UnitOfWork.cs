@@ -25,6 +25,8 @@ namespace CMDB.API.Services
             DeviceRepository = new DeviceRepository(_context, _logger);
             AssetTypeRepository = new AssetTypeRepository(_context, _logger);
             AssetCategoryRepository = new AssetCategoryRepository(_context, _logger);
+            MobileRepository = new MobileRepository(_context, _logger);
+            SubscriptionRepository = new SubscriptionRepository(_context, _logger);
         }
         public IAccountRepository AccountRepository { get; private set; }
         public IMenuRepository MenuRepository { get; private set; }
@@ -39,6 +41,8 @@ namespace CMDB.API.Services
         public IDeviceRepository DeviceRepository { get; private set; }
         public IAssetTypeRepository AssetTypeRepository { get; private set; }
         public IAssetCategoryRepository AssetCategoryRepository { get; private set; }
+        public IMobileRepository MobileRepository { get; private set; }
+        public ISubscriptionRepository SubscriptionRepository { get; private set; }
         public async Task SaveChangesAsync()
         {
             try
@@ -65,7 +69,6 @@ namespace CMDB.API.Services
                     _context.Dispose();
                     _logger.LogInformation("Dispossed context");
                 }
-
                 _disposed = true;
             }
         }

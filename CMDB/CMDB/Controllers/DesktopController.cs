@@ -103,15 +103,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var desktop = await service.GetDeviceById(SitePart, id);
+            if (desktop == null)
+                return NotFound();
             ViewData["Title"] = "Edit Desktop";
             ViewData["Controller"] = @$"\Desktop\Edit\{id}";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
-            await BuildMenu();
-            if (String.IsNullOrEmpty(id))
-                return NotFound();
-            var desktop = await service.GetDeviceById(SitePart,id); 
-            if (desktop == null)
-                return NotFound();
+            await BuildMenu();            
             ViewBag.AssetTypes = await service.ListAssetTypes(SitePart);
             ViewBag.Rams = await service.ListRams();
             string FormSubmit = values["form-submitted"];
@@ -143,6 +143,11 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(string id)
         {
             log.Debug("Using details in {0}", Table);
+            if (String.IsNullOrEmpty(id))
+                return NotFound();
+            var desktop = await service.GetDeviceById(SitePart, id);
+            if (desktop == null)
+                return NotFound();
             ViewData["Title"] = "Desktop details";
             ViewData["Controller"] = @"\Desktop\Create";
             await BuildMenu();
@@ -153,11 +158,6 @@ namespace CMDB.Controllers
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (String.IsNullOrEmpty(id))
-                return NotFound();
-            var desktop = await service.GetDeviceById(SitePart, id);
-            if (desktop == null)
-                return NotFound();
             return View(desktop);
         }
         public async Task<IActionResult> Delete(IFormCollection values, string id)
@@ -165,14 +165,15 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            ViewData["Title"] = "Delete Desktop";
-            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
-            ViewData["backUrl"] = "Desktop";
-            await BuildMenu();
-            string FormSubmit = values["form-submitted"];
             var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
+            ViewData["Title"] = "Delete Desktop";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Controller"] = @$"\Desktop\Delete\{id}";
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -235,15 +236,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to Desktop";
-            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
-            ViewData["backUrl"] = "Desktop";
             await BuildMenu();
             if (id == null)
                 return NotFound();
             var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
+            ViewData["Title"] = "Assign identity to Desktop";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Desktop";
             ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -271,15 +272,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
-            ViewData["Title"] = "Assign form";
-            ViewData["backUrl"] = "Desktop";
-            ViewData["Action"] = "AssignForm";
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
             ViewData["Name"] = desktop.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
@@ -309,16 +310,16 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity from Desktop";
-            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
-            ViewData["backUrl"] = "Desktop";
-            ViewData["Action"] = "ReleaseIdentity";
-            await BuildMenu();
             if (id == null)
                 return NotFound();
             var desktop = await service.GetDeviceById(SitePart, id);
             if (desktop == null)
                 return NotFound();
+            ViewData["Title"] = "Release identity from Desktop";
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Action"] = "ReleaseIdentity";
+            await BuildMenu();            
             var identity = desktop.Identity;
             ViewData["Name"] = identity.Name;
             var admin = await service.Admin();

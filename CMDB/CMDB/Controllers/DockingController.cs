@@ -33,12 +33,13 @@ namespace CMDB.Controllers
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Docking\Search";
+            ViewData["Controller"] = @"\Docking\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
                 ViewData["Title"] = "Docking station overview";
@@ -51,6 +52,7 @@ namespace CMDB.Controllers
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Docking\Search";
+                ViewData["Controller"] = @"\Docking\Create";
                 return View(Desktops);
             }
             else
@@ -63,15 +65,16 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
+                return NotFound();
             ViewData["Title"] = "Delete docking station";
+            ViewData["Controller"] = @$"\Docking\Delete\{id}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Docking";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var docking = await service.GetDeviceById(SitePart, id);
-            if (docking == null)
-                return NotFound();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -111,14 +114,14 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate docking station";
-            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
-            await BuildMenu();
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
+            ViewData["Title"] = "Activate docking station";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();            
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 await service.Activate(docking);
@@ -132,13 +135,14 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Docking station details";
+            ViewData["Controller"] = @"\Docking\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -153,13 +157,14 @@ namespace CMDB.Controllers
         {
             log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create docking station";
+            ViewData["Controller"] = @"\Docking\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             DeviceDTO docking = new();
             ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -190,7 +195,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
@@ -201,7 +206,8 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            ViewData["Controller"] = @$"\Docking\Edit\{id}";
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
                 int Type = Convert.ToInt32(values["AssetType.TypeID"]);
@@ -217,18 +223,19 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to docking";
-            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
-            ViewData["backUrl"] = "Laptop";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
+            ViewData["Title"] = "Assign identity to docking";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Laptop";
+            ViewData["Controller"] = @$"\Docking\AssignIdentity\{id}";
+            await BuildMenu();
             ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
@@ -253,20 +260,20 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
-            ViewData["Title"] = "Assign form";
-            ViewData["backUrl"] = "Docking";
-            ViewData["Action"] = "AssignForm";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "AssignForm";
+            await BuildMenu();
             ViewData["Name"] = docking.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
@@ -291,16 +298,17 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity from Docking";
-            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
-            ViewData["backUrl"] = "Docking";
-            ViewData["Action"] = "ReleaseIdentity";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
             var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
+            ViewData["Title"] = "Release identity from Docking";
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "ReleaseIdentity";
+            ViewData["Controller"] = @$"\Docking\ReleaseIdentity\{id}";
+            await BuildMenu();
             ViewData["Name"] = docking.Identity.Name;
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
