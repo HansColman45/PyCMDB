@@ -50,7 +50,7 @@ namespace CMDB.API.Services
                 _admin.Logs.Add(new()
                 {
                     LogText = logLine,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
                 _context.Admins.Update(admin);
                 return _admin;

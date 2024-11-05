@@ -1,6 +1,6 @@
-﻿using CMDB.UI.Specflow.Abilities.Pages.Mobile;
+﻿using CMDB.Infrastructure;
+using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 using CMDB.UI.Specflow.Questions.Mobile;
-using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.Mobiles
 {

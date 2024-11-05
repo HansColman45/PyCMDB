@@ -20,12 +20,14 @@ namespace CMDB.Infrastructure.Configuration
                 .WithMany(d => d.Accounts)
                 .HasForeignKey(e => e.IdentityId)
                 .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_IdenAccount_Identity")
                 .IsRequired();
 
             builder.HasOne(e => e.Account)
                 .WithMany(d => d.Identities)
                 .HasForeignKey(e => e.AccountId)
                 .OnDelete(DeleteBehavior.Restrict)
+                .HasConstraintName("FK_IdenAccount_Account")
                 .IsRequired();
 
             builder.Property(e => e.ValidFrom)

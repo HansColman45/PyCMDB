@@ -1,12 +1,11 @@
 ﻿using CMDB.API.Models;
-using CMDB.API.Services;
 using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -25,6 +24,12 @@ namespace CMDB.Services
             {
                 return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
             }
+            else if(response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
+                return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
+            }
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
@@ -35,6 +40,12 @@ namespace CMDB.Services
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {
+                return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
+            }
+            else if(response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
                 return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
             }
             else

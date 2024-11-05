@@ -42,7 +42,7 @@ namespace CMDB.API.Services
         }
         public TypeDTO Create(TypeDTO typeDTO)
         {
-            string logline = GenericLogLineCreator.CreateLogLine($"accounttype with {typeDTO.Type} and {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
+            string logline = GenericLogLineCreator.CreateLogLine($"accounttype with type: {typeDTO.Type} and description: {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
             try
             {
                 AccountType type = ConvertDTO(typeDTO);
@@ -65,7 +65,7 @@ namespace CMDB.API.Services
         public async Task<TypeDTO> DeActivate(TypeDTO type, string reason)
         {
             var acctype = await GetTypeById(type.TypeId);
-            string logline = GenericLogLineCreator.DeleteLogLine($"accounttype with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, reason, table);
+            string logline = GenericLogLineCreator.DeleteLogLine($"accounttype with type: {type.Type} and description: {type.Description}", TokenStore.Admin.Account.UserID, reason, table);
             try
             {
                 acctype.active = 0;
@@ -89,7 +89,7 @@ namespace CMDB.API.Services
         public async Task<TypeDTO> Activate(TypeDTO type)
         {
             var acctype = await GetTypeById(type.TypeId);
-            string logline = GenericLogLineCreator.ActivateLogLine($"accounttype with {type.Type} and {type.Description}", TokenStore.Admin.Account.UserID, table);
+            string logline = GenericLogLineCreator.ActivateLogLine($"accounttype with type:  {type.Type} and description: {type.Description}", TokenStore.Admin.Account.UserID, table);
             try
             {
                 acctype.active = 1;

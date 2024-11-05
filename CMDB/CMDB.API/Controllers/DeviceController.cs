@@ -18,7 +18,7 @@ namespace CMDB.API.Controllers
         {
             _uow = uow;
         }
-        [HttpGet("{category:alpha}/GetAll"), Authorize]
+        [HttpGet("{category}/GetAll"), Authorize]
         public async Task<IActionResult> GetAll(string category)
         {
             // Retrieve userId from the claims
@@ -36,7 +36,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.GetAll(category));
         }
-        [HttpGet("{category:alpha}/GetAll/{searchstr}"), Authorize]
+        [HttpGet("{category}/GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string category, string searchstr)
         {
             // Retrieve userId from the claims
@@ -54,7 +54,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.GetAll(category, searchstr));
         }
-        [HttpGet("{category:alpha}/{assetTag}"), Authorize]
+        [HttpGet("{category}/{assetTag}"), Authorize]
         public async Task<IActionResult> GetByAssetTag(string category, string assetTag)
         {
             // Retrieve userId from the claims

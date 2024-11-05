@@ -45,7 +45,7 @@ namespace CMDB.API.Services
                 newApp.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("name", oldApp.Name, newApp.Name, TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             _context.Applications.Update(oldApp);
@@ -59,7 +59,7 @@ namespace CMDB.API.Services
             app.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"application with name {app.Name}", TokenStore.Admin.Account.UserID, reason,table),
-                LogDate= DateTime.UtcNow
+                LogDate= DateTime.Now
             });
             _context.Applications.Update(app);
             return app;
@@ -72,7 +72,7 @@ namespace CMDB.API.Services
             app.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ActivateLogLine($"application with name {app.Name}", TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow
+                LogDate = DateTime.Now
             });
             _context.Applications.Update(app);
             return app;

@@ -46,7 +46,7 @@ namespace CMDB.API.Services
                         .ToListAsync();
                     break;
                 case "Docking station":
-                    var dockings = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Docking>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -55,7 +55,7 @@ namespace CMDB.API.Services
                         .ToListAsync();
                     break;
                 case "Token":
-                    var tokens = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Token>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -65,7 +65,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
-                    var screens = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Screen>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -103,7 +103,7 @@ namespace CMDB.API.Services
                         .ToListAsync();
                     break;
                 case "Docking station":
-                    var dockings = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Docking>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -113,7 +113,7 @@ namespace CMDB.API.Services
                         .ToListAsync();
                     break;
                 case "Token":
-                    var tokens = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Token>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -124,7 +124,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
-                    var screens = await _context.Devices
+                    devices = await _context.Devices
                         .OfType<Screen>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
                         .Include(x => x.Identity).AsNoTracking()
@@ -144,6 +144,7 @@ namespace CMDB.API.Services
             var Laptops = await _context.Devices.OfType<Laptop>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -154,6 +155,7 @@ namespace CMDB.API.Services
             var Desktops = await _context.Devices.OfType<Desktop>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDesktop(x))
                 .ToListAsync();
@@ -164,6 +166,7 @@ namespace CMDB.API.Services
             var screens = await _context.Devices.OfType<Screen>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -174,6 +177,7 @@ namespace CMDB.API.Services
             var dockings = await _context.Devices.OfType<Docking>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -184,6 +188,7 @@ namespace CMDB.API.Services
             var tokens = await _context.Devices.OfType<Token>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -348,6 +353,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
+                    table = "screen";
                     Screen screen = new()
                     {
                         active = 1,
@@ -366,6 +372,7 @@ namespace CMDB.API.Services
                     _context.Devices.Add(screen);
                     break;
                 case "Docking station":
+                    table = "docking";
                     Docking docking = new()
                     {
                         active = 1,
@@ -457,6 +464,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
+                    table = "screen";
                     var screen = await GetScreenByAssetTag(deviceDTO.AssetTag);
                     screen.active = 0;
                     screen.DeactivateReason = reason;
@@ -469,6 +477,7 @@ namespace CMDB.API.Services
                     });
                     break;
                 case "Docking station":
+                    table = "docking";
                     var docking = await GetDockingByAssetTag(deviceDTO.AssetTag);
                     docking.active = 0;
                     docking.LastModifiedAdminId = TokenStore.AdminId;
@@ -529,6 +538,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
+                    table = "screen";
                     var screen = await GetScreenByAssetTag(deviceDTO.AssetTag);
                     screen.active = 1;
                     screen.DeactivateReason = "";
@@ -541,6 +551,7 @@ namespace CMDB.API.Services
                     });
                     break;
                 case "Docking station":
+                    table = "docking";
                     var docking = await GetDockingByAssetTag(deviceDTO.AssetTag);
                     docking.active = 1;
                     docking.LastModifiedAdminId = TokenStore.AdminId;
@@ -599,6 +610,7 @@ namespace CMDB.API.Services
                     break;
                 case "Monitor":
                 case "Screen":
+                    table = "screen";
                     var screen = await GetScreenByAssetTag(device.AssetTag);
                     screen.LastModifiedAdminId = TokenStore.AdminId;
                     screen.IdentityId = device.Identity.IdenId;
@@ -610,6 +622,7 @@ namespace CMDB.API.Services
                     _context.Devices.Update(screen);
                     break;
                 case "Docking station":
+                    table = "docking";
                     var doc = await GetDockingByAssetTag(device.AssetTag);
                     doc.LastModifiedAdminId = TokenStore.AdminId;
                     doc.IdentityId = device.Identity.IdenId;
@@ -657,7 +670,7 @@ namespace CMDB.API.Services
                     desktop.LastModifiedAdminId= TokenStore.AdminId;
                     desktop.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(desktop);
@@ -668,30 +681,32 @@ namespace CMDB.API.Services
                     token.LastModifiedAdminId = TokenStore.AdminId;
                     token.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(token);
                     break;
                 case "Monitor":
                 case "Screen":
+                    table = "screen";
                     var screen = await GetScreenByAssetTag(device.AssetTag);
                     screen.IdentityId = 1;
                     screen.LastModifiedAdminId = TokenStore.AdminId;
                     screen.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(screen);
                     break;
                 case "Docking station":
+                    table = "docking";
                     var doc = await GetDockingByAssetTag(device.AssetTag);
                     doc.IdentityId = 1;
                     doc.LastModifiedAdminId = TokenStore.AdminId;
                     doc.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(doc);
@@ -703,7 +718,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
                 LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
@@ -822,7 +837,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.UtcNow
+                        LogDate = DateTime.Now
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -831,7 +846,7 @@ namespace CMDB.API.Services
                     token.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.UtcNow
+                        LogDate = DateTime.Now
                     });
                     _context.Devices.Update(token);
                     break;
@@ -840,7 +855,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.UtcNow
+                        LogDate = DateTime.Now
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -849,7 +864,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.UtcNow
+                        LogDate = DateTime.Now
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -859,7 +874,7 @@ namespace CMDB.API.Services
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.UtcNow
+                        LogDate = DateTime.Now
                     });
                     _context.Devices.Update(docking);
                     break;
@@ -908,7 +923,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (string.Compare(desktop.MAC, device.MAC) != 0) 
@@ -919,7 +934,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (string.Compare(desktop.SerialNumber, device.SerialNumber) != 0) 
@@ -930,7 +945,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (desktop.TypeId != device.AssetType.TypeID) 
@@ -941,7 +956,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             _context.Devices.Update(desktop);
@@ -951,35 +966,35 @@ namespace CMDB.API.Services
             var laptop = await GetLaptopByAssetTag(device.AssetTag);
             if (string.Compare(laptop.RAM, device.RAM) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("RAM", laptop.RAM, device.RAM, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("RAM", laptop.RAM, device.RAM, TokenStore.Admin.Account.UserID, "laptop");
                 laptop.RAM = device.RAM;
                 laptop.LastModifiedAdminId = TokenStore.AdminId;
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (string.Compare(laptop.MAC, device.MAC) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("MAC", laptop.MAC, device.MAC, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("MAC", laptop.MAC, device.MAC, TokenStore.Admin.Account.UserID, "laptop");
                 laptop.MAC = device.MAC;
                 laptop.LastModifiedAdminId = TokenStore.AdminId;
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (string.Compare(laptop.SerialNumber, device.SerialNumber) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", laptop.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", laptop.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "laptop");
                 laptop.SerialNumber = device.SerialNumber;
                 laptop.LastModifiedAdminId = TokenStore.AdminId;
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (laptop.TypeId != device.AssetType.TypeID)
@@ -988,8 +1003,8 @@ namespace CMDB.API.Services
                 laptop.LastModifiedAdminId = TokenStore.AdminId;
                 laptop.Logs.Add(new()
                 {
-                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.UtcNow
+                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "laptop"),
+                    LogDate = DateTime.Now
                 });
             }
             _context.Devices.Update(laptop);
@@ -999,13 +1014,13 @@ namespace CMDB.API.Services
             var token = await GetTokenByAssetTag(device.AssetTag);
             if (string.Compare(token.SerialNumber, device.SerialNumber) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", token.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", token.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "token");
                 token.SerialNumber = device.SerialNumber;
                 token.LastModifiedAdminId = TokenStore.AdminId;
                 token.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (token.TypeId != device.AssetType.TypeID)
@@ -1014,8 +1029,8 @@ namespace CMDB.API.Services
                 token.LastModifiedAdminId = TokenStore.AdminId;
                 token.Logs.Add(new()
                 {
-                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.UtcNow
+                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "token"),
+                    LogDate = DateTime.Now
                 });
             }
             _context.Devices.Update(token);
@@ -1025,13 +1040,13 @@ namespace CMDB.API.Services
             var screen = await GetScreenByAssetTag(device.AssetTag);
             if (string.Compare(screen.SerialNumber, device.SerialNumber) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", screen.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", screen.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "screen");
                 screen.SerialNumber = device.SerialNumber;
                 screen.LastModifiedAdminId = TokenStore.AdminId;
                 screen.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (screen.TypeId != device.AssetType.TypeID)
@@ -1040,8 +1055,8 @@ namespace CMDB.API.Services
                 screen.LastModifiedAdminId = TokenStore.AdminId;
                 screen.Logs.Add(new()
                 {
-                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.UtcNow
+                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "screen"),
+                    LogDate = DateTime.Now
                 });
             }
             _context.Devices.Update(screen);
@@ -1051,13 +1066,13 @@ namespace CMDB.API.Services
             var doc = await GetDockingByAssetTag(device.AssetTag);
             if (string.Compare(doc.SerialNumber, device.SerialNumber) != 0)
             {
-                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", doc.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "desktop");
+                var logline = GenericLogLineCreator.UpdateLogLine("SerialNumber", doc.SerialNumber, device.SerialNumber, TokenStore.Admin.Account.UserID, "docking");
                 doc.SerialNumber = device.SerialNumber;
                 doc.LastModifiedAdminId = TokenStore.AdminId;
                 doc.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             if (doc.TypeId != device.AssetType.TypeID)
@@ -1066,8 +1081,8 @@ namespace CMDB.API.Services
                 doc.LastModifiedAdminId = TokenStore.AdminId;
                 doc.Logs.Add(new()
                 {
-                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.UtcNow
+                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "docking"),
+                    LogDate = DateTime.Now
                 });
             }
             _context.Devices.Update(doc);

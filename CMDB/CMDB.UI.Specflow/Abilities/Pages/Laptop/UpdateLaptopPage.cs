@@ -19,8 +19,8 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='Type_TypeID']", "7");
-            get => GetSelectedValueFromDropDownByXpath("//select[@id='Type_TypeID']");
+            set => SelectValueInDropDownByXpath("//select[@id='AssetType_TypeID']", "7");
+            get => GetSelectedValueFromDropDownByXpath("//select[@id='AssetType_TypeID']");
         }
         public string RAM
         {

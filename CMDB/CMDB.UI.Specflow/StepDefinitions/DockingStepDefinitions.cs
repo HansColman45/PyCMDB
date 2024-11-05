@@ -23,6 +23,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task GivenIWantToCreateANewDockingstationWithTheseDetails(Table table)
         {
             dockingCreator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(dockingCreator);
             dockingStation = table.CreateInstance<Helpers.DockingStation>();
             Admin = await dockingCreator.CreateNewAdmin();
             dockingCreator.DoLogin(Admin.Account.UserID, "1234");

@@ -17,7 +17,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
         }
         public string Type
         {
-            set => SelectValueInDropDownByXpath("//select[@id='Type']", value);
+            set => SelectValueInDropDownByXpath("//select[@id='AssetType']", value);
         }
         public void Create()
         {

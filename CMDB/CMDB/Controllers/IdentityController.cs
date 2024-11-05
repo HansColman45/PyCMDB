@@ -1,11 +1,9 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

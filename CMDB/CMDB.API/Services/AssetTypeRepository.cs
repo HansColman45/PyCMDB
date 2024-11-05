@@ -53,22 +53,24 @@ namespace CMDB.API.Services
             var oldType = await GetTypeById(assetTypeDTO);
             if(string.Compare(oldType.Type, assetTypeDTO.Type) != 0)
             {
+                var logtext = GenericLogLineCreator.UpdateLogLine("Type", oldType.Type, assetTypeDTO.Type, TokenStore.Admin.Account.UserID, table);
                 oldType.Type = assetTypeDTO.Type;
                 oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
                 oldType.Logs.Add(new()
                 {
                     LogDate = DateTime.Now,
-                    LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.Type, assetTypeDTO.Type, TokenStore.Admin.Account.UserID, table)
+                    LogText = logtext
                 });
             }
             if(string.Compare(oldType.Vendor, assetTypeDTO.Vendor) != 0)
             {
+                var logtext = GenericLogLineCreator.UpdateLogLine("Vendor", oldType.Vendor, assetTypeDTO.Vendor, TokenStore.Admin.Account.UserID, table);
                 oldType.Vendor = assetTypeDTO.Vendor;
                 oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
                 oldType.Logs.Add(new()
                 {
                     LogDate = DateTime.Now,
-                    LogText = GenericLogLineCreator.UpdateLogLine("Vendor", oldType.Vendor, assetTypeDTO.Vendor, TokenStore.Admin.Account.UserID, table)
+                    LogText = logtext
                 });
             }
             _context.AssetTypes.Update(oldType);
@@ -83,7 +85,7 @@ namespace CMDB.API.Services
             oldType.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {assetTypeDTO.Vendor} and type {assetTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.UtcNow
+                LogDate = DateTime.Now
             });
             _context.AssetTypes.Update(oldType);
             return assetTypeDTO;

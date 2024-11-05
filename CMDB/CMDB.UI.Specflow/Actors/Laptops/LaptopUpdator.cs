@@ -1,8 +1,8 @@
 ﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Laptop;
-using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.Laptops
 {

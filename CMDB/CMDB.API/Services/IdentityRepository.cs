@@ -71,6 +71,7 @@ namespace CMDB.API.Services
             string searhterm = "%" + searchStr + "%";
             return await _context.Identities.AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Language).AsNoTracking()
                 .Where(x => EF.Functions.Like(x.Name, searhterm) || EF.Functions.Like(x.UserID, searhterm)
                     || EF.Functions.Like(x.EMail, searhterm) || EF.Functions.Like(x.Type.Type, searhterm)).AsNoTracking()
                 .Select(x => ConvertIdentity(x))
@@ -116,59 +117,45 @@ namespace CMDB.API.Services
             var oldIden = await TrackedIden(dTO.IdenId);
             oldIden.LastModifiedAdminId = TokenStore.Admin.AdminId;
             string logline;
-            if (string.Compare(oldIden.Name, dTO.Name) != 0)
+            if (string.Compare(oldIden.FirstName, dTO.FirstName) != 0) 
             {
-                logline = GenericLogLineCreator.UpdateLogLine("Name", oldIden.Name, dTO.Name, TokenStore.Admin.Account.UserID, table);
-                try
+                logline = GenericLogLineCreator.UpdateLogLine("FirstName", oldIden.FirstName, dTO.FirstName, TokenStore.Admin.Account.UserID, table);
+                oldIden.FirstName = dTO.FirstName;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.Name = dTO.Name;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
+                    LogDate = DateTime.Now,
+                    LogText = logline,
+                });
+            }
+            if (string.Compare(oldIden.LastName, dTO.LastName) != 0)
+            {
+                logline = GenericLogLineCreator.UpdateLogLine("LastName", oldIden.LastName, dTO.LastName, TokenStore.Admin.Account.UserID, table);
+                oldIden.LastName = dTO.LastName;
+                oldIden.Logs.Add(new()
                 {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline,
+                });
             }
             if (string.Compare(oldIden.EMail, dTO.EMail) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("EMail", oldIden.EMail, dTO.EMail, TokenStore.Admin.Account.UserID, table);
-                try
+                oldIden.EMail = dTO.EMail;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.EMail = dTO.EMail;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline
+                });
             }
             if (string.Compare(oldIden.Company, dTO.Company) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("Company", oldIden.Company, dTO.Company, TokenStore.Admin.Account.UserID, table);
-                try
+                oldIden.Company = dTO.Company;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.Company = dTO.Company;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline
+                });
             }
             if (oldIden.TypeId != dTO.Type.TypeId)
             {
@@ -176,57 +163,33 @@ namespace CMDB.API.Services
                     .AsNoTracking()
                     .First(x => x.TypeId == oldIden.TypeId);
                 logline = GenericLogLineCreator.UpdateLogLine("Type", oldType.Type, dTO.Type.Type, TokenStore.Admin.Account.UserID, table);
-                try
+                oldIden.TypeId = dTO.Type.TypeId;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.TypeId = dTO.Type.TypeId;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline,
+                });
             }
             if (string.Compare(oldIden.LanguageCode, dTO.Language.Code) != 0)
             {
                 var oldLang = _context.Languages.AsNoTracking().First(x => x.Code == oldIden.LanguageCode);
                 logline = GenericLogLineCreator.UpdateLogLine("Language", oldLang.Description, dTO.Language.Description, TokenStore.Admin.Account.UserID, table);
-                try
+                oldIden.LanguageCode = dTO.Language.Code;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.LanguageCode = dTO.Language.Code;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline,
+                });
             }
             if (string.Compare(oldIden.UserID, dTO.UserID) != 0)
             {
                 logline = GenericLogLineCreator.UpdateLogLine("UserID", oldIden.UserID, dTO.UserID, TokenStore.Admin.Account.UserID, table);
-                try
+                oldIden.UserID = dTO.UserID;
+                oldIden.Logs.Add(new()
                 {
-                    oldIden.UserID = dTO.UserID;
-                    oldIden.Logs.Add(new()
-                    {
-                        LogDate = DateTime.Now,
-                        LogText = logline,
-                    });
-                }
-                catch (Exception e)
-                {
-                    _logger.LogError("Db error {e}", e);
-                    throw;
-                }
+                    LogDate = DateTime.Now,
+                    LogText = logline
+                });
             }
             _context.Identities.Update(oldIden);
             return dTO;
@@ -320,7 +283,7 @@ namespace CMDB.API.Services
         public async Task ReleaseAccount(IdenAccountDTO idenAccount)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == idenAccount.Id).FirstAsync();
-            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
+            idenacc.ValidUntil = DateTime.Now.AddDays(-1);
             idenacc.LastModifiedAdminId = TokenStore.AdminId;
             _context.IdenAccounts.Update(idenacc);
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
@@ -431,22 +394,18 @@ namespace CMDB.API.Services
         }
         private async Task GetAssignedDevices(IdentityDTO identity)
         {
-            identity.Devices = await _context.Identities.AsNoTracking()
-                .Include(x => x.Devices)
-                .ThenInclude(x => x.Category).AsNoTracking()
-                .Include(x => x.Devices)
-                .ThenInclude(x => x.Type).AsNoTracking()
-                .Where(x => x.IdenId == identity.IdenId).AsNoTracking()
-                .SelectMany(x => x.Devices)
+            identity.Devices = await _context.Devices.AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Category).AsNoTracking()
+                .Include(x => x.Type).AsNoTracking()
+                .Where(x => x.Identity.IdenId == identity.IdenId).AsNoTracking()
                 .Select(x => DeviceRepository.ConvertDevice(x))
                 .ToListAsync();
-            identity.Mobiles = await _context.Identities.AsNoTracking()
-                .Include(x => x.Mobiles)
-                .ThenInclude(x => x.Subscriptions).AsNoTracking()
-                .Include(x => x.Mobiles)
-                .ThenInclude(x => x.MobileType).AsNoTracking()
-                .Where(x => x.IdenId == identity.IdenId).AsNoTracking()
-                .SelectMany(x => x.Mobiles)
+            identity.Mobiles = await _context.Mobiles.AsNoTracking()
+                .Include(x => x.Subscriptions).AsNoTracking()
+                .Include(x => x.MobileType).AsNoTracking()
+                .Include(x => x.Identity).AsNoTracking()
+                .Where(x => x.Identity.IdenId == identity.IdenId)
                 .Select(x => MobileRepository.ConvertMobile(x))
                 .ToListAsync();
             /*identity.Subscriptions = _context.Subscriptions

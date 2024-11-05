@@ -163,6 +163,15 @@ namespace CMDB.Testing.Helpers
                     Data.Add("Token" + tokens.IndexOf(token).ToString(), token);
                     await TokenHelper.Delete(context, token);
                 }
+                //IdenAccount
+                var idenAccs = context.IdenAccounts
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var idenacc in idenAccs)
+                {
+                    Data.Add("IdenAccount" + idenAccs.IndexOf(idenacc).ToString(), idenacc);
+                    context.Remove<IdenAccount>(idenacc);
+                }
                 //Identity
                 var identities = context.Identities
                     .Include(x => x.Logs)
@@ -182,15 +191,6 @@ namespace CMDB.Testing.Helpers
                 {
                     Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
                     await AccountHelper.Delete(context, account);
-                }
-                //IdenAccount
-                var idenAccs = context.IdenAccounts
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                    .ToList();
-                foreach (var idenacc in idenAccs)
-                {
-                    Data.Add("IdenAccount" + idenAccs.IndexOf(idenacc).ToString(), idenacc);
-                    context.Remove<IdenAccount>(idenacc);
                 }
                 //Admin
                 context.RemoveRange(admin.Logs);

@@ -32,7 +32,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpPost("AddAssetInfo"), Authorize]
-        public IActionResult AddAssetInfo(Device device)
+        public IActionResult AddAssetInfo(DeviceDTO device)
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)

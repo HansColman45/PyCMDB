@@ -41,15 +41,15 @@
                             }
                             else if ((bool)ViewData["ActiveAccess"])
                             {
-                                <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                                <a class="btn btn-glyphicon" href="\Identity\Activate\@item.IdenId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                             }
                             @if (item.Active == 1 && (bool)ViewData["AssignDeviceAccess"])
                             {
-                                <a class="btn btn-success" asp-action="AssignDevice" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
+                                <a class="btn btn-success" href="\Identity\AssignDevice\@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
                             }
                             @if (item.Active == 1 && (bool)ViewData["AssignAccountAccess"])
                             {
-                                <a class="btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account"><span class="@ViewBag.AddIdentityIcon"></span></a>
+                                <a class="btn btn-success" href="\Identity\AssignAccount\@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account"><span class="@ViewBag.AddIdentityIcon"></span></a>
                             }
                         }
                         @if ((bool)ViewData["InfoAccess"])

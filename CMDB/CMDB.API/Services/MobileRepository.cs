@@ -84,7 +84,7 @@ namespace CMDB.API.Services
                 mobile.Logs.Add(new()
                 {
                     LogText = logtext,
-                    LogDate = DateTime.UtcNow
+                    LogDate = DateTime.Now
                 });
             }
             _context.Mobiles.Update(mobile);

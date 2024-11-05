@@ -1,4 +1,5 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
@@ -8,7 +9,7 @@ namespace CMDB.API.Services
 {   
     public class PDFGenerator : IDocument
     {
-        private readonly List<Device> devices = new();
+        private readonly List<DeviceDTO> devices = new();
         private readonly List<Mobile> mobiles = new();
         private readonly List<IdenAccount> accounts = new();
         private readonly List<Subscription> subscriptions = new();
@@ -62,7 +63,7 @@ namespace CMDB.API.Services
         /// 
         /// </summary>
         /// <param name="device"></param>
-        public void SetAssetInfo(Device device)
+        public void SetAssetInfo(DeviceDTO device)
         {
             devices.Add(device);
         }
@@ -327,7 +328,7 @@ namespace CMDB.API.Services
                 foreach (var device in devices)
                 {
                     table.Cell().Element(Style).Text(device.Category.Category).Style(defaultStyle);
-                    table.Cell().Element(Style).Text($"{device.Type}").Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{device.AssetType}").Style(defaultStyle);
                     table.Cell().Element(Style).Text(device.AssetTag).Style(defaultStyle);
                     table.Cell().Element(Style).Text(device.SerialNumber).Style(defaultStyle);
                     IContainer Style(IContainer container)

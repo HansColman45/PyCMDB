@@ -1,6 +1,6 @@
-﻿using CMDB.UI.Specflow.Abilities.Pages.Types;
+﻿using CMDB.Infrastructure;
+using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Questions.Types;
-using CMDB.UI.Specflow.Tasks;
 
 namespace CMDB.UI.Specflow.Actors.IdentityTypes
 {

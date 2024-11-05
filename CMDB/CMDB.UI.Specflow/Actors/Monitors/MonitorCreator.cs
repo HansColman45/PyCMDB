@@ -1,7 +1,7 @@
 ﻿
 using CMDB.UI.Specflow.Abilities.Pages.Monitor;
 using CMDB.UI.Specflow.Questions.Monitor;
-using CMDB.UI.Specflow.Tasks;
+using CMDB.Infrastructure;
 
 namespace CMDB.UI.Specflow.Actors.Monitors
 {

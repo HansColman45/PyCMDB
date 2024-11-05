@@ -1,6 +1,6 @@
 ﻿using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using CMDB.UI.Specflow.Questions.Account;
-using CMDB.UI.Specflow.Tasks;
+using CMDB.Infrastructure;
 
 namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
@@ -31,7 +31,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             var page = GetAbility<AccountOverviewPage>();
             page.Search(account.UserId + rndNr.ToString());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Account with UserID: {account.UserId+rndNr} and with type {account.Type} for application {account.Application}",
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Account with UserID: {account.UserId+rndNr} and type {account.Type} for application {account.Application}",
                 admin.Account.UserID,
                 Table);
         }

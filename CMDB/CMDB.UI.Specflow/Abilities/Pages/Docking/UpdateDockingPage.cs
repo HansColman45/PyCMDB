@@ -18,8 +18,8 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
         }
         public string Type
         {
-            get => GetSelectedValueFromDropDownByXpath("//select[@id='Type_TypeID']");
-            set => SelectValueInDropDownByXpath("//select[@id='Type_TypeID']", value);
+            get => GetSelectedValueFromDropDownByXpath("//select[@id='AssetType_TypeID']");
+            set => SelectValueInDropDownByXpath("//select[@id='AssetType_TypeID']", value);
         }
         public void Edit()
         {

@@ -31,7 +31,7 @@ namespace CMDB.API.Services
                 TypeId = account.TypeId,
                 UserID = account.UserID
             };
-            string value = $"Account with UserID: {acc.UserID} and type {account.Type.Description}";
+            string value = $"Account with UserID: {acc.UserID} and type {account.Type.Type} for application {account.Application.Name}";
             string logline = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, table);
             try
             {
@@ -211,6 +211,7 @@ namespace CMDB.API.Services
                 AccountId = acc.AccID,
                 ValidFrom = request.ValidFrom,
                 ValidUntil = request.ValidUntil,
+                LastModifiedAdminId = TokenStore.AdminId
             };
             acc.LastModifiedAdminId = TokenStore.AdminId;
             iden.LastModifiedAdminId = TokenStore.AdminId;
@@ -237,7 +238,7 @@ namespace CMDB.API.Services
         public async Task ReleaseAccountFromIdentity(IdenAccountDTO request)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == request.Id).FirstAsync();
-            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
+            idenacc.ValidUntil = DateTime.Now.AddDays(-1);
             idenacc.LastModifiedAdminId = TokenStore.AdminId;
             _context.IdenAccounts.Update(idenacc);
             var acc = await TrackedAccount(request.Account.AccID);
@@ -248,14 +249,14 @@ namespace CMDB.API.Services
             acc.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountInfo, indenInfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow
+                LogDate = DateTime.Now
             });
             _context.Accounts.Update(acc);
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(indenInfo, accountInfo, TokenStore.Admin.Account.UserID, "identity"),
-                LogDate = DateTime.UtcNow
+                LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
         }

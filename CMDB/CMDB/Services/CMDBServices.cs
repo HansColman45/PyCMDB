@@ -6,6 +6,7 @@ using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
@@ -25,6 +26,12 @@ namespace CMDB.Services
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {
+                admin = await response.Content.ReadAsJsonAsync<Admin>();
+            }
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
                 admin = await response.Content.ReadAsJsonAsync<Admin>();
             }
             return admin;
@@ -148,6 +155,12 @@ namespace CMDB.Services
             {
                 return await response.Content.ReadAsJsonAsync<List<Menu>>();
             }
+            if (response.StatusCode == HttpStatusCode.Unauthorized) 
+            { 
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
+                return await response.Content.ReadAsJsonAsync<List<Menu>>();
+            }
             else
                 return new List<Menu>();
         }
@@ -174,6 +187,13 @@ namespace CMDB.Services
                 var menus = await response.Content.ReadAsJsonAsync<List<Menu>>();
                 return menus;
             }
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            {
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
+                var menus = await response.Content.ReadAsJsonAsync<List<Menu>>();
+                return menus;
+            }
             else
                 return new List<Menu>();
         }
@@ -186,6 +206,16 @@ namespace CMDB.Services
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) 
             {
+                var types = await response.Content.ReadAsJsonAsync<List<AssetTypeDTO>>();
+                foreach (var type in types)
+                {
+                    assettypes.Add(new(type.ToString(), type.TypeID.ToString()));
+                }
+            }
+            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                await ReAuthenticate();
+                response = await _Client.GetAsync(BaseUrl);
                 var types = await response.Content.ReadAsJsonAsync<List<AssetTypeDTO>>();
                 foreach (var type in types)
                 {

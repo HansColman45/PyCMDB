@@ -55,7 +55,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetTypeRepository.GetAll(searchstr));
         }
-        [HttpGet("GetByCategory/{category:alpha}"), Authorize]
+        [HttpGet("GetByCategory/{category}"), Authorize]
         public async Task<IActionResult> GetByAssetCategory(string category)
         {
             // Retrieve userId from the claims
