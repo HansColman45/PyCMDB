@@ -12,12 +12,15 @@ namespace CMDB.UI.Specflow.StepDefinitions
     [Binding]
     public class IdentityStepDefinitions: TestBase
     {
-        private Helpers.Identity iden;
-        private Identity Identity;
-        private Device _Device;
         private IdentityCreator identityCreator;
         private IdentityUpdator identityUpdator;
         private IdentityDeviceActor identityDeviceActor;
+        private IdentityAccountActor identityAccountActor;
+
+        private Helpers.Identity iden;
+        private Identity Identity;
+        private Device _Device;
+        private Account Account;
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
@@ -218,6 +221,62 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityDeviceActor.Search(Identity.UserID);
             var lastLog = identityDeviceActor.IdentityLastLogLine;
             identityDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+        #endregion
+        #region Assign and release account
+        [Given(@"There is an active Identity existing in the system")]
+        public async Task GivenThereIsAnActiveIdentityExistingInTheSystem()
+        {
+            identityAccountActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityAccountActor);
+            Admin = await identityAccountActor.CreateNewAdmin();
+            Identity = await identityAccountActor.CreateNewIdentity();
+            identityAccountActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = identityAccountActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            identityAccountActor.OpenIdentityOverviewPage();
+            identityAccountActor.Search(Identity.UserID);
+        }
+        [Given(@"an Account as well")]
+        public async Task GivenAnAccountAsWell()
+        {
+            Account = await identityAccountActor.CreateAccount();
+        }
+
+        [When(@"I assign the Account to my Identity")]
+        public void WhenIAssignTheAccountToMyIdentity()
+        {
+            identityAccountActor.AssignIdentity2Account(Identity,Account);
+        }
+        [When(@"I fill in the assignform")]
+        public void WhenIFillInTheAssignform()
+        {
+            identityAccountActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The Account is assigned to my Identity")]
+        public void ThenTheAccountIsAssignedToMyIdentity()
+        {
+            identityAccountActor.Search(Identity.UserID);
+            var lastLogLine = identityAccountActor.IdentityLastLogLine;
+            identityAccountActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+
+        [Given(@"The Identity is assigned to the account as well")]
+        public async Task GivenTheIdentityIsAssignedToTheAccountAsWell()
+        {
+            await identityAccountActor.AssignAccount(Identity,Account);
+        }
+        [When(@"I release the Identity from the account")]
+        public void WhenIReleaseTheIdentityFromTheAccount()
+        {
+            identityAccountActor.ReleaseAccount(Identity,Account);
+        }
+        [Then(@"The Identity is released from the account")]
+        public void ThenTheIdentityIsReleasedFromTheAccount()
+        {
+            identityAccountActor.Search(Identity.UserID);
+            var lastLogLine = identityAccountActor.IdentityLastLogLine;
+            identityAccountActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
     }

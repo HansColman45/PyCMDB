@@ -1,19 +1,17 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class MobileController : CMDBController
     {
-        private new readonly MobileService service;
+        private readonly MobileService service;
         private readonly PDFService _PDFService;
         public MobileController(IWebHostEnvironment env) : base(env)
         {

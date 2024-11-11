@@ -11,7 +11,7 @@ namespace CMDB.Controllers
 {
     public class MonitorController : CMDBController
     {
-        private new readonly DevicesService service;
+        private readonly DevicesService service;
         private readonly PDFService _PDFservice;
         public MonitorController(IWebHostEnvironment env) : base(env)
         {

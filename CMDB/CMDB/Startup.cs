@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileSystemGlobbing.Internal;
 using Microsoft.Extensions.Hosting;
 
 namespace CMDB
@@ -45,6 +46,12 @@ namespace CMDB
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllerRoute(
+                    name: "ReleaseDevice",
+                    pattern: "{controller=Identity}/{action=ReleaseDevice}/{id}/{AssetTag}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseMobile",
+                    pattern: "{controller=Identity}/{action=ReleaseMobile}/{id}/{MobileId}");
                 /*endpoints.MapControllerRoute(
                     name: "ReleaseMobile",
                     pattern: "{controller}/{action}/{id?}/{MobileId}",

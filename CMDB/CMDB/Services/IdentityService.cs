@@ -5,6 +5,7 @@ using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,15 +188,18 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task ReleaseMobile(IdentityDTO identity, MobileDTO mobile, string table)
+        public async Task ReleaseMobile(IdentityDTO identity, List<MobileDTO> mobiles)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            mobile.LastModfiedAdmin = Admin;
-            identity.Mobiles.Remove(mobile);
-            mobile.IdentityId = 1;
-            await _context.SaveChangesAsync();
-            await LogReleaseMobileFromIdenity("mobile", mobile, identity);
-            await LogReleaseIdentityFromMobile(table, identity, mobile);*/
+            AssignMobileRequest request = new()
+            {
+                IdentityId = identity.IdenId,
+                MobileIds = mobiles.Select(x => x.MobileId).ToList(),
+            };
+            BaseUrl = _url + "api/Identity/ReleaseMobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListAllFreeAccounts()
         {
@@ -262,17 +266,18 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public void AssignMobiles(IdentityDTO identity, List<MobileDTO> mobiles)
+        public async Task AssignMobiles(IdentityDTO identity, List<MobileDTO> mobiles)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            identity.Mobiles = mobiles;
-            foreach (var mobile in mobiles)
+            AssignMobileRequest request = new()
             {
-                mobile.LastModfiedAdmin = Admin;
-                await LogAssignIdentity2Mobile("idenity", identity, mobile);
-                await LogAssignMobile2Identity(Table,mobile, identity);
-            }*/
-            //await _context.SaveChangesAsync();
+                IdentityId = identity.IdenId,
+                MobileIds = mobiles.Select(x => x.MobileId).ToList(),
+            };
+            BaseUrl = _url + "api/Identity/AssignMobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
         public async Task ReleaseAccount4Identity(IdenAccountDTO idenAccount)
         {
@@ -288,10 +293,7 @@ namespace CMDB.Services
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-            {
-                var account = await response.Content.ReadAsJsonAsync<AccountDTO>();
-                return account;
-            }
+                return await response.Content.ReadAsJsonAsync<AccountDTO>();
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
@@ -301,9 +303,7 @@ namespace CMDB.Services
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsJsonAsync<IdenAccountDTO>();
-            }
             else
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
@@ -313,30 +313,27 @@ namespace CMDB.Services
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsJsonAsync<DeviceDTO>();
-            }
             else
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
         public async Task<MobileDTO> GetMobile(int mobileId)
         {
-            /*Mobile mobile = await _context.Mobiles
-                .Include(x => x.MobileType)
-                .Include(x => x.Category)
-                .Where(x => x.MobileId == mobileId)
-                .FirstOrDefaultAsync();
-            return mobile;*/
-            return new();
+            BaseUrl = _url + $"api/Mobile/{mobileId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<MobileDTO>();
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
         private async Task<TypeDTO> GetTypeById(int typeId)
         {
             BaseUrl = _url + $"api/IdentityType/{typeId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
-            if (response.IsSuccessStatusCode) {
+            if (response.IsSuccessStatusCode) 
                 return await response.Content.ReadAsJsonAsync<TypeDTO>();
-            }
             else
                 throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
         }
@@ -346,9 +343,7 @@ namespace CMDB.Services
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
-            {
                 return await response.Content.ReadAsJsonAsync<LanguageDTO>();
-            }
             else
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }

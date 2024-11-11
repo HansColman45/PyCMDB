@@ -11,7 +11,7 @@ namespace CMDB.Controllers
 {
     public class LaptopController : CMDBController
     {
-        private new readonly DevicesService service;
+        private readonly DevicesService service;
         private readonly PDFService _PDFservice;
         public LaptopController(IWebHostEnvironment env) : base(env)
         {

@@ -41,7 +41,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             var page = GetAbility<IdentityOverviewPage>();
             page.Search(iden.FirstName + rndNr.ToString());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Identity width name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Identity with name: {iden.FirstName + rndNr.ToString()}, {iden.LastName + rndNr.ToString()}", admin.Account.UserID, Table);
         }
     }
 }

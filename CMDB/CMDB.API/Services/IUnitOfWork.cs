@@ -17,6 +17,7 @@
         public IAssetCategoryRepository AssetCategoryRepository { get; }
         public IMobileRepository MobileRepository { get; }
         public ISubscriptionRepository SubscriptionRepository { get; }
+        public ISubscriptionTypeRepository SubscriptionTypeRepository { get; }
         public Task SaveChangesAsync();
     }
 }

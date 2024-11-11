@@ -68,7 +68,7 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task SetMobileInfo(Mobile mobile)
+        public async Task SetMobileInfo(MobileDTO mobile)
         {
             BaseUrl = _url + path + "/AddMobileInfo";
             _Client.SetBearerToken(TokenStore.Token);

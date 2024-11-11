@@ -1,7 +1,7 @@
-﻿@model CMDB.Domain.Entities.Identity
+﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
-    CMDB.Domain.Entities.Device device = (CMDB.Domain.Entities.Device)ViewBag.Device;
+    CMDB.API.Models.DeviceDTO device = (CMDB.API.Models.DeviceDTO)ViewBag.Device;
 }
 @if ((bool)ViewData["ReleaseDevice"])
 {
@@ -42,7 +42,7 @@
             <tr>
                 <td>@device.AssetTag</td>
                 <td>@device.Category.Category</td>
-                <td>@device.Type</td>
+                <td>@device.AssetType</td>
                 <td>@device.Active</td>
             </tr>
         </tbody>

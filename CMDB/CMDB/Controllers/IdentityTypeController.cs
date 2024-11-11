@@ -14,7 +14,7 @@ namespace CMDB.Controllers
 {
     public class IdentityTypeController : CMDBController
     {
-        private new readonly IdentityTypeService service;
+        private readonly IdentityTypeService service;
         public IdentityTypeController(IWebHostEnvironment env) : base(env)
         {
             service = new();

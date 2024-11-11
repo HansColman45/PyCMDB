@@ -15,6 +15,7 @@ namespace CMDB.API.Services
     }
     public class SubscriptionRepository : GenericRepository, ISubscriptionRepository
     {
+        private readonly string table = "subscription";
         public SubscriptionRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }

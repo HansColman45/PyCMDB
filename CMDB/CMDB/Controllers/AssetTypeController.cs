@@ -13,7 +13,7 @@ namespace CMDB.Controllers
 {
     public class AssetTypeController : CMDBController
     {
-        private new readonly AssetTypeService service;
+        private readonly AssetTypeService service;
         /// <summary>
         /// Constructor
         /// </summary>

@@ -80,9 +80,6 @@ namespace CMDB.API.Controllers
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
                 return Unauthorized();
-            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
-            if (!hasAdminAcces)
-                return Unauthorized();
             return Ok(await _uow.DeviceRepository.GetByAssetTag(assetTag));
         }
         [HttpPost, Authorize]

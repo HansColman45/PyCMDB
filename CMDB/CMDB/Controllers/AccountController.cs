@@ -12,7 +12,7 @@ namespace CMDB.Controllers
 {
     public class AccountController : CMDBController
     {
-        private new readonly AccountService service;
+        private readonly AccountService service;
         private readonly PDFService PDFservice;
         public AccountController(IWebHostEnvironment env) : base(env)
         {

@@ -12,7 +12,7 @@ namespace CMDB.Controllers
 {
     public class AdminController : CMDBController
     {
-        private new readonly AdminService service;
+        private readonly AdminService service;
         public AdminController(IWebHostEnvironment env) : base(env)
         {
             service = new();

@@ -30,3 +30,17 @@ Scenario: I want to activate and inactive Laptop
 	Given There is an inactive Laptop existing
 	When I activate the Laptop
 	Then The laptop is active
+
+Scenario: I want to assign an existing Identiy to my Laptop
+	Given There is an active Laptop existing
+	And The Identity to assign to my laptop is existing
+	When I assign the Laptop to the Identity
+	And I fill in the assign form for my Laptop
+	Then The Identity is assigned to the Laptop
+
+Scenario: I want to release an assigned identity from my Laptop
+	Given There is an active Laptop existing
+	And The Identity to assign to my laptop is existing
+	And that Identity is assigned to my Laptop
+	When I release that identity from my Laptop and I fill in the release form
+	Then The identity is released from my Laptop

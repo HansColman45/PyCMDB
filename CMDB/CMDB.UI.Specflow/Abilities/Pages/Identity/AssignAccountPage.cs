@@ -1,5 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
@@ -44,10 +45,24 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         {
             set => EnterDateTimeByXPath("//input[@id='ValidUntil']", value);
         }
-        public AssignFormPage Assign()
+
+        private new void EnterDateTimeByXPath(string xPath, DateTime dateTime)
         {
-            ClickElementByXpath("//button[@type='submit']");
-            return new();
+            log.Debug($"Enter date: {dateTime:dd-MM-yyyy HH:mm} using xpath: {xPath}");
+            Thread.Sleep(settings.ShortTimeOutInMilSec);
+            WebDriverWait webDriverWait = new WebDriverWait(WebDriver, TimeSpan.FromSeconds(settings.LongTimeOutInSec))
+            {
+                PollingInterval = TimeSpan.FromMilliseconds(settings.PollingIntervallInMilSec)
+            };
+            webDriverWait.IgnoreExceptionTypes(typeof(NoSuchElementException));
+            webDriverWait.IgnoreExceptionTypes(typeof(ElementClickInterceptedException));
+            IWebElement webElement = webDriverWait.Until((IWebDriver x) => x.FindElement(By.XPath(xPath)));
+            webElement.Click();
+            webElement.Clear();
+            webElement.SendKeys($"{dateTime:MMddyyyy}");
+            //SendTab(By.XPath(xPath));
+            webElement.SendKeys($"{dateTime:hh:mm}");
+            webElement.SendKeys($"{dateTime:tt}");
         }
     }
 }

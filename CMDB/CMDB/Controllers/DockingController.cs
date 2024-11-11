@@ -11,7 +11,7 @@ namespace CMDB.Controllers
 {
     public class DockingController : CMDBController
     {
-        private new readonly DevicesService service;
+        private readonly DevicesService service;
         private readonly PDFService _PDFservice;
         public DockingController(IWebHostEnvironment env) : base(env)
         {

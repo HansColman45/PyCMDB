@@ -13,7 +13,7 @@ namespace CMDB.Controllers
 {
     public class IdentityController : CMDBController
     {
-        private new readonly IdentityService service;
+        private readonly IdentityService service;
         private readonly PDFService _PDFservice;
         public IdentityController(IWebHostEnvironment env) : base(env)
         {
@@ -270,7 +270,7 @@ namespace CMDB.Controllers
                         if(devicesToAdd.Count > 0)
                             await service.AssignDevice(identity, devicesToAdd);
                         if (mobilesToAdd.Count > 0)
-                            service.AssignMobiles(identity, mobilesToAdd);
+                            await service.AssignMobiles(identity, mobilesToAdd);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                     catch (Exception ex)
@@ -346,20 +346,15 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    /*PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = idenAccount.Identity.UserID,
-                        FirstName = idenAccount.Identity.FirstName,
-                        LastName = idenAccount.Identity.LastName,
-                        Language = idenAccount.Identity.Language.Code,
-                        Receiver = idenAccount.Identity.Name,
-                        Type = "Release"
-                    };
-                    PDFGenerator.SetAccontInfo(idenAccount);
-                    string pdfFile = PDFGenerator.GeneratePath(_env);
-                    PDFGenerator.GeneratePdf(pdfFile);*/
+                    await _PDFservice.SetUserinfo(idenAccount.Identity.UserID,
+                        ITPerson,
+                        Employee,
+                        idenAccount.Identity.FirstName,
+                        idenAccount.Identity.LastName,
+                        idenAccount.Identity.Name,
+                        idenAccount.Identity.Language.Code);
+                    await _PDFservice.SetAccontInfo(idenAccount);
+                    await _PDFservice.GenratPDFFile(Table, idenAccount.Identity.IdenId);
                     await service.ReleaseAccount4Identity(idenAccount);
                     return RedirectToAction(nameof(Index));
                 }
@@ -407,46 +402,44 @@ namespace CMDB.Controllers
                     foreach (var d in identity.Devices)
                         await _PDFservice.SetDeviceInfo(d);
                 }
-                /* if(identity.Mobiles.Count > 0) 
-                 {
-                     foreach (Mobile mobile in identity.Mobiles)
-                         PDFGenerator.SetMobileInfo(mobile);
-                 }*/
-                 await _PDFservice.GenratPDFFile(Table, identity.IdenId);
-                 return RedirectToAction(nameof(Index));
-             }
-             return View(identity);
-         }
-         [Route("ReleaseDevice/{id:int}/{AssetTag}")]
-         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
-         {
-             if (id == null)
-                 return NotFound();
-             IdentityDTO identity = await service.GetByID((int)id);
-             if (identity == null)
-                 return NotFound();
-             log.Debug("Using Release from in {0}", Table);
-             ViewData["Title"] = "Release device from identity";
-             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
-             await BuildMenu();
-             var device = await service.GetDevice(AssetTag);
-             if (device == null) 
-                 return NotFound();
-             ViewBag.Device = device;
-             ViewData["backUrl"] = "Identity";
-             ViewData["Action"] = "ReleaseDevice";
-             ViewData["Name"] = identity.Name;
-             var admin = await service.Admin();
-             ViewData["AdminName"] = admin.Account.UserID;
-             string FormSubmit = values["form-submitted"];
-             if (!string.IsNullOrEmpty(FormSubmit))
-             {
-                 List<DeviceDTO> devices2Remove = new()
-                 {
-                     device
-                 };
-                 string Employee = values["Employee"];
-                 string ITPerson = values["ITEmp"];
+                if (identity.Mobiles.Count > 0) { 
+                    foreach (MobileDTO mobile in identity.Mobiles)
+                        await _PDFservice.SetMobileInfo(mobile);
+                }
+                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(identity);
+        }
+        public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
+        {
+            if (id == null || string.IsNullOrEmpty(AssetTag))
+                return NotFound();
+            IdentityDTO identity = await service.GetByID((int)id);
+            if (identity == null)
+                return NotFound();
+            var device = await service.GetDevice(AssetTag);
+            if (device == null)
+                return NotFound();
+            log.Debug("Using Release from in {0}", Table);
+            ViewData["Title"] = "Release device from identity";
+            ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
+            await BuildMenu();
+            ViewBag.Device = device;
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "ReleaseDevice";
+            ViewData["Name"] = identity.Name;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                List<DeviceDTO> devices2Remove = new()
+                {
+                    device
+                };
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
                 await _PDFservice.SetUserinfo(identity.UserID,
                         ITPerson,
                         Employee,
@@ -462,7 +455,6 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
-        [Route("ReleaseMobile/{id:int}/{MobileId}")]
         public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int MobileId)
         {
             if (id == null && MobileId == 0)
@@ -486,6 +478,8 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
+                List<MobileDTO> mobiles = new();
+                mobiles.Add(mobile);
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 await _PDFservice.SetUserinfo(identity.UserID,
@@ -496,11 +490,9 @@ namespace CMDB.Controllers
                     identity.Name,
                     identity.Language.Code,
                     "Release");
-                /*
-                PDFGenerator.SetMobileInfo(mobile);
-                await service.ReleaseMobile(identity, mobile, Table);
-                await service.LogPdfFile("mobile", mobile.MobileId, PdfFile);*/
+                await _PDFservice.SetMobileInfo(mobile);
                 await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                await service.ReleaseMobile(identity, mobiles);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -515,6 +507,7 @@ namespace CMDB.Controllers
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release devices from identity";
             ViewData["ReleaseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseDevice");
+            ViewData["Controller"] = @$"\Identity\ReleaseDevices\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
@@ -522,7 +515,8 @@ namespace CMDB.Controllers
                 List<DeviceDTO> devicesToRelease = new();
                 foreach (var device in identity.Devices)
                 {
-                    if (!string.IsNullOrEmpty(values[device.AssetTag])) { 
+                    if (!string.IsNullOrEmpty(values[device.AssetTag]))
+                    {
                         devicesToRelease.Add(device);
                     }
                 }
@@ -537,19 +531,19 @@ namespace CMDB.Controllers
                         identity.LastName,
                         identity.Name,
                         identity.Language.Code
-                        ,"Release");
-                     foreach (var device in devicesToRelease)
-                     {
-                         await _PDFservice.SetDeviceInfo(device);
-                     }
+                        , "Release");
+                    foreach (var device in devicesToRelease)
+                    {
+                        await _PDFservice.SetDeviceInfo(device);
+                    }
                     await _PDFservice.GenratPDFFile(Table, identity.IdenId);
                     return RedirectToAction(nameof(Index));
                     //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }
-            }   
+            }
             return View(identity);
         }
-        public async Task<IActionResult> ReleaseForm(IFormCollection values, int? id, List<Device> releasedDevices)
+        /*public async Task<IActionResult> ReleaseForm(IFormCollection values, int? id, List<Device> releasedDevices)
         {
             if (id == null)
                 return NotFound();
@@ -571,22 +565,22 @@ namespace CMDB.Controllers
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 await _PDFservice.SetUserinfo(identity.UserID,
-                ITPerson,
-                Employee,
-                identity.FirstName,
-                identity.LastName,
-                identity.Name,
-                identity.Language.Code);
-                /* foreach (var device in devices)
+                    ITPerson,
+                    Employee,
+                    identity.FirstName,
+                    identity.LastName,
+                    identity.Name,
+                    identity.Language.Code);
+                *//* foreach (var device in devices)
                 {
                     PDFGenerator.SetAssetInfo(device);
-                }*//*
+                }
                 string PdfFile = PDFGenerator.GeneratePath(_env);
                 PDFGenerator.GeneratePdf(PdfFile);
-                await service.LogPdfFile(Table, identity.IdenId, PdfFile);*/
+                await service.LogPdfFile(Table, identity.IdenId, PdfFile);*//*
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
-        }
+        }*/
     }
 }

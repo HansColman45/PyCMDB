@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Util;
-using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
+﻿using CMDB.Infrastructure;
 using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class PermissionController : CMDBController
     {
-        private new readonly PermissionService service;
+        private readonly PermissionService service;
         public PermissionController(IWebHostEnvironment env) : base(env)
         {
             service = new();

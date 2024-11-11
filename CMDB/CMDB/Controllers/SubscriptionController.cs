@@ -1,17 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using System.Threading.Tasks;
 using CMDB.Services;
-using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Linq;
-using CMDB.Util;
-using Microsoft.Graph;
+using System.Threading.Tasks;
 using Subscription = CMDB.Domain.Entities.Subscription;
-using QuestPDF.Fluent;
 
 namespace CMDB.Controllers
 {

@@ -9,10 +9,10 @@ namespace CMDB.API.Services
 {   
     public class PDFGenerator : IDocument
     {
-        private readonly List<DeviceDTO> devices = new();
-        private readonly List<Mobile> mobiles = new();
-        private readonly List<IdenAccount> accounts = new();
-        private readonly List<Subscription> subscriptions = new();
+        private List<DeviceDTO> devices = new();
+        private List<Mobile> mobiles = new();
+        private List<IdenAccount> accounts = new();
+        private List<Subscription> subscriptions = new();
         private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle titleStyle = TextStyle.Default.FontFamily("Arial").FontSize(20).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle defaultStyle = TextStyle.Default.FontFamily("Arial").FontSize(9);
@@ -135,6 +135,10 @@ namespace CMDB.API.Services
                         x.TotalPages();
                     });
             });
+            devices = new();
+            accounts = new();
+            mobiles = new();
+            subscriptions = new();
         }
         private void ComposeHeader(IContainer container)
         {

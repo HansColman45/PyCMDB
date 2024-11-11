@@ -29,3 +29,17 @@ Scenario: I want to activate an inactive monitor
 	Given There is an inactive monitor existing
 	When I activate the monitor
 	Then The monitor is active
+
+Scenario: I want to assign an existing Identiy to my monitor
+	Given There is an active monitor existing
+	And The Identity to assign to my monitor is existing
+	When I assign the monitor to the Identity
+	And I fill in the assign form for my monitor
+	Then The Identity is assigned to the monitor
+
+Scenario: I want to release an assigned identity from my monitor
+	Given There is an active monitor existing
+	And The Identity to assign to my monitor is existing
+	And that Identity is assigned to my monitor
+	When I release that identity from my monitor and I fill in the release form
+	Then The identity is released from my monitor

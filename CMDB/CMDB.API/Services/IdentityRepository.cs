@@ -91,7 +91,7 @@ namespace CMDB.API.Services
                 LanguageCode = identityDTO.Language.Code,
                 DeactivateReason = ""
             };
-            string logLine = GenericLogLineCreator.CreateLogLine($"Identity width name: {identityDTO.Name}", TokenStore.Admin.Account.UserID, table);
+            string logLine = GenericLogLineCreator.CreateLogLine($"Identity with name: {identityDTO.Name}", TokenStore.Admin.Account.UserID, table);
             iden.Logs.Add(new()
             {
                 LogDate = DateTime.Now,
@@ -196,7 +196,7 @@ namespace CMDB.API.Services
         }
         public async Task AssignDevices(IdentityDTO identity, List<string> assetTags)
         {
-            string ideninfo = $"Identity width name: {identity.Name}";
+            string ideninfo = $"Identity with name: {identity.Name}";
             var iden = await TrackedIden(identity.IdenId);
             iden.LastModifiedAdminId = TokenStore.AdminId;
             foreach (string assetTag in assetTags)
@@ -224,7 +224,7 @@ namespace CMDB.API.Services
         }
         public async Task ReleaseDevices(IdentityDTO identity, List<string> assetTags)
         {
-            string ideninfo = $"Identity width name: {identity.Name}";
+            string ideninfo = $"Identity with name: {identity.Name}";
             var iden = await TrackedIden(identity.IdenId);
             iden.LastModifiedAdminId = TokenStore.AdminId;
             foreach (string assetTag in assetTags)
@@ -254,7 +254,7 @@ namespace CMDB.API.Services
         {
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
             var iden = await TrackedIden(idenAccount.Identity.IdenId);
-            string ideninfo = $"Identity width name: {iden.Name}";
+            string ideninfo = $"Identity with name: {iden.Name}";
             string accountinfo = $"Account with UserID: {acc.UserID}";
             IdenAccount idenacc = new()
             {
@@ -288,7 +288,7 @@ namespace CMDB.API.Services
             _context.IdenAccounts.Update(idenacc);
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
             var iden = await TrackedIden(idenAccount.Identity.IdenId);
-            string ideninfo = $"Identity width name: {iden.Name}";
+            string ideninfo = $"Identity with name: {iden.Name}";
             string accountinfo = $"Account with UserID: {acc.UserID}";
 
         }
@@ -358,7 +358,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = identity.LastModifiedAdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, reason, table),
+                LogText = GenericLogLineCreator.DeleteLogLine($"Identity with name: {identity.Name}", TokenStore.Admin.Account.UserID, reason, table),
                 LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
@@ -372,7 +372,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = identity.LastModifiedAdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.ActivateLogLine($"Identity with name: {identity.Name}", TokenStore.Admin.Account.UserID, table),
                 LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
@@ -395,7 +395,10 @@ namespace CMDB.API.Services
         private async Task GetAssignedDevices(IdentityDTO identity)
         {
             identity.Devices = await _context.Devices.AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
                 .Where(x => x.Identity.IdenId == identity.IdenId).AsNoTracking()

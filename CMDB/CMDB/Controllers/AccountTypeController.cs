@@ -11,7 +11,7 @@ namespace CMDB.Controllers
 {
     public class AccountTypeController : CMDBController
     {
-        private new readonly AccountTypeService service;
+        private readonly AccountTypeService service;
         public AccountTypeController(IWebHostEnvironment env) : base(env)
         {
             service = new();

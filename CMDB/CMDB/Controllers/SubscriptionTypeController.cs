@@ -1,20 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using System.Threading.Tasks;
 using CMDB.Services;
-using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.Graph;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class SubscriptionTypeController : CMDBController
     {
-        private new SubscriptionTypeService service;
+        private SubscriptionTypeService service;
         public SubscriptionTypeController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Subscription Type";
@@ -34,6 +31,7 @@ namespace CMDB.Controllers
             ViewData["AssignMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignMobile");
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\SubscriptionType\Search";
+            ViewData["Controller"] = @"\SubscriptionType\Create";
             var types = await service.ListAll();
             return View(types);
         }
@@ -53,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["AssignMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignMobile");
                 ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 var types = await service.ListAll(search);
+                ViewData["Controller"] = @"\SubscriptionType\Create";
                 return View(types);
             }
             else
@@ -64,13 +63,14 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Create Subscription";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            SubscriptionType subscriptionType = new();
+            SubscriptionTypeDTO subscriptionType = new();
             ViewBag.Types = service.GetCategories();
             string FormSubmit = values["form-submitted"];
+            ViewData["Controller"] = @"\SubscriptionType\Create";
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 var cat = values["Category"];
-                subscriptionType.Category = service.GetAssetCategory(Int32.Parse(cat));
+                subscriptionType.AssetCategory = await service.GetAssetCategory(Int32.Parse(cat));
                 subscriptionType.Provider = values["Provider"];
                 subscriptionType.Type = values["Type"];
                 subscriptionType.Description = values["Description"];
@@ -78,7 +78,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.Create(subscriptionType, Table);
+                        await service.Create(subscriptionType);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -95,12 +95,12 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetById((int)id);
-            SubscriptionType subscriptionType = list.FirstOrDefault();
+            SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
             if (subscriptionType == null)
                 return NotFound();
             log.Debug("Using Edit in {0}", Table);
-            ViewData["Title"] = $"Edit {subscriptionType.Category.Category}";
+            ViewData["Title"] = $"Edit {subscriptionType.AssetCategory.Category}";
+            ViewData["Controller"] = @$"\SubscriptionType\Edit\{id}";
             await BuildMenu();
             ViewBag.Types = service.GetCategories();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
@@ -114,7 +114,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.Edit(subscriptionType, provider, Type, Description, Table);
+                        await service.Edit(subscriptionType, provider, Type, Description);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -131,30 +131,30 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetById((int)id);
-            SubscriptionType subscriptionType = list.FirstOrDefault();
+            SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
             if (subscriptionType == null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
-            ViewData["Title"] = $"{subscriptionType.Category.Category} Details";
+            ViewData["Title"] = $"{subscriptionType.AssetCategory.Category} Details";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] =  service.DateFormat;
+            ViewData["Controller"] = @"\SubscriptionType\Create";
             return View(subscriptionType);
         }
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetById((int)id);
-            SubscriptionType subscriptionType = list.FirstOrDefault();
+            SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
             if (subscriptionType == null)
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
+            ViewData["Controller"] = @$"\SubscriptionType\Delete\{id}";
             await BuildMenu();
-            ViewData["Title"] = $"Deactivate {subscriptionType.Category.Category}";
+            ViewData["Title"] = $"Deactivate {subscriptionType.AssetCategory.Category}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -164,7 +164,7 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.Delete(subscriptionType, ViewData["reason"].ToString(), Table);
+                        await service.Delete(subscriptionType, ViewData["reason"].ToString());
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -181,19 +181,18 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var list = await service.GetById((int)id);
-            SubscriptionType subscriptionType = list.FirstOrDefault();
+            SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
             if (subscriptionType == null)
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = $"Activate {subscriptionType.Category.Category}";
+            ViewData["Title"] = $"Activate {subscriptionType.AssetCategory.Category}";
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 try
                 {
-                    await service.Activate(subscriptionType,Table);
+                    await service.Activate(subscriptionType);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)

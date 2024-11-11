@@ -11,7 +11,7 @@ namespace CMDB.Controllers
 {
     public class AssetCategoryController : CMDBController
     {
-        private new readonly AssetCategoryService service;
+        private readonly AssetCategoryService service;
         public AssetCategoryController(IWebHostEnvironment env) : base(env)
         {
             service = new();

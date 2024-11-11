@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.Identity
+﻿@model CMDB.API.Models.IdentityDTO
 @{
      Layout = "_Layout";
 }
@@ -12,7 +12,7 @@
                 <th>E Mail</th>
                 <th>Language</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
@@ -22,21 +22,21 @@
                     <td id="EMail">@Html.DisplayTextFor(model => model.EMail)</td>
                     <td id="Language">@Html.DisplayTextFor(model => model.Language.Description)</td>
                     <td id="Type">@Html.DisplayTextFor(model => model.Type.Description)</td>
-                    <td id="State">@Html.DisplayTextFor(model => model.Active)</td>
+                    <td id="State">@Html.DisplayTextFor(model => model.State)</td>
                 </tr>
         </tbody>
     </table>
     <p>
         <h3>Please selet a device</h3>
     </p>
-    <form role="form" class="form-horizontal" asp-action="ReleaseDevices" method="post">
+    <form role="form" class="form-horizontal" action="@ViewData["Controller"]" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <input type="hidden" name="form-submitted" value="1" />
         @foreach(var device in Model.Devices)
         {
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="1" name="@device.AssetTag" id="@device.AssetTag">
-                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.Type.Vendor @device.Type.Type AssetTag: @device.AssetTag</label>
+                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.AssetType.Vendor @device.AssetType.Type AssetTag: @device.AssetTag</label>
             </div>
         }
         <div class="form-actions">

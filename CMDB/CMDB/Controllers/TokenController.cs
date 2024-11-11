@@ -1,23 +1,17 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
-using Identity = CMDB.Domain.Entities.Identity;
-using QuestPDF.Fluent;
-using CMDB.API.Models;
 
 namespace CMDB.Controllers
 {
     public class TokenController : CMDBController
     {
-        private new readonly DevicesService service;
+        private readonly DevicesService service;
         private readonly PDFService _PDFservice;
         public TokenController(IWebHostEnvironment env) : base(env)
         {

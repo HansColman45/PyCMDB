@@ -27,6 +27,7 @@ namespace CMDB.API.Services
             AssetCategoryRepository = new AssetCategoryRepository(_context, _logger);
             MobileRepository = new MobileRepository(_context, _logger);
             SubscriptionRepository = new SubscriptionRepository(_context, _logger);
+            SubscriptionTypeRepository = new SubscriptionTypeRepository(_context, _logger);
         }
         public IAccountRepository AccountRepository { get; private set; }
         public IMenuRepository MenuRepository { get; private set; }
@@ -43,6 +44,7 @@ namespace CMDB.API.Services
         public IAssetCategoryRepository AssetCategoryRepository { get; private set; }
         public IMobileRepository MobileRepository { get; private set; }
         public ISubscriptionRepository SubscriptionRepository { get; private set; }
+        public ISubscriptionTypeRepository SubscriptionTypeRepository { get; private set; }
         public async Task SaveChangesAsync()
         {
             try

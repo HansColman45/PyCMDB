@@ -10,9 +10,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         LaptopCreator laptopCreator;
         LaptopUpdator laptopUpdator;
+        LaptopIdentityActor laptopIdentityActor;
         
         Helpers.Laptop laptop;
         Laptop Laptop;
+        Identity Identity;
         public LaptopStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -108,6 +110,62 @@ namespace CMDB.UI.Specflow.StepDefinitions
             laptopUpdator.Search(Laptop.AssetTag);
             var lastLog = laptopUpdator.LaptopLastLogLine;
             laptopUpdator.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+        #endregion
+        #region Assign and release
+        [Given(@"There is an active Laptop existing")]
+        public async Task GivenThereIsAnActiveLaptopExisting()
+        {
+            laptopIdentityActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(laptopIdentityActor);
+            Laptop = await laptopIdentityActor.CreateLaptop();
+            Admin = await laptopIdentityActor.CreateNewAdmin();
+            laptopIdentityActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = laptopIdentityActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            laptopIdentityActor.OpenLaptopOverviewPage();
+            laptopIdentityActor.Search(Laptop.AssetTag);
+        }
+        [Given(@"The Identity to assign to my laptop is existing")]
+        public async Task GivenTheIdentityToAssignToMyLaptopIsExisting()
+        {
+            Identity = await laptopIdentityActor.CreateNewIdentity();
+        }
+
+        [When(@"I assign the Laptop to the Identity")]
+        public void WhenIAssignTheLaptopToTheIdentity()
+        {
+            laptopIdentityActor.AssignTheIdentity2Laptop(Laptop, Identity);
+        }
+        [When(@"I fill in the assign form for my Laptop")]
+        public void WhenIFillInTheAssignFormForMyLaptop()
+        {
+            laptopIdentityActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The Identity is assigned to the Laptop")]
+        public void ThenTheIdentityIsAssignedToTheLaptop()
+        {
+            laptopIdentityActor.Search(Laptop.AssetTag);
+            var lastLogLine = laptopIdentityActor.LaptopLastLogLine;
+            laptopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+
+        [Given(@"that Identity is assigned to my Laptop")]
+        public async Task GivenThatIdentityIsAssignedToMyLaptop()
+        {
+            await laptopIdentityActor.AssignIdentity(Laptop, Identity);
+        }
+        [When(@"I release that identity from my Laptop and I fill in the release form")]
+        public void WhenIReleaseThatIdentityFromMyLaptopAndIFillInTheReleaseForm()
+        {
+            laptopIdentityActor.ReleaseIdentity(Laptop,Identity);
+        }
+        [Then(@"The identity is released from my Laptop")]
+        public void ThenTheIdentityIsReleasedFromMyLaptop()
+        {
+            laptopIdentityActor.Search(Laptop.AssetTag);
+            var lastLogLine = laptopIdentityActor.LaptopLastLogLine;
+            laptopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
     }

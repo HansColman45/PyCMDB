@@ -32,7 +32,10 @@ namespace CMDB.API.Services
                 case "Laptop":
                     devices = await _context.Devices.OfType<Laptop>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Select(x => ConvertDevice(x))
                         .ToListAsync();
@@ -40,7 +43,10 @@ namespace CMDB.API.Services
                 case "Desktop":
                     devices = await _context.Devices.OfType<Desktop>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Select(x => ConvertDevice(x))
                         .ToListAsync();
@@ -49,7 +55,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Docking>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Select(x => ConvertDevice(x))
                         .ToListAsync();
@@ -58,7 +67,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Token>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Select(x => ConvertDevice(x))
                         .ToListAsync();
@@ -68,7 +80,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Screen>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Select(x => ConvertDevice(x))
                         .ToListAsync();
@@ -87,7 +102,10 @@ namespace CMDB.API.Services
                 case "Laptop":
                     devices = await _context.Devices.OfType<Laptop>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .Select(x => ConvertDevice(x))
@@ -96,7 +114,10 @@ namespace CMDB.API.Services
                 case "Desktop":
                     devices = await _context.Devices.OfType<Desktop>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .Select(x => ConvertDesktop(x))
@@ -106,7 +127,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Docking>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .Select(x => ConvertDevice(x))
@@ -116,7 +140,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Token>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .Select(x => ConvertDevice(x))
@@ -127,7 +154,10 @@ namespace CMDB.API.Services
                     devices = await _context.Devices
                         .OfType<Screen>().AsNoTracking()
                         .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Type).AsNoTracking()
+                        .Include(x => x.Identity)
+                        .ThenInclude(x => x.Language).AsNoTracking()
                         .Include(x => x.Type).AsNoTracking()
                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                         .Select(x => ConvertDevice(x))
@@ -144,7 +174,10 @@ namespace CMDB.API.Services
             var Laptops = await _context.Devices.OfType<Laptop>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -155,7 +188,10 @@ namespace CMDB.API.Services
             var Desktops = await _context.Devices.OfType<Desktop>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDesktop(x))
                 .ToListAsync();
@@ -166,7 +202,10 @@ namespace CMDB.API.Services
             var screens = await _context.Devices.OfType<Screen>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -177,7 +216,10 @@ namespace CMDB.API.Services
             var dockings = await _context.Devices.OfType<Docking>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -188,7 +230,10 @@ namespace CMDB.API.Services
             var tokens = await _context.Devices.OfType<Token>().AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .ToListAsync();
@@ -205,7 +250,10 @@ namespace CMDB.API.Services
                 case "Laptop":
                     var laptop = await _context.Devices.OfType<Laptop>().AsNoTracking()
                     .Include(x => x.Category).AsNoTracking()
-                    .Include(x => x.Identity).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
                     .Select(x => ConvertDevice(x))
@@ -219,7 +267,10 @@ namespace CMDB.API.Services
                 case "Desktop":
                     var desktop = await _context.Devices.OfType<Desktop>().AsNoTracking()
                     .Include(x => x.Category).AsNoTracking()
-                    .Include(x => x.Identity).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
                     .Select(x => ConvertDesktop(x))
@@ -233,7 +284,10 @@ namespace CMDB.API.Services
                 case "Docking station":
                     var docking = await _context.Devices.OfType<Docking>().AsNoTracking()
                     .Include(x => x.Category).AsNoTracking()
-                    .Include(x => x.Identity).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
                     .Select(x => ConvertDevice(x))
@@ -247,7 +301,10 @@ namespace CMDB.API.Services
                 case "Token":
                     var token = await _context.Devices.OfType<Token>().AsNoTracking()
                     .Include(x => x.Category).AsNoTracking()
-                    .Include(x => x.Identity).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
                     .Select(x => ConvertDevice(x))
@@ -262,7 +319,10 @@ namespace CMDB.API.Services
                 case "Screen":
                     var screen = await _context.Devices.OfType<Screen>().AsNoTracking()
                     .Include(x => x.Category).AsNoTracking()
-                    .Include(x => x.Identity).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type).AsNoTracking()
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
                     .Select(x => ConvertDevice(x))
@@ -282,6 +342,10 @@ namespace CMDB.API.Services
             return await _context.Devices.AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type).AsNoTracking()
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.AssetTag == assetTag).AsNoTracking()
                 .Select(x => ConvertDevice(x))
                 .FirstOrDefaultAsync();
@@ -771,7 +835,21 @@ namespace CMDB.API.Services
                     LastName = device.Identity.LastName,
                     Name = device.Identity.Name,
                     IdenId = device.Identity.IdenId,
-                    LastModifiedAdminId = device.Identity.LastModifiedAdminId
+                    LastModifiedAdminId = device.Identity.LastModifiedAdminId,
+                    Type = new()
+                    {
+                        Active = device.Identity.Type.active,
+                        DeactivateReason = device.Identity.Type.DeactivateReason,
+                        Description = device.Identity.Type.Description,
+                        Type = device.Identity.Type.Type,
+                        TypeId = device.Identity.Type.TypeId,
+                        LastModifiedAdminId= device.Identity.LastModifiedAdminId
+                    },
+                    Language = new()
+                    {
+                        Code = device.Identity.Language.Code,
+                        Description = device.Identity.Type.Description
+                    }
                 }
             };
         }

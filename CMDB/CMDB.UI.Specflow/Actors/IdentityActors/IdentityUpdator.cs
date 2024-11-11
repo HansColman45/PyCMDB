@@ -83,7 +83,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");
             page.Delete();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deleted");
-            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Identity width name: {identity.Name}",admin.Account.UserID,reason,Table);
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Identity with name: {identity.Name}",admin.Account.UserID,reason,Table);
         }
         public void Activate(Identity identity)
         {
@@ -91,7 +91,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             page.Activate();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");
-            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Identity width name: {identity.Name}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"Identity with name: {identity.Name}", admin.Account.UserID, Table);
         }
     }
 }
