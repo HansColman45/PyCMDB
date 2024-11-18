@@ -4,7 +4,7 @@ using CMDB.UI.Specflow.Questions.Token;
 
 namespace CMDB.UI.Specflow.Actors.Tokens
 {
-    internal class TokenActor : CMDBActor
+    public class TokenActor : CMDBActor
     {
         protected static string Table => "token";
         public TokenActor(ScenarioContext scenarioContext, string name = "TokenActor") : base(scenarioContext, name)

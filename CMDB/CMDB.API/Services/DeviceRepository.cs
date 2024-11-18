@@ -1104,6 +1104,7 @@ namespace CMDB.API.Services
             if (token.TypeId != device.AssetType.TypeID)
             {
                 var oldType = _context.AssetTypes.Where(x => x.TypeID == token.TypeId).First();
+                token.TypeId = device.AssetType.TypeID;
                 token.LastModifiedAdminId = TokenStore.AdminId;
                 token.Logs.Add(new()
                 {

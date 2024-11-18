@@ -94,8 +94,8 @@ namespace CMDB.Controllers
                                 Receiver: token.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(token);
-                            await _PDFservice.GenratPDFFile(Table, token.AssetTag);
-                            await _PDFservice.GenratPDFFile("identity", token.Identity.IdenId);
+                            await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
                             await service.ReleaseIdenity(token); 
                         }
                         await service.Deactivate(token, values["reason"]);
@@ -295,8 +295,8 @@ namespace CMDB.Controllers
                         Language: token.Identity.Language.Code,
                         Receiver: token.Identity.Name);
                     await _PDFservice.SetDeviceInfo(token);
-                    await _PDFservice.GenratPDFFile(Table, token.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", token.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -335,8 +335,8 @@ namespace CMDB.Controllers
                         Receiver: token.Identity.Name,
                         type: "Release");
                     await _PDFservice.SetDeviceInfo(token);
-                    await _PDFservice.GenratPDFFile(Table, token.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", token.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
                     await service.ReleaseIdenity(token);
                     return RedirectToAction(nameof(Index));
                 }

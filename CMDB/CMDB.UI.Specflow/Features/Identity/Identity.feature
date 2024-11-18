@@ -1,6 +1,7 @@
 ﻿Feature: Identity
 	I want to be able to create, edit an Identity
 	I also want to be able to assign and release devices to an Identity aswell as assign and release accounts
+	I want to be able to assign and release Mobiles to an Identity as wadd as assign and release Subscriptions
 
 Scenario: I want to create a new Identity
 	Given I want to create an Identity with these details

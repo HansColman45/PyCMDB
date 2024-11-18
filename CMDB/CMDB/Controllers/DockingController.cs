@@ -94,8 +94,8 @@ namespace CMDB.Controllers
                                 Receiver: docking.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(docking);
-                            await _PDFservice.GenratPDFFile(Table, docking.AssetTag);
-                            await _PDFservice.GenratPDFFile("identity", docking.Identity.IdenId);
+                            await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                             await service.ReleaseIdenity(docking);
                         }
                         await service.Deactivate(docking, values["reason"]);
@@ -288,8 +288,8 @@ namespace CMDB.Controllers
                         Language: docking.Identity.Language.Code,
                         Receiver: docking.Identity.Name);
                     await _PDFservice.SetDeviceInfo(docking);
-                    await _PDFservice.GenratPDFFile(Table, docking.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", docking.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -330,8 +330,8 @@ namespace CMDB.Controllers
                         Receiver: docking.Identity.Name,
                         type: "Release");
                     await _PDFservice.SetDeviceInfo(docking);
-                    await _PDFservice.GenratPDFFile(Table, docking.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", docking.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                     await service.ReleaseIdenity(docking);
                     return RedirectToAction(nameof(Index));
                 }

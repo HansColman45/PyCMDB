@@ -194,8 +194,8 @@ namespace CMDB.Controllers
                                 Receiver: desktop.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(desktop);
-                            await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
-                            await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
+                            await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
                             await service.ReleaseIdenity(desktop);
                         }
                         await service.Deactivate(desktop, values["reason"]);
@@ -300,8 +300,8 @@ namespace CMDB.Controllers
                         Language: desktop.Identity.Language.Code,
                         Receiver: desktop.Identity.Name);
                     await _PDFservice.SetDeviceInfo(desktop);
-                    await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -341,8 +341,8 @@ namespace CMDB.Controllers
                         Receiver: desktop.Identity.Name, 
                         type: "Release");
                     await _PDFservice.SetDeviceInfo(desktop);
-                    await _PDFservice.GenratPDFFile(Table, desktop.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", desktop.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
                     await service.ReleaseIdenity(desktop);
                     return RedirectToAction(nameof(Index));
                 }

@@ -2,10 +2,7 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers.Devices
@@ -17,9 +14,10 @@ namespace CMDB.Testing.Helpers.Devices
             var cat = context.AssetCategories.Where(x => x.Category == "Token").SingleOrDefault();
             var AssetType = await AssetTypeHelper.CreateSimpleAssetType(context, cat, admin);
             Token token = new TokenBuilder()
-                .With(x => x.Category,cat)
-                .With(x => x.Type, AssetType)
+                .With(x => x.CategoryId,cat.Id)
+                .With(x => x.TypeId, AssetType.TypeID)
                 .With(x => x.IdentityId, 1)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
             token.Logs.Add(new LogBuilder().With(x => x.Device, token)
                 .With(x => x.LogText, $"The {cat.Category} with type {token.Type} is created by Automation in table token")

@@ -280,7 +280,7 @@ namespace CMDB.Controllers
                         idenAccount.Identity.Language.Code,
                         "Release");
                     await PDFservice.SetAccontInfo(idenAccount);
-                    await PDFservice.GenratPDFFile(Table,idenAccount.Account.AccID);
+                    await PDFservice.GenratePDFFile(Table,idenAccount.Account.AccID);
                     await service.ReleaseIdentity4Acount(idenAccount);
                     return RedirectToAction(nameof(Index));
                 }
@@ -319,7 +319,7 @@ namespace CMDB.Controllers
                     account.Identities.Last().Identity.Name, 
                     account.Identities.Last().Identity.Language.Code);
                 await PDFservice.SetAccontInfo(account.Identities.Last());
-                await PDFservice.GenratPDFFile(Table, account.AccID);
+                await PDFservice.GenratePDFFile(Table, account.AccID);
                 return RedirectToAction(nameof(Index));
             }
             return View(account);

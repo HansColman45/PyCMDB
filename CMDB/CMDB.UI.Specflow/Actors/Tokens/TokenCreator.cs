@@ -4,7 +4,7 @@ using CMDB.UI.Specflow.Questions.Token;
 
 namespace CMDB.UI.Specflow.Actors.Tokens
 {
-    internal class TokenCreator : TokenActor
+    public class TokenCreator : TokenActor
     {
         public TokenCreator(ScenarioContext scenarioContext, string name = "TokenCreator") : base(scenarioContext, name)
         {
@@ -18,13 +18,18 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             var assetType = await GetOrCreateAssetType("Token", Vendor, Type);
             var page = Perform(new OpenTheTokenCreatePage());
             page.WebDriver = Driver;
+            page.AssetTag = token.AssetTag + rndNr;
+            page.SerialNumber = token.SerialNumber + rndNr;
+            page.Type = $"{assetType.TypeID}";
+            page.Create();
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Created");
         }
         public void SearchToken(Helpers.Token token) 
         {
-            var page = GetAbility<TokenDetailPage>();
+            var page = GetAbility<TokenOverviewPage>();
             page.Search(token.AssetTag + rndNr);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Search");
-            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Monitor with type {token.Type}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.CreateLogLine($"Token with type {token.Type}", admin.Account.UserID, Table);
         }
     }
 }

@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
     public class DataContext: Ability
     {
         public readonly CMDBContext context;
-        public Admin Admin { get; set; }
+        public Admin Admin { get; private set; }
         public DataContext() 
         {
             string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";

@@ -14,7 +14,6 @@ namespace CMDB.Testing.Builders.EntityBuilders.Devices
             SetDefaultRules((f,m) =>
             {
                 m.IMEI = Convert.ToInt64(f.Commerce.Ean13());
-                m.MobileType = new AssetTypeBuilder().Build();
             });
         }
     }

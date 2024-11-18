@@ -354,7 +354,7 @@ namespace CMDB.Controllers
                         idenAccount.Identity.Name,
                         idenAccount.Identity.Language.Code);
                     await _PDFservice.SetAccontInfo(idenAccount);
-                    await _PDFservice.GenratPDFFile(Table, idenAccount.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, idenAccount.Identity.IdenId);
                     await service.ReleaseAccount4Identity(idenAccount);
                     return RedirectToAction(nameof(Index));
                 }
@@ -406,7 +406,7 @@ namespace CMDB.Controllers
                     foreach (MobileDTO mobile in identity.Mobiles)
                         await _PDFservice.SetMobileInfo(mobile);
                 }
-                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -450,7 +450,7 @@ namespace CMDB.Controllers
                         "Release");
                 await _PDFservice.SetDeviceInfo(device);
                 await service.ReleaseDevices(identity, devices2Remove);
-                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -491,7 +491,7 @@ namespace CMDB.Controllers
                     identity.Language.Code,
                     "Release");
                 await _PDFservice.SetMobileInfo(mobile);
-                await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 await service.ReleaseMobile(identity, mobiles);
                 return RedirectToAction(nameof(Index));
             }
@@ -536,7 +536,7 @@ namespace CMDB.Controllers
                     {
                         await _PDFservice.SetDeviceInfo(device);
                     }
-                    await _PDFservice.GenratPDFFile(Table, identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                     return RedirectToAction(nameof(Index));
                     //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }

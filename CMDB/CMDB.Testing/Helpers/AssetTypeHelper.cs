@@ -16,8 +16,8 @@ namespace CMDB.Testing.Helpers
             try
             {
                 var assetType = new AssetTypeBuilder()
-                .With(x => x.Category, category)
-                .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.CategoryId, category.Id)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
 
                 assetType.Logs.Add(new LogBuilder()

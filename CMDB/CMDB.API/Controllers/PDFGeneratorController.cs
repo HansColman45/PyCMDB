@@ -104,6 +104,7 @@ namespace CMDB.API.Controllers
                 case "desktop":
                 case "docking":
                 case "docking station":
+                case "token":
                     await _uow.DeviceRepository.LogPdfFile(entity, pdfFile, assetTag);
                     break;
                 default:

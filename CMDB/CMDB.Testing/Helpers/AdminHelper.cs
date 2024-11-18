@@ -51,7 +51,7 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.Language, language)
                 .With(x => x.Type, identype)
                 .With(x => x.UserID, Account.UserID)
-                .With(x => x.LastModifiedAdminId, 1)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
 
             identity.Logs.Add(new LogBuilder()
@@ -66,7 +66,7 @@ namespace CMDB.Testing.Helpers
             {
                 Identity = identity,
                 Account = Account,
-                LastModifiedAdminId = 1
+                LastModifiedAdminId = admin.AdminId
             });
 
             await context.SaveChangesAsync();

@@ -84,7 +84,7 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<string> GenratPDFFile(string entity, int id)
+        public async Task<string> GenratePDFFile(string entity, int id)
         {
             BaseUrl = _url + path + $"/{entity}/{id}";
             _Client.SetBearerToken(TokenStore.Token);
@@ -94,7 +94,7 @@ namespace CMDB.Services
             else
                 return await response.Content.ReadAsJsonAsync<string>();
         }
-        public async Task<string> GenratPDFFile(string entity, string assetTag)
+        public async Task<string> GenratePDFFile(string entity, string assetTag)
         {
             BaseUrl = _url + path + $"/{entity}/{assetTag}";
             _Client.SetBearerToken(TokenStore.Token);

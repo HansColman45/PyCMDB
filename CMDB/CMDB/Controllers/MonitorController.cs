@@ -93,8 +93,8 @@ namespace CMDB.Controllers
                                 Receiver: monitor.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(monitor);
-                            await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
-                            await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
+                            await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                             await service.ReleaseIdenity(monitor);
                         }
                         await service.Deactivate(monitor, values["reason"]);
@@ -286,8 +286,8 @@ namespace CMDB.Controllers
                         Language: monitor.Identity.Language.Code,
                         Receiver: monitor.Identity.Name);
                     await _PDFservice.SetDeviceInfo(monitor);
-                    await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -327,8 +327,8 @@ namespace CMDB.Controllers
                         Receiver: monitor.Identity.Name,
                         type: "Release");
                     await _PDFservice.SetDeviceInfo(monitor);
-                    await _PDFservice.GenratPDFFile(Table, monitor.AssetTag);
-                    await _PDFservice.GenratPDFFile("identity", monitor.Identity.IdenId);
+                    await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                     await service.ReleaseIdenity(monitor);
                     return RedirectToAction(nameof(Index));
                 }
