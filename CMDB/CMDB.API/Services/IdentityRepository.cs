@@ -2,6 +2,7 @@
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
@@ -249,6 +250,60 @@ namespace CMDB.API.Services
                 });
             }
             _context.Identities.Update(iden);
+        }
+        public async Task AssignMobile(IdentityDTO identity, List<int> mobileIDs) 
+        {
+            string ideninfo = $"Identity with name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (var id in mobileIDs) 
+            {
+                var mobile = await _context.Mobiles
+                    .Include(x => x.MobileType)
+                    .Where(x => x.MobileId == id).FirstAsync();
+                mobile.LastModifiedAdminId = TokenStore.AdminId;
+                string mobileInfo = $"mobile with type {mobile.MobileType}";
+                mobile.IdentityId = iden.IdenId;
+                mobile.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, ideninfo, TokenStore.Admin.Account.UserID, "mobile"),
+                    LogDate = DateTime.Now
+                });
+                _context.Mobiles.Update(mobile);
+                iden.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, mobileInfo, TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.Now
+                });
+                _context.Identities.Update(iden);
+            }
+        }
+        public async Task ReleaseMobile(IdentityDTO identity, List<int> mobileIDs)
+        {
+            string ideninfo = $"Identity with name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (var id in mobileIDs)
+            {
+                var mobile = await _context.Mobiles
+                    .Include(x => x.MobileType)
+                    .Where(x => x.MobileId == id).FirstAsync();
+                mobile.LastModifiedAdminId = TokenStore.AdminId;
+                string mobileInfo = $"mobile with type {mobile.MobileType}";
+                mobile.IdentityId = 1;
+                mobile.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(mobileInfo, ideninfo, TokenStore.Admin.Account.UserID, "mobile"),
+                    LogDate = DateTime.Now
+                });
+                _context.Mobiles.Update(mobile);
+                iden.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, mobileInfo, TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.Now
+                });
+                _context.Identities.Update(iden);
+            }
         }
         public async Task AssignAccount(IdenAccountDTO idenAccount)
         {

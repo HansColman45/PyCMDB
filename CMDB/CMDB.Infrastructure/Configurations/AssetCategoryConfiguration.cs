@@ -22,7 +22,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.Prefix)
                 .HasColumnType("varchar(5)");
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.AssetCategories)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

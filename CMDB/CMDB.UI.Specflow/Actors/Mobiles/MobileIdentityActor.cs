@@ -3,42 +3,34 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
-using CMDB.UI.Specflow.Questions.Laptop;
+using CMDB.UI.Specflow.Questions.Mobile;
 using CMDB.UI.Specflow.Tasks;
 
-namespace CMDB.UI.Specflow.Actors.Laptops
+namespace CMDB.UI.Specflow.Actors.Mobiles
 {
-    internal class LaptopIdentityActor : LaptopUpdator
+    public class MobileIdentityActor : MobileUpdator
     {
-        public LaptopIdentityActor(ScenarioContext scenarioContext, string name = "LaptopIdentityActor") : base(scenarioContext, name)
+        public MobileIdentityActor(ScenarioContext scenarioContext, string name = "MobileIdentityActor") : base(scenarioContext, name)
         {
         }
         public async Task<Identity> CreateNewIdentity()
         {
             return await Perform(new CreateTheIdentity());
         }
-        public async Task AssignIdentity(Laptop laptop, Identity identity)
+        public async Task AssignIdentity(Mobile mobile, Identity identity)
         {
-            try
-            {
-                var context = GetAbility<DataContext>();
-                await context.AssignIdentity2Device(admin, laptop, identity);
-            }
-            catch (Exception e)
-            {
-                log.Error(e.Message);
-                throw;
-            }
+            var context = GetAbility<DataContext>();
+            await context.AssignIdentity2Mobile(admin, mobile, identity);
         }
-        public void AssignTheIdentity2Laptop(Laptop laptop, Identity identity)
+        public void AssignMobile2Identity(Mobile mobile, Identity identity) 
         {
-            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Laptop with {laptop.AssetTag}",
-               $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
-            var page = Perform(new OpenTheLaptopAssignIdentityPage());
+            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"mobile with type {mobile.MobileType}",
+                $"Identity with name: {identity.Name}", admin.Account.UserID,Table);
+            var page = Perform(new OpenTheMobileAssignIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
-            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectIdenity");
         }
         public void FillInAssignForm(Identity identity)
         {
@@ -48,14 +40,15 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             Perform<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
-        public void ReleaseIdentity(Laptop laptop,Identity identity)
+
+        public void ReleaseIdentity(Mobile mobile, Identity identity)
         {
-            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Laptop with {laptop.AssetTag}",
-                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
-            var detailPage = Perform(new OpenTheLaptopDetailPage());
+            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"mobile with type {mobile.MobileType}",
+               $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
+            var detailPage = Perform(new OpenTheMobileDetailPage());
             detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
-            var page = Perform(new OpenTheLaptopReleaseIdentityPage());
+            var page = Perform(new OpenTheMobileReleaseIdentityPage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");

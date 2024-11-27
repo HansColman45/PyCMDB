@@ -2,10 +2,7 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -14,14 +11,14 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin, bool active = true)
         {
-            var accounttypes = await context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").ToListAsync();
+            var accounttypes = await context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").AsNoTracking().ToListAsync();
             var accounttype = accounttypes.FirstOrDefault();
-            var app = await context.Applications.Where(x => x.Name == "CMDB").FirstOrDefaultAsync();
+            var app = await context.Applications.Where(x => x.Name == "CMDB").AsNoTracking().FirstOrDefaultAsync();
 
             Account Account = new AccountBuilder()
-                .With(x => x.Application, app)
-                .With(x => x.Type, accounttype)
-                .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.ApplicationId, app.AppID)
+                .With(x => x.TypeId, accounttype.TypeId)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .With(x => x.active,1)
                 .Build();
 

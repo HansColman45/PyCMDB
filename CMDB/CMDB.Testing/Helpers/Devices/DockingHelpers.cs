@@ -2,6 +2,7 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,12 +12,12 @@ namespace CMDB.Testing.Helpers.Devices
     {
         public static async Task<Docking> CreateSimpleDocking(CMDBContext context, Admin admin, bool active = true)
         {
-            var cat = context.AssetCategories.Where(x => x.Category == "Docking station").SingleOrDefault();
+            var cat = context.AssetCategories.Where(x => x.Category == "Docking station").AsNoTracking().SingleOrDefault();
             var AssetType = await AssetTypeHelper.CreateSimpleAssetType(context, cat, admin);
             Docking docking = new DockingBuilder()
-                .With(x => x.Category, cat)
-                .With(x => x.Type, AssetType)
-                .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.CategoryId, cat.Id)
+                .With(x => x.TypeId, AssetType.TypeID)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .With(x => x.IdentityId, 1)
                 .Build();
             docking.Logs.Add(new LogBuilder()

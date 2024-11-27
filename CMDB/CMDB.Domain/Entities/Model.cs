@@ -35,7 +35,7 @@ namespace CMDB.Domain.Entities
         }
         [Column("Deactivate_reason")]
         public string DeactivateReason { get; set; }
-        public virtual Admin LastModfiedAdmin { get; set; }
+        public virtual Admin LastModifiedAdmin { get; set; }
         public int? LastModifiedAdminId { get; set; }
     }
     public enum State

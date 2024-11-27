@@ -50,7 +50,7 @@ namespace CMDB.Infrastructure.Configurations
                 .HasConstraintName("FK_Device_Category")
                 .IsRequired(false);
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Devices)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

@@ -282,5 +282,51 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpPost("AssignMobile"),Authorize]
+        public async Task<IActionResult> AssignMobile(AssignMobileRequest assignMobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignDevice"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignMobile.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.AssignMobile(iden,assignMobile.MobileIds);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseMobile"), Authorize]
+        public async Task<IActionResult> ReleaseMobile(AssignMobileRequest assignMobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseMobile"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignMobile.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.ReleaseMobile(iden,assignMobile.MobileIds);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

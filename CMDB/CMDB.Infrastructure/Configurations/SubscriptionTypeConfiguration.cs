@@ -26,7 +26,7 @@ namespace CMDB.Infrastructure.Configurations
                 .HasConstraintName("FK_AssetType_Category")
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.SubscriptionTypes)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

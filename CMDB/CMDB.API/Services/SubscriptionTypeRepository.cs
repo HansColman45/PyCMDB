@@ -5,16 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public interface ISubscriptionTypeRepository
-    {
-        Task<IEnumerable<SubscriptionTypeDTO>> GetAll();
-        Task<IEnumerable<SubscriptionTypeDTO>> GetAll(string search);
-        Task<SubscriptionTypeDTO?> GetById(int id);
-        SubscriptionTypeDTO Create(SubscriptionTypeDTO subscriptionDTO);
-        Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionDTO);
-        Task<SubscriptionTypeDTO> Deactivate(SubscriptionTypeDTO subscriptionDTO, string reason);
-        Task<SubscriptionTypeDTO> Activate(SubscriptionTypeDTO subscriptionDTO);
-    }
     public class SubscriptionTypeRepository : GenericRepository, ISubscriptionTypeRepository
     {
         private readonly string table = "subscriptiontype";
@@ -49,6 +39,10 @@ namespace CMDB.API.Services
                 .Where(x => x.Id == id)
                 .Select(x => ConvertType(x))
                 .FirstOrDefaultAsync();
+            if(types is not null)
+            {
+                GetLogs(table,id,types);
+            }
             return types;
         }
         public SubscriptionTypeDTO Create(SubscriptionTypeDTO subscriptionTypeDTO)
@@ -62,12 +56,52 @@ namespace CMDB.API.Services
                 Type = subscriptionTypeDTO.Type,
                 Provider = subscriptionTypeDTO.Provider,
             };
+            type.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.CreateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}",
+                    TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.Now
+            });
             _context.SubscriptionTypes.Add(type);
             return subscriptionTypeDTO;
         }
         public async Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
+            if(string.Compare(type.Type,subscriptionTypeDTO.Type) != 0)
+            {
+                var logText = GenericLogLineCreator.UpdateLogLine("Type",type.Type,subscriptionTypeDTO.Type,TokenStore.Admin.Account.UserID,table);
+                type.Type = subscriptionTypeDTO.Type;
+                type.LastModifiedAdminId = TokenStore.AdminId;
+                type.Logs.Add(new()
+                {
+                    LogText = logText,
+                    LogDate = DateTime.Now,
+                });
+            }
+            if (string.Compare(type.Provider, subscriptionTypeDTO.Provider) != 0) 
+            {
+                var logText = GenericLogLineCreator.UpdateLogLine("Provider", type.Provider, subscriptionTypeDTO.Provider, TokenStore.Admin.Account.UserID, table);
+                type.Provider = subscriptionTypeDTO.Provider;
+                type.LastModifiedAdminId = TokenStore.AdminId;
+                type.Logs.Add(new()
+                {
+                    LogText = logText,
+                    LogDate = DateTime.Now,
+                });
+            }
+            if(string.Compare(type.Description,subscriptionTypeDTO.Description) != 0)
+            {
+                var logText = GenericLogLineCreator.UpdateLogLine("Description", type.Description, subscriptionTypeDTO.Description, TokenStore.Admin.Account.UserID, table);
+                type.Description = subscriptionTypeDTO.Description;
+                type.LastModifiedAdminId = TokenStore.AdminId;
+                type.Logs.Add(new()
+                {
+                    LogText = logText,
+                    LogDate = DateTime.Now,
+                });
+            }
+            _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
         }
         public async Task<SubscriptionTypeDTO> Deactivate(SubscriptionTypeDTO subscriptionTypeDTO, string reason)
@@ -78,7 +112,7 @@ namespace CMDB.API.Services
             type.LastModifiedAdminId = TokenStore.AdminId;
             type.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ActivateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.DeleteLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason,table),
                 LogDate = DateTime.Now
             });
             _context.SubscriptionTypes.Update(type);
@@ -87,6 +121,15 @@ namespace CMDB.API.Services
         public async Task<SubscriptionTypeDTO> Activate(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
+            type.active = 1;
+            type.DeactivateReason = "";
+            type.LastModifiedAdminId = TokenStore.AdminId;
+            type.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ActivateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}",TokenStore.Admin.Account.UserID,table),
+                LogDate = DateTime.Now
+            });
+            _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
         }
 

@@ -16,6 +16,8 @@ namespace CMDB.API.Services
         Task<bool> IsExisting(IdentityDTO identity);
         Task AssignDevices(IdentityDTO identity, List<string> assetTags);
         Task ReleaseDevices(IdentityDTO identity, List<string> assetTags);
+        Task AssignMobile(IdentityDTO identity, List<int> mobileIDs);
+        Task ReleaseMobile(IdentityDTO identity, List<int> mobileIDs);
         Task AssignAccount(IdenAccountDTO idenAccount);
         Task ReleaseAccount(IdenAccountDTO idenAccount);
     }

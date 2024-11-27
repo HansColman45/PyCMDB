@@ -45,7 +45,7 @@ namespace CMDB.API.Services
             if (admin.Level != _admin.Level)
             {
                 _admin.Level = admin.Level;
-                _admin.LastModfiedAdmin = TokenStore.Admin;
+                _admin.LastModifiedAdmin = TokenStore.Admin;
                 var logLine = GenericLogLineCreator.UpdateLogLine("Level", $"{_admin.Level}", $"{admin.Level}", TokenStore.Admin.Account.UserID, "admin");
                 _admin.Logs.Add(new()
                 {

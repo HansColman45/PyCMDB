@@ -45,7 +45,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.AmountOfKeys)
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Kensingtons)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

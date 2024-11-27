@@ -38,7 +38,7 @@ namespace CMDB.Infrastructure.Configuration
                 .HasConstraintName("FK_Mobile_Category")
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Mobiles)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

@@ -14,63 +14,69 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Admin> CreateCMDBAdmin(CMDBContext context, int level = 9)
         {
-            var app = context.Applications.Where(x => x.Name == "CMDB").FirstOrDefault();
-            var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
-            var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").FirstOrDefault();
-            var accounttype = context.Types.OfType<AccountType>().Where(x => x.Type == "Administrator").FirstOrDefault();
-
-            var Account = new AccountBuilder()
-                .With(x => x.Application, app)
-                .With(x => x.Type, accounttype)
-                .With(x => x.LastModifiedAdminId, 1)
-                .Build();
-
-            Account.Logs.Add(new LogBuilder()
-                .With(x => x.Account, Account)
-                .With(x => x.LogText, $"Account created {Account.UserID} for application {Account.Application.Name}")
-                .Build()
-            );
-            context.Accounts.Add(Account);
-
-            var admin = new AdminBuilder()
-                .With(x => x.Level, level)
-                .With(x => x.Account, Account)
-                .With(x => x.LastModifiedAdminId, 1)
-                .Build();
-
-            admin.Logs.Add(new LogBuilder()
-                .With(x => x.Admin, admin)
-                .With(x => x.LogText, $"Admin created with userid: {admin.Account.UserID}")
-                .Build()
-            );
-
-            context.Admins.Add(admin);
-            await context.SaveChangesAsync();
-
-            var identity = new IdentityBuilder()
-                .With(x => x.Language, language)
-                .With(x => x.Type, identype)
-                .With(x => x.UserID, Account.UserID)
-                .With(x => x.LastModifiedAdminId, admin.AdminId)
-                .Build();
-
-            identity.Logs.Add(new LogBuilder()
-                .With(x => x.Identity, identity)
-                .With(x => x.LogText, $"identity created {identity.Name}")
-                .Build()
-            );
-
-            context.Identities.Add(identity);
-
-            context.IdenAccounts.Add(new()
+            try
             {
-                Identity = identity,
-                Account = Account,
-                LastModifiedAdminId = admin.AdminId
-            });
+                var app = context.Applications.Where(x => x.Name == "CMDB").AsNoTracking().FirstOrDefault();
+                var language = context.Languages.Where(x => x.Code == "NL").AsNoTracking().FirstOrDefault();
+                var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").AsNoTracking().FirstOrDefault();
+                var accounttype = context.Types.OfType<AccountType>().Where(x => x.Type == "Administrator").AsNoTracking().FirstOrDefault();
 
-            await context.SaveChangesAsync();
-            return admin;
+                var Account = new AccountBuilder()
+                    .With(x => x.ApplicationId, app.AppID)
+                    .With(x => x.TypeId, accounttype.TypeId)
+                    .With(x => x.LastModifiedAdminId, 1)
+                    .Build();
+                Account.Logs.Add(new LogBuilder()
+                    .With(x => x.LogText, $"Account created {Account.UserID} for application {app.Name}")
+                    .Build()
+                );
+                context.Accounts.Add(Account);
+                await context.SaveChangesAsync();
+
+                var admin = new AdminBuilder()
+                    .With(x => x.Level, level)
+                    .With(x => x.Account, Account)
+                    .With(x => x.LastModifiedAdminId, 1)
+                    .Build();
+
+                admin.Logs.Add(new LogBuilder()
+                    .With(x => x.Admin, admin)
+                    .With(x => x.LogText, $"Admin created with userid: {Account.UserID}")
+                    .Build()
+                );
+
+                context.Admins.Add(admin);
+                await context.SaveChangesAsync();
+
+                var identity = new IdentityBuilder()
+                    .With(x => x.LanguageCode, language.Code)
+                    .With(x => x.TypeId, identype.TypeId)
+                    .With(x => x.UserID, Account.UserID)
+                    .With(x => x.LastModifiedAdminId, admin.AdminId)
+                    .Build();
+
+                identity.Logs.Add(new LogBuilder()
+                    .With(x => x.Identity, identity)
+                    .With(x => x.LogText, $"identity created {identity.Name}")
+                    .Build()
+                );
+
+                context.Identities.Add(identity);
+
+                context.IdenAccounts.Add(new()
+                {
+                    Identity = identity,
+                    Account = Account,
+                    LastModifiedAdminId = admin.AdminId
+                });
+
+                await context.SaveChangesAsync();
+                return admin;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         public static async Task<Dictionary<string, Object>> DeleteCascading(CMDBContext context, Admin admin)
         {

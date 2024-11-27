@@ -1,10 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -14,7 +10,7 @@ namespace CMDB.Testing.Helpers
         public static async Task<IdentityType> CreateSimpleIdentityType(CMDBContext context, Admin admin,bool active = true)
         {
             IdentityType identityType = new IdentityTypeBuilder()
-                .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
             context.Types.Add(identityType);
 

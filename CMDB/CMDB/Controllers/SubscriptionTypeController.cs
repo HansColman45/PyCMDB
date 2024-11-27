@@ -64,12 +64,12 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
             SubscriptionTypeDTO subscriptionType = new();
-            ViewBag.Types = service.GetCategories();
+            ViewBag.Types = await service.GetCategories();
             string FormSubmit = values["form-submitted"];
             ViewData["Controller"] = @"\SubscriptionType\Create";
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
-                var cat = values["Category"];
+                var cat = values["AssetCategory"];
                 subscriptionType.AssetCategory = await service.GetAssetCategory(Int32.Parse(cat));
                 subscriptionType.Provider = values["Provider"];
                 subscriptionType.Type = values["Type"];
@@ -102,7 +102,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = $"Edit {subscriptionType.AssetCategory.Category}";
             ViewData["Controller"] = @$"\SubscriptionType\Edit\{id}";
             await BuildMenu();
-            ViewBag.Types = service.GetCategories();
+            ViewBag.Types = await service.GetCategories();
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))

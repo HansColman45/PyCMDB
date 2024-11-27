@@ -2,6 +2,7 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -11,7 +12,7 @@ namespace CMDB.Testing.Helpers.Devices
     {
         public static async Task<Token> CreateNewToken(CMDBContext context, Admin admin, bool active = true)
         {
-            var cat = context.AssetCategories.Where(x => x.Category == "Token").SingleOrDefault();
+            var cat = context.AssetCategories.Where(x => x.Category == "Token").AsNoTracking().SingleOrDefault();
             var AssetType = await AssetTypeHelper.CreateSimpleAssetType(context, cat, admin);
             Token token = new TokenBuilder()
                 .With(x => x.CategoryId,cat.Id)

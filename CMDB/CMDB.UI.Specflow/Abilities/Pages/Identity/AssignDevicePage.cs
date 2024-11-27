@@ -11,6 +11,10 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         {
             ClickElementByXpath($"//*[@id='{device.AssetTag}']");
         }
+        public void ClickMobile(Domain.Entities.Mobile mobile)
+        {
+            ClickElementByXpath($"//*[@id='{mobile.IMEI}']");
+        }
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[@type='submit']");

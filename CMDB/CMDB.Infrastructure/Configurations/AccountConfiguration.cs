@@ -33,7 +33,7 @@ namespace CMDB.Infrastructure.Configuration
                 .HasConstraintName("FK_Account_Application")
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Accounts)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .HasConstraintName("FK_Account_LastModifiedAdmin")

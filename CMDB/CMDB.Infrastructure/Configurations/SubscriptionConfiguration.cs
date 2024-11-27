@@ -41,7 +41,7 @@ namespace CMDB.Infrastructure.Configurations
 
             builder.Property(e => e.PhoneNumber);
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Subscriptions)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

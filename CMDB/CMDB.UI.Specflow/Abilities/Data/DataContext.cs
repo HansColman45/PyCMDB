@@ -12,9 +12,10 @@ namespace CMDB.UI.Specflow.Abilities.Data
         public Admin Admin { get; private set; }
         public DataContext() 
         {
-            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";
+            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Trusted_Connection=True;TrustServerCertificate=True;encrypt=false;";
             var options = new DbContextOptionsBuilder<CMDBContext>()
                 .UseSqlServer(connectionstring)
+                .EnableSensitiveDataLogging()
                 .Options;
             context = new CMDBContext(options);
         }
@@ -113,7 +114,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
                     Vendor = vendor,
                     Type = type,
                     Category = category,
-                    LastModfiedAdmin = admin
+                    LastModifiedAdmin = admin
                 };
                 context.AssetTypes.Add(assetType);
                 await context.SaveChangesAsync();
@@ -142,8 +143,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <param name="admin">Admin</param>
         public async Task AssignIden2Account(Identity identity, Account account, Admin admin)
         {
-            identity.LastModfiedAdmin = admin;
-            account.LastModfiedAdmin = admin;
+            identity.LastModifiedAdmin = admin;
+            account.LastModifiedAdmin = admin;
             context.IdenAccounts.Add(new()
             {
                 Identity = identity,
@@ -163,9 +164,23 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <param name="identity">The identity</param>
         public async Task AssignIdentity2Device(Admin admin, Device device, Identity identity)
         {
-            identity.LastModfiedAdmin = admin;
-            device.LastModfiedAdmin = admin;
+            identity.LastModifiedAdmin = admin;
+            device.LastModifiedAdmin = admin;
             identity.Devices.Add(device);
+            await context.SaveChangesAsync();
+        }
+        /// <summary>
+        /// This function will assign a givan Identity to a given Mobile
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="mobile"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public async Task AssignIdentity2Mobile(Admin admin, Mobile mobile, Identity identity)
+        {
+            identity.LastModifiedAdmin = admin;
+            mobile.LastModifiedAdmin = admin;
+            identity.Mobiles.Add(mobile);
             await context.SaveChangesAsync();
         }
         /// <summary>

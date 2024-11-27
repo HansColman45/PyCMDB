@@ -10,17 +10,19 @@ using Table = TechTalk.SpecFlow.Table;
 namespace CMDB.UI.Specflow.StepDefinitions
 {
     [Binding]
-    public class IdentityStepDefinitions: TestBase
+    public class IdentityStepDefinitions : TestBase
     {
         private IdentityCreator identityCreator;
         private IdentityUpdator identityUpdator;
         private IdentityDeviceActor identityDeviceActor;
         private IdentityAccountActor identityAccountActor;
+        private IdentityMobileActor identityMobileActor;
 
         private Helpers.Identity iden;
         private Identity Identity;
         private Device _Device;
         private Account Account;
+        private Mobile Mobile;
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
@@ -67,7 +69,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = identityUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
-            identityUpdator.OpenIdentityOverviewPage(); 
+            identityUpdator.OpenIdentityOverviewPage();
         }
         [When(@"I want to update (.*) with (.*)")]
         public async Task WhenIWantToUpdateFirstNameWithTestje(string field, string newValue)
@@ -201,13 +203,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task GivenTheDeviceIsAssignedToTheIdentity(string device)
         {
             log.Debug($"Will assign the {device} to the Identity");
-            await identityDeviceActor.AssignDevice2Identity(_Device,Identity);
+            await identityDeviceActor.AssignDevice2Identity(_Device, Identity);
         }
         [When(@"I release the (.*) from the Identity")]
         public void WhenIReleaseTheDeviceFromTheIdentity(string device)
         {
             log.Debug($"We will release the {device} from the Identity {Identity.Name}");
-            identityDeviceActor.DoReleaseDeviceFromIdentity(_Device,Identity);
+            identityDeviceActor.DoReleaseDeviceFromIdentity(_Device, Identity);
         }
         [When(@"I fill in the release form for my Identity")]
         public void WhenIFillInTheReleaseFormForMyIdentity()
@@ -246,7 +248,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I assign the Account to my Identity")]
         public void WhenIAssignTheAccountToMyIdentity()
         {
-            identityAccountActor.AssignIdentity2Account(Identity,Account);
+            identityAccountActor.AssignIdentity2Account(Identity, Account);
         }
         [When(@"I fill in the assignform")]
         public void WhenIFillInTheAssignform()
@@ -264,12 +266,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [Given(@"The Identity is assigned to the account as well")]
         public async Task GivenTheIdentityIsAssignedToTheAccountAsWell()
         {
-            await identityAccountActor.AssignAccount(Identity,Account);
+            await identityAccountActor.AssignAccount(Identity, Account);
         }
         [When(@"I release the Identity from the account")]
         public void WhenIReleaseTheIdentityFromTheAccount()
         {
-            identityAccountActor.ReleaseAccount(Identity,Account);
+            identityAccountActor.ReleaseAccount(Identity, Account);
         }
         [Then(@"The Identity is released from the account")]
         public void ThenTheIdentityIsReleasedFromTheAccount()
@@ -277,6 +279,65 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityAccountActor.Search(Identity.UserID);
             var lastLogLine = identityAccountActor.IdentityLastLogLine;
             identityAccountActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region Assign Mobile
+        [Given(@"There is an Identity existing in the system")]
+        public async Task TheIdentityIsExisiting()
+        {
+            identityMobileActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(identityMobileActor);
+            Admin = await identityMobileActor.CreateNewAdmin();
+            Identity = await identityMobileActor.CreateNewIdentity();
+            identityMobileActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = identityMobileActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            identityMobileActor.OpenIdentityOverviewPage();
+            identityMobileActor.Search(Identity.UserID);
+        }
+        
+        [Given(@"The mobile is exisiting as well")]
+        public async Task TheMobileIsExisting()
+        {
+            Mobile = await identityMobileActor.CreateNewMobile();
+        }
+        [When(@"I assign the mobile to the Identity")]
+        public void IAssignTheMobile()
+        {
+            identityMobileActor.AssignMobile2Identity(Identity,Mobile);
+        }
+        [When(@"I fill in the assignform for my identity")]
+        public void IFillInTheAssignForm()
+        {
+            identityMobileActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The mobile is assigned to the Identity")]
+        public void TheMobileIsAssignedToIdentity()
+        {
+            identityMobileActor.Search(Identity.UserID);
+            string lastLogLine = identityAccountActor.IdentityLastLogLine;
+            identityMobileActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region Release mobile
+        [Given(@"The mobile is assigned to my identity")]
+        public async Task GivenTheMobileIsAssignedToMyIdentity()
+        {
+            await identityMobileActor.AssignMobile(Identity,Mobile);
+        }
+
+        [When(@"I relase the mobile from my identity")]
+        public void WhenIRelaseTheMobileFromMyIdentity()
+        {
+            identityMobileActor.ReleaseMobile(Identity, Mobile);
+        }
+
+        [Then(@"The mobile is released")]
+        public void ThenTheMobileIsReleased()
+        {
+            identityMobileActor.Search(Identity.UserID);
+            string lastLogLine = identityAccountActor.IdentityLastLogLine;
+            identityMobileActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
     }

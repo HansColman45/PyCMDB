@@ -9,8 +9,6 @@ namespace CMDB.Testing.Builders.EntityBuilders
             SetDefaultRules((f, a) =>
             {
                 a.UserID = f.Person.UserName;
-                a.Type = new AccountTypeBuilder().Build();
-                a.Application = new ApplicationBuilder().Build();
             });
         }
     }

@@ -27,7 +27,7 @@ namespace CMDB.Services
         }
         public async Task<ICollection<SubscriptionTypeDTO>> ListAll(string searchString)
         {
-            BaseUrl = _url + $"api/SubscriptionType/GetAll";
+            BaseUrl = _url + $"api/SubscriptionType/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)

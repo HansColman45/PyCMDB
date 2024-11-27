@@ -4,11 +4,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>disable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Bright.ScreenPlay" Version="2.0.10" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageReference Include="SpecFlow" Version="3.9.74" />
     <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
     <PackageReference Include="SpecFlow.MsTest" Version="3.9.74" />
@@ -28,6 +29,7 @@
     <Folder Include="Features\Laptop\" />
     <Folder Include="Features\Mobile\" />
     <Folder Include="Features\Monitor\" />
+    <Folder Include="Features\SubscriptionType\" />
     <Folder Include="Features\Token\" />
     <Folder Include="Screenshots\" />
   </ItemGroup>

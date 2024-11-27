@@ -77,9 +77,23 @@ Scenario: I want to assign an account to an exising Identity
 	And I fill in the assignform
 	Then The Account is assigned to my Identity
 
-Scenario: I want to release an account to an existing Identity
+Scenario: I want to release an account from an existing Identity
 	Given There is an active Identity existing in the system
 	And an Account as well
 	And The Identity is assigned to the account as well
 	When I release the Identity from the account
 	Then The Identity is released from the account
+
+Scenario: I want to assign a Mobile to an existing Identity
+	Given There is an Identity existing in the system
+	And The mobile is exisiting as well
+	When I assign the mobile to the Identity
+	And I fill in the assignform for my identity
+	Then The mobile is assigned to the Identity
+
+Scenario: I want to release a mobile from an exising Idenity
+	Given There is an Identity existing in the system
+	And The mobile is exisiting as well
+	And The mobile is assigned to my identity
+	When I relase the mobile from my identity
+	Then The mobile is released

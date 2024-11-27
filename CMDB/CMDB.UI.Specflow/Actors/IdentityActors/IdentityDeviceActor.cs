@@ -1,7 +1,4 @@
-﻿
-
-
-using CMDB.Domain.Entities;
+﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
