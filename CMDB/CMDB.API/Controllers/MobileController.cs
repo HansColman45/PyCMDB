@@ -170,5 +170,51 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.MobileRepository.ListAllFreeMobiles());
         }
+        [HttpPost("AssignIdentity"),  Authorize]
+        public async Task<IActionResult> AssignIdenity(AssignMobileRequest assignRequest)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignIdenity"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var idenity = await _uow.IdentityRepository.GetById(assignRequest.IdentityId);
+            if (idenity is null)
+                return BadRequest();
+            await _uow.MobileRepository.AssignIdentity(assignRequest);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseIdentity"), Authorize]
+        public async Task<IActionResult> ReleaseIdentity(AssignMobileRequest assignRequest)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseIdentity"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var idenity = await _uow.IdentityRepository.GetById(assignRequest.IdentityId);
+            if (idenity is null)
+                return BadRequest();
+            await _uow.MobileRepository.ReleaseIdentity(assignRequest);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

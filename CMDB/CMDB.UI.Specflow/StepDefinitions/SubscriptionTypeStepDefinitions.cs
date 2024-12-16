@@ -27,6 +27,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             SubscriptionTypeCreator.DoLogin(Admin.Account.UserID, "1234");
             var result = SubscriptionTypeCreator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
+            SubscriptionTypeCreator.OpenSubscriptionTypeOverviewPage();
         }
         [When(@"I save the subscriptiontype")]
         public void ISaveSubscription()
@@ -46,8 +47,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             SubscriptionTypeUpdator = new(ScenarioContext);
             ActorRegistry.RegisterActor(SubscriptionTypeUpdator);
-            SubscriptionType = await SubscriptionTypeUpdator.CreateNewSubscriptionType();
             Admin = await SubscriptionTypeUpdator.CreateNewAdmin();
+            SubscriptionType = await SubscriptionTypeUpdator.CreateNewSubscriptionType();
             SubscriptionTypeUpdator.DoLogin(Admin.Account.UserID, "1234");
             var result = SubscriptionTypeUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -84,7 +85,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         #endregion
         #region Activate an inactive Type
         [Given(@"There is an inactive subscriptiontype existing")]
-        public async void ThereIsAnInactiveType()
+        public async Task ThereIsAnInactiveType()
         {
             SubscriptionTypeUpdator = new(ScenarioContext);
             ActorRegistry.RegisterActor(SubscriptionTypeUpdator);

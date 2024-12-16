@@ -461,7 +461,8 @@ namespace CMDB.API.Services
                 .ToListAsync();
             identity.Mobiles = await _context.Mobiles.AsNoTracking()
                 .Include(x => x.Subscriptions).AsNoTracking()
-                .Include(x => x.MobileType).AsNoTracking()
+                .Include(x => x.MobileType)
+                .ThenInclude(x => x.Category)
                 .Include(x => x.Identity).AsNoTracking()
                 .Where(x => x.Identity.IdenId == identity.IdenId)
                 .Select(x => MobileRepository.ConvertMobile(x))

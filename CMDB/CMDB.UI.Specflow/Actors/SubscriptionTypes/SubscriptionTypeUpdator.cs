@@ -65,7 +65,7 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
         }
         public void DeactivateType(SubscriptionType subscriptionType, string reason)
         {
-            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"{subscriptionType.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", admin.Account.UserID,reason,Table);
+            ExpectedLog = GenericLogLineCreator.DeleteLogLine($"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", admin.Account.UserID,reason,Table);
             var page = Perform(new OpenTheSubscriptionTypeDeactivatePage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
@@ -76,7 +76,7 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
         }
         public void ActivateType(SubscriptionType subscriptionType) 
         {
-            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"{subscriptionType.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.ActivateLogLine($"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", admin.Account.UserID, Table);
             var page = GetAbility<SubscriptionTypeOverviewPage>();
             page.Activate();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Activated");

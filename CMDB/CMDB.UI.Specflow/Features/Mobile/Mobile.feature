@@ -28,3 +28,17 @@ Scenario: I want to activate an inactive Mobile
 	Given There is an inactive mobile existing in the system
 	When I activate the mobile
 	Then The mobile is actice again
+
+Scenario: I want to assign an Idenitity to an existing Mobile
+	Given There is an active mobile in the system
+	And The Identity to assign to my mobile exists as well
+	When I want to assign that Identity to my mobile
+	And I fill in thee assign form
+	Then The identity is assigned to my mobile
+
+Scenario: I want to release an Idenitity from an existing Mobile
+	Given There is an active mobile in the system
+	And The Identity to assign to my mobile exists as well
+	And The Identity is assigned to my mobile
+	When I release the Identity from my mobile
+	Then The identity is released from my mobile

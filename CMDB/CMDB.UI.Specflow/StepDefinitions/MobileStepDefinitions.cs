@@ -10,9 +10,11 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         private MobileCreator mobileCreator;
         private MobileUpdator mobileUpdator;
+        private MobileIdentityActor mobileIdentityActor;
 
         private Helpers.Mobile mobile;
         private Mobile Mobile;
+        private Identity Identity;
 
         public MobileStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
@@ -98,6 +100,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
             bool result = mobileUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
             mobileUpdator.OpenMobileOverviewPage();
+            mobileUpdator.Search(Mobile.IMEI.ToString());
         }
         [When(@"I activate the mobile")]
         public void WhenIActivateTheMobile()
@@ -110,6 +113,63 @@ namespace CMDB.UI.Specflow.StepDefinitions
             mobileUpdator.Search(Mobile.IMEI.ToString());
             string lastLogLine = mobileUpdator.GetLastMobileLogLine;
             lastLogLine.Should().BeEquivalentTo(mobileUpdator.ExpectedLog);
+        }
+        #endregion
+        #region Assign and Relkease Iden
+        [Given(@"There is an active mobile in the system")]
+        public async Task GivenThereIsAnActiveMobileInTheSystem()
+        {
+            mobileIdentityActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(mobileIdentityActor);
+            Admin = await mobileIdentityActor.CreateNewAdmin();
+            Mobile = await mobileIdentityActor.CreateMobile();
+            mobileIdentityActor.DoLogin(Admin.Account.UserID,"1234");
+            bool resilt = mobileIdentityActor.Perform(new IsTheUserLoggedIn());
+            resilt.Should().BeTrue();
+            mobileIdentityActor.OpenMobileOverviewPage();
+            mobileIdentityActor.Search(Mobile.IMEI.ToString());
+        }
+
+        [Given(@"The Identity to assign to my mobile exists as well")]
+        public async Task GivenTheIdentityToAssignToMyMobileExistsAsWell()
+        {
+            Identity = await mobileIdentityActor.CreateNewIdentity();
+        }
+
+        [When(@"I want to assign that Identity to my mobile")]
+        public void WhenIWantToAssignThatIdentityToMyMobile()
+        {
+            mobileIdentityActor.AssignMobile2Identity(Mobile,Identity);
+        }
+        [When(@"I fill in thee assign form")]
+        public void WhenIFillInTheeAssignForm()
+        {
+            mobileIdentityActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The identity is assigned to my mobile")]
+        public void ThenTheIdentityIsAssignedToMyMobile()
+        {
+            mobileIdentityActor.Search(Mobile.IMEI.ToString());
+            string lastLogLine = mobileIdentityActor.GetLastMobileLogLine;
+            mobileIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+
+        [Given(@"The Identity is assigned to my mobile")]
+        public async Task GivenTheIdentityIsAssignedToMyMobile()
+        {
+            await mobileIdentityActor.AssignIdentity(Mobile,Identity);
+        }
+        [When(@"I release the Identity from my mobile")]
+        public void WhenIReleaseTheIdentityFromMyMobile()
+        {
+            mobileIdentityActor.ReleaseIdentity(Mobile, Identity);
+        }
+        [Then(@"The identity is released from my mobile")]
+        public void ThenTheIdentityIsReleasedFromMyMobile()
+        {
+            mobileIdentityActor.Search(Mobile.IMEI.ToString());
+            string lastLogLine = mobileIdentityActor.GetLastMobileLogLine;
+            mobileIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
     }

@@ -1,16 +1,11 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System;
-using System.Text;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.Requests;
+using CMDB.Infrastructure;
+using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using CMDB.API.Models;
-using CMDB.Domain.CustomExeptions;
-using CMDB.Util;
 
 namespace CMDB.Services
 {
@@ -41,7 +36,7 @@ namespace CMDB.Services
         }
         public async Task CreateNew(MobileDTO mobile)
         {
-            string value = $"{mobile.Category.Category} with type {mobile.MobileType}";
+            string value = $"{mobile.MobileType.AssetCategory.Category} with type {mobile.MobileType}";
             BaseUrl = _url + $"api/Mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
@@ -86,23 +81,19 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public bool IsMobileExisting(MobileDTO mobile, long? imei = null)
+        public async Task<bool> IsMobileExisting(MobileDTO mobile, long? imei = null)
         {
             bool result = false;
-            /*if (imei != null && mobile.IMEI != imei)
+            if (imei is not null)
+                mobile.IMEI = (long)imei;
+
+            BaseUrl = _url + $"api/Mobile/IsMobileExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                var mobiles = _context.Mobiles.Where(x => x.IMEI == imei).ToList();
-                if (mobiles.Count > 0)
-                    result = true;
+                return await response.Content.ReadAsJsonAsync<bool>();
             }
-            else if (imei != null && mobile.IMEI == imei)
-                result = false;
-            else
-            {
-                var mobiles = _context.Mobiles.Where(x => x.IMEI == mobile.IMEI).ToList();
-                if (mobiles.Count > 0)
-                    result = true;
-            }*/
             return result;
         }
         public async Task<MobileDTO> GetMobileById(int id)
@@ -143,7 +134,7 @@ namespace CMDB.Services
         }
         public bool IsDeviceFree(MobileDTO mobile, bool checkSub = false)
         {
-            bool result = false;
+            bool result = true;
            /* if (!checkSub) { 
                 var mobiles = _context.Mobiles.Where(x => x.MobileId == mobile.MobileId).First();
                 if (mobiles.Identity is null || mobiles.MobileId == 1)
@@ -161,23 +152,29 @@ namespace CMDB.Services
         }
         public async Task AssignIdentity2Mobile(MobileDTO mobile, IdentityDTO identity)
         {
-            mobile.Identity = identity;
-            /*identity.LastModfiedAdmin = Admin;
-            mobile.LastModfiedAdmin = Admin;
-            identity.Mobiles.Add(mobile);
-            await _context.SaveChangesAsync();
-            await LogAssignMobile2Identity("identity",mobile,identity);
-            await LogAssignIdentity2Mobile(table, identity, mobile);*/
+            AssignMobileRequest assignRequest = new()
+            {
+                IdentityId = identity.IdenId,
+                MobileIds = [mobile.MobileId]
+            };
+            BaseUrl = _url + $"api/Mobile/AssignIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl,assignRequest);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task ReleaseIdenity(MobileDTO mobile)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            mobile.LastModfiedAdmin = Admin;
-            identity.Mobiles.Remove(mobile);
-            mobile.Identity = null;
-            await _context.SaveChangesAsync();
-            await LogReleaseMobileFromIdenity(table,mobile,identity);
-            await LogReleaseIdentityFromMobile("identity", identity, mobile);*/
+            AssignMobileRequest assignRequest = new()
+            {
+                IdentityId = mobile.Identity.IdenId,
+                MobileIds = [mobile.MobileId]
+            };
+            BaseUrl = _url + $"api/Mobile/ReleaseIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, assignRequest);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListFreeMobileSubscriptions()
         {
@@ -206,7 +203,7 @@ namespace CMDB.Services
             await LogAssignMobile2Subscription("mobile",subscription,mobile);*/
         }
 
-        public async Task<SubscriptionDTO?> GetSubribtion(int id)
+        public async Task<SubscriptionDTO> GetSubribtion(int id)
         {
             BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
             _Client.SetBearerToken(TokenStore.Token);

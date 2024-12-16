@@ -169,6 +169,16 @@ namespace CMDB.Testing.Helpers
                     Data.Add("Token" + tokens.IndexOf(token).ToString(), token);
                     await TokenHelper.Delete(context, token);
                 }
+                //mobiles
+                var mobiles = context.Mobiles
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var mobile in mobiles)
+                {
+                    Data.Add("Mobile"+mobiles.IndexOf(mobile).ToString(),mobile);
+                    await MobileHelper.Delete(context, mobile);
+                }
                 //IdenAccount
                 var idenAccs = context.IdenAccounts
                     .Where(x => x.LastModifiedAdminId == admin.AdminId)

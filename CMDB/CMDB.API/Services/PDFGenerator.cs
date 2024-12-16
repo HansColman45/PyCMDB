@@ -10,7 +10,7 @@ namespace CMDB.API.Services
     public class PDFGenerator : IDocument
     {
         private List<DeviceDTO> devices = new();
-        private List<Mobile> mobiles = new();
+        private List<MobileDTO> mobiles = new();
         private List<IdenAccount> accounts = new();
         private List<Subscription> subscriptions = new();
         private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
@@ -71,7 +71,7 @@ namespace CMDB.API.Services
         /// 
         /// </summary>
         /// <param name="mobile"></param>
-        public void SetMobileInfo(Mobile mobile)
+        public void SetMobileInfo(MobileDTO mobile)
         {
             mobiles.Add(mobile);
         }
@@ -635,7 +635,7 @@ namespace CMDB.API.Services
                 });
                 foreach (var mobile in mobiles)
                 {
-                    table.Cell().Element(Style).Text(mobile.Category.Category).Style(defaultStyle);
+                    table.Cell().Element(Style).Text("Mobile").Style(defaultStyle);
                     table.Cell().Element(Style).Text($"{mobile.MobileType}").Style(defaultStyle);
                     table.Cell().Element(Style).Text($"{mobile.IMEI}").Style(defaultStyle);
                     IContainer Style(IContainer container)

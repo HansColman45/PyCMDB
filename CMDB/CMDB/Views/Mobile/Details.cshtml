@@ -42,7 +42,7 @@
                         <td class="small">@Model.Identity.UserID</td>
                         @if ((bool)ViewData["ReleaseIdentity"] && Model.Identity.IdenId > 1)
                         {
-                            <td><a class="btn btn-danger" asp-action="ReleaseIdentity" asp-route-id="@Model.MobileId" asp-route-idenid="@Model.Identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                            <td><a class="btn btn-danger" href="\Mobile\ReleaseIdentity\@Model.MobileId\@Model.Identity.IdenId" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                         }
                     </tr>
                 </tbody>
@@ -77,7 +77,7 @@
                             <td class="small">@item.PhoneNumber</td>
                             @if ((bool)ViewData["ReleaseSubscription"])
                             {
-                                <td><a class="btn btn-danger" asp-action="ReleaseSubscription" asp-route-id="@Model.MobileId" asp-route-subid="@item.SubscriptionId" id="ReleaseSubscription" data-toggle="tooltip" data-placement="top" title="Release Subscription"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                <td><a class="btn btn-danger" href="\Mobile\ReleaseSubscription\@Model.MobileId\@item.SubscriptionId" id="ReleaseSubscription" data-toggle="tooltip" data-placement="top" title="Release Subscription"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                             }
                         </tr>
                     }

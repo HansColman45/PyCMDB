@@ -33,6 +33,15 @@ namespace CMDB.Testing.Helpers.Devices
                 await context.SaveChangesAsync();
             }
             return mobile; 
-        } 
+        }
+        public async static Task Delete(CMDBContext context, Mobile mobile)
+        {
+            foreach (var log in mobile.Logs)
+            {
+                context.Remove(log);
+            }
+            context.Remove(mobile);
+            await context.SaveChangesAsync();
+        }
     }
 }

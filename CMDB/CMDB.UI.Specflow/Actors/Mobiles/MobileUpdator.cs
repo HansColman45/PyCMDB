@@ -42,7 +42,7 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
                     page = Perform(new OpenTheMobileEditPage());
                     page.WebDriver = Driver;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, $"{mobile.MobileType}", value, admin.Account.UserID, Table);
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine("MobileType", $"{mobile.MobileType}", value, admin.Account.UserID, Table);
                     page.Type = assetType.TypeID.ToString();
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_type");
                     mobile.MobileType = assetType;

@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -52,7 +53,7 @@ namespace CMDB.Controllers
                 ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["AssignSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignSubscription");
-                ViewData["actionUrl"] = @"\Laptop\Search";
+                ViewData["actionUrl"] = @"\Mobile\Search";
                 ViewData["Controller"] = @"\Mobile\Create";
                 return View(mobiles);
             }
@@ -79,9 +80,10 @@ namespace CMDB.Controllers
                     mobile.IMEI = Convert.ToInt64(values["IMEI"]);
                     int Type = Convert.ToInt32(values["MobileType"]);
                     var AssetType = await service.ListAssetTypeById(Type);
+                    var identity = await service.GetIdentity(1);
                     mobile.MobileType = AssetType;
-                    mobile.Category = AssetType.AssetCategory;
-                    if(service.IsMobileExisting(mobile))
+                    mobile.Identity = identity;
+                    if(await service.IsMobileExisting(mobile))
                         ModelState.AddModelError("", "Mobile already exist");
                     if (ModelState.IsValid)
                     {
@@ -102,7 +104,7 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobile = service.GetMobileById((int)id);
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug($"Using details in {Table}");
@@ -140,7 +142,7 @@ namespace CMDB.Controllers
                 long newImei = Convert.ToInt64(values["IMEI"]);
                 int Type = Convert.ToInt32(values["MobileType.TypeID"]);
                 var AssetType = await service.ListAssetTypeById(Type);
-                if (service.IsMobileExisting(mobile, newImei))
+                if (await service.IsMobileExisting(mobile, newImei))
                     ModelState.AddModelError("", "Mobile already exist");
                 try
                 {
@@ -182,21 +184,19 @@ namespace CMDB.Controllers
                     {
                         if (mobile.Identity.IdenId > 1)
                         {
-                            /*PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = mobile.Identity.Name,
-                                UserID = mobile.Identity.UserID,
-                                FirstName = mobile.Identity.FirstName,
-                                LastName = mobile.Identity.LastName,
-                                Language = mobile.Identity.Language.Code,
-                                Receiver = mobile.Identity.Name
-                            };
-                            PDFGenerator.SetMobileInfo(mobile);
-                            string pdfFile = PDFGenerator.GeneratePath(_env);
-                            PDFGenerator.GeneratePdf(pdfFile);
-                            await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
+                            var admin = await service.Admin();
+                            await _PDFService.SetUserinfo(
+                                UserId: mobile.Identity.UserID,
+                                ITEmployee:admin.Account.UserID,
+                                Singer: mobile.Identity.Name,
+                                FirstName:mobile.Identity.FirstName,
+                                LastName:mobile.Identity.LastName,
+                                Receiver: mobile.Identity.Name,
+                                Language: mobile.Identity.Language.Code,
+                                "Release");
+                            await _PDFService.SetMobileInfo(mobile);
+                            await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                            await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                             await service.ReleaseIdenity(mobile);
                         }
                         await service.Deactivate(mobile, reason);
@@ -304,22 +304,18 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        /*PDFGenerator PDFGenerator = new()
-                        {
-                            ITEmployee = ITPerson,
-                            Singer = Employee,
-                            UserID = identity.UserID,
-                            FirstName = identity.FirstName,
-                            LastName = identity.LastName,
-                            Language = identity.Language.Code,
-                            Receiver = identity.Name,
-                            Type = "Release"
-                        };
-                        PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = PDFGenerator.GeneratePath(_env);
-                        PDFGenerator.GeneratePdf(pdfFile);
-                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
+                        await _PDFService.SetUserinfo(
+                            UserId: mobile.Identity.UserID,
+                            ITEmployee: admin.Account.UserID,
+                            Singer: mobile.Identity.Name,
+                            FirstName: mobile.Identity.FirstName,
+                            LastName: mobile.Identity.LastName,
+                            Receiver: mobile.Identity.Name,
+                            Language: mobile.Identity.Language.Code,
+                            "Release");
+                        await _PDFService.SetMobileInfo(mobile);
+                        await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                        await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                         await service.ReleaseIdenity(mobile);
                         return RedirectToAction(nameof(Index));
                     }
@@ -393,20 +389,17 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
                     if (mobile.Identity != null) {
-                        /*PDFGenerator _PDFGenerator = new()
-                        {
-                            ITEmployee = ITPerson,
-                            Singer = Employee,
-                            UserID = mobile.Identity.UserID,
-                            FirstName = mobile.Identity.FirstName,
-                            LastName = mobile.Identity.LastName,
-                            Language = mobile.Identity.Language.Code,
-                            Receiver = mobile.Identity.Name
-                        };
-                        _PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = _PDFGenerator.GeneratePath(_env);
-                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);*/
+                        await _PDFService.SetUserinfo(
+                            UserId: mobile.Identity.UserID,
+                            ITEmployee: admin.Account.UserID,
+                            Singer: mobile.Identity.Name,
+                            FirstName: mobile.Identity.FirstName,
+                            LastName: mobile.Identity.LastName,
+                            Receiver: mobile.Identity.Name,
+                            Language: mobile.Identity.Language.Code);
+                        await _PDFService.SetMobileInfo(mobile);
+                        await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                        await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                     }
                     else if (mobile.Subscriptions.Count > 0)
                     {

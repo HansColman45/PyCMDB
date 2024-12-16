@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.SubscriptionType
         }
         public string Category
         {
-            set => SelectTektInDropDownByXpath("//select[@id='Category']", value);
+            set => SelectTektInDropDownByXpath("//select[@id='AssetCategory']", value);
         }
         public string Provider
         {

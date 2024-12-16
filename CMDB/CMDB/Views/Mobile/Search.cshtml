@@ -33,11 +33,15 @@
                         }
                         else if ((bool)ViewData["ActiveAccess"])
                         {
-                            <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                            <a class="btn btn-glyphicon" href="\Mobile\Activate\@item.MobileId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
                         @if (item.Active == 1 && (item.Identity is null || item.Identity.IdenId == 1) && (bool)ViewData["AssignIdentity"])
                         {
-                            <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
+                            <a class="btn btn-success" href="\Mobile\AssignIdentity\@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
+                        }
+                        @if (item.Active == 1 && (bool)ViewData["AssignSubscription"])
+                        {
+                            <a class="btn btn-success" href="\Mobile\AssignSubscription\@item.MobileId" data-toggle="tooltip" data-placement="top" title="Assign Subscription"><span class="@ViewBag.SubscriptionIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

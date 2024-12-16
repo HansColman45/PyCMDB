@@ -41,7 +41,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpPost("AddMobileInfo"), Authorize]
-        public IActionResult AddMobileInfo(Mobile mobile) 
+        public IActionResult AddMobileInfo(MobileDTO mobile) 
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
