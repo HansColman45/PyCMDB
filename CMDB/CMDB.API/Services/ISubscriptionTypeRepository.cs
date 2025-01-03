@@ -11,5 +11,6 @@ namespace CMDB.API.Services
         Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionDTO);
         Task<SubscriptionTypeDTO> Deactivate(SubscriptionTypeDTO subscriptionDTO, string reason);
         Task<SubscriptionTypeDTO> Activate(SubscriptionTypeDTO subscriptionDTO);
+        Task<bool> IsExisting(SubscriptionTypeDTO subscriptionType);
     }
 }

@@ -216,5 +216,23 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpPost("IsExisting"),Authorize]
+        public async Task<IActionResult> IsExisting(MobileDTO mobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.MobileRepository.IsMobileExisting(mobile));
+        }
     }
 }

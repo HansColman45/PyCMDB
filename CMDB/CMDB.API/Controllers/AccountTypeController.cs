@@ -182,12 +182,21 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
-        [HttpPost("IsTypeExisting"), Authorize]
-        public async Task<IActionResult> IsTypeExisting(TypeDTO type)
+        [HttpPost("IsExisting"), Authorize]
+        public async Task<IActionResult> IsExisting(TypeDTO type)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
             return Ok(await _uow.AccountTypeRepository.IsExisitng(type));
         }

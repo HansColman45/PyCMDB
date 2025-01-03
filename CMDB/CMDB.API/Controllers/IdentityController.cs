@@ -218,7 +218,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.ListAllFreeIdentities());
         }
-        [HttpPost("IsIdentityExisting"), Authorize]
+        [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsIdentityExisting(IdentityDTO identity)
         {
             // Retrieve userId from the claims

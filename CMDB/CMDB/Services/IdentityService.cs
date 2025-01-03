@@ -166,7 +166,7 @@ namespace CMDB.Services
         public async Task<bool> IsExisting(IdentityDTO identity, string UserID = "")
         {
             bool result = false;
-            BaseUrl = _url + "api/Identity/IsIdentityExisting";
+            BaseUrl = _url + "api/Identity/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             if(!string.IsNullOrEmpty(UserID))
                 identity.UserID = UserID;

@@ -76,7 +76,7 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task SetSubscriptionInfo(Subscription subscription)
+        public async Task SetSubscriptionInfo(SubscriptionDTO subscription)
         {
             BaseUrl = _url + path + "/AddSubscriptionInfo";
             _Client.SetBearerToken(TokenStore.Token);

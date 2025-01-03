@@ -39,9 +39,9 @@ namespace CMDB.API.Services
                 .Where(x => x.Id == id)
                 .Select(x => ConvertType(x))
                 .FirstOrDefaultAsync();
-            if(types is not null)
+            if (types is not null)
             {
-                GetLogs(table,id,types);
+                GetLogs(table, id, types);
             }
             return types;
         }
@@ -68,9 +68,9 @@ namespace CMDB.API.Services
         public async Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
-            if(string.Compare(type.Type,subscriptionTypeDTO.Type) != 0)
+            if (string.Compare(type.Type, subscriptionTypeDTO.Type) != 0)
             {
-                var logText = GenericLogLineCreator.UpdateLogLine("Type",type.Type,subscriptionTypeDTO.Type,TokenStore.Admin.Account.UserID,table);
+                var logText = GenericLogLineCreator.UpdateLogLine("Type", type.Type, subscriptionTypeDTO.Type, TokenStore.Admin.Account.UserID, table);
                 type.Type = subscriptionTypeDTO.Type;
                 type.LastModifiedAdminId = TokenStore.AdminId;
                 type.Logs.Add(new()
@@ -79,7 +79,7 @@ namespace CMDB.API.Services
                     LogDate = DateTime.Now,
                 });
             }
-            if (string.Compare(type.Provider, subscriptionTypeDTO.Provider) != 0) 
+            if (string.Compare(type.Provider, subscriptionTypeDTO.Provider) != 0)
             {
                 var logText = GenericLogLineCreator.UpdateLogLine("Provider", type.Provider, subscriptionTypeDTO.Provider, TokenStore.Admin.Account.UserID, table);
                 type.Provider = subscriptionTypeDTO.Provider;
@@ -90,7 +90,7 @@ namespace CMDB.API.Services
                     LogDate = DateTime.Now,
                 });
             }
-            if(string.Compare(type.Description,subscriptionTypeDTO.Description) != 0)
+            if (string.Compare(type.Description, subscriptionTypeDTO.Description) != 0)
             {
                 var logText = GenericLogLineCreator.UpdateLogLine("Description", type.Description, subscriptionTypeDTO.Description, TokenStore.Admin.Account.UserID, table);
                 type.Description = subscriptionTypeDTO.Description;
@@ -112,7 +112,7 @@ namespace CMDB.API.Services
             type.LastModifiedAdminId = TokenStore.AdminId;
             type.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.DeleteLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason,table),
+                LogText = GenericLogLineCreator.DeleteLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason, table),
                 LogDate = DateTime.Now
             });
             _context.SubscriptionTypes.Update(type);
@@ -126,11 +126,36 @@ namespace CMDB.API.Services
             type.LastModifiedAdminId = TokenStore.AdminId;
             type.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ActivateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}",TokenStore.Admin.Account.UserID,table),
+                LogText = GenericLogLineCreator.ActivateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, table),
                 LogDate = DateTime.Now
             });
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
+        }
+        public async Task<bool> IsExisting(SubscriptionTypeDTO subscriptionType)
+        {
+            var type = await GetSubscriptionType(subscriptionType.Id);
+            if (type is null)
+            {
+                var types = _context.SubscriptionTypes.Where(x => x.Type == subscriptionType.Type && x.Provider == subscriptionType.Provider).ToList();
+                if (types.Count >0)
+                    return true;
+                else 
+                    return false;
+            }
+            else
+            {
+                if(string.Compare(type.Type,subscriptionType.Type) !=0 && string.Compare(type.Provider,subscriptionType.Provider) != 0)
+                {
+                    var types = _context.SubscriptionTypes.Where(x => x.Type == subscriptionType.Type && x.Provider == subscriptionType.Provider).ToList();
+                    if (types.Count > 0)
+                        return true;
+                    else
+                        return false;
+                }
+                else
+                    return false;
+            }
         }
 
         public static SubscriptionTypeDTO ConvertType(SubscriptionType subscriptionType)
@@ -155,6 +180,7 @@ namespace CMDB.API.Services
                 }
             };
         }
+
         private async Task<SubscriptionType> GetSubscriptionType(int id)
         {
             return await _context.SubscriptionTypes.FirstAsync(x => x.Id == id);

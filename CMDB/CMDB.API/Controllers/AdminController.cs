@@ -70,7 +70,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            if (_uow.AdminRepository.IsExisting(admin))
+            if (await _uow.AdminRepository.IsExisting(admin))
             {
                 ModelState.AddModelError("AdminExisist", "Admin is already existing");
                 return BadRequest(ModelState);
@@ -130,6 +130,23 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             int level = Int32.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value);
             return Ok(await _uow.AdminRepository.HasAdminAccess(request));
+        }
+        [HttpPost("IsExisting"), Authorize]
+        public async Task<IActionResult> IsExisting(Admin admin)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.AdminRepository.IsExisting(admin));
         }
     }
 }

@@ -14,16 +14,10 @@ namespace CMDB.API.Services
         {
             _jwtService = jwtService;
         }
-        public bool IsExisting(Admin admin)
+        public async Task<bool> IsExisting(Admin admin)
         {
             bool result = false;
-            var admins = _context.Admins.AsNoTracking()
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Type).AsNoTracking()
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Application).AsNoTracking();
-            if (admins.Any())
-                result = true;
+            admin = await GetAdminByID(admin.AdminId);
             return result;
         }
         public Admin Add(Admin entity)

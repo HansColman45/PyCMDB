@@ -52,7 +52,7 @@ namespace CMDB.API.Services
         }
         public async Task LogPdfFile(string pdfFile, int id)
         {
-            Identity iden = await _context.Identities.Where(x => x.IdenId == id).FirstAsync();
+            Identity iden = await TrackedIden(id);
             iden.Logs.Add(new()
             {
                 LogDate = DateTime.Now,

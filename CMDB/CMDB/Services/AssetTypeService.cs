@@ -91,7 +91,7 @@ namespace CMDB.Services
                 assetType.Vendor = Vendor;
             if(!string.IsNullOrEmpty(type))
                 assetType.Type = type;
-            BaseUrl = _url + $"api/AssetType/IsTypeExisting";
+            BaseUrl = _url + $"api/AssetType/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, assetType);
             if (response.IsSuccessStatusCode)

@@ -112,5 +112,63 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(subscription);
         }
+        [HttpPost("Activate"),Authorize]
+        public async Task<IActionResult> Activate(SubscriptionDTO subscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Activate"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            subscription = await _uow.SubscriptionRepository.Activate(subscription);
+            await _uow.SaveChangesAsync();
+            return Ok(subscription);
+        }
+        [HttpPut,Authorize]
+        public async Task<IActionResult> Update(SubscriptionDTO subscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Edit"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            subscription = await _uow.SubscriptionRepository.Update(subscription);
+            await _uow.SaveChangesAsync();
+            return Ok(subscription);
+        }
+        [HttpPost("IsExisting"),Authorize]
+        public async Task<IActionResult> IsExisting(SubscriptionDTO subscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.SubscriptionRepository.IsExisting(subscription));
+        }
     }
 }

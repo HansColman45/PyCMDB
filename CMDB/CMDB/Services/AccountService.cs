@@ -113,7 +113,7 @@ namespace CMDB.Services
         public async Task<bool> IsAccountExisting(AccountDTO account, string userID = "", int application = 0, int type = 0)
         {
             bool result = false;
-            BaseUrl = _url + $"api/Account/IsAccountExisting";
+            BaseUrl = _url + $"api/Account/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var dto = await SetDTO(account, userID, application, type);
             var response = await _Client.PostAsJsonAsync(BaseUrl,dto);

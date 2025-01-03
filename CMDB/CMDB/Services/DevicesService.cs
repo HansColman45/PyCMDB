@@ -124,7 +124,7 @@ namespace CMDB.Services
         public async Task<bool> IsDeviceExisting(DeviceDTO device) 
         {
             bool result = false;
-            BaseUrl = _url + $"api/Device/IsDeviceExisting";
+            BaseUrl = _url + $"api/Device/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (response.IsSuccessStatusCode)

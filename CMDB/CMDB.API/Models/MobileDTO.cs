@@ -12,6 +12,7 @@ namespace CMDB.API.Models
         public IdentityDTO Identity { get; set; }
 
         public ICollection<SubscriptionDTO> Subscriptions { get; set; }
+        public int IdentityId { get; set; }
 
         public MobileDTO()
         {

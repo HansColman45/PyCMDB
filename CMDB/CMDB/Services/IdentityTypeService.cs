@@ -90,7 +90,7 @@ namespace CMDB.Services
             bool result = false;
             identityType.Type = Type == "" ? identityType.Type : Type;
             identityType.Description = Description == "" ? identityType.Description : Description;
-            BaseUrl = _url + $"api/IdentityType/IsTypeExisting";
+            BaseUrl = _url + $"api/IdentityType/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
             if (response.IsSuccessStatusCode)

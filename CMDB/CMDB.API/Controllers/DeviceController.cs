@@ -211,12 +211,21 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(device);
         }
-        [HttpPost("IsDeviceExisting"), Authorize]
+        [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsDeviceExisting(DeviceDTO device)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = device.Category.Category.ToLower(),
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.IsDeviceExising(device));
         }

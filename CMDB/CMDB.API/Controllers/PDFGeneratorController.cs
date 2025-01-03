@@ -84,6 +84,11 @@ namespace CMDB.API.Controllers
                 case "account":
                     await _uow.AccountRepository.LogPdfFile(pdfFile, id);
                     break;
+                case "subscription":
+                    await _uow.SubscriptionRepository.LogPdfFile(pdfFile, id);
+                    break;
+                default:
+                    throw new NotImplementedException($"The {entity} is not implemented");
             }
             await _uow.SaveChangesAsync();
             return Ok();

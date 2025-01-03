@@ -7,7 +7,7 @@ namespace CMDB.API.Services
 {
     public interface IAdminRepository
     {
-        bool IsExisting(Admin admin);
+        Task<bool> IsExisting(Admin admin);
         Admin Add(Admin entity);
         Task<Admin> Update(Admin admin, int adminId);
         Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model);

@@ -82,7 +82,7 @@ namespace CMDB.Services
             bool result;
             if(category is not null)
                 category.Category = Category;
-            BaseUrl = _url + $"api/AssetCategory/IsCategoryExisting";
+            BaseUrl = _url + $"api/AssetCategory/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, category);
             if (!response.IsSuccessStatusCode)
