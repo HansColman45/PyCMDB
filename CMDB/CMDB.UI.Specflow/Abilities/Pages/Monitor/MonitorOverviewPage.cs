@@ -1,6 +1,4 @@
-﻿using OpenQA.Selenium;
-
-namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
+﻿namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorOverviewPage : MainPage
     {

@@ -1,7 +1,6 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.AssetTypes;
 using CMDB.UI.Specflow.Questions;
-using TechTalk.SpecFlow.CommonModels;
 using AssetType = CMDB.UI.Specflow.Helpers.AssetType;
 
 namespace CMDB.UI.Specflow.StepDefinitions

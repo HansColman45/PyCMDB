@@ -1,6 +1,4 @@
-﻿using Bright.ScreenPlay.Actors;
-using CMDB.UI.Specflow.Abilities.Pages;
-using CMDB.UI.Specflow.Actors;
+﻿using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

@@ -1,4 +1,3 @@
-using Bright.ScreenPlay.Actors;
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;

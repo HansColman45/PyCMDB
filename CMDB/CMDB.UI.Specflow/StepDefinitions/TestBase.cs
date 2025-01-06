@@ -1,6 +1,4 @@
-﻿using CMDB.Domain.Entities;
-using Microsoft.Graph;
-using Admin = CMDB.Domain.Entities.Admin;
+﻿using Admin = CMDB.Domain.Entities.Admin;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {
