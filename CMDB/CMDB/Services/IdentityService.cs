@@ -222,6 +222,7 @@ namespace CMDB.Services
         public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
+            //TODO: Fix this
             /*if (IdenID == null)
                 throw new Exception("Missing required id");
             else

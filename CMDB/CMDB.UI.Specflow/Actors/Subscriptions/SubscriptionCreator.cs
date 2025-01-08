@@ -26,7 +26,8 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedType");
             createPage.Phonenumber = subscription.PhoneNumber + rndNr.ToString();
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnteredPhoneNumber");
-            ExpectedLog = $"The subscription with: {type.Category} and {type} on {subscription.PhoneNumber}{rndNr} is created by {admin.Account.UserID} in table subscription";
+            ExpectedLog = $"The subscription with: {type.Category.Category} and type {type} on {subscription.PhoneNumber}{rndNr} is created by {admin.Account.UserID} in table subscription";
+            createPage.Create();
         }
         public void Search(Helpers.Subscription subscription) 
         {

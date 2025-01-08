@@ -109,12 +109,12 @@ namespace CMDB.Services
         }
         public async Task<bool> IsSubscritionExisting(SubscriptionTypeDTO subscriptionType, string phoneNumber, int id =0)
         {
-            BaseUrl = _url + $"api/Subscription/IsExisting";
-            _Client.SetBearerToken(TokenStore.Token);
             if (id != 0)
             {
                 var sub = await GetByID(id);
                 sub.PhoneNumber = phoneNumber;
+                BaseUrl = _url + $"api/Subscription/IsExisting";
+                _Client.SetBearerToken(TokenStore.Token);
                 var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
                 if (response.IsSuccessStatusCode) 
                 {
@@ -130,6 +130,8 @@ namespace CMDB.Services
                     SubscriptionType = subscriptionType,
                     PhoneNumber = phoneNumber
                 };
+                BaseUrl = _url + $"api/Subscription/IsExisting";
+                _Client.SetBearerToken(TokenStore.Token);
                 var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
                 if (response.IsSuccessStatusCode)
                 {

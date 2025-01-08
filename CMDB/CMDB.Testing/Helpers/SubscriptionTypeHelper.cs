@@ -38,5 +38,11 @@ namespace CMDB.Testing.Helpers
                 throw;
             }
         }
+        public static async Task Delete(CMDBContext context, SubscriptionType subscriptionType)
+        {
+            context.RemoveRange(subscriptionType.Logs);
+            context.Remove(subscriptionType);
+            await context.SaveChangesAsync();
+        }
     }
 }

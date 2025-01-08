@@ -42,8 +42,8 @@ namespace CMDB.Services
             HttpClientHandler clientHandler = new()
             {
                 ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => {
-                    //if (development) return true;
-                    return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
+                    return true;
+                    //return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
                 }
             };
             _Client = new HttpClient(clientHandler);

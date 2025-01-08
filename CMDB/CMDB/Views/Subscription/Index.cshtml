@@ -34,15 +34,15 @@
                         }
                         else if ((bool)ViewData["ActiveAccess"])
                         {
-                            <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                            <a class="btn btn-glyphicon" href="\Subscription\Activate\@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
                         @if (item.Active == 1 && item.SubscriptionType.AssetCategory.Category == "Mobile Subscription" && (bool)ViewData["AssignMobile"])
                         {
-                            <a class="btn btn-success" asp-action="AssignMobile" asp-route-id="@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignMobile"><span class="@ViewBag.AddDeviceIcon"></span></a>
+                            <a class="btn btn-success" href="\Subscription\AssignMobile\@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignMobile"><span class="@ViewBag.AddDeviceIcon"></span></a>
                         }
                         @if (item.Active == 1 && item.SubscriptionType.AssetCategory.Category == "Internet Subscription" && (bool)ViewData["AssignIdentity"])
                         {
-                            <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignIdentity"><span class="@ViewBag.AddIdentityIcon"></span></a>
+                            <a class="btn btn-success" href="\Subscription\AssignIdentity\@item.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignIdentity"><span class="@ViewBag.AddIdentityIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

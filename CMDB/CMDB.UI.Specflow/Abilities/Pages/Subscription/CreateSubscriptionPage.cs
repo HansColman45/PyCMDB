@@ -9,11 +9,11 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
         }
         public string Type
         {
-            set => SelectTektInDropDownByXpath("//", value);
+            set => SelectTektInDropDownByXpath("//select[@id='SubscriptionType']", value);
         }
         public string Phonenumber
         {
-            set => EnterInTextboxByXPath("//", value);
+            set => EnterInTextboxByXPath("//input[@id='PhoneNumber']", value);
         }
         public void Create()
         {

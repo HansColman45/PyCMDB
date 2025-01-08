@@ -135,6 +135,7 @@ namespace CMDB.Services
         public bool IsDeviceFree(MobileDTO mobile, bool checkSub = false)
         {
             bool result = true;
+            //TODO: Fix this
            /* if (!checkSub) { 
                 var mobiles = _context.Mobiles.Where(x => x.MobileId == mobile.MobileId).First();
                 if (mobiles.Identity is null || mobiles.MobileId == 1)

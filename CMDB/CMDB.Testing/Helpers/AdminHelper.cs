@@ -208,6 +208,26 @@ namespace CMDB.Testing.Helpers
                     Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
                     await AccountHelper.Delete(context, account);
                 }
+                //Subscription
+                var subs = context.Subscriptions
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var sub in subs)
+                {
+                    Data.Add($"Subscription{sub.SubscriptionId}", sub);
+                    await SubscriptionHelper.Delete(context, sub);
+                }
+                //SubscriptionTypes
+                var subtypes = context.SubscriptionTypes
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach(var subtype in subtypes)
+                {
+                    Data.Add($"SubscriptionType{subtype.Id}",subtype);
+                    await SubscriptionTypeHelper.Delete(context,subtype);
+                }
                 //Admin
                 context.RemoveRange(admin.Logs);
                 context.Remove<Admin>(admin);

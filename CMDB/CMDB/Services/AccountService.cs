@@ -195,6 +195,7 @@ namespace CMDB.Services
         public bool IsPeriodOverlapping(int AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
+            //TODO: Fix this
             /*var accounts = _context.IdenAccounts
                     .Include(x => x.Account)
                     .Where(x => x.Account.AccID == AccID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)

@@ -62,7 +62,7 @@ namespace CMDB.API.Services
         }
         public SubscriptionDTO Create(SubscriptionDTO subscription)
         {
-            string Value = $"Subscription with Category: {subscription.SubscriptionType.AssetCategory.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+            string Value = $"Subscription with: {subscription.SubscriptionType.AssetCategory.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
             Subscription sub = new()
             {
                 active = 1,

@@ -179,7 +179,7 @@ namespace CMDB.Controllers
                 try
                 {
                     if (ModelState.IsValid) { 
-                        if(subscription.IdentityId > 1 || subscription.Mobile.IdentityId >1)
+                        if(subscription.IdentityId > 1 || subscription.Mobile?.IdentityId >1)
                         {
                             var admin = await service.Admin();
                             await _PDFservice.SetUserinfo(UserId: subscription.Identity is not null ? subscription.Identity.UserID : subscription.Mobile.Identity.UserID,
