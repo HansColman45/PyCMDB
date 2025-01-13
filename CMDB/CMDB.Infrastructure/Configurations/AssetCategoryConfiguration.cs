@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CMDB.Infrastructure.Configuration
+namespace CMDB.Infrastructure.Configurations
 {
     class AssetCategoryConfiguration : IEntityTypeConfiguration<AssetCategory>
     {
@@ -22,7 +22,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.Prefix)
                 .HasColumnType("varchar(5)");
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.AssetCategories)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

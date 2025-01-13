@@ -1,26 +1,24 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
-using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Controllers
 {
     public class TokenController : CMDBController
     {
-        private new readonly DevicesService service;
-        public TokenController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly DevicesService service;
+        private readonly PDFService _PDFservice;
+        public TokenController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Token";
             Table = "token";
+            _PDFservice = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -28,13 +26,14 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Token overview";
             await BuildMenu();
             var Desktops = await service.ListAll("Token");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Token\Search";
+            ViewData["Controller"] = @"\Token\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
@@ -46,13 +45,14 @@ namespace CMDB.Controllers
                 ViewData["Title"] = "Token overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Token\Search";
+                ViewData["Controller"] = @"\Token\Create";
                 return View(Desktops);
             }
             else
@@ -66,40 +66,39 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             ViewData["Title"] = "Delete token";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Admin";
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            ViewData["Controller"] = @$"\Token\Delete\{id}";
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (token.IdentityId > 1)
+                        if (token.Identity.IdenId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = token.Identity.Name,
-                                UserID = token.Identity.UserID,
-                                FirstName = token.Identity.FirstName,
-                                LastName = token.Identity.LastName,
-                                Language = token.Identity.Language.Code,
-                                Receiver = token.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(token);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
-                            await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, token.AssetTag, pdfFile);
-                            await service.ReleaseIdenity(token, token.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: token.Identity.UserID,
+                                ITEmployee: admin.Account.UserID,
+                                Singer: token.Identity.Name,
+                                FirstName: token.Identity.FirstName,
+                                LastName: token.Identity.LastName,
+                                Language: token.Identity.Language.Code,
+                                Receiver: token.Identity.Name,
+                                type: "Release");
+                            await _PDFservice.SetDeviceInfo(token);
+                            await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
+                            await service.ReleaseIdenity(token); 
                         }
-                        await service.Deactivate(token, values["reason"], Table);
+                        await service.Deactivate(token, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -116,17 +115,16 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate token";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             if (id == null)
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
             await BuildMenu();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(token, Table);
+                await service.Activate(token);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -139,32 +137,31 @@ namespace CMDB.Controllers
         {
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
             log.Debug($"Using details in {Table}");
             ViewData["Title"] = "Token details";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, token.AssetTag, token);
-            service.GetAssignedIdentity(token);
+            ViewData["Controller"] = @"\Token\Create";
             return View(token);
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create token";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            Token token= new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            DeviceDTO token= new();
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
+            ViewData["Controller"] = @"\Token\Create";
             ViewData["backUrl"] = "Token";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -173,15 +170,16 @@ namespace CMDB.Controllers
                 {
                     token.AssetTag = values["AssetTag"];
                     token.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    token.Type = AssetType;
-                    token.Category = AssetType.Category;
-                    if (service.IsDeviceExisting(token))
+                    int Type = Convert.ToInt32(values["AssetType"]);
+                    var AssetType = await  service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Token");
+                    token.AssetType = AssetType;
+                    token.Category = category;
+                    if (await service.IsDeviceExisting(token))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(token, Table);
+                        await service.CreateNewDevice(token);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -198,27 +196,27 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Edit in {0}", SitePart);
             ViewData["Title"] = "Edit token";
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["backUrl"] = "Token";
+            ViewData["Controller"] = @$"\Token\Edit\{id}";
             await BuildMenu();
             if (String.IsNullOrEmpty(id))
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     string newSerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type.TypeID"]);
-                    var newAssetType = service.ListAssetTypeById(Type);
+                    int Type = Convert.ToInt32(values["AssetType.TypeID"]);
+                    var newAssetType = await service.GetAssetTypeById(Type);
                     if (ModelState.IsValid)
                     {
-                        await service.UpdateToken(token, newSerialNumber, newAssetType, Table);
+                        await service.UpdateDevice(token, newSerialNumber, newAssetType);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -235,16 +233,15 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to Token";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Token";
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -252,10 +249,10 @@ namespace CMDB.Controllers
                 {
                     if (!service.IsDeviceFree(token))
                         ModelState.AddModelError("", "Desktop can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity, token, Table);
+                        await service.AssignIdentity2Device(identity, token);
                         return RedirectToAction("AssignForm", "Token", new { id });
                     }
                 }
@@ -277,33 +274,29 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
-            service.GetAssignedIdentity(token);
-            ViewData["Name"] = token.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            ViewData["Name"] = token.Identity.Name; 
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                if (ModelState.IsValid) { 
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = token.Identity.UserID,
-                        FirstName = token.Identity.FirstName,
-                        LastName = token.Identity.LastName,
-                        Language = token.Identity.Language.Code,
-                        Receiver = token.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(token);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                if (ModelState.IsValid) {
+                    await _PDFservice.SetUserinfo(
+                        UserId: token.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: token.Identity.Name,
+                        FirstName: token.Identity.FirstName,
+                        LastName: token.Identity.LastName,
+                        Language: token.Identity.Language.Code,
+                        Receiver: token.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(token);
+                    await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -313,41 +306,38 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Release identity in {0}", Table);
             ViewData["Title"] = "Release identity from Token";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Token";
             ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var tokens = await service.ListTokenByID(id);
-            Token token = tokens.FirstOrDefault();
+            var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
-            service.GetAssignedIdentity(token);
             ViewData["Name"] = token.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                Identity identity = token.Identity;
+                var identity = token.Identity;
                 if (ModelState.IsValid) {
-                    await service.ReleaseIdenity(token, identity, Table);
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(token);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", token.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, token.AssetTag, pdfFile);
+                    await _PDFservice.SetUserinfo(
+                        UserId: token.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: token.Identity.Name,
+                        FirstName: token.Identity.FirstName,
+                        LastName: token.Identity.LastName,
+                        Language: token.Identity.Language.Code,
+                        Receiver: token.Identity.Name,
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(token);
+                    await _PDFservice.GenratePDFFile(Table, token.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", token.Identity.IdenId);
+                    await service.ReleaseIdenity(token);
                     return RedirectToAction(nameof(Index));
                 }
             }

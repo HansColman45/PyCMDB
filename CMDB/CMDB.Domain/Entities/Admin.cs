@@ -36,7 +36,6 @@ namespace CMDB.Domain.Entities
         public int Level { get; set; }
         public string Password { get; set; }
         public DateTime DateSet { get; set; }
-
         public virtual ICollection<Device> Devices { get; set; }
         public virtual ICollection<Mobile> Mobiles { get; set; }
         public virtual ICollection<Kensington> Kensingtons { get; set; }

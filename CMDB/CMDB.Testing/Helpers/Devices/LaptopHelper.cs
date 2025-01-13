@@ -1,10 +1,10 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
+﻿using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using CMDB.Testing.Builders.EntityBuilders.Devices;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers.Devices
 {
@@ -14,13 +14,13 @@ namespace CMDB.Testing.Helpers.Devices
         {
             try
             {
-                var cat = await context.AssetCategories.Where(x => x.Category == "Laptop").FirstOrDefaultAsync();
+                var cat = await context.AssetCategories.Where(x => x.Category == "Laptop").AsNoTracking().FirstOrDefaultAsync();
                 var AssetType = await AssetTypeHelper.CreateSimpleAssetType(context, cat, admin);
 
                 Laptop laptop = new LaptopBuilder()
-                    .With(x => x.Category, cat)
-                    .With(x => x.Type, AssetType)
-                    .With(x => x.LastModfiedAdmin, admin)
+                    .With(x => x.CategoryId, cat.Id)
+                    .With(x => x.TypeId, AssetType.TypeID)
+                    .With(x => x.LastModifiedAdminId, admin.AdminId)
                     .With(x => x.IdentityId, 1)
                     .Build();
                 laptop.Logs.Add(new LogBuilder()

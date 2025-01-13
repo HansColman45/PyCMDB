@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.Device
+﻿@model CMDB.API.Models.DeviceDTO
 @{
     Layout = "_Layout";
 }
@@ -10,14 +10,14 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.AssetTag)</th>
                 <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
-                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(model => model.AssetType)</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td id="AssetTag">@Html.DisplayFor(model => model.AssetTag)</td>
                 <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
-                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.AssetType.Vendor) @Html.DisplayFor(model => model.AssetType.Type)</td>
             </tr>
         </tbody>
     </table>

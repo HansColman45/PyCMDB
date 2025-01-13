@@ -1,8 +1,9 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Identity>
+﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
-    List<CMDB.Domain.Entities.Device> devices = (List<CMDB.Domain.Entities.Device>)ViewBag.Devices;
-    List<CMDB.Domain.Entities.Mobile> mobiles = (List<CMDB.Domain.Entities.Mobile>)ViewBag.Mobiles;
+    List<CMDB.API.Models.DeviceDTO> devices = (List<CMDB.API.Models.DeviceDTO>)ViewBag.Devices;
+    List<CMDB.API.Models.MobileDTO> mobiles = (List<CMDB.API.Models.MobileDTO>)ViewBag.Mobiles;
+    List<CMDB.API.Models.SubscriptionDTO> subscriptions = (List<CMDB.API.Models.SubscriptionDTO>)ViewBag.Subs;
 }
 @if ((bool)ViewData["AssignDevice"])
 {
@@ -15,21 +16,18 @@
                 <th>E Mail</th>
                 <th>Language</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="Name">@Html.DisplayTextFor(modelItem => item.Name)</td>
-                    <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                    <td id="EMail">@Html.DisplayTextFor(modelItem => item.EMail)</td>
-                    <td id="Language">@Html.DisplayTextFor(modelItem => item.Language.Description)</td>
-                    <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Description)</td>
-                    <td id="State">@Html.DisplayTextFor(modelItem => item.Active)</td>
-                </tr>
-            }
+            <tr>
+                <td id="Name">@Html.DisplayTextFor(modelItem => modelItem.Name)</td>
+                <td id="UserId">@Html.DisplayTextFor(modelItem => modelItem.UserID)</td>
+                <td id="EMail">@Html.DisplayTextFor(modelItem => modelItem.EMail)</td>
+                <td id="Language">@Html.DisplayTextFor(modelItem => modelItem.Language.Description)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => modelItem.Type.Description)</td>
+                <td id="State">@Html.DisplayTextFor(modelItem => modelItem.State)</td>
+            </tr>
         </tbody>
     </table>
     <p>
@@ -41,13 +39,20 @@
         {
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="1" name="@device.AssetTag" id="@device.AssetTag">
-                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.Type.Vendor @device.Type.Type AssetTag: @device.AssetTag</label>
+                <label class="form-check-label" for="@device.AssetTag">@device.Category.Category Type: @device.AssetType.Vendor @device.AssetType.Type AssetTag: @device.AssetTag</label>
             </div>
         }
         @foreach(var mobile in mobiles){
             <div class="form-check">
                 <input class="form-check-input" type="checkbox" value="1" name="@mobile.IMEI" id="@mobile.MobileId">
                 <label class="form-check-label" for="@mobile.MobileId">Mobile Type: @mobile.MobileType.Vendor @mobile.MobileType.Type IMEI: @mobile.IMEI</label>
+            </div>
+        }
+        @foreach (var sub in subscriptions)
+        {
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="1" name="@sub.SubscriptionId" id="@sub.SubscriptionId">
+                <label class="form-check-label" for="@sub.SubscriptionId">Subscription @sub.SubscriptionType on phone number: @sub.PhoneNumber</label>
             </div>
         }
         <input type="hidden" name="form-submitted" value="1" />

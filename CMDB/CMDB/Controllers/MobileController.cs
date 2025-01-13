@@ -1,39 +1,40 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
-using CMDB.Services;
-using System.Threading.Tasks;
-using System;
+﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
+using CMDB.Infrastructure;
+using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using System.Linq;
-using CMDB.Util;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class MobileController : CMDBController
     {
-        private new readonly MobileService service;
-        public MobileController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly MobileService service;
+        private readonly PDFService _PDFService;
+        public MobileController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Mobile";
             Table = "mobile";
-            service = new(context);
+            service = new();
+            _PDFService = new();
         }
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
             ViewData["Title"] = "Mobile overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["AssignSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignSubscription");
             ViewData["actionUrl"] = @"\Mobile\Search";
+            ViewData["Controller"] = @"\Mobile\Create";
             var mobiles = await service.ListAll();
             return View(mobiles);
         }
@@ -45,14 +46,15 @@ namespace CMDB.Controllers
                 ViewData["Title"] = "Mobile overview";
                 await BuildMenu();
                 var mobiles = await service.ListAll(search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
-                ViewData["actionUrl"] = @"\Laptop\Search";
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["AssignSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignSubscription");
+                ViewData["actionUrl"] = @"\Mobile\Search";
+                ViewData["Controller"] = @"\Mobile\Create";
                 return View(mobiles);
             }
             else
@@ -64,10 +66,11 @@ namespace CMDB.Controllers
         {
             log.Debug("Using Create in {0}", SitePart);
             ViewData["Title"] = "Create Mobile";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["Controller"] = @"\Mobile\Create";
             await BuildMenu();
-            Mobile mobile = new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            MobileDTO mobile = new();
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -76,14 +79,15 @@ namespace CMDB.Controllers
                     string imei = values["IMEI"];
                     mobile.IMEI = Convert.ToInt64(values["IMEI"]);
                     int Type = Convert.ToInt32(values["MobileType"]);
-                    var AssetType = service.ListAssetTypeById(Type);
+                    var AssetType = await service.ListAssetTypeById(Type);
+                    var identity = await service.GetIdentity(1);
                     mobile.MobileType = AssetType;
-                    mobile.Category = AssetType.Category;
-                    if(service.IsMobileExisting(mobile))
+                    mobile.Identity = identity;
+                    if(await service.IsMobileExisting(mobile))
                         ModelState.AddModelError("", "Mobile already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNew(mobile,Table);
+                        await service.CreateNew(mobile);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -100,56 +104,51 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug($"Using details in {Table}");
             ViewData["Title"] = "Mobile details";
+            ViewData["Controller"] = @"\Mobile\Create";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["SubscriptionOverview"] = service.HasAdminAccess(service.Admin, SitePart, "SubscriptionOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
-            ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
-            ViewData["ReleaseSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseSubscription");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["SubscriptionOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "SubscriptionOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["AssignSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignSubscription");
+            ViewData["ReleaseSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseSubscription");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, (int)id, mobile);
-            service.GetAssignedIdentity(mobile);
-            service.GetAssignedSubscription(mobile);
             return View(mobile);
         }
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Edit in {0}", Table);
             ViewData["Title"] = "Edit mobile";
+            ViewData["Controller"] = @$"\Mobile\Edit\{id}";
             await BuildMenu();
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
                 long newImei = Convert.ToInt64(values["IMEI"]);
                 int Type = Convert.ToInt32(values["MobileType.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type);
-                mobile.MobileType = AssetType;
-                mobile.Category = AssetType.Category;
-                if (service.IsMobileExisting(mobile, newImei))
+                var AssetType = await service.ListAssetTypeById(Type);
+                if (await service.IsMobileExisting(mobile, newImei))
                     ModelState.AddModelError("", "Mobile already exist");
                 try
                 {
                     if (ModelState.IsValid)
                     {
-                        await service.Update(mobile, newImei, AssetType, Table);
+                        await service.Update(mobile, newImei, AssetType);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -166,14 +165,14 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
             ViewData["Title"] = "Deactivate Mobile";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Mobile";
+            ViewData["Controller"] = @$"\Mobile\Delete\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -183,25 +182,24 @@ namespace CMDB.Controllers
                     string reason = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (mobile.IdentityId > 1)
+                        if (mobile.Identity.IdenId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = mobile.Identity.Name,
-                                UserID = mobile.Identity.UserID,
-                                FirstName = mobile.Identity.FirstName,
-                                LastName = mobile.Identity.LastName,
-                                Language = mobile.Identity.Language.Code,
-                                Receiver = mobile.Identity.Name
-                            };
-                            PDFGenerator.SetMobileInfo(mobile);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
-                            await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
-                            await service.ReleaseIdenity(mobile, mobile.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFService.SetUserinfo(
+                                UserId: mobile.Identity.UserID,
+                                ITEmployee:admin.Account.UserID,
+                                Singer: mobile.Identity.Name,
+                                FirstName:mobile.Identity.FirstName,
+                                LastName:mobile.Identity.LastName,
+                                Receiver: mobile.Identity.Name,
+                                Language: mobile.Identity.Language.Code,
+                                "Release");
+                            await _PDFService.SetMobileInfo(mobile);
+                            await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                            await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
+                            await service.ReleaseIdenity(mobile);
                         }
-                        await service.Deactivate(mobile, reason, Table);
+                        await service.Deactivate(mobile, reason);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -218,19 +216,18 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Activate in {0}", Table);
             ViewData["Title"] = "Activate Mobile";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             await BuildMenu();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
                 try
                 {
-                    await service.Activate(mobile, Table);
+                    await service.Activate(mobile);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -248,16 +245,16 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Assign identity in {0}", Table);
             ViewData["Title"] = "Assign identity to mobile";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Mobile";
+            ViewData["Controller"] = @$"\Mobile\AssignIdentity\{id}";
             await BuildMenu();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit)) 
             {
@@ -265,10 +262,10 @@ namespace CMDB.Controllers
                 {
                     if (!service.IsDeviceFree(mobile))
                         ModelState.AddModelError("", "Mobile can not be assigned to another user");
-                    Identity identity = await service.GetIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Mobile(identity, mobile, Table);
+                        await service.AssignIdentity2Mobile(mobile, identity);
                         return RedirectToAction("AssignForm", "Mobile", new { id });
                     }
                 }
@@ -285,20 +282,19 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Release identity in {0}", Table);
             ViewData["Title"] = "Release identity from Mobile";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["backUrl"] = "Mobile";
             ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();
-            service.GetAssignedIdentity(mobile);
-            Identity identity = mobile.Identity;
+            IdentityDTO identity = mobile.Identity;
             ViewData["Name"] = identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -308,22 +304,19 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
-                        PDFGenerator PDFGenerator = new()
-                        {
-                            ITEmployee = ITPerson,
-                            Singer = Employee,
-                            UserID = identity.UserID,
-                            FirstName = identity.FirstName,
-                            LastName = identity.LastName,
-                            Language = identity.Language.Code,
-                            Receiver = identity.Name,
-                            Type = "Release"
-                        };
-                        PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = PDFGenerator.GeneratePDF(_env);
-                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
-                        await service.ReleaseIdenity(mobile, identity, Table);
+                        await _PDFService.SetUserinfo(
+                            UserId: mobile.Identity.UserID,
+                            ITEmployee: admin.Account.UserID,
+                            Singer: mobile.Identity.Name,
+                            FirstName: mobile.Identity.FirstName,
+                            LastName: mobile.Identity.LastName,
+                            Receiver: mobile.Identity.Name,
+                            Language: mobile.Identity.Language.Code,
+                            "Release");
+                        await _PDFService.SetMobileInfo(mobile);
+                        await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                        await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
+                        await service.ReleaseIdenity(mobile);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -340,8 +333,7 @@ namespace CMDB.Controllers
         {
             if (id is null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile is null)
                 return NotFound();
             log.Debug($"Using Release subscription in {Table}");
@@ -352,25 +344,24 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using assign subscription in {0}", Table);
             ViewData["Title"] = "Assign subscription to mobile";
-            ViewData["AssignSubscription"] = service.HasAdminAccess(service.Admin, SitePart, "AssignSubscription");
+            ViewData["AssignSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignSubscription");
             ViewData["backUrl"] = "Mobile";
             await BuildMenu();
-            ViewBag.Subscriptions = service.ListFreeMobileSubscriptions();
+            ViewBag.Subscriptions = await service.ListFreeMobileSubscriptions();
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
-                Subscription subscription =await service.GetSubribtion(Int32.Parse(values["Subscriptions"]));
+                SubscriptionDTO subscription =await service.GetSubribtion(Int32.Parse(values["Subscriptions"]));
                 if (!service.IsDeviceFree(mobile, true))
                     ModelState.AddModelError("", "Mobile can not be assigned to another user");
                 if (ModelState.IsValid)
                 {
-                    await service.AssignSubscription(mobile, subscription,Table);
+                    await service.AssignSubscription(mobile, subscription);
                     return RedirectToAction("AssignForm", "Mobile", new { id });
                 }
             }
@@ -380,8 +371,7 @@ namespace CMDB.Controllers
         {
             if (id == null)
                 return NotFound();
-            var mobiles = service.GetMobileById((int)id);
-            Mobile mobile = mobiles.FirstOrDefault();
+            var mobile = await service.GetMobileById((int)id);
             if (mobile == null)
                 return NotFound();
             log.Debug("Using Assign form in {0}", Table);
@@ -389,10 +379,9 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Mobile";
             ViewData["Action"] = "AssignForm";
             await BuildMenu();
-            service.GetAssignedIdentity(mobile);
-            service.GetAssignedSubscription(mobile);
             ViewData["Name"] = mobile.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
@@ -400,33 +389,31 @@ namespace CMDB.Controllers
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
                     if (mobile.Identity != null) {
-                        PDFGenerator _PDFGenerator = new()
-                        {
-                            ITEmployee = ITPerson,
-                            Singer = Employee,
-                            UserID = mobile.Identity.UserID,
-                            FirstName = mobile.Identity.FirstName,
-                            LastName = mobile.Identity.LastName,
-                            Language = mobile.Identity.Language.Code,
-                            Receiver = mobile.Identity.Name
-                        };
-                        _PDFGenerator.SetMobileInfo(mobile);
-                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
-                        await service.LogPdfFile("identity", mobile.Identity.IdenId, pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
+                        await _PDFService.SetUserinfo(
+                            UserId: mobile.Identity.UserID,
+                            ITEmployee: admin.Account.UserID,
+                            Singer: mobile.Identity.Name,
+                            FirstName: mobile.Identity.FirstName,
+                            LastName: mobile.Identity.LastName,
+                            Receiver: mobile.Identity.Name,
+                            Language: mobile.Identity.Language.Code);
+                        await _PDFService.SetMobileInfo(mobile);
+                        await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                        await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                     }
                     else if (mobile.Subscriptions.Count > 0)
                     {
-                        PDFGenerator _PDFGenerator = new()
+                        /*PDFGenerator _PDFGenerator = new()
                         {
                             ITEmployee = ITPerson,
                             Singer = Employee
                         };
                         _PDFGenerator.SetMobileInfo(mobile);
                         _PDFGenerator.SetSubscriptionInfo(mobile.Subscriptions.First());
-                        string pdfFile = _PDFGenerator.GeneratePDF(_env);
+                        string pdfFile = _PDFGenerator.GeneratePath(_env);
+                        _PDFGenerator.GeneratePdf(pdfFile);
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
-                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);
+                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);*/
                     }
                     return RedirectToAction(nameof(Index));
                 }

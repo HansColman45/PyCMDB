@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CMDB.Domain.Entities
@@ -36,7 +35,7 @@ namespace CMDB.Domain.Entities
         }
         [Column("Deactivate_reason")]
         public string DeactivateReason { get; set; }
-        public Admin LastModfiedAdmin { get; set; }
+        public virtual Admin LastModifiedAdmin { get; set; }
         public int? LastModifiedAdminId { get; set; }
     }
     public enum State

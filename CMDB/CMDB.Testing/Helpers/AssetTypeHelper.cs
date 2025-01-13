@@ -2,9 +2,6 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -16,8 +13,8 @@ namespace CMDB.Testing.Helpers
             try
             {
                 var assetType = new AssetTypeBuilder()
-                .With(x => x.Category, category)
-                .With(x => x.LastModfiedAdmin, admin)
+                .With(x => x.CategoryId, category.Id)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
 
                 assetType.Logs.Add(new LogBuilder()
@@ -45,7 +42,11 @@ namespace CMDB.Testing.Helpers
         }
         public static async Task Delete(CMDBContext context, AssetType assetType)
         {
-            context.RemoveRange(assetType.Logs);
+            //context.RemoveRange(assetType.Logs);
+            foreach (var log in assetType.Logs)
+            {
+                context.Remove(log);
+            }
             context.Remove(assetType);
             await context.SaveChangesAsync();
         }

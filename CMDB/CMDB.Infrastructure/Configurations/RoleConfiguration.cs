@@ -29,7 +29,7 @@ namespace CMDB.Infrastructure.Configurations
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Roles)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

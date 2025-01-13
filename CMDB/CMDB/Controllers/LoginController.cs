@@ -1,20 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Infrastructure;
+﻿using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using System;
-using CMDB.Services;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class LoginController : CMDBController
     {
-        public LoginController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly CMDBServices service;
+        public LoginController(IWebHostEnvironment env) : base(env)
         {
+            service = new();
         }
         public IActionResult Index()
         {
@@ -25,15 +23,14 @@ namespace CMDB.Controllers
             log.Debug("Using Login in {0}", "Login");
             string UserID = values["UserID"];
             string Pwd = values["Pwd"];
-            Admin admin;
-            admin = await service.Login(UserID, Pwd);
-            if (admin == null)
+            Token = await service.Login(UserID, Pwd);
+            TokenStore.Token = Token;
+            if (Token is null)
             {
                 ModelState.AddModelError("", "User or password is incorrect");
             }
             if (ModelState.IsValid)
             {
-                _context.Admin = admin;
                 string stringFullUrl = @"\Home";
                 return Redirect(stringFullUrl);
             }

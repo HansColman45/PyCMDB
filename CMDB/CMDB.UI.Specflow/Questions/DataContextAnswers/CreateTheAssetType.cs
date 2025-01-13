@@ -1,0 +1,34 @@
+﻿using Bright.ScreenPlay.Actors;
+using Bright.ScreenPlay.Questions;
+using CMDB.Domain.Entities;
+using CMDB.Testing.Helpers;
+using CMDB.UI.Specflow.Abilities.Data;
+using System;
+
+namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+{
+    /// <summary>
+    /// This class is used to create an asset type
+    /// </summary>
+    public class CreateTheAssetType : Question<Task<CMDB.Domain.Entities.AssetType>>
+    {
+        public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
+        {
+            var context = actor.GetAbility<DataContext>();
+            AssetCategory category = context.context.AssetCategories.FirstOrDefault();
+            return await AssetTypeHelper.CreateSimpleAssetType(context.context, category, context.Admin);
+        }
+    }
+    /// <summary>
+    /// This class is used to create an inactive asset type
+    /// </summary>
+    public class CreateTheInactiveAssetType : Question<Task<CMDB.Domain.Entities.AssetType>>
+    {
+        public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
+        {
+            var context = actor.GetAbility<DataContext>();
+            AssetCategory category = context.context.AssetCategories.FirstOrDefault();
+            return await AssetTypeHelper.CreateSimpleAssetType(context.context, category, context.Admin,false);
+        }
+    }
+}

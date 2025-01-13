@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CMDB.Infrastructure.Configuration
+namespace CMDB.Infrastructure.Configurations
 {
     public class AssetTypeConfiguration : IEntityTypeConfiguration<AssetType>
     {
@@ -26,10 +26,10 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Types)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired();
+                .OnDelete(DeleteBehavior.SetNull)
+                .IsRequired(false);
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.AssetTypes)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

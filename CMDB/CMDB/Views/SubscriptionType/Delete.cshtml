@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.SubscriptionType
+﻿@model CMDB.API.Models.SubscriptionTypeDTO
 @{
     Layout = "_Layout";
 }
@@ -15,7 +15,7 @@
         </thead>
         <tbody>
             <tr>
-                <td id="Category">@Html.DisplayTextFor(Model => Model.Category.Category)</td>
+                <td id="Category">@Html.DisplayTextFor(Model => Model.AssetCategory.Category)</td>
                 <td id="Provider">@Html.DisplayTextFor(Model => Model.Provider)</td>
                 <td id="Type">@Html.DisplayTextFor(Model => Model.Type)</td>
                 <td id="Description">@Html.DisplayTextFor(Model => Model.Description)</td>

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 
-namespace CMDB.Infrastructure.Configuration
+namespace CMDB.Infrastructure.Configurations
 {
     class KensingtonConfiguration : IEntityTypeConfiguration<Kensington>
     {
@@ -45,7 +45,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.AmountOfKeys)
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Kensingtons)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

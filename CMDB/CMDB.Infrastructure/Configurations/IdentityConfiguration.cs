@@ -2,9 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Collections.Generic;
 
-namespace CMDB.Infrastructure.Configuration
+namespace CMDB.Infrastructure.Configurations
 {
     class IdentityConfiguration : IEntityTypeConfiguration<Identity>
     {
@@ -32,6 +31,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.HasOne(e => e.Language)
                 .WithMany(d => d.Identities)
                 .HasConstraintName("FK_Identity_Language")
+                .HasForeignKey(e => e.LanguageCode)
                 .OnDelete(DeleteBehavior.Restrict)
                 .IsRequired();
 
@@ -41,7 +41,7 @@ namespace CMDB.Infrastructure.Configuration
             builder.Property(e => e.Company)
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Identities)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

@@ -1,25 +1,24 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
 
 namespace CMDB.Controllers
 {
     public class MonitorController : CMDBController
     {
-        private new readonly DevicesService service;
-        public MonitorController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly DevicesService service;
+        private readonly PDFService _PDFservice;
+        public MonitorController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Monitor";
             Table = "screen";
+            _PDFservice = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -27,30 +26,32 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Monitor overview";
             await BuildMenu();
             var Desktops = await service.ListAll("Monitor");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Monitor\Search";
+            ViewData["Controller"] = @"\Monitor\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Monitor overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Monitor\Search";
+                ViewData["Controller"] = @"\Monitor\Create";
                 return View(Desktops);
             }
             else
@@ -61,43 +62,42 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            ViewData["Title"] = "Delete Monitor";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["backUrl"] = "Admin";
-            await BuildMenu();
-            string FormSubmit = values["form-submitted"];
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
+            var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            ViewData["Title"] = "Delete Monitor";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["backUrl"] = "Admin";
+            ViewData["Controller"] = @$"\Monitor\Delete\{id}";
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (monitor.IdentityId > 1)
+                        if (monitor.Identity.IdenId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = monitor.Identity.Name,
-                                UserID = monitor.Identity.UserID,
-                                FirstName = monitor.Identity.FirstName,
-                                LastName = monitor.Identity.LastName,
-                                Language = monitor.Identity.Language.Code,
-                                Receiver = monitor.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(monitor);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
-                            await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
-                            await service.ReleaseIdenity(monitor, monitor.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: monitor.Identity.UserID, 
+                                ITEmployee: admin.Account.UserID, 
+                                Singer: monitor.Identity.Name,
+                                FirstName:monitor.Identity.FirstName, 
+                                LastName:monitor.Identity.LastName,
+                                Language: monitor.Identity.Language.Code,
+                                Receiver: monitor.Identity.Name,
+                                type: "Release");
+                            await _PDFservice.SetDeviceInfo(monitor);
+                            await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
+                            await service.ReleaseIdenity(monitor);
                         }
-                        await service.Deactivate(monitor, values["reason"], Table);
+                        await service.Deactivate(monitor, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -112,19 +112,18 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Activate(string id)
         {
-            log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate Laptop";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
+            var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            log.Debug("Using Activate in {0}", Table);
+            ViewData["Title"] = "Activate Laptop";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(moniror, Table);
+                await service.Activate(moniror);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -136,28 +135,30 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
-            ViewData["Title"] = "Create monitor";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
             await BuildMenu();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewData["Title"] = "Create monitor";
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Desktop";
-            Screen screen = new();
+            ViewData["Controller"] = @"\Monitor\Create";
+            DeviceDTO screen = new();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     screen.AssetTag = values["AssetTag"];
                     screen.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    screen.Type = AssetType;
-                    screen.Category = AssetType.Category;
-                    if (service.IsDeviceExisting(screen))
+                    int Type = Convert.ToInt32(values["AssetType"]);
+                    var AssetType = await service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Monitor");
+                    screen.AssetType = AssetType;
+                    screen.Category = category;
+                    if (await service.IsDeviceExisting(screen))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(screen, Table);
+                        await service.CreateNewDevice(screen);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -172,49 +173,47 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var screens = await service.ListScreensByID(id);
-            if (screens == null)
+            var screen = await service.GetDeviceById(SitePart, id);
+            if (screen == null)
                 return NotFound();
-            Screen screen = screens.FirstOrDefault();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Monitor details";
+            ViewData["Controller"] = @"\Monitor\Create";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, screen.AssetTag, screen);
-            service.GetAssignedIdentity(screen);
             return View(screen);
         }
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var screens = await service.ListScreensByID(id);
-            if (screens == null)
+            var screen = await service.GetDeviceById(SitePart, id);
+            if (screen == null)
                 return NotFound();
             await BuildMenu();
-            Screen screen = screens.FirstOrDefault();
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["Title"] = "Edit monitor";
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Monitor";
+            ViewData["Controller"] = @$"\Monitor\Edit\{id}";
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
-                int Type = Convert.ToInt32(values["Type.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type);
+                int Type = Convert.ToInt32(values["AssetType.TypeID"]);
+                var AssetType = await service.GetAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {
-                    await service.UpdateScreen(screen, newSerial, AssetType, Table);
+                    await service.UpdateDevice(screen, newSerial, AssetType);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -223,28 +222,28 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to Monitor";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["backUrl"] = "Monitor";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen moniror = monitors.FirstOrDefault();
+            var moniror = await service.GetDeviceById(SitePart, id);
             if (moniror == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewData["Title"] = "Assign identity to Monitor";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Monitor";
+            await BuildMenu();
+            ViewData["Controller"] = @$"\Monitor\AssignIdentity\{id}";
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {   
                     if (!service.IsDeviceFree(moniror))
                         ModelState.AddModelError("", "Monitor can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity, moniror, Table);
+                        await service.AssignIdentity2Device(identity, moniror);
                         return RedirectToAction("AssignForm", "Monitor", new { id });
                     }
                 }
@@ -260,39 +259,35 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var monitor = await service.GetDeviceById(SitePart, id);
+            if (monitor == null)
+                return NotFound();
             ViewData["Title"] = "Assign form";
             ViewData["backUrl"] = "Monitor";
             ViewData["Action"] = "AssignForm";
             await BuildMenu();
-            if (id == null)
-                return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
-            if (monitor == null)
-                return NotFound();
             ViewData["Name"] = monitor.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
-            service.GetAssignedIdentity(monitor);
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = monitor.Identity.UserID,
-                        FirstName = monitor.Identity.FirstName,
-                        LastName = monitor.Identity.LastName,
-                        Language = monitor.Identity.Language.Code,
-                        Receiver = monitor.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
+                    await _PDFservice.SetUserinfo(
+                        UserId: monitor.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: monitor.Identity.Name,
+                        FirstName: monitor.Identity.FirstName,
+                        LastName: monitor.Identity.LastName,
+                        Language: monitor.Identity.Language.Code,
+                        Receiver: monitor.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(monitor);
+                    await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -301,41 +296,40 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity from Monitor";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
-            ViewData["backUrl"] = "Monitor";
-            ViewData["Action"] = "ReleaseIdentity";
             await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var monitors = await service.ListScreensByID(id);
-            Screen monitor = monitors.FirstOrDefault();
+            var monitor = await service.GetDeviceById(SitePart, id);
             if (monitor == null)
                 return NotFound();
+            ViewData["Title"] = "Release identity from Monitor";
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Action"] = "ReleaseIdentity";
+            ViewData["Controller"] = @$"\Monitor\ReleaseIdentity\{id}";
             ViewData["Name"] = monitor.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                Identity identity = monitor.Identity;
+                var identity = monitor.Identity;
                 if (ModelState.IsValid) {
-                    await service.ReleaseIdenity(monitor, identity, Table);
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(monitor);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", monitor.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, monitor.AssetTag, pdfFile);
+                    await _PDFservice.SetUserinfo(
+                        UserId: monitor.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: monitor.Identity.Name,
+                        FirstName: monitor.Identity.FirstName,
+                        LastName: monitor.Identity.LastName,
+                        Language: monitor.Identity.Language.Code,
+                        Receiver: monitor.Identity.Name,
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(monitor);
+                    await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
+                    await service.ReleaseIdenity(monitor);
                     return RedirectToAction(nameof(Index));
                 }
             }

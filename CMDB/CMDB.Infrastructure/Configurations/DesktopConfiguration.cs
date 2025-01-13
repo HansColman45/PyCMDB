@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace CMDB.Infrastructure.Configuration
+namespace CMDB.Infrastructure.Configurations
 {
     public class DesktopConfiguraton : IEntityTypeConfiguration<Desktop>
     {

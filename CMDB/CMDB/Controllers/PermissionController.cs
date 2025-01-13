@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Util;
-using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Hosting;
+﻿using CMDB.Infrastructure;
 using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class PermissionController : CMDBController
     {
-        private new readonly PermissionService service;
-        public PermissionController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly PermissionService service;
+        public PermissionController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Permission";
             Table = "permission";
         }
@@ -25,10 +20,10 @@ namespace CMDB.Controllers
             log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
             ViewData["Title"] = "Permissiont overview";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\Permission\Search";
             return View();
         }

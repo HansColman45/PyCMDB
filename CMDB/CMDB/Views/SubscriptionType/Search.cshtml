@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.SubscriptionType>
+﻿@model IEnumerable<CMDB.API.Models.SubscriptionTypeDTO>
 @{
     Layout = "_Layout";
 }
@@ -20,7 +20,7 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayTextFor(modelItem => item.Category.Category)</td>
+                    <td>@Html.DisplayTextFor(modelItem => item.AssetCategory.Category)</td>
                     <td>@Html.DisplayTextFor(modelItem => item.Provider)</td>
                     <td>@Html.DisplayTextFor(modelItem => item.Type)</td>
                     <td>@Html.DisplayTextFor(modelItem => item.Description)</td>
@@ -29,13 +29,13 @@
                         {
                             <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Edit"><span class="@ViewBag.EditIcon"></span></a>
                         }
-                        @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["DeleteAccess"])
+                        @if (item.Active == 1 && (bool)ViewData["DeleteAccess"])
                         {
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Deactivate"><span class="@ViewBag.DeactivateIcon"></span></a>
                         }
                         else if ((bool)ViewData["ActiveAccess"])
                         {
-                            <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                            <a class="btn btn-glyphicon" href="\SubscriptionType\Activate\@item.Id" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

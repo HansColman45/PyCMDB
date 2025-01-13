@@ -1,4 +1,4 @@
-﻿@model CMDB.Domain.Entities.Subscription
+﻿@model CMDB.API.Models.SubscriptionDTO
 @{
     Layout = "_Layout";
 }
@@ -9,27 +9,27 @@
             <tr>
                 <th>Type</th>
                 <th>Phone number</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td id="SubscriptionType">@Html.DisplayTextFor(model => model.SubscriptionType)</td>
                 <td id="Phone">@Html.DisplayTextFor(model => model.PhoneNumber)</td>
-                <td id="Active">@Html.DisplayTextFor(model => model.Active)</td>
+                <td id="Active">@Html.DisplayTextFor(model => model.State)</td>
             </tr>
         </tbody>
     </table>
     <partial name="_AddNew" />
-    @if (Model.Active == CMDB.Domain.Entities.State.Active && Model.Category.Category == "Mobile Subscription" && (bool)ViewData["AssignMobile"])
+    @if (Model.Active == 1 && Model.SubscriptionType.AssetCategory.Category == "Mobile Subscription" && (bool)ViewData["AssignMobile"])
     {
         <a class="btn btn-success" asp-action="AssignMobile" asp-route-id="@Model.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignMobile"><span class="@ViewBag.AddDeviceIcon"></span></a>
     }
-    @if (Model.Active == CMDB.Domain.Entities.State.Active && Model.Category.Category == "Internet Subscription" && (bool)ViewData["AssignIdentity"])
+    @if (Model.Active == 1 && Model.SubscriptionType.AssetCategory.Category == "Internet Subscription" && (bool)ViewData["AssignIdentity"])
     {
         <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@Model.SubscriptionId" data-toggle="tooltip" data-placement="top" title="AssignIdentity"><span class="@ViewBag.AddIdentityIcon"></span></a>
     }
-    @if (Model.Category.Category == "Internet Subscription" && (bool)ViewData["IdentityOverview"])
+    @if (Model.SubscriptionType.AssetCategory.Category == "Internet Subscription" && (bool)ViewData["IdentityOverview"])
     {
         <H3>Identity overview</H3>
         @if (Model.Identity is not null)
@@ -62,7 +62,7 @@
             <p>No identities assigned to this Subscription</p>
         }
     }
-    @if (Model.Category.Category == "Mobile Subscription" && (bool)ViewData["MobileOverview"])
+    @if (Model.SubscriptionType.AssetCategory.Category == "Mobile Subscription" && (bool)ViewData["MobileOverview"])
     {
         <H3>Mobile overview</H3>
         @if(Model.Mobile is not null)
@@ -110,7 +110,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (CMDB.Domain.Entities.Log log in Model.Logs)
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

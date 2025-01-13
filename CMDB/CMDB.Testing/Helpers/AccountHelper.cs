@@ -2,10 +2,7 @@
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -14,29 +11,30 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Account> CreateSimpleAccountAsync(CMDBContext context, Admin admin, bool active = true)
         {
-            var accounttypes = await context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").ToListAsync();
+            var accounttypes = await context.Types.OfType<AccountType>().Where(x => x.Type == "Normal User").AsNoTracking().ToListAsync();
             var accounttype = accounttypes.FirstOrDefault();
-            var app = await context.Applications.Where(x => x.Name == "CMDB").FirstOrDefaultAsync();
+            var app = await context.Applications.Where(x => x.Name == "CMDB").AsNoTracking().FirstOrDefaultAsync();
 
             Account Account = new AccountBuilder()
-                .With(x => x.Application, app)
-                .With(x => x.Type, accounttype)
-                .With(x => x.LastModfiedAdmin, admin)
-                .With(x => x.active, active ? 1 : 0)
+                .With(x => x.ApplicationId, app.AppID)
+                .With(x => x.TypeId, accounttype.TypeId)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
+                .With(x => x.active,1)
                 .Build();
 
             Account.Logs.Add(new LogBuilder()
                 .With(x => x.Account, Account)
-                .With(x => x.LogText, $"The Account width UserID: {Account.UserID} with type {Account.Type} for application {Account.Application} is created by Automation in table account")
+                .With(x => x.LogText, $"The Account with UserID: {Account.UserID} with type {Account.Type.Type} for application {Account.Application.Name} is created by Automation in table account")
                 .Build()
             );
             context.Accounts.Add(Account);
             await context.SaveChangesAsync();
             if (!active)
             {
-                //For some reason the savechanges above changes the state
+                //Change the state to deactive
                 Account.active = 0;
-                context.SaveChanges();
+                Account.DeactivateReason = "Test";
+                await context.SaveChangesAsync();
             }
             return Account;
         }

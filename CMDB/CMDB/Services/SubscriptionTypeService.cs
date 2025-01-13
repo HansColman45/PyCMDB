@@ -1,110 +1,106 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using CMDB.Infrastructure;
+using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
     public class SubscriptionTypeService : LogService
     {
-        public SubscriptionTypeService(CMDBContext context) : base(context)
+        public SubscriptionTypeService() : base()
         {
         }
-        public async Task<ICollection<SubscriptionType>> ListAll()
+        public async Task<ICollection<SubscriptionTypeDTO>> ListAll()
         {
-            var types = await _context.SubscriptionTypes
-                .Include(x => x.Category).ToListAsync();
-            return types;
+            BaseUrl = _url + $"api/SubscriptionType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<SubscriptionTypeDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<SubscriptionType>> ListAll(string searchString)
+        public async Task<ICollection<SubscriptionTypeDTO>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
-            var types = await _context.SubscriptionTypes
-                .Include(x => x.Category)
-                .Where(x => EF.Functions.Like(x.Category.Category,searhterm) || EF.Functions.Like(x.Description,searhterm) || EF.Functions.Like(x.Type,searhterm) || EF.Functions.Like(x.Provider,searhterm))
-                .ToListAsync();
-            return types;
+            BaseUrl = _url + $"api/SubscriptionType/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<SubscriptionTypeDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<SubscriptionType>> GetById(int TypeId)
+        public async Task<SubscriptionTypeDTO> GetById(int TypeId)
         {
-            var types = await _context.SubscriptionTypes
-               .Include(x => x.Category)
-               .Where(x => x.Id == TypeId)
-               .ToListAsync();
-            return types;
+            BaseUrl = _url + $"api/SubscriptionType/{TypeId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var account = await response.Content.ReadAsJsonAsync<SubscriptionTypeDTO>();
+                return account;
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public List<SelectListItem> GetCategories()
+        public async Task<List<SelectListItem>> GetCategories()
         {
             List<SelectListItem> types = new();
-            var categories = _context.AssetCategories
-                .Where(x => EF.Functions.Like(x.Category, "%Subscription"))
-                .ToList();
-            foreach (var category in categories)
+            BaseUrl = _url + $"api/AssetCategory/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                types.Add(new SelectListItem($"{category.Category}",$"{category.Id}"));
+                var categories = await response.Content.ReadAsJsonAsync<List<AssetCategoryDTO>>();
+                foreach (var category in categories.Where(x => x.Category.Contains("Subscription")))
+                {
+                    types.Add(new SelectListItem($"{category.Category}", $"{category.Id}"));
+                }
             }
             return types;
         }
-        public AssetCategory GetAssetCategory(int Id)
+        public async Task<AssetCategoryDTO> GetAssetCategory(int Id)
         {
-            var cat = _context.AssetCategories.Where(x => x.Id == Id).First();
-            return cat;
+            BaseUrl = _url + $"api/AssetCategory/{Id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<AssetCategoryDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Create(SubscriptionType subscriptionType, string table)
+        public async Task Create(SubscriptionTypeDTO subscriptionType)
         {
-            _context.SubscriptionTypes.Add(subscriptionType);
-            await _context.SaveChangesAsync();
-            await LogCreate(table, subscriptionType.Id, $"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}");
+            BaseUrl = _url + $"api/SubscriptionType";
+            _Client.SetBearerToken(TokenStore.Token);
+            await _Client.PostAsJsonAsync(BaseUrl, subscriptionType);
         }
-        public async Task Edit(SubscriptionType subscriptionType, string provider, string Type, string description, string table)
+        public async Task Edit(SubscriptionTypeDTO subscriptionType, string provider, string Type, string description)
         {
-            bool changed = false;
-            string oldProvider = subscriptionType.Provider;
-            string oldType = subscriptionType.Type;
-            string oldDescription = subscriptionType.Description;
-            if(String.Compare(oldProvider,provider) != 0)
-            {
-                changed = true;
-                subscriptionType.Provider = provider;
-                await LogUpdate(table, subscriptionType.Id, "Provider", oldProvider, provider);
-            }
-            if(String.Compare(oldDescription,description) != 0)
-            {
-                changed = true;
-                subscriptionType.Description = description;
-                await LogUpdate(table, subscriptionType.Id, "Description", oldDescription, description);
-            }
-            if(String.Compare(oldType,Type) != 0)
-            {
-                changed = true;
-                subscriptionType.Type = Type;
-                await LogUpdate(table, subscriptionType.Id, "Type", oldType, Type);
-            }
-            if (changed)
-            {
-                subscriptionType.LastModfiedAdmin = Admin;
-                await _context.SaveChangesAsync();
-            }
+            subscriptionType.Provider = provider;
+            subscriptionType.Type = Type;
+            subscriptionType.Description = description;
+
+            BaseUrl = _url + $"api/SubscriptionType";
+            _Client.SetBearerToken(TokenStore.Token);
+            await _Client.PutAsJsonAsync(BaseUrl, subscriptionType);
         }
-        public async Task Delete(SubscriptionType subscriptionType, string reason, string table)
+        public async Task Delete(SubscriptionTypeDTO subscriptionType, string reason)
         {
-            subscriptionType.LastModfiedAdmin = Admin;
-            subscriptionType.Active = State.Inactive;
-            subscriptionType.DeactivateReason = reason;
-            await _context.SaveChangesAsync();
-            await LogDeactivate(table, subscriptionType.Id, $"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", reason);
+            BaseUrl = _url + $"api/SubscriptionType/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            await _Client.DeleteAsJsonAsync(BaseUrl, subscriptionType);
         }
-        public async Task Activate(SubscriptionType subscriptionType, string table)
+        public async Task Activate(SubscriptionTypeDTO subscriptionType)
         {
-            subscriptionType.LastModfiedAdmin = Admin;
-            subscriptionType.Active = State.Active;
-            subscriptionType.DeactivateReason = "";
-            await _context.SaveChangesAsync();
-            await LogActivate(table, subscriptionType.Id, $"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}");
+            BaseUrl = _url + $"api/SubscriptionType/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            await _Client.PostAsJsonAsync(BaseUrl, subscriptionType);
         }
     }
 }

@@ -32,24 +32,25 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Devices)
                 .HasForeignKey(e => e.TypeId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Device_Type")
-                .IsRequired();
+                .IsRequired(false);
 
             builder.HasOne(e => e.Identity)
                 .WithMany(d => d.Devices)
                 .HasForeignKey(e => e.IdentityId)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Device_Identity");
+                .HasConstraintName("FK_Device_Identity")
+                .IsRequired(false); 
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Devices)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Device_Category")
-                .IsRequired();
+                .IsRequired(false);
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Devices)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

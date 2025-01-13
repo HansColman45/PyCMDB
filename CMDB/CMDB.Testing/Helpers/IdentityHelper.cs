@@ -1,10 +1,8 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Builders.EntityBuilders;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -13,14 +11,14 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Identity> CreateSimpleIdentity(CMDBContext context, Admin admin, bool active = true)
         {
-            var language = context.Languages.Where(x => x.Code == "NL").FirstOrDefault();
-            var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").FirstOrDefault();
+            var language = context.Languages.Where(x => x.Code == "NL").AsNoTracking().FirstOrDefault();
+            var identype = context.Types.OfType<IdentityType>().Where(x => x.Type == "Werknemer").AsNoTracking().FirstOrDefault();
 
             var identity = new IdentityBuilder()
-                .With(x => x.Language, language)
-                .With(x => x.Type, identype)
+                .With(x => x.LanguageCode, language.Code)
+                .With(x => x.TypeId, identype.TypeId)
                 .With(x => x.LastModifiedAdminId, admin.AdminId)
-                .With(x => x.active, active ? 1 : 0)
+                .With(x => x.active, 1)
                 .Build();
 
             identity.Logs.Add(new LogBuilder()

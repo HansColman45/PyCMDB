@@ -1,25 +1,24 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
+using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using CMDB.Domain.Entities;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.Util;
 
 namespace CMDB.Controllers
 {
     public class DockingController : CMDBController
     {
-        private new readonly DevicesService service;
-
-        public DockingController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly DevicesService service;
+        private readonly PDFService _PDFservice;
+        public DockingController(IWebHostEnvironment env) : base(env)
         {
-            service = new(context);
+            service = new();
             SitePart = "Docking station";
             Table = "docking";
+            _PDFservice = new ();
         }
         public async Task<IActionResult> Index()
         {
@@ -27,31 +26,33 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Docking station overview";
             await BuildMenu();
             var Desktops = await service.ListAll(SitePart);
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["actionUrl"] = @"\Docking\Search";
+            ViewData["Controller"] = @"\Docking\Create";
             return View(Desktops);
         }
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            if (!String.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
                 ViewData["Title"] = "Docking station overview";
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
-                ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-                ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-                ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
-                ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
-                ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-                ViewData["AssignIdentityAccess"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
+                ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+                ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+                ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+                ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
+                ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+                ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
                 ViewData["actionUrl"] = @"\Docking\Search";
+                ViewData["Controller"] = @"\Docking\Create";
                 return View(Desktops);
             }
             else
@@ -64,41 +65,40 @@ namespace CMDB.Controllers
             log.Debug("Using Delete in {0}", SitePart);
             if (id == null)
                 return NotFound();
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
+                return NotFound();
             ViewData["Title"] = "Delete docking station";
-            ViewData["DeleteAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Delete");
+            ViewData["Controller"] = @$"\Docking\Delete\{id}";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["backUrl"] = "Docking";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var dockings = await service.ListDockingByID(id);
-            Docking docking = dockings.FirstOrDefault();
-            if (docking == null)
-                return NotFound();
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        if (docking.IdentityId > 1)
+                        if (docking.Identity.IdenId > 1)
                         {
-                            PDFGenerator PDFGenerator = new()
-                            {
-                                ITEmployee = service.Admin.Account.UserID,
-                                Singer = docking.Identity.Name,
-                                UserID = docking.Identity.UserID,
-                                FirstName = docking.Identity.FirstName,
-                                LastName = docking.Identity.LastName,
-                                Language = docking.Identity.Language.Code,
-                                Receiver = docking.Identity.Name
-                            };
-                            PDFGenerator.SetAssetInfo(docking);
-                            string pdfFile = PDFGenerator.GeneratePDF(_env);
-                            await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                            await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
-                            await service.ReleaseIdenity(docking, docking.Identity, Table);
+                            var admin = await service.Admin();
+                            await _PDFservice.SetUserinfo(
+                                UserId: docking.Identity.UserID,
+                                ITEmployee: admin.Account.UserID,
+                                Singer: docking.Identity.Name,
+                                FirstName: docking.Identity.FirstName,
+                                LastName: docking.Identity.LastName,
+                                Language: docking.Identity.Language.Code,
+                                Receiver: docking.Identity.Name,
+                                type: "Release");
+                            await _PDFservice.SetDeviceInfo(docking);
+                            await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                            await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
+                            await service.ReleaseIdenity(docking);
                         }
-                        await service.Deactivate(docking, values["reason"], Table);
+                        await service.Deactivate(docking, values["reason"]);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -114,18 +114,17 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
-            ViewData["Title"] = "Activate docking station";
-            ViewData["ActiveAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Activate");
-            await BuildMenu();
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            Docking docking = dockings.FirstOrDefault();
+            var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
-            if (service.HasAdminAccess(service.Admin, SitePart, "Activate"))
+            ViewData["Title"] = "Activate docking station";
+            ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
+            await BuildMenu();            
+            if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(docking, Table);
+                await service.Activate(docking);
                 return RedirectToAction(nameof(Index));
             }
             else
@@ -136,51 +135,51 @@ namespace CMDB.Controllers
         }
         public async Task<IActionResult> Details(string id)
         {
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            if (dockings == null)
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
                 return NotFound();
-            Docking docking = dockings.FirstOrDefault();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = "Docking station details";
+            ViewData["Controller"] = @"\Docking\Create";
             await BuildMenu();
-            ViewData["InfoAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Read");
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
-            ViewData["IdentityOverview"] = service.HasAdminAccess(service.Admin, SitePart, "IdentityOverview");
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
+            ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
+            ViewData["IdentityOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "IdentityOverview");
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            service.GetLogs(Table, docking.AssetTag, docking);
-            service.GetAssignedIdentity(docking);
             return View(docking);
         }
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
             ViewData["Title"] = "Create docking station";
-            ViewData["AddAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Add");
+            ViewData["Controller"] = @"\Docking\Create";
+            ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
-            Docking docking = new();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            DeviceDTO docking = new();
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     docking.AssetTag = values["AssetTag"];
                     docking.SerialNumber = values["SerialNumber"];
-                    int Type = Convert.ToInt32(values["Type"]);
-                    var AssetType = service.ListAssetTypeById(Type);
-                    docking.Type = AssetType;
-                    docking.Category = AssetType.Category;
-                    if (service.IsDeviceExisting(docking))
+                    int Type = Convert.ToInt32(values["AssetType"]);
+                    var AssetType = await service.GetAssetTypeById(Type);
+                    var category = await service.GetAsstCategoryByCategory("Docking station");
+                    docking.AssetType = AssetType;
+                    docking.Category = category;
+                    if (await service.IsDeviceExisting(docking))
                         ModelState.AddModelError("", "Asset already exist");
                     if (ModelState.IsValid)
                     {
-                        await service.CreateNewDevice(docking, Table);
+                        await service.CreateNewDevice(docking);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -196,26 +195,26 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
-            if (String.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            if (dockings == null)
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
                 return NotFound();
             await BuildMenu();
-            ViewData["UpdateAccess"] = service.HasAdminAccess(service.Admin, SitePart, "Update");
+            ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["Title"] = "Edit docking station";
-            Docking docking = dockings.FirstOrDefault();
-            ViewBag.Types = service.ListAssetTypes(SitePart);
+            ViewBag.Types = await service.ListAssetTypes(SitePart);
             ViewData["backUrl"] = "Docking";
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            ViewData["Controller"] = @$"\Docking\Edit\{id}";
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string newSerial = values["SerialNumber"];
-                int Type = Convert.ToInt32(values["Type.TypeID"]);
-                var AssetType = service.ListAssetTypeById(Type);
+                int Type = Convert.ToInt32(values["AssetType.TypeID"]);
+                var AssetType = await service.GetAssetTypeById(Type);
                 if (ModelState.IsValid)
                 {
-                    await service.UpdateDocking(docking, newSerial, AssetType, Table);
+                    await service.UpdateDevice(docking, newSerial, AssetType);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -224,28 +223,28 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
-            ViewData["Title"] = "Assign identity to docking";
-            ViewData["AssignIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "AssignIdentity");
-            ViewData["backUrl"] = "Laptop";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            Docking docking = dockings.FirstOrDefault();
+            var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
-            ViewBag.Identities = service.ListFreeIdentities();
+            ViewData["Title"] = "Assign identity to docking";
+            ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["backUrl"] = "Laptop";
+            ViewData["Controller"] = @$"\Docking\AssignIdentity\{id}";
+            await BuildMenu();
+            ViewBag.Identities = await service.ListFreeIdentities();
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
                 {
                     if (!service.IsDeviceFree(docking))
                         ModelState.AddModelError("", "Docking station can not be assigned to another user");
-                    Identity identity = service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
+                    var identity = await service.GetAssignedIdentity(Int32.Parse(values["Identity"]));
                     if (ModelState.IsValid)
                     {
-                        await service.AssignIdentity2Device(identity, docking, Table);
+                        await service.AssignIdentity2Device(identity, docking);
                         return RedirectToAction("AssignForm", "Docking", new { id });
                     }
                 }
@@ -261,40 +260,36 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
+                return NotFound();
             ViewData["Title"] = "Assign form";
             ViewData["backUrl"] = "Docking";
             ViewData["Action"] = "AssignForm";
             await BuildMenu();
-            if (id == null)
-                return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            Docking docking = dockings.FirstOrDefault();
-            if (docking == null)
-                return NotFound();
-            service.GetAssignedIdentity(docking);
             ViewData["Name"] = docking.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid)
                 {
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = docking.Identity.UserID,
-                        FirstName = docking.Identity.FirstName,
-                        LastName = docking.Identity.LastName,
-                        Language = docking.Identity.Language.Code,
-                        Receiver = docking.Identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(docking);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                    await _PDFservice.SetUserinfo(
+                        UserId: docking.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: docking.Identity.Name,
+                        FirstName: docking.Identity.FirstName,
+                        LastName: docking.Identity.LastName,
+                        Language: docking.Identity.Language.Code,
+                        Receiver: docking.Identity.Name);
+                    await _PDFservice.SetDeviceInfo(docking);
+                    await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -303,43 +298,41 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
-            ViewData["Title"] = "Release identity from Docking";
-            ViewData["ReleaseIdentity"] = service.HasAdminAccess(service.Admin, SitePart, "ReleaseIdentity");
-            ViewData["backUrl"] = "Docking";
-            ViewData["Action"] = "ReleaseIdentity";
-            await BuildMenu();
-            if (id == null)
+            if (string.IsNullOrEmpty(id))
                 return NotFound();
-            var dockings = await service.ListDockingByID(id);
-            Docking docking = dockings.FirstOrDefault();
+            var docking = await service.GetDeviceById(SitePart, id);
             if (docking == null)
                 return NotFound();
-            service.GetAssignedIdentity(docking);
+            ViewData["Title"] = "Release identity from Docking";
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "ReleaseIdentity";
+            ViewData["Controller"] = @$"\Docking\ReleaseIdentity\{id}";
+            await BuildMenu();
             ViewData["Name"] = docking.Identity.Name;
-            ViewData["AdminName"] = service.Admin.Account.UserID;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
-                Identity identity = docking.Identity;
+                var identity = docking.Identity;
                 if (ModelState.IsValid)
                 {
-                    await service.ReleaseIdenity(docking, identity, Table);
-                    PDFGenerator PDFGenerator = new()
-                    {
-                        ITEmployee = ITPerson,
-                        Singer = Employee,
-                        UserID = identity.UserID,
-                        FirstName = identity.FirstName,
-                        LastName = identity.LastName,
-                        Language = identity.Language.Code,
-                        Receiver = identity.Name
-                    };
-                    PDFGenerator.SetAssetInfo(docking);
-                    string pdfFile = PDFGenerator.GeneratePDF(_env);
-                    await service.LogPdfFile("identity", docking.Identity.IdenId, pdfFile);
-                    await service.LogPdfFile(Table, docking.AssetTag, pdfFile);
+                    await _PDFservice.SetUserinfo(
+                        UserId: docking.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: docking.Identity.Name,
+                        FirstName: docking.Identity.FirstName,
+                        LastName: docking.Identity.LastName,
+                        Language: docking.Identity.Language.Code,
+                        Receiver: docking.Identity.Name,
+                        type: "Release");
+                    await _PDFservice.SetDeviceInfo(docking);
+                    await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                    await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
+                    await service.ReleaseIdenity(docking);
                     return RedirectToAction(nameof(Index));
                 }
             }

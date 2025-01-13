@@ -2,7 +2,7 @@
     @if ((bool)ViewData["AddAccess"])
     {
         <div class="col-md-6 text-left">
-            <a class="btn icon-btn btn-success" asp-action="Create"><span class="@ViewBag.NewIcon"></span> Add</a>
+            <a class="btn icon-btn btn-success" href="@ViewData["Controller"]"><span class="@ViewBag.NewIcon"></span> Add</a>
         </div>
     }
     <div class="col-md-6 text-right">

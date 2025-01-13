@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.AccountType>
+﻿@model CMDB.API.Models.TypeDTO
 @{
     Layout = "_Layout";
 }
@@ -10,50 +10,44 @@
             <tr>
                 <th>@Html.DisplayNameFor(model => model.Type)</th>
                 <th>@Html.DisplayNameFor(model => model.Description)</th>
-                <th>@Html.DisplayNameFor(model => model.Active)</th>
+                <th>@Html.DisplayNameFor(model => model.State)</th>
                 <th class="d-none">Id</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="Type">@Html.DisplayFor(modelItem => item.Type)</td>
-                    <td id="Description">@Html.DisplayFor(modelItem => item.Description)</td>
-                    <td id="Active">@Html.DisplayFor(modelItem => item.Active)</td>
-                    <td id="Id" class="d-none">@Html.DisplayFor(modelItem => item.TypeId)</td>
-                </tr>
-            }
+            <tr>
+                <td id="Type">@Html.DisplayFor(model => model.Type)</td>
+                <td id="Description">@Html.DisplayFor(model => model.Description)</td>
+                <td id="Active">@Html.DisplayFor(model => model.State)</td>
+                <td id="Id" class="d-none">@Html.DisplayFor(model => model.TypeId)</td>
+            </tr>
         </tbody>
     </table>
     <partial name="_AddNew" />
-    @foreach (var item in Model)
+    <H3>Log overview</H3>
+    @if (Model.Logs.Count > 0)
     {
-        <H3>Log overview</H3>
-        @if (item.Logs.Count > 0)
-        {
-            <table class="table table-striped table-bordered">
-                <thead class="thead-light">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                {
                     <tr>
-                        <th>Date</th>
-                        <th>Text</th>
+                        <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
+                        <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (CMDB.Domain.Entities.Log log in item.Logs)
-                    {
-                        <tr>
-                            <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
-                            <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p>No logs for to this AccountType</p>
-        }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No logs for to this AccountType</p>
     }
 }
 else

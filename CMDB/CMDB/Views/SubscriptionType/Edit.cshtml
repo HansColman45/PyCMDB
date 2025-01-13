@@ -1,16 +1,16 @@
-﻿@model CMDB.Domain.Entities.SubscriptionType
+﻿@model CMDB.API.Models.SubscriptionTypeDTO
 @{
     Layout = "_Layout";
 }
 <zh2>@ViewData["Title"]</zh2>
 @if ((bool)ViewData["UpdateAccess"])
 {
-    <form class="form-horizontal" asp-action="Edit" method="post">
+    <form class="form-horizontal" action="@ViewData["Controller"]" method="post">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label">Type <span style="color:red;">*</span></label>
-            @Html.DropDownListFor(Model => Model.Category.Id, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" , @disabled = "disabled"})
-            <span class="text-danger field-validation-valid" asp-validation-for="Category" data-valmsg-replace="true"></span>
+            @Html.DropDownListFor(Model => Model.AssetCategory.Id, (IEnumerable<SelectListItem>)ViewBag.Types, "Please select", new { @class = "form-control" , @disabled = "disabled"})
+            <span class="text-danger field-validation-valid" asp-validation-for="AssetCategory" data-valmsg-replace="true"></span>
         </div>
         <div class="form-group">
             <label class="control-label" asp-for="Provider">Provider <span style="color:red;">*</span></label>

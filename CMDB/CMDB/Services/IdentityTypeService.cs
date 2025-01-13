@@ -1,8 +1,8 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System;
+using CMDB.Infrastructure;
+using CMDB.Util;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -10,97 +10,92 @@ namespace CMDB.Services
 {
     public class IdentityTypeService : LogService
     {
-        public IdentityTypeService(CMDBContext context) : base(context)
+        public IdentityTypeService() : base()
         {
         }
-        public async Task<ICollection<IdentityType>> ListAll()
+        public async Task<ICollection<TypeDTO>> ListAll()
         {
-            var types = await _context.Types
-                .OfType<IdentityType>()
-                .ToListAsync();
-            return types;
-        }
-        public async Task<ICollection<IdentityType>> ListAll(string searchString)
-        {
-            string searhterm = "%" + searchString + "%";
-            var types = await _context.Types
-                .OfType<IdentityType>()
-                .Where(x => EF.Functions.Like(x.Description, searhterm) || EF.Functions.Like(x.Type, searchString))
-                .ToListAsync();
-            return types;
-        }
-        public async Task<ICollection<IdentityType>> GetByID(int id)
-        {
-            var types = await _context.Types
-                .OfType<IdentityType>()
-                .Where(x => x.TypeId == id)
-                .ToListAsync();
-            return types;
-        }
-        public async Task Create(IdentityType identityType, string Table)
-        {
-            identityType.LastModfiedAdmin = Admin;
-            _context.Types.Add(identityType);
-            await _context.SaveChangesAsync();
-            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
-            await LogCreate(Table, identityType.TypeId, Value);
-        }
-        public async Task Update(IdentityType identityType, string Type, string Description, string Table)
-        {
-            string oldType = identityType.Type;
-            string oldDescription = identityType.Description;
-            identityType.LastModfiedAdmin = Admin;
-            if (String.Compare(identityType.Type, Type) != 0)
+            BaseUrl = _url + $"api/IdentityType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                identityType.Type = Type;
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeId, "Type", oldType, Type);
+                return await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
             }
-            if (String.Compare(identityType.Description, Description) != 0)
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task<ICollection<TypeDTO>> ListAll(string searchString)
+        {
+            BaseUrl = _url + $"api/IdentityType/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                identityType.Description = Description;
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, identityType.TypeId, "Description", oldDescription, Description);
+                return await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
             }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Deactivate(IdentityType identityType, string reason, string Table)
+        public async Task<TypeDTO> GetByID(int id)
         {
-            identityType.LastModfiedAdmin = Admin;
-            identityType.DeactivateReason = reason;
-            identityType.Active = State.Inactive;
-            await _context.SaveChangesAsync();
-            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
-            await LogDeactivate(Table, identityType.TypeId, Value, reason);
+            BaseUrl = _url + $"api/IdentityType/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<TypeDTO>();
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Activate(IdentityType identityType, string table)
+        public async Task Create(TypeDTO identityType)
         {
-            identityType.LastModfiedAdmin = Admin;
-            identityType.DeactivateReason = "";
-            identityType.Active = State.Active;
-            await _context.SaveChangesAsync();
-            string Value = $"Identitytype with type: {identityType.Type} and description: {identityType.Description}";
-            await LogActivate(table, identityType.TypeId, Value);
+            BaseUrl = _url + $"api/IdentityType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
+            if (response.IsSuccessStatusCode)
+            {
+                await response.Content.ReadAsJsonAsync<TypeDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsExisting(IdentityType identityType, string Type = "", string Description = "")
+        public async Task Update(TypeDTO identityType, string Type, string Description)
+        {
+            BaseUrl = _url + $"api/IdentityType";
+            _Client.SetBearerToken(TokenStore.Token);
+            identityType.Type = Type;
+            identityType.Description = Description;
+            var response = await _Client.PutAsJsonAsync(BaseUrl, identityType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task Deactivate(TypeDTO identityType, string reason)
+        {
+            BaseUrl = _url + $"api/IdentityType/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, identityType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task Activate(TypeDTO identityType)
+        {
+            BaseUrl = _url + $"api/IdentityType/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task<bool> IsExisting(TypeDTO identityType, string Type = "", string Description = "")
         {
             bool result = false;
-            if (String.IsNullOrEmpty(Type) && String.Compare(identityType.Type, Type) != 0)
+            identityType.Type = Type == "" ? identityType.Type : Type;
+            identityType.Description = Description == "" ? identityType.Description : Description;
+            BaseUrl = _url + $"api/IdentityType/IsExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
+            if (response.IsSuccessStatusCode)
             {
-                var identypes = _context.Types
-                    .OfType<IdentityType>()
-                    .Where(x => x.Type == Type)
-                    .ToList();
-                if (identypes.Count > 0)
-                    result = true;
-            }
-            if (String.IsNullOrEmpty(Description) && String.Compare(identityType.Description, Description) != 0)
-            {
-                var identypes = _context.Types
-                    .OfType<IdentityType>()
-                    .Where(x => x.Description == Description)
-                    .ToList();
-                if (identypes.Count > 0)
-                    result = true;
+                result = await response.Content.ReadAsJsonAsync<bool>();
             }
             return result;
         }

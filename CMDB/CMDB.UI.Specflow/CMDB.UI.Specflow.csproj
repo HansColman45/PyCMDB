@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <OutputType>Library</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Bright.ScreenPlay" Version="2.0.10" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="SpecFlow" Version="3.9.74" />
+    <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57" />
+    <PackageReference Include="SpecFlow.MsTest" Version="3.9.74" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.6.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.6.3" />
+    <PackageReference Include="FluentAssertions" Version="6.12.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Identity\" />
+    <Folder Include="Features\Account\" />
+    <Folder Include="Features\AccountType\" />
+    <Folder Include="Features\AssetType\" />
+    <Folder Include="Features\Desktop\" />
+    <Folder Include="Features\Docking\" />
+    <Folder Include="Features\IdentityType\" />
+    <Folder Include="Features\Laptop\" />
+    <Folder Include="Features\Mobile\" />
+    <Folder Include="Features\Monitor\" />
+    <Folder Include="Features\Subscription\" />
+    <Folder Include="Features\SubscriptionType\" />
+    <Folder Include="Features\Token\" />
+    <Folder Include="Screenshots\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CMDB.Domain\CMDB.Domain.csproj" />
+    <ProjectReference Include="..\CMDB.Infrastructure\CMDB.Infrastructure.csproj" />
+    <ProjectReference Include="..\CMDB.Testing\CMDB.Testing.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Nlog.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+</Project>

@@ -1,11 +1,9 @@
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace CMDB
 {
@@ -20,11 +18,8 @@ namespace CMDB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
-            services.AddDbContext<CMDBContext>(
-                opt => opt.UseSqlServer(Configuration.GetConnectionString("CMDBConnection")),
-                ServiceLifetime.Singleton
-            );
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
+            services.AddScoped<ITokenStore, TokenStore>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
         }
 
@@ -38,7 +33,6 @@ namespace CMDB
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -51,6 +45,22 @@ namespace CMDB
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "ReleaseDevice",
+                    pattern: "identity/ReleaseDevice/{id?}/{AssetTag}",
+                    defaults: new {controller= "Identity", action = "ReleaseDevice" });
+                endpoints.MapControllerRoute(
+                    name: "ReleaseMobile",
+                    pattern: "{controller=Identity}/{action=ReleaseMobile}/{id?}/{MobileId}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseInternetSubscription",
+                    pattern: "{controller=Identity}/{action=ReleaseInternetSubscription}/{id?}/{SubscriptionId}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseIdentity",
+                    pattern: "{controller=Mobile}/{action=ReleaseIdentity}/{id?}/{idenid}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseSubscription",
+                    pattern: "{controller=Mobile}/{action=ReleaseSubscription}/{id?}/{SubscriptionId}");
+                /*endpoints.MapControllerRoute(
                     name: "ReleaseMobile",
                     pattern: "{controller}/{action}/{id?}/{MobileId}",
                     new { controller = "Identity", action = "ReleaseMobile" }
@@ -64,7 +74,7 @@ namespace CMDB
                     name: "ReleaseSubscription",
                     pattern: "{controller}/{action}/{id?}/{SubscriptionId}",
                     new { controller = "Identity", action = "ReleaseSubscription" }
-                    );
+                    );*/
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");

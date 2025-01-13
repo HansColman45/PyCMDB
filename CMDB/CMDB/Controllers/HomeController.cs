@@ -1,16 +1,16 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using CMDB.Infrastructure;
+﻿using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
-using CMDB.Services;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
     public class HomeController : CMDBController
     {
-        public HomeController(CMDBContext context, IWebHostEnvironment env) : base(context, env)
+        private readonly CMDBServices service;
+        public HomeController(IWebHostEnvironment env) : base(env)
         {
+            service = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -22,7 +22,6 @@ namespace CMDB.Controllers
         public IActionResult LogOut()
         {
             log.Debug("Using Logout {0}", "Home");
-            service.Admin = null;
             string stringFullUrl = @"\Login";
             return Redirect(stringFullUrl);
         }

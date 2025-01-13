@@ -1,117 +1,100 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
+using CMDB.Infrastructure;
+using CMDB.Util;
 using System.Collections.Generic;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
     public class AccountTypeService : LogService
     {
-        public AccountTypeService(CMDBContext context) : base(context)
+        public AccountTypeService() : base()
         {
         }
-        public async Task<List<AccountType>> GetAccountTypeByID(int ID)
+        public async Task<TypeDTO> GetAccountTypeByID(int ID)
         {
-            List<AccountType> accountTypes = await _context.Types.OfType<AccountType>().Where(x => x.TypeId == ID).ToListAsync();
-            return accountTypes;
+            BaseUrl = _url + $"api/AccountType/{ID}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<TypeDTO>();
+            else
+                throw new NotAValidSuccessCode(BaseUrl,response.StatusCode);
         }
-        public async Task Create(AccountType accountType, string Table)
+        public async Task Create(TypeDTO typeDTO)
         {
-            accountType.LastModfiedAdmin = Admin;
-            _context.Types.Add(accountType);
-            await _context.SaveChangesAsync();
-            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogCreate(Table, accountType.TypeId, Value);
-        }
-        public async Task Update(AccountType accountType, string Type, string Description, string Table)
-        {
-            accountType.LastModfiedAdmin = Admin;
-            if (String.Compare(accountType.Type, Type) != 0)
+            BaseUrl = _url + $"api/AccountType";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, typeDTO);
+            if (response.IsSuccessStatusCode)
             {
-                accountType.Type = Type;
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeId, "Type", accountType.Type, Type);
+                await response.Content.ReadAsJsonAsync<TypeDTO>();
             }
-            if (String.Compare(accountType.Description, Description) != 0)
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task Update(TypeDTO accountType, string Type, string Description)
+        {
+            BaseUrl = _url + $"api/AccountType";
+            _Client.SetBearerToken(TokenStore.Token);
+            accountType.Type = Type;
+            accountType.Description = Description;
+            var response = await _Client.PutAsJsonAsync(BaseUrl,accountType);
+            if(!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task Deactivate(TypeDTO accountType, string Reason)
+        {
+            BaseUrl = _url + $"api/AccountType/{Reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, accountType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task Activate(TypeDTO accountType)
+        {
+            BaseUrl = _url + $"api/AccountType/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, accountType);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task<List<TypeDTO>> ListAll()
+        {
+            BaseUrl = _url + $"api/AccountType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
             {
-                accountType.Description = Description;
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, accountType.TypeId, "Description", accountType.Description, Description);
+                return await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
             }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Deactivate(AccountType accountType, string Reason, string Table)
+        public async Task<List<TypeDTO>> ListAll(string searchString)
         {
-            accountType.Active = State.Inactive;
-            accountType.DeactivateReason = Reason;
-            accountType.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogDeactivate(Table, accountType.TypeId, Value, Reason);
+            BaseUrl = _url + $"api/AccountType/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<List<TypeDTO>>();
+            }
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task Activate(AccountType accountType, string Table)
-        {
-            accountType.Active = State.Active;
-            accountType.DeactivateReason = "";
-            accountType.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            string Value = "Accounttype with type: " + accountType.Type + " and description: " + accountType.Description;
-            await LogActivate(Table, accountType.TypeId, Value);
-        }
-        public async Task<List<AccountType>> ListAll()
-        {
-            List<AccountType> accountTypes = await _context.Types.OfType<AccountType>().ToListAsync();
-            return accountTypes;
-        }
-        public async Task<List<AccountType>> ListAll(string searchString)
-        {
-            string searhterm = "%" + searchString + "%";
-            List<AccountType> accountTypes = await _context.Types
-                .OfType<AccountType>()
-                .Where(x => EF.Functions.Like(x.Type, searhterm) || EF.Functions.Like(x.Description, searhterm)).ToListAsync();
-            return accountTypes;
-        }
-        public bool IsExisting(AccountType accountType, string Type = "", string Description = "")
+        public async Task<bool> IsExisting(TypeDTO accountType, string Type = "", string Description = "")
         {
             bool result = false;
-            if (String.IsNullOrEmpty(Type) && String.Compare(accountType.Type, Type) != 0)
+            accountType.Type = Type == "" ? accountType.Type : Type ;
+            accountType.Description = Description == "" ? accountType.Description : Description;
+            BaseUrl = _url + $"api/AccountType/IsExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, accountType);
+            if (response.IsSuccessStatusCode)
             {
-                var accountTypes = _context.Types
-                    .OfType<AccountType>()
-                    .Where(x => x.Type == Type)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
-            }
-            else
-            {
-                var accountTypes = _context.Types
-                    .OfType<AccountType>()
-                    .Where(x => x.Type == accountType.Type)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
-            }
-            if (String.IsNullOrEmpty(Description) && String.Compare(accountType.Description, Description) != 0)
-            {
-                var accountTypes = _context
-                    .Types.OfType<AccountType>()
-                    .Where(x => x.Description == Description)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
-            }
-            else
-            {
-                var accountTypes = _context
-                    .Types.OfType<AccountType>()
-                    .Where(x => x.Description == accountType.Description)
-                    .ToList();
-                if (accountTypes.Count > 0)
-                    result = true;
+                result = await response.Content.ReadAsJsonAsync<bool>();
             }
             return result;
         }

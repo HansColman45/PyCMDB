@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Identity>
+﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
 }
@@ -13,183 +13,72 @@
                 <th>E Mail</th>
                 <th>Language</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
                 <th class="d-none">Id</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="Name">@Html.DisplayTextFor(modelItem => item.Name)</td>
-                    <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                    <td id="EMail">@Html.DisplayTextFor(modelItem => item.EMail)</td>
-                    <td id="Language">@Html.DisplayTextFor(modelItem => item.Language.Description)</td>
-                    <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Description)</td>
-                    <td id="State">@Html.DisplayTextFor(modelItem => item.Active)</td>
-                    <td id="Id" class="d-none">@Html.DisplayFor(modelItem => item.IdenId)</td>
-                </tr>
-            }
+            <tr>
+                <td id="Name">@Html.DisplayTextFor(modelItem => modelItem.Name)</td>
+                <td id="UserId">@Html.DisplayTextFor(modelItem => modelItem.UserID)</td>
+                <td id="EMail">@Html.DisplayTextFor(modelItem => modelItem.EMail)</td>
+                <td id="Language">@Html.DisplayTextFor(modelItem => modelItem.Language.Description)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => modelItem.Type.Description)</td>
+                <td id="State">@Html.DisplayTextFor(modelItem => modelItem.State)</td>
+                <td id="Id" class="d-none">@Html.DisplayFor(modelItem => modelItem.IdenId)</td>
+            </tr>
         </tbody>
     </table>
     <partial name="_AddNew" />
-    @foreach (var item in Model)
+    @if ((bool)ViewData["AssignDevice"] && Model.IdenId > 1)
     {
-        @if ((bool)ViewData["AssignDevice"] && item.IdenId > 1)
-        {
-            <a class="btn icon-btn btn-success" asp-action="AssignDevice" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="@ViewBag.AddDeviceIcon"></span></a>
-        }
-        @if ((bool)ViewData["AssignAccount"])
-        {
-            <a class="btn icon-btn btn-success" asp-action="AssignAccount" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="@ViewBag.AddIdentityIcon"></span></a>
-        }
-        @if (item.Active == CMDB.Domain.Entities.State.Active && item.Devices.Count > 0 && (bool)ViewData["ReleaseDevice"])
-        {
-            <a class="btn btn-danger" asp-action="ReleaseDevices" asp-route-id="@item.IdenId" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
-        }
-        @if ((bool)ViewData["AccountOverview"])
-        {
-            <H3>Account overview</H3>
-            @if (item.Accounts.Count > 0)
-            {
-                <table class="table table-striped table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>UserID</th>
-                            <th>Application</th>
-                            <th>From</th>
-                            <th>Until</th>
-                            @if ((bool)ViewData["ReleaseAccount"] && item.IdenId > 1)
-                            {
-                                <th>Action</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (CMDB.Domain.Entities.IdenAccount idenAccount in item.Accounts)
-                        {
-                            <tr>
-                                <td class="small">@idenAccount.Account.UserID</td>
-                                <td class="small">@idenAccount.Account.Application.Name</td>
-                                <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
-                                <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
-                                @if ((bool)ViewData["ReleaseAccount"] && item.IdenId > 1)
-                                {
-                                    @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
-                                    {
-                                        <td class="small"><a class="btn btn-danger" asp-action="ReleaseAccount" asp-route-id="@idenAccount.ID" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
-                                    }
-                                    else
-                                    {
-                                        <td class="small"></td>
-                                    }
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No Accounts assigned to this Identity</p>
-            }
-        }
-        @if ((bool)ViewData["DeviceOverview"])
-        {
-            <H3>Asset overview</H3>
-            @if (item.Devices.Count > 0)
-            {
-                <table class="table table-striped table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Category</th>
-                            <th>Type</th>
-                            <th>AssetTag</th>
-                            <th>SerialNumber</th>
-                            @if ((bool)ViewData["ReleaseDevice"] && item.IdenId > 1)
-                            {
-                                <th>Action</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (CMDB.Domain.Entities.Device device in item.Devices)
-                        {
-                            <tr>
-                                <td class="small">@device.Category.Category</td>
-                                <td class="small">@device.Type.Vendor @device.Type.Type</td>
-                                <td class="small">@device.AssetTag</td>
-                                <td class="small">@device.SerialNumber</td>
-                                @if ((bool)ViewData["ReleaseDevice"] && item.IdenId > 1)
-                                {
-                                    <td class="small"><a class="btn btn-danger" href="/Identity/ReleaseDevice/@item.IdenId/@device.AssetTag" id="ReleaseDevice" data-toggle="tooltip" data-placement="top" title="Release"><span class="@ViewBag.AddDeviceIcon"></span></a></td>
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No Devices assigned to this Identity</p>
-            }
-        }
-        @if ((bool)ViewData["MobileOverview"])
-        {
-            <H3>Mobile overview</H3>
-            @if (item.Mobiles.Count > 0)
-            {
-                <table class="table table-striped table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>IMEI</th>
-                            <th>Type</th>
-                            @if ((bool)ViewData["ReleaseMobile"] && item.IdenId > 1)
-                            {
-                                <th>Action</th>
-                            }
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (CMDB.Domain.Entities.Mobile mobile in item.Mobiles)
-                        {
-                            <tr>
-                                <td class="small">@mobile.IMEI</td>
-                                <td class="small">@mobile.MobileType.Vendor @mobile.MobileType.Type</td>
-                                @if ((bool)ViewData["ReleaseMobile"] && item.IdenId > 1)
-                                {
-                                    <td class="small">
-                                        <a class="btn btn-danger" asp-controller="Identity" asp-action="ReleaseMobile" asp-route-id="@item.IdenId" asp-route-MobileId="@mobile.MobileId" id="ReleaseMobile" data-toggle="tooltip" data-placement="top" title="ReleaseMobile">
-                                            <span class="@ViewBag.AddDeviceIcon"></span>
-                                        </a>
-                                    </td>
-                                }
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p>No Mobiles assigned to this Identity</p>
-            }
-        }
-        <H3>Log overview</H3>
-        @if (item.Logs.Count > 0)
+        <a class="btn icon-btn btn-success" href="\Identity\AssignDevice\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Device" id="AssignDevice"><span class="@ViewBag.AddDeviceIcon"></span></a>
+    }
+    @if ((bool)ViewData["AssignAccount"])
+    {
+        <a class="btn icon-btn btn-success" href="\Identity\AssignAccount\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Assign Account" id="AssignAccount"><span class="@ViewBag.AddIdentityIcon"></span></a>
+    }
+    @if (Model.Active == 1 && Model.Devices.Count > 0 && (bool)ViewData["ReleaseDevice"])
+    {
+        <a class="btn btn-danger" href="\Identity\ReleaseDevices\@Model.IdenId" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
+    }
+    @if ((bool)ViewData["AccountOverview"])
+    {
+        <H3>Account overview</H3>
+        @if (Model.Accounts.Count > 0)
         {
             <table class="table table-striped table-bordered">
                 <thead class="thead-light">
                     <tr>
-                        <th>Date</th>
-                        <th>Text</th>
+                        <th>UserID</th>
+                        <th>Application</th>
+                        <th>From</th>
+                        <th>Until</th>
+                        @if ((bool)ViewData["ReleaseAccount"] && Model.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (CMDB.Domain.Entities.Log log in item.Logs)
+                    @foreach (CMDB.API.Models.IdenAccountDTO idenAccount in Model.Accounts)
                     {
                         <tr>
-                            <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
-                            <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
+                            <td class="small">@idenAccount.Account.UserID</td>
+                            <td class="small">@idenAccount.Account.Application.Name</td>
+                            <td class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
+                            <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
+                            @if ((bool)ViewData["ReleaseAccount"] && Model.IdenId > 1)
+                            {
+                                @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
+                                {
+                                    <td class="small"><a class="btn btn-danger" href="\Identity\ReleaseAccount\@idenAccount.Id" id="ReleaseAccount" data-toggle="tooltip" data-placement="top" title="Release Account"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                                }
+                                else
+                                {
+                                    <td class="small"></td>
+                                }
+                            }
                         </tr>
                     }
                 </tbody>
@@ -197,8 +86,157 @@
         }
         else
         {
-            <p>No logs for to this Identity</p>
+            <p>No Accounts assigned to this Identity</p>
         }
+    }
+    @if ((bool)ViewData["DeviceOverview"])
+    {
+        <H3>Asset overview</H3>
+        @if (Model.Devices.Count > 0)
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>AssetTag</th>
+                        <th>SerialNumber</th>
+                        @if ((bool)ViewData["ReleaseDevice"] && Model.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (CMDB.API.Models.DeviceDTO device in Model.Devices)
+                    {
+                        <tr>
+                            <td class="small">@device.Category.Category</td>
+                            <td class="small">@device.AssetType.Vendor @device.AssetType.Type</td>
+                            <td class="small">@device.AssetTag</td>
+                            <td class="small">@device.SerialNumber</td>
+                            @if ((bool)ViewData["ReleaseDevice"] && Model.IdenId > 1)
+                            {
+                                <td class="small">
+                                    <a class="btn btn-danger" href="\Identity\ReleaseDevice\@Model.IdenId\@device.AssetTag" id="ReleaseDevice" data-toggle="tooltip" data-placement="top" title="Release device">
+                                        <span class="@ViewBag.AddDeviceIcon"></span>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Devices assigned to this Identity</p>
+        }
+    }
+    @if ((bool)ViewData["MobileOverview"])
+    {
+        <H3>Mobile overview</H3>
+        @if (Model.Mobiles.Count > 0)
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>IMEI</th>
+                        <th>Type</th>
+                        @if ((bool)ViewData["ReleaseMobile"] && Model.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (CMDB.API.Models.MobileDTO mobile in Model.Mobiles)
+                    {
+                        <tr>
+                            <td class="small">@mobile.IMEI</td>
+                            <td class="small">@mobile.MobileType.Vendor @mobile.MobileType.Type</td>
+                            @if ((bool)ViewData["ReleaseMobile"] && Model.IdenId > 1)
+                            {
+                                <td class="small">
+                                    <a class="btn btn-danger" href="\Identity\ReleaseMobile\@Model.IdenId\@mobile.MobileId" id="ReleaseMobile" data-toggle="tooltip" data-placement="top" title="ReleaseMobile">
+                                        <span class="@ViewBag.AddDeviceIcon"></span>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Mobiles assigned to this Identity</p>
+        }
+    }
+    @if((bool)ViewData["SubscriptionOverview"])
+    {
+        <h3>Subscription overview</h3>
+        @if (Model.Subscriptions.Count > 0)
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Phone number</th>
+                        <th>Type</th>
+                        @if ((bool)ViewData["ReleaseSubscription"] && Model.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(CMDB.API.Models.SubscriptionDTO subscription in Model.Subscriptions){
+                        <tr>
+                            <td class="small">@subscription.PhoneNumber</td>
+                            <td class="small">@subscription.SubscriptionType</td>
+                            @if ((bool)ViewData["ReleaseSubscription"] && Model.IdenId > 1)
+                            {
+                                <td class="small">
+                                    <a class="btn btn-danger" href="\Identity\ReleaseInternetSubscription\@Model.IdenId\@subscription.SubscriptionId" id="ReleaseInternetSubscription"
+                                       data-toggle="tooltip" data-placement="top" title="ReleaseInternetSubscription">
+                                        <span class="@ViewBag.AddDeviceIcon"></span>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Subscription assigned to this Identity</p>
+        }
+    }
+    <H3>Log overview</H3>
+    @if (Model.Logs.Count > 0)
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
+                        <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No logs for to this Identity</p>
     }
 }
 else

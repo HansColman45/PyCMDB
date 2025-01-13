@@ -15,7 +15,6 @@ namespace CMDB.Testing.Builders.EntityBuilders.Devices
             {
                 s.AssetTag = "SRC"+f.Address.ZipCode();
                 s.SerialNumber = f.Commerce.Ean8();
-                s.Type = new AssetTypeBuilder().Build();
             });
         }
     }

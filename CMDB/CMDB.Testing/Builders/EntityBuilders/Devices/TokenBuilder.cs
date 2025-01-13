@@ -15,7 +15,6 @@ namespace CMDB.Testing.Builders.EntityBuilders.Devices
             {
                 t.AssetTag = "TKN"+f.Address.ZipCode();
                 t.SerialNumber = f.Commerce.Ean8();
-                t.Type = new AssetTypeBuilder().Build();
             });
         }
     }

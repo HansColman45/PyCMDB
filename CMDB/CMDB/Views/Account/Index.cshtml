@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Account>
+﻿@model IEnumerable<CMDB.API.Models.AccountDTO>
 @{
     Layout = "_Layout";
 }
@@ -10,7 +10,7 @@
             <th>UserID</th>
             <th>Type</th>
             <th>Application</th>
-            <th>Active</th>
+            <th>State</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -19,9 +19,9 @@
         {
             <tr>
                 <td>@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Type.Type) @Html.DisplayTextFor(modelItem => item.Type.Type)</td>
+                <td>@Html.DisplayTextFor(modelItem => item.Type.Type) @Html.DisplayTextFor(modelItem => item.Type.Description)</td>
                 <td>@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
-                <td>@Html.DisplayTextFor(modelItem => item.Active)</td>
+                <td>@Html.DisplayTextFor(modelItem => item.State)</td>
                 <td>
                     @if (item.AccID > 1)
                     {
@@ -29,17 +29,17 @@
                         {
                             <a class="btn btn-primary" asp-action="Edit" asp-route-id="@item.AccID" data-toggle="tooltip" data-placement="top" title="Edit"><span class="@ViewBag.EditIcon"></span></a>
                         }
-                        @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["DeleteAccess"])
+                        @if (item.Active == 1 && (bool)ViewData["DeleteAccess"])
                         {
                             <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.AccID" data-toggle="tooltip" data-placement="top" title="Deactivate"><span class="@ViewBag.DeactivateIcon"></span></a>
                         }
                         else if ((bool)ViewData["ActiveAccess"])
                         {
-                            <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.AccID" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                            <a class="btn btn-glyphicon" href="\Account\Activate\@item.AccID" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
-                        @if (item.Active == CMDB.Domain.Entities.State.Active && (bool)ViewData["AssignIdentity"])
+                        @if (item.Active == 1 && (bool)ViewData["AssignIdentity"])
                         {
-                            <a class="btn btn-success" asp-action="AssignIdentity" asp-route-id="@item.AccID" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
+                            <a class="btn btn-success" href="\Account\AssignIdentity\@item.AccID" data-toggle="tooltip" data-placement="top" title="Assign Identity"><span class="@ViewBag.AddIdentityIcon"></span></a>
                         }
                     }
                     @if ((bool)ViewData["InfoAccess"])

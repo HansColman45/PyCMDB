@@ -33,7 +33,7 @@ namespace CMDB.Infrastructure.Configurations
                 .HasColumnType("varchar(255)")
                 .IsRequired();
 
-            builder.HasOne(e => e.LastModfiedAdmin)
+            builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Types)
                 .HasForeignKey(e => e.LastModifiedAdminId)
                 .OnDelete(DeleteBehavior.SetNull)

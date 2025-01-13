@@ -1,169 +1,164 @@
-﻿using CMDB.Infrastructure;
-using CMDB.Domain.Entities;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using CMDB.API.Models;
+using CMDB.Domain.CustomExeptions;
+using CMDB.Infrastructure;
+using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Graph;
-using Subscription = CMDB.Domain.Entities.Subscription;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Identity = CMDB.Domain.Entities.Identity;
 
 namespace CMDB.Services
 {
     public class SubscriptionService : LogService
     {
-        public SubscriptionService(CMDBContext context) : base(context)
+        public SubscriptionService() : base()
         {
         }
-        public async Task<ICollection<Subscription>> ListAll()
+        public async Task<ICollection<SubscriptionDTO>> ListAll()
         {
-            var subscriptions = await _context.Subscriptions
-                .Include(x => x.Category)
-                .Include(x => x.SubscriptionType)
-                .ToListAsync();
-            return subscriptions;
+            BaseUrl = _url + $"api/Subscription/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<Subscription>> ListAll(string searchString)
+        public async Task<ICollection<SubscriptionDTO>> ListAll(string searchString)
         {
-            string searhterm = "%" + searchString + "%";
-            var subscriptions = await _context.Subscriptions
-                .Include(x => x.Category)
-                .Include(x => x.SubscriptionType)
-                .Where(x => EF.Functions.Like(x.PhoneNumber, searhterm) || EF.Functions.Like(x.SubscriptionType.Description, searhterm)
-                    || EF.Functions.Like(x.SubscriptionType.Type, searhterm))
-                .ToListAsync();
-            return subscriptions;
+            BaseUrl = _url + $"api/Subscription/GetAll/{searchString}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<ICollection<Subscription>> GetByID(int id)
+        public async Task<SubscriptionDTO> GetByID(int id)
         {
-            var subscriptions = await _context.Subscriptions
-                .Include(x => x.Category)
-                .Include(x => x.SubscriptionType)
-                .Where(x => x.SubscriptionId == id)
-                .ToListAsync();
-            return subscriptions;
+            BaseUrl = _url + $"api/Subscription/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<SubscriptionDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Create(SubscriptionType type, string phoneNumber, string table)
+        public async Task Create(SubscriptionTypeDTO type, string phoneNumber)
         {
-            Subscription subscription = new()
+            BaseUrl = _url + $"api/Subscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            SubscriptionDTO dto = new()
             {
-                LastModfiedAdmin = Admin,
-                Category = type.Category,
                 SubscriptionType = type,
                 PhoneNumber = phoneNumber
             };
-            if (type.Category.Category == "Internet Subscription")
-                subscription.IdentityId = 1;
-            _context.Subscriptions.Add(subscription);
-            await _context.SaveChangesAsync();
-            string Value = $"Subscription with Category: {type.Category.Category} and type {type} on {phoneNumber}";
-            await LogCreate(table, subscription.SubscriptionId, Value);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, dto);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Edit(Subscription subscription, string phoneNumber, string table)
+        public async Task Edit(SubscriptionDTO subscription, string phoneNumber)
         {
-            string oldPhone = subscription.PhoneNumber;
-            if(String.Compare(oldPhone,phoneNumber) != 0)
-            {
-                subscription.PhoneNumber = phoneNumber;
-                subscription.LastModfiedAdmin = Admin;
-                await _context.SaveChangesAsync();
-                await LogUpdate(table, subscription.SubscriptionId, "phone number", oldPhone, phoneNumber);
-            }
+            subscription.PhoneNumber = phoneNumber;
+            BaseUrl = _url + $"api/Subscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl,subscription);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Activate(Subscription subscription, string table)
+        public async Task Activate(SubscriptionDTO subscription)
         {
-            string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
-            subscription.LastModfiedAdmin = Admin;
-            subscription.Active = State.Active;
-            subscription.DeactivateReason = "";
-            await _context.SaveChangesAsync();
-            await LogActivate(table, subscription.SubscriptionId, Value);
+            BaseUrl = _url + $"api/Subscription/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, subscription);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task Deactivate(Subscription subscription, string reason, string table)
+        public async Task Deactivate(SubscriptionDTO subscription, string reason)
         {
-            string Value = $"Subscription with Category: {subscription.SubscriptionType.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
-            subscription.LastModfiedAdmin = Admin;
-            subscription.Active = State.Inactive;
-            subscription.DeactivateReason = reason;
-            await _context.SaveChangesAsync();
-            await LogDeactivate(table, subscription.SubscriptionId, Value, reason);
+            BaseUrl = _url + $"api/Subscription/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, subscription);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public async Task<SubscriptionType> GetSubscriptionTypeById(int id)
+        public async Task<SubscriptionTypeDTO> GetSubscriptionTypeById(int id)
         {
-            SubscriptionType type = await _context.SubscriptionTypes
-                .Include(x=> x.Category)
-                .Where(x => x.Id == id)
-                .FirstOrDefaultAsync();
-            return type;
+            BaseUrl = _url + $"api/SubscriptionType/{id}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<SubscriptionTypeDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
-        public List<SelectListItem> GetSubscriptionTypes()
+        public async Task<List<SelectListItem>> GetSubscriptionTypes()
         {
             List<SelectListItem> types = new();
-            var subscriptions = _context.SubscriptionTypes
-                .Include(x => x.Category)
-                .Where(x => x.active == 1)
-                .ToList();
-            foreach (var subscription in subscriptions)
-            {
-                types.Add(new SelectListItem($"{subscription}",$"{subscription.Id}"));
+            BaseUrl = _url + $"api/SubscriptionType/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) { 
+                var subtypes = await response.Content.ReadAsJsonAsync<List<SubscriptionTypeDTO>>();
+                foreach (var subtype in subtypes.Where(x => x.Active == 1)) 
+                {
+                    types.Add(new SelectListItem($"{subtype}", $"{subtype.Id}"));
+                }
             }
             return types;
         }
-        public async Task<bool> IsSubscritionExisting(SubscriptionType subscriptionType, string phoneNumber, int id =0)
+        public async Task<bool> IsSubscritionExisting(SubscriptionTypeDTO subscriptionType, string phoneNumber, int id =0)
         {
-            if(id > 0)
+            if (id != 0)
             {
-                var subs = await GetByID(id);
-                Subscription sub = subs.First();
-                if(String.Compare(sub.PhoneNumber,phoneNumber) != 0)
+                var sub = await GetByID(id);
+                sub.PhoneNumber = phoneNumber;
+                BaseUrl = _url + $"api/Subscription/IsExisting";
+                _Client.SetBearerToken(TokenStore.Token);
+                var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
+                if (response.IsSuccessStatusCode) 
                 {
-                    var subscriptions = _context.Subscriptions
-                                        .Include(x => x.SubscriptionType)
-                                        .Where(x => x.SubscriptionType.Id == subscriptionType.Id && x.PhoneNumber == phoneNumber)
-                                        .ToList();
-                    if (subscriptions.Count > 0)
-                        return true;
+                    return await response.Content.ReadAsJsonAsync<bool>();
                 }
                 else
-                    return false;
+                    throw new NotAValidSuccessCode(_url, response.StatusCode);
             }
             else
             {
-                var subs = _context.Subscriptions
-                    .Include(x => x.SubscriptionType)
-                    .Where(x => x.SubscriptionType.Id == subscriptionType.Id && x.PhoneNumber == phoneNumber)
-                    .ToList();
-                if(subs.Count > 0)
-                    return true;
+                SubscriptionDTO sub = new()
+                {
+                    SubscriptionType = subscriptionType,
+                    PhoneNumber = phoneNumber
+                };
+                BaseUrl = _url + $"api/Subscription/IsExisting";
+                _Client.SetBearerToken(TokenStore.Token);
+                var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
+                if (response.IsSuccessStatusCode)
+                {
+                    return await response.Content.ReadAsJsonAsync<bool>();
+                }
+                else
+                    throw new NotAValidSuccessCode(_url, response.StatusCode);
             }
-            return false;
         }
-        public async Task ReleaseIdenity(Subscription subscription, Identity identity,string table)
+        public async Task ReleaseIdenity(SubscriptionDTO subscription, IdentityDTO identity)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             subscription.IdentityId = 1;
             identity.Subscriptions.Remove(subscription);
-            await _context.SaveChangesAsync();
+            /*await _context.SaveChangesAsync();
             await LogReleaseIdentityFromSubscription("identity", identity,subscription);
-            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);
+            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);*/
         }
-        public async Task AssignIdentity(Subscription subscription, Identity identity, string table)
+        public async Task AssignIdentity(SubscriptionDTO subscription, IdentityDTO identity, string table)
         {
-            identity.LastModfiedAdmin = Admin;
+            /*identity.LastModfiedAdmin = Admin;
             subscription.LastModfiedAdmin = Admin;
             identity.Subscriptions.Add(subscription);
-            await _context.SaveChangesAsync();
+            /*await _context.SaveChangesAsync();
             await LogAssignIdentity2Subscription("identity", identity, subscription);
-            await LogAssignSubsciption2Identity(table, subscription, identity);
-        }
-
-        internal Task ReleaseIdenity(Subscription subscription, Identity identity)
-        {
-            throw new NotImplementedException();
+            await LogAssignSubsciption2Identity(table, subscription, identity);*/
         }
     }
 }

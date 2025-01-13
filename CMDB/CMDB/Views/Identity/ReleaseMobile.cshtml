@@ -1,7 +1,7 @@
-﻿@model CMDB.Domain.Entities.Identity
+﻿@model CMDB.API.Models.IdentityDTO
 @{
     Layout = "_Layout";
-    CMDB.Domain.Entities.Mobile mobile = (CMDB.Domain.Entities.Mobile)ViewBag.Mobile;
+    CMDB.API.Models.MobileDTO mobile = (CMDB.API.Models.MobileDTO)ViewBag.Mobile;
 }
 @if ((bool)ViewData["ReleaseMobile"])
 {
@@ -41,7 +41,7 @@
         <tbody>
             <tr>
                 <td>@mobile.IMEI</td>
-                <td>@mobile.Category.Category</td>
+                <td>@mobile.MobileType.AssetCategory.Category</td>
                 <td>@mobile.MobileType</td>
                 <td>@mobile.Active</td>
             </tr>

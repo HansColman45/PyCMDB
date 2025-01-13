@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Account>
+﻿@model CMDB.API.Models.AccountDTO
 @{
     Layout = "_Layout";
 }
@@ -11,19 +11,16 @@
                 <th>UserID</th>
                 <th>Type</th>
                 <th>Application</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                    <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
-                    <td id="Application">@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
-                    <td id="State">@Html.DisplayTextFor(modelItem => item.Active)</td>
-                </tr>
-            }
+            <tr>
+                <td id="UserId">@Html.DisplayTextFor(model => model.UserID)</td>
+                <td id="Type">@Html.DisplayTextFor(modelItem => modelItem.Type.Type)</td>
+                <td id="Application">@Html.DisplayTextFor(modelItem => modelItem.Application.Name)</td>
+                <td id="State">@Html.DisplayTextFor(modelItem => modelItem.State)</td>
+            </tr>
         </tbody>
     </table>
     <partial name="_deleteForm" />

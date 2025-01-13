@@ -14,7 +14,6 @@ namespace CMDB.Testing.Builders.EntityBuilders.Devices
             SetDefaultRules((f, d) =>
             {
                 d.AssetTag = "DST" + f.Address.ZipCode();
-                d.Type = new AssetTypeBuilder().Build();
                 d.RAM = "128";
                 d.MAC = "";
                 d.SerialNumber = f.Commerce.Ean8();

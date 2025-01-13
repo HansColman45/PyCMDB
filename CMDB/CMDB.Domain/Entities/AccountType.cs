@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace CMDB.Domain.Entities
 {
@@ -9,7 +9,7 @@ namespace CMDB.Domain.Entities
         {
             Accounts = new List<Account>();
         }
-
+        [JsonIgnore]
         public virtual ICollection<Account> Accounts { get; set; }
     }
 }

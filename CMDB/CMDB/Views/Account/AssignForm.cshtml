@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Account>
+﻿@model CMDB.API.Models.AccountDTO
 @{
     Layout = "_Layout";
 }
@@ -13,49 +13,43 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td id="UserId">@Html.DisplayTextFor(modelItem => item.UserID)</td>
-                <td id="Type">@Html.DisplayTextFor(modelItem => item.Type.Type)</td>
-                <td id="Application">@Html.DisplayTextFor(modelItem => item.Application.Name)</td>
-                <td id="Active">@Html.DisplayTextFor(modelItem => item.Active)</td>
-            </tr>
-        }
+        <tr>
+            <td id="UserId">@Html.DisplayTextFor(modelItem => modelItem.UserID)</td>
+            <td id="Type">@Html.DisplayTextFor(modelItem => modelItem.Type.Type)</td>
+            <td id="Application">@Html.DisplayTextFor(modelItem => modelItem.Application.Name)</td>
+            <td id="Active">@Html.DisplayTextFor(modelItem => modelItem.Active)</td>
+        </tr>
     </tbody>
 </table>
-@foreach (var item in Model)
+<H3>Identity overview</H3>
+@if (Model.Identities.Count > 0)
 {
-    <H3>Identity overview</H3>
-    @if (item.Identities.Count > 0)
-    {
-        <table class="table table-striped table-bordered">
-            <thead class="thead-light">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <tr>
+                <th>Name</th>
+                <th>UserID</th>
+                <th>E Mail</th>
+                <th>Language</th>
+                <th>Type</th>
+                <th>From</th>
+                <th>Until</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (CMDB.API.Models.IdenAccountDTO idenAccount in Model.Identities)
+            {
                 <tr>
-                    <th>Name</th>
-                    <th>UserID</th>
-                    <th>E Mail</th>
-                    <th>Language</th>
-                    <th>Type</th>
-                    <th>From</th>
-                    <th>Until</th>
+                    <td id="Name" class="small">@idenAccount.Identity.Name</td>
+                    <td id="IdenityUserId" class="small">@idenAccount.Identity.UserID</td>
+                    <td id="EMail" class="small">@idenAccount.Identity.EMail</td>
+                    <td id="Language" class="small">@idenAccount.Identity.Language.Description</td>
+                    <td id="IdentityType" class="small">@idenAccount.Identity.Type.Type</td>
+                    <td id="ValidFrom" class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
+                    <td id="ValidUntil" class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (CMDB.Domain.Entities.IdenAccount idenAccount in item.Identities)
-                {
-                    <tr>
-                        <td id="Name" class="small">@idenAccount.Identity.Name</td>
-                        <td id="IdenityUserId" class="small">@idenAccount.Identity.UserID</td>
-                        <td id="EMail" class="small">@idenAccount.Identity.EMail</td>
-                        <td id="Language" class="small">@idenAccount.Identity.Language.Description</td>
-                        <td id="IdentityType" class="small">@idenAccount.Identity.Type.Type</td>
-                        <td id="ValidFrom" class="small">@idenAccount.ValidFrom.ToString(ViewData["DateFormat"].ToString())</td>
-                        <td id="ValidUntil" class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+            }
+        </tbody>
+    </table>
 }
 <partial name="_SignForm" />

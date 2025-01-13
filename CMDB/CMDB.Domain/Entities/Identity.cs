@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -29,7 +28,10 @@ namespace CMDB.Domain.Entities
                 if (string.IsNullOrEmpty(Name))
                     return "";
                 else
-                    return Name.Split(',')[1].Trim();
+                    if (Name == "Stock")
+                        return Name;
+                    else
+                        return Name.Split(',')[1].Trim();
             }
             set => Name = FirstName + ", " + value;
         }
@@ -42,7 +44,10 @@ namespace CMDB.Domain.Entities
                 if (string.IsNullOrEmpty(Name))
                     return "";
                 else
-                    return Name.Split(',')[0];
+                    if (Name == "Stock")
+                        return Name;
+                    else
+                        return Name.Split(',')[0];
             }
             set => Name = value + ", " + LastName;
         }
@@ -59,6 +64,7 @@ namespace CMDB.Domain.Entities
         public IdentityType Type { get; set; }
 
         public int? TypeId { get; set; }
+        public string LanguageCode { get; set; }
         public ICollection<Device> Devices { get; set; }
         public ICollection<Mobile> Mobiles { get; set; }
         public virtual ICollection<IdenAccount> Accounts { get; set; }

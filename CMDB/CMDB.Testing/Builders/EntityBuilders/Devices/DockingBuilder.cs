@@ -14,7 +14,6 @@ namespace CMDB.Testing.Builders.EntityBuilders.Devices
             SetDefaultRules((f, d) =>
             {
                 d.AssetTag = "DOC" + f.Address.ZipCode();
-                d.Type = new AssetTypeBuilder().Build();
                 d.SerialNumber = f.Commerce.Ean8();
             });
         }

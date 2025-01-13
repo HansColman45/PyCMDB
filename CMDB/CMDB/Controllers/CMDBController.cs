@@ -12,29 +12,28 @@ namespace CMDB.Controllers
 {
     public class CMDBController : Controller
     {
-        protected CMDBServices service;
-        protected CMDBContext _context;
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         protected readonly IWebHostEnvironment _env;
         protected string SitePart { get; set; }
         protected string Table { get; set; }
-        public CMDBController(CMDBContext context, IWebHostEnvironment env)
+        protected string Token { get; set; }
+        private readonly CMDBServices service;
+        public CMDBController(IWebHostEnvironment env)
         {
-            _context = context;
             _env = env;
-            service = new(context);
+            service = new();
         }
         protected async Task BuildMenu()
         {
+            Token ??= TokenStore.Token;
             List<Menu> menul1 = (List<Menu>)await service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {
-                m.Children ??= new List<Menu>();
                 List<Menu> mL2 = (List<Menu>)await service.ListSecondMenuLevel(m.MenuId);
+                m.Children = mL2;
                 foreach (Menu m1 in mL2)
                 {
-                    m1.Children ??= new List<Menu>();
-                    await service.ListPersonalMenu(service.Admin.Level, m1.MenuId);
+                    m1.Children = await service.ListPersonalMenu(Token,m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;

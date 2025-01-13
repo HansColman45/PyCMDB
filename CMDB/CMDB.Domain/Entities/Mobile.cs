@@ -8,7 +8,6 @@ namespace CMDB.Domain.Entities
         [Key]
         public int MobileId { get; set; }
         [Required]
-        [MaxLength(15)]
         public long IMEI { get; set; }
         [Required]
         public AssetType MobileType { get; set; }
