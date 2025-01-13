@@ -17,12 +17,14 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private IdentityDeviceActor identityDeviceActor;
         private IdentityAccountActor identityAccountActor;
         private IdentityMobileActor identityMobileActor;
+        private IdentitySubscriptionActor subscriptionActor;
 
         private Helpers.Identity iden;
         private Identity Identity;
         private Device _Device;
         private Account Account;
         private Mobile Mobile;
+        private Subscription Subscription;
         private CreateIdentityPage createIdentity;
         private string updatedfield;
 
@@ -338,6 +340,63 @@ namespace CMDB.UI.Specflow.StepDefinitions
             identityMobileActor.Search(Identity.UserID);
             string lastLogLine = identityAccountActor.IdentityLastLogLine;
             identityMobileActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        
+        [Given(@"There is Identity in the system")]
+        public async Task GivenThereIsIdentityInTheSystem()
+        {
+            subscriptionActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(subscriptionActor);
+            Admin = await subscriptionActor.CreateNewAdmin();
+            Identity= await subscriptionActor.CreateNewIdentity();
+            subscriptionActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = subscriptionActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            subscriptionActor.OpenIdentityOverviewPage();
+            subscriptionActor.Search(Identity.UserID);
+        }
+        [Given(@"The Internet subscription exists as well")]
+        public async Task GivenTheInternetSubscriptionExistsAsWell()
+        {
+            Subscription = await subscriptionActor.CreateInternetSubscription();
+        }
+        #region Assign Subscription
+        [When(@"I assign the subscription")]
+        public void WhenIAssignTheSubscription()
+        {
+            subscriptionActor.AssignSubscription(Identity,Subscription);
+        }
+        [When(@"I fill in the assignform to assign the subscription to my identity")]
+        public void WhenIFillInTheAssignformToAssignTheSubscriptionToMyIdentity()
+        {
+            subscriptionActor.FillInAssignForm();
+        }
+        [Then(@"The subscription is assigned to my Identity")]
+        public void ThenTheSubscriptionIsAssignedToMyIdentity()
+        {
+            subscriptionActor.Search(Identity.UserID);
+            string lastLogLine = subscriptionActor.IdentityLastLogLine;
+            subscriptionActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region Release sub
+        [Given(@"The subscription is assigned to my Identity")]
+        public async Task GivenTheSubscriptionIsAssignedToMyIdentity()
+        {
+            await subscriptionActor.AssignSubscription2Identity(Identity,Subscription);
+        }
+        [When(@"I release the subscription")]
+        public void WhenIReleaseTheSubscription()
+        {
+            subscriptionActor.ReleaseSubscription(Identity,Subscription);
+        }
+        [Then(@"The subsription is released from my Identity")]
+        public void ThenTheSubsriptionIsReleasedFromMyIdentity()
+        {
+            subscriptionActor.Search(Identity.UserID);
+            string lastLogLine = subscriptionActor.IdentityLastLogLine;
+            subscriptionActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
     }

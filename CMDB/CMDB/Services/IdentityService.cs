@@ -219,6 +219,19 @@ namespace CMDB.Services
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
             return accounts;
         }
+        public async Task<List<SubscriptionDTO>> ListFreeInternetSubscriptions()
+        {
+            BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Internet";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var list = await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
+                return list;
+            }
+            else 
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
         public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
@@ -280,6 +293,32 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        public async Task AssignSubscription(IdentityDTO identity, List<SubscriptionDTO> subscriptions)
+        {
+            AssignSubscriptionRequest request = new()
+            {
+                IdentityId = identity.IdenId,
+                SubscriptionIds = subscriptions.Select(x => x.SubscriptionId).ToList()
+            };
+            BaseUrl = _url + "api/Identity/AssignSubscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task ReleaseSubscription(IdentityDTO identity, List<SubscriptionDTO> subscriptions)
+        {
+            AssignSubscriptionRequest request = new()
+            {
+                IdentityId = identity.IdenId,
+                SubscriptionIds = subscriptions.Select(x => x.SubscriptionId).ToList()
+            };
+            BaseUrl = _url + "api/Identity/ReleaseSubscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
         public async Task ReleaseAccount4Identity(IdenAccountDTO idenAccount)
         {
             BaseUrl = _url + $"api/Identity/ReleaseAccount";
@@ -328,6 +367,18 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        public async Task<SubscriptionDTO> GetSubscriptionById(int subscriptionId)
+        {
+            BaseUrl = _url + $"api/Subscription/{subscriptionId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<SubscriptionDTO>();
+            else
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+
+
         private async Task<TypeDTO> GetTypeById(int typeId)
         {
             BaseUrl = _url + $"api/IdentityType/{typeId}";

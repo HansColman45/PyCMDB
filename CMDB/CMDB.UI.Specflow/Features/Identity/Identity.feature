@@ -97,3 +97,17 @@ Scenario: I want to release a mobile from an exising Idenity
 	And The mobile is assigned to my identity
 	When I relase the mobile from my identity
 	Then The mobile is released
+
+Scenario: I want to assign an Internet subscription to an Identity
+	Given There is Identity in the system
+	And The Internet subscription exists as well
+	When I assign the subscription
+	And I fill in the assignform to assign the subscription to my identity
+	Then The subscription is assigned to my Identity
+
+Scenario: I want to release a subscription form an Identity
+	Given There is Identity in the system
+	And The Internet subscription exists as well
+	And The subscription is assigned to my Identity
+	When I release the subscription
+	Then The subsription is released from my Identity

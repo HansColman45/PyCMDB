@@ -305,6 +305,59 @@ namespace CMDB.API.Services
                 _context.Identities.Update(iden);
             }
         }
+        public async Task AssignSubscription(IdentityDTO identity, List<int> subscriptionIds)
+        {
+            string ideninfo = $"Identity with name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (var id in subscriptionIds) 
+            {
+                var subscription = await _context.Subscriptions
+                    .Include(x => x.SubscriptionType)
+                    .Where(x => x.SubscriptionId == id)
+                    .FirstAsync();
+                subscription.LastModifiedAdminId = TokenStore.AdminId;
+                string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+                subscription.IdentityId = iden.IdenId;
+                subscription.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo,ideninfo, TokenStore.Admin.Account.UserID,"subscription")
+                });
+                _context.Subscriptions.Update(subscription);
+                iden.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
+                });
+                _context.Identities.Update(iden);
+            }
+        }
+        public async Task ReleaseSubscription(IdentityDTO identity, List<int> subscriptionIds)
+        {
+            string ideninfo = $"Identity with name: {identity.Name}";
+            var iden = await TrackedIden(identity.IdenId);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            foreach (var id in subscriptionIds)
+            {
+                var subscription = await _context.Subscriptions.Where(x => x.SubscriptionId == id).FirstAsync();
+                subscription.LastModifiedAdminId = TokenStore.AdminId;
+                string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+                subscription.IdentityId = 1;
+                subscription.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(subscriptionInfo, ideninfo, TokenStore.Admin.Account.UserID, "subscription")
+                });
+                _context.Subscriptions.Update(subscription);
+                iden.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
+                });
+                _context.Identities.Update(iden);
+            }
+        }
         public async Task AssignAccount(IdenAccountDTO idenAccount)
         {
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
@@ -345,7 +398,20 @@ namespace CMDB.API.Services
             var iden = await TrackedIden(idenAccount.Identity.IdenId);
             string ideninfo = $"Identity with name: {iden.Name}";
             string accountinfo = $"Account with UserID: {acc.UserID}";
-
+            acc.LastModifiedAdminId = TokenStore.AdminId;
+            acc.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
+                LogDate = DateTime.Now
+            });
+            _context.Accounts.Update(acc);
+            iden.LastModifiedAdminId = TokenStore.AdminId;
+            iden.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.Now
+            });
+            _context.Identities.Update(iden);
         }
         public static IdentityDTO ConvertIdentity(in Identity identity)
         {
@@ -459,19 +525,22 @@ namespace CMDB.API.Services
                 .Where(x => x.Identity.IdenId == identity.IdenId).AsNoTracking()
                 .Select(x => DeviceRepository.ConvertDevice(x))
                 .ToListAsync();
-            identity.Mobiles = await _context.Mobiles.AsNoTracking()
-                .Include(x => x.Subscriptions).AsNoTracking()
+            identity.Mobiles = await _context.Mobiles
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Subscriptions)
                 .Include(x => x.MobileType)
                 .ThenInclude(x => x.Category)
-                .Include(x => x.Identity).AsNoTracking()
-                .Where(x => x.Identity.IdenId == identity.IdenId)
+                .Where(x => x.Identity.IdenId == identity.IdenId).AsNoTracking()
                 .Select(x => MobileRepository.ConvertMobile(x))
                 .ToListAsync();
-            /*identity.Subscriptions = _context.Subscriptions
+            identity.Subscriptions =await _context.Subscriptions
                 .Include(x => x.SubscriptionType)
                 .Include(x => x.Category)
-                .Where(x => x.IdentityId == identity.IdenId)
-                .ToList();*/
+                .Include(x => x.Identity)
+                .Where(x => x.IdentityId == identity.IdenId).AsNoTracking()
+                .Select(x =>  SubscriptionRepository.ConvertSubscription(x))
+                .ToListAsync();
         }
     }
 }

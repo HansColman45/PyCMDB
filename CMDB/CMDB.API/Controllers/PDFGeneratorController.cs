@@ -60,7 +60,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpPost("AddSubscriptionInfo"), Authorize]
-        public IActionResult AddSubscriptionInfo(Subscription subscription) 
+        public IActionResult AddSubscriptionInfo(SubscriptionDTO subscription) 
         {
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)

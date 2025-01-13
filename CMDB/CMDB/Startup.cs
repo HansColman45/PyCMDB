@@ -33,7 +33,6 @@ namespace CMDB
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
@@ -47,16 +46,20 @@ namespace CMDB
             {
                 endpoints.MapControllerRoute(
                     name: "ReleaseDevice",
-                    pattern: "{controller=Identity}/{action=ReleaseDevice}/{id}/{AssetTag}");
+                    pattern: "identity/ReleaseDevice/{id?}/{AssetTag}",
+                    defaults: new {controller= "Identity", action = "ReleaseDevice" });
                 endpoints.MapControllerRoute(
                     name: "ReleaseMobile",
-                    pattern: "{controller=Identity}/{action=ReleaseMobile}/{id}/{MobileId}");
+                    pattern: "{controller=Identity}/{action=ReleaseMobile}/{id?}/{MobileId}");
+                endpoints.MapControllerRoute(
+                    name: "ReleaseInternetSubscription",
+                    pattern: "{controller=Identity}/{action=ReleaseInternetSubscription}/{id?}/{SubscriptionId}");
                 endpoints.MapControllerRoute(
                     name: "ReleaseIdentity",
-                    pattern: "{controller=Mobile}/{action=ReleaseIdentity}/{id}/{idenid}");
+                    pattern: "{controller=Mobile}/{action=ReleaseIdentity}/{id?}/{idenid}");
                 endpoints.MapControllerRoute(
                     name: "ReleaseSubscription",
-                    pattern: "{controller=Mobile}/{action=ReleaseSubscription}/{id}/{SubscriptionId}");
+                    pattern: "{controller=Mobile}/{action=ReleaseSubscription}/{id?}/{SubscriptionId}");
                 /*endpoints.MapControllerRoute(
                     name: "ReleaseMobile",
                     pattern: "{controller}/{action}/{id?}/{MobileId}",

@@ -206,7 +206,7 @@ namespace CMDB.Services
 
         public async Task<SubscriptionDTO> GetSubribtion(int id)
         {
-            BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
+            BaseUrl = _url + $"api/Subscription/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)

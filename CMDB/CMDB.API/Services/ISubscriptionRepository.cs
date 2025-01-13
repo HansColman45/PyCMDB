@@ -12,6 +12,7 @@ namespace CMDB.API.Services
         Task<SubscriptionDTO> Delete(SubscriptionDTO subscription, string reason);
         Task<SubscriptionDTO> Activate(SubscriptionDTO subscription);
         Task LogPdfFile(string pdfFile, int id);
-        Task<bool> IsExisting(SubscriptionDTO subscription); 
+        Task<bool> IsExisting(SubscriptionDTO subscription);
+        Task<IEnumerable<SubscriptionDTO>> ListAllFreeSubscriptions(string category);
     }
 }

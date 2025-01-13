@@ -12,7 +12,7 @@ namespace CMDB.API.Services
         private List<DeviceDTO> devices = new();
         private List<MobileDTO> mobiles = new();
         private List<IdenAccount> accounts = new();
-        private List<Subscription> subscriptions = new();
+        private List<SubscriptionDTO> subscriptions = new();
         private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle titleStyle = TextStyle.Default.FontFamily("Arial").FontSize(20).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle defaultStyle = TextStyle.Default.FontFamily("Arial").FontSize(9);
@@ -87,7 +87,7 @@ namespace CMDB.API.Services
         /// 
         /// </summary>
         /// <param name="subscription"></param>
-        public void SetSubscriptionInfo(Subscription subscription)
+        public void SetSubscriptionInfo(SubscriptionDTO subscription)
         {
             subscriptions.Add(subscription);
         }
@@ -704,7 +704,7 @@ namespace CMDB.API.Services
                 });
                 foreach (var subcription in subscriptions)
                 {
-                    table.Cell().Element(Style).Text(subcription.Category.Category).Style(defaultStyle);
+                    table.Cell().Element(Style).Text(subcription.SubscriptionType.AssetCategory.Category).Style(defaultStyle);
                     table.Cell().Element(Style).Text($"{subcription.SubscriptionType}").Style(defaultStyle);
                     table.Cell().Element(Style).Text(subcription.PhoneNumber).Style(defaultStyle);
                     IContainer Style(IContainer container)

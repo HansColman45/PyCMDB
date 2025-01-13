@@ -20,5 +20,7 @@ namespace CMDB.API.Services
         Task ReleaseMobile(IdentityDTO identity, List<int> mobileIDs);
         Task AssignAccount(IdenAccountDTO idenAccount);
         Task ReleaseAccount(IdenAccountDTO idenAccount);
+        Task AssignSubscription(IdentityDTO identity, List<int> subscriptionIds);
+        Task ReleaseSubscription(IdentityDTO identity, List<int> subscriptionIds);
     }
 }

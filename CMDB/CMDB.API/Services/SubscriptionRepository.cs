@@ -71,6 +71,10 @@ namespace CMDB.API.Services
                 SubsctiptionTypeId = subscription.SubscriptionType.Id,
                 LastModifiedAdminId = TokenStore.AdminId,
             };
+            if(subscription.SubscriptionType.AssetCategory.Category == "Internet Subscription")
+            {
+                sub.IdentityId = 1;
+            }
             sub.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.CreateLogLine(Value,TokenStore.Admin.Account.UserID, table),
@@ -149,8 +153,25 @@ namespace CMDB.API.Services
             }
             return false;
         }
-
-
+        public async Task<IEnumerable<SubscriptionDTO>> ListAllFreeSubscriptions(string category)
+        {
+            return category switch
+            {
+                "Mobile" => await _context.Subscriptions
+                                        .Include(x => x.Category)
+                                        .Include(x => x.SubscriptionType)
+                                        .Where(x => x.SubscriptionType.AssetCategoryId == 3 && x.MobileId == 0).AsNoTracking()
+                                        .Select(x => ConvertSubscription(x))
+                                        .ToListAsync(),
+                "Internet" => await _context.Subscriptions
+                                        .Include(x => x.Category)
+                                        .Include(x => x.SubscriptionType)
+                                        .Where(x => x.SubscriptionType.AssetCategoryId == 4 && (x.IdentityId ==0 || x.IdentityId == 1)).AsNoTracking()
+                                        .Select(x => ConvertSubscription(x))
+                                        .ToListAsync(),
+                _ => throw new NotImplementedException($"The {category} is not implemented yet"),
+            };
+        }
         public static SubscriptionDTO ConvertSubscription(Subscription subscription)
         {
             return new()

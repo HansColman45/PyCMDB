@@ -151,11 +151,12 @@ namespace CMDB.API.Services
         public async Task<IEnumerable<MobileDTO>> ListAllFreeMobiles()
         {
             var mobiles = await _context.Mobiles.AsNoTracking()
-                 .Include(x => x.MobileType)
+                .Include(x => x.MobileType)
                 .ThenInclude(x => x.Category).AsNoTracking()
-                 .Where(x => x.IdentityId == 1).AsNoTracking()
-                 .Select(x => ConvertMobile(x))
-                 .ToListAsync();
+                .Include(x => x.Identity).AsNoTracking()
+                .Where(x => x.IdentityId == 1).AsNoTracking()
+                .Select(x => ConvertMobile(x))
+                .ToListAsync();
             return mobiles;
         }
         public async Task AssignIdentity(AssignMobileRequest request)

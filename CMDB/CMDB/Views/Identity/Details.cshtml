@@ -173,6 +173,46 @@
             <p>No Mobiles assigned to this Identity</p>
         }
     }
+    @if((bool)ViewData["SubscriptionOverview"])
+    {
+        <h3>Subscription overview</h3>
+        @if (Model.Subscriptions.Count > 0)
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Phone number</th>
+                        <th>Type</th>
+                        @if ((bool)ViewData["ReleaseSubscription"] && Model.IdenId > 1)
+                        {
+                            <th>Action</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(CMDB.API.Models.SubscriptionDTO subscription in Model.Subscriptions){
+                        <tr>
+                            <td class="small">@subscription.PhoneNumber</td>
+                            <td class="small">@subscription.SubscriptionType</td>
+                            @if ((bool)ViewData["ReleaseSubscription"] && Model.IdenId > 1)
+                            {
+                                <td class="small">
+                                    <a class="btn btn-danger" href="\Identity\ReleaseInternetSubscription\@Model.IdenId\@subscription.SubscriptionId" id="ReleaseInternetSubscription"
+                                       data-toggle="tooltip" data-placement="top" title="ReleaseInternetSubscription">
+                                        <span class="@ViewBag.AddDeviceIcon"></span>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No Subscription assigned to this Identity</p>
+        }
+    }
     <H3>Log overview</H3>
     @if (Model.Logs.Count > 0)
     {

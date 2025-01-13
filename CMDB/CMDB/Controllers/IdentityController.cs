@@ -85,6 +85,7 @@ namespace CMDB.Controllers
             ViewData["MobileOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "MobileOverview");
             ViewData["ReleaseMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseMobile");
             ViewData["SubscriptionOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "SubscriptionOverview");
+            ViewData["ReleaseSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseSubscription");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             return View(identity);
@@ -242,11 +243,13 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             ViewBag.Devices = await service.ListAllFreeDevices();
             ViewBag.Mobiles = await service.ListAllFreeMobiles();
+            ViewBag.Subs = await service.ListFreeInternetSubscriptions();
             ViewData["backUrl"] = "Identity";
             if (!string.IsNullOrEmpty(FormSubmit))
             {
                 List<DeviceDTO> devicesToAdd = new();
                 List<MobileDTO> mobilesToAdd = new();
+                List<SubscriptionDTO> subsToAdd = [];
                 var devices = await service.ListAllFreeDevices();
                 foreach (var device in devices)
                 {
@@ -259,18 +262,26 @@ namespace CMDB.Controllers
                     if (!string.IsNullOrEmpty(values[mobile.IMEI.ToString()]))
                         mobilesToAdd.Add(mobile);
                 }
-                if (devicesToAdd.Count == 0 && mobilesToAdd.Count == 0)
+                var subs = await service.ListFreeInternetSubscriptions();
+                foreach (var sub in subs)
                 {
-                    ModelState.AddModelError("", "Please select at lease 1 Device");
+                    if (!string.IsNullOrEmpty(values[sub.SubscriptionId.ToString()]))
+                        subsToAdd.Add(sub);
+                }
+                if (devicesToAdd.Count == 0 && mobilesToAdd.Count == 0 && subsToAdd.Count == 0)
+                {
+                    ModelState.AddModelError("", "Please select at lease 1 Device or subscription");
                 }
                 if (ModelState.IsValid)
                 {
                     try
                     {
-                        if(devicesToAdd.Count > 0)
+                        if (devicesToAdd.Count > 0)
                             await service.AssignDevice(identity, devicesToAdd);
                         if (mobilesToAdd.Count > 0)
                             await service.AssignMobiles(identity, mobilesToAdd);
+                        if (subs.Count > 0)
+                            await service.AssignSubscription(identity, subs);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
                     catch (Exception ex)
@@ -402,9 +413,14 @@ namespace CMDB.Controllers
                     foreach (var d in identity.Devices)
                         await _PDFservice.SetDeviceInfo(d);
                 }
-                if (identity.Mobiles.Count > 0) { 
+                if (identity.Mobiles.Count > 0) {
                     foreach (MobileDTO mobile in identity.Mobiles)
                         await _PDFservice.SetMobileInfo(mobile);
+                }
+                if (identity.Subscriptions.Count > 0)
+                {
+                    foreach (SubscriptionDTO subscription in identity.Subscriptions)
+                        await _PDFservice.SetSubscriptionInfo(subscription);
                 }
                 await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
@@ -468,7 +484,7 @@ namespace CMDB.Controllers
             log.Debug("Using Release from in {0}", Table);
             ViewData["Title"] = "Release mobile from identity";
             ViewData["ReleaseMobile"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseMobile");
-            await BuildMenu();            
+            await BuildMenu();
             ViewBag.Mobile = mobile;
             ViewData["backUrl"] = "Identity";
             ViewData["Action"] = "ReleaseMobile";
@@ -538,8 +554,50 @@ namespace CMDB.Controllers
                     }
                     await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                     return RedirectToAction(nameof(Index));
-                    //return RedirectToAction("ReleaseForm", "Identity", new {id, devicesToRelease});
                 }
+            }
+            return View(identity);
+        }
+        public async Task<IActionResult> ReleaseInternetSubscription(IFormCollection values, int? id, int MobileId)
+        {
+            if (id == null && MobileId == 0)
+                return NotFound();
+            IdentityDTO identity = await service.GetByID((int)id);
+            if (identity == null)
+                return NotFound();
+            SubscriptionDTO subscription = await service.GetSubscriptionById(MobileId);
+            if (subscription == null)
+                return NotFound();
+            log.Debug("Using Release from in {0}", Table);
+            ViewData["Title"] = "Release subscription from identity";
+            ViewData["ReleaseSubscription"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseSubscription");
+            ViewData["Controller"] = @$"\Identity\ReleaseInternetSubscription\{id}\{MobileId}";
+            await BuildMenu();
+            ViewBag.Subsription = subscription;
+            ViewData["backUrl"] = "Identity";
+            ViewData["Action"] = "ReleaseInternetSubscription";
+            ViewData["Name"] = identity.Name;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                List<SubscriptionDTO> mobilesToAdd = new();
+                mobilesToAdd.Add(subscription);
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                await _PDFservice.SetUserinfo(identity.UserID,
+                    ITPerson,
+                    Employee,
+                    identity.FirstName,
+                    identity.LastName,
+                    identity.Name,
+                    identity.Language.Code,
+                    "Release");
+                await _PDFservice.SetSubscriptionInfo(subscription);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
+                await service.ReleaseSubscription(identity, mobilesToAdd);
+                return RedirectToAction(nameof(Index));
             }
             return View(identity);
         }

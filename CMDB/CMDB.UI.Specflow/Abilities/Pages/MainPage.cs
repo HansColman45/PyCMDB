@@ -41,6 +41,14 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         /// </summary>
         public static string ReleaseDeviceXPath => "//a[@id='ReleaseDevice']";
         /// <summary>
+        /// Xpath for the Release Mobile button
+        /// </summary>
+        public static string ReleaseMobileXPath => "//a[@id='ReleaseMobile']";
+        /// <summary>
+        /// Xpath for the Release Subscritpion button
+        /// </summary>
+        public static string ReleaseSubscriptionXPath => "//a[@id='ReleaseInternetSubscription']";
+        /// <summary>
         /// Xpath for the Release Account button
         /// </summary>
         public static string ReleaseAccountXPath => "//a[@id='ReleaseAccount']";

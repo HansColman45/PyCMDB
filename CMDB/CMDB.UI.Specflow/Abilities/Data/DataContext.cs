@@ -198,6 +198,20 @@ namespace CMDB.UI.Specflow.Abilities.Data
 
             return subscriptionType;
         }
+        /// <summary>
+        /// This function will assign a Subscription to a Identity
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="subscription"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        public async Task AssignIdentity2Subscription(Admin admin, Subscription subscription, Identity identity)
+        {
+            identity.LastModifiedAdmin = admin;
+            subscription.LastModifiedAdmin = admin;
+            identity.Subscriptions.Add(subscription);
+            await context.SaveChangesAsync();
+        }
         public new void Dispose()
         {
             context.Dispose();

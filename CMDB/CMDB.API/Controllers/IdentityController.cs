@@ -328,5 +328,51 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpPost("AssignSubscription"), Authorize]
+        public async Task<IActionResult> AssignSubscription(AssignSubscriptionRequest assignSubscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignSubscription"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignSubscription.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.AssignSubscription(iden,assignSubscription.SubscriptionIds);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseSubscription"), Authorize]
+        public async Task<IActionResult> ReleaseSubscription(AssignSubscriptionRequest assignSubscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseSubscription"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var iden = await _uow.IdentityRepository.GetById(assignSubscription.IdentityId);
+            if (iden == null)
+                return NotFound();
+            await _uow.IdentityRepository.ReleaseSubscription(iden, assignSubscription.SubscriptionIds);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

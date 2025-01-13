@@ -18,6 +18,12 @@ namespace CMDB.Testing.Helpers
                 .Build();
             context.Subscriptions.Add(subscription);
 
+            if(subscriptionType.Category.Category == "Internet Subscription")
+            {
+                subscription.IdentityId = 1;
+                await context.SaveChangesAsync();
+            }
+
             subscription.Logs.Add(new LogBuilder()
                 .With(x => x.SubsriptionId, subscription.SubscriptionId)
                 .With(x => x.LogText, $"The subscription with: {subscriptionType.Category.Category} and type {subscriptionType} on {subscription.PhoneNumber} is created by {admin.Account.UserID} in table subscription")

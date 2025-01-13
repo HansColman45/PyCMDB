@@ -51,10 +51,10 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             var detailpage = Perform(new OpenTheIdentityDetailPage());
             detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
-            var page = Perform(new OpenTheReleaceDevicePage());
+            var page = Perform(new OpenTheReleaseMobilePage());
             page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseDevicePage");
-            page.Title.Should().BeEquivalentTo("Release device from identity", "Title should be correct");
+            page.Title.Should().BeEquivalentTo("Release mobile from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
         }

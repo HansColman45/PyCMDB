@@ -15,6 +15,10 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
         {
             ClickElementByXpath($"//*[@id='{mobile.IMEI}']");
         }
+        public void ClickSubscription(Domain.Entities.Subscription subscription)
+        {
+            ClickElementByXpath($"//*[@id='{subscription.SubscriptionId}']");
+        }
         public AssignFormPage Assign()
         {
             ClickElementByXpath("//button[@type='submit']");
