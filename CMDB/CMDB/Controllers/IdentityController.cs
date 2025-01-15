@@ -315,7 +315,7 @@ namespace CMDB.Controllers
                 DateTime until = DateTime.Parse(values["ValidUntil"]);
                 try
                 {
-                    if (service.IsPeriodOverlapping(id, from, until))
+                    if (await service.IsPeriodOverlapping((int)id, from, until))
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
@@ -365,8 +365,8 @@ namespace CMDB.Controllers
                         idenAccount.Identity.Name,
                         idenAccount.Identity.Language.Code);
                     await _PDFservice.SetAccontInfo(idenAccount);
-                    await _PDFservice.GenratePDFFile(Table, idenAccount.Identity.IdenId);
                     await service.ReleaseAccount4Identity(idenAccount);
+                    await _PDFservice.GenratePDFFile(Table, idenAccount.Identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -507,8 +507,8 @@ namespace CMDB.Controllers
                     identity.Language.Code,
                     "Release");
                 await _PDFservice.SetMobileInfo(mobile);
-                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 await service.ReleaseMobile(identity, mobiles);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);
@@ -539,7 +539,6 @@ namespace CMDB.Controllers
                 if (ModelState.IsValid)
                 {
                     var admin = await service.Admin();
-                    await service.ReleaseDevices(identity, devicesToRelease);
                     await _PDFservice.SetUserinfo(identity.UserID,
                         admin.Account.UserID,
                         identity.Name,
@@ -552,6 +551,7 @@ namespace CMDB.Controllers
                     {
                         await _PDFservice.SetDeviceInfo(device);
                     }
+                    await service.ReleaseDevices(identity, devicesToRelease);
                     await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
@@ -595,8 +595,8 @@ namespace CMDB.Controllers
                     identity.Language.Code,
                     "Release");
                 await _PDFservice.SetSubscriptionInfo(subscription);
-                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 await service.ReleaseSubscription(identity, mobilesToAdd);
+                await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                 return RedirectToAction(nameof(Index));
             }
             return View(identity);

@@ -45,7 +45,7 @@ namespace CMDB.API.Services
             if (iden is not null)
             {
                 GetLogs(table, id, iden);
-                await GetAssignedAccounts(id);
+                await GetAssignedAccounts(iden);
                 await GetAssignedDevices(iden);
             }
             return iden;
@@ -503,14 +503,19 @@ namespace CMDB.API.Services
         {
             return await _context.Identities.FirstAsync(x => x.IdenId == id);
         }
-        private async Task GetAssignedAccounts(int id)
+        private async Task GetAssignedAccounts(IdentityDTO identity)
         {
-            var accounts = await _context.Identities.AsNoTracking()
-                .Include(x => x.Language).AsNoTracking()
-                .Include(x => x.Accounts)
-                .ThenInclude(d => d.Account).AsNoTracking()
-                .SelectMany(x => x.Accounts).AsNoTracking()
-                .Where(x => x.Identity.IdenId == id).AsNoTracking()
+            identity.Accounts = await _context.IdenAccounts
+                .Include(x => x.Identity)
+                .ThenInclude(y => y.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Type)
+                .Where(x => x.IdentityId == identity.IdenId).AsNoTracking()
+                .Select(x => IdenAccountRepository.ConvertIdenenty(x))
                 .ToListAsync();
         }
         private async Task GetAssignedDevices(IdentityDTO identity)
@@ -528,6 +533,8 @@ namespace CMDB.API.Services
             identity.Mobiles = await _context.Mobiles
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
                 .Include(x => x.Subscriptions)
                 .Include(x => x.MobileType)
                 .ThenInclude(x => x.Category)

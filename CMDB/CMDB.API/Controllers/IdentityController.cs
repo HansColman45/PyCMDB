@@ -329,7 +329,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpPost("AssignSubscription"), Authorize]
-        public async Task<IActionResult> AssignSubscription(AssignSubscriptionRequest assignSubscription)
+        public async Task<IActionResult> AssignSubscription(AssignInternetSubscriptionRequest assignSubscription)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -352,7 +352,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpPost("ReleaseSubscription"), Authorize]
-        public async Task<IActionResult> ReleaseSubscription(AssignSubscriptionRequest assignSubscription)
+        public async Task<IActionResult> ReleaseSubscription(AssignInternetSubscriptionRequest assignSubscription)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;

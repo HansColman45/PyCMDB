@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Services;
+using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -22,6 +23,15 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             return Ok(await _uow.IdenAccountRepository.GetById(id));
+        }
+        [HttpPost("IsPeriodOverlapping"), Authorize]
+        public async Task<IActionResult> IsPeriodOverlapping(IsPeriodOverlappingRequest request)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            return Ok(await _uow.IdenAccountRepository.IsPeriodOverlapping(request));
         }
     }
 }

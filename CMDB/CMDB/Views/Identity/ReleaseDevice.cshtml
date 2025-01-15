@@ -14,7 +14,7 @@
                 <th>E Mail</th>
                 <th>Language</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +24,7 @@
                 <td id="EMail">@Html.DisplayFor(model => model.EMail)</td>
                 <td id="Language">@Html.DisplayFor(model => model.Language.Description)</td>
                 <td id="Type">@Html.DisplayFor(model => model.Type.Description)</td>
-                <td id="State">@Html.DisplayFor(model => model.Active)</td>
+                <td id="State">@Html.DisplayFor(model => model.State)</td>
             </tr>
         </tbody>
     </table>
@@ -35,7 +35,7 @@
                 <th>AssetTag</th>
                 <th>Category</th>
                 <th>Type</th>
-                <th>Active</th>
+                <th>State</th>
             </tr>
         </thead>
         <tbody>
@@ -43,7 +43,7 @@
                 <td>@device.AssetTag</td>
                 <td>@device.Category.Category</td>
                 <td>@device.AssetType</td>
-                <td>@device.Active</td>
+                <td>@device.State</td>
             </tr>
         </tbody>
     </table>

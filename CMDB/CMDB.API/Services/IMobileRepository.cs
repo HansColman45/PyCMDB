@@ -16,5 +16,8 @@ namespace CMDB.API.Services
         Task<bool> IsMobileExisting(MobileDTO mobileDTO);
         Task AssignIdentity(AssignMobileRequest request);
         Task ReleaseIdentity(AssignMobileRequest request);
+        Task AssignSubscription(AssignMobileSubscriptionRequest request);
+        Task LogPdfFile(string pdfFile, int id);
+        Task ReleaseSubscription(AssignMobileSubscriptionRequest assignMobileSubscription);
     }
 }

@@ -1,7 +1,7 @@
 ﻿@{
     Layout = "_Layout";
-    CMDB.Domain.Entities.Identity identity = (CMDB.Domain.Entities.Identity)ViewBag.Identity;
-    CMDB.Domain.Entities.Account account = (CMDB.Domain.Entities.Account)ViewBag.Account;
+    CMDB.API.Models.IdentityDTO identity = (CMDB.API.Models.IdentityDTO)ViewBag.Identity;
+    CMDB.API.Models.AccountDTO account = (CMDB.API.Models.AccountDTO)ViewBag.Account;
 }
 @if ((bool)ViewData["ReleaseAccount"])
 {
@@ -24,7 +24,7 @@
                 <td id="EMail">@identity.EMail</td>
                 <td id="Language">@identity.Language.Description</td>
                 <td id="Type">@identity.Type.Description</td>
-                <td id="State">@identity.Active</td>
+                <td id="State">@identity.State</td>
             </tr>
         </tbody>
     </table>
@@ -43,7 +43,7 @@
                 <td>@account.UserID</td>
                 <td>@account.Type.Type</td>
                 <td>@account.Application.Name</td>
-                <td>@account.Active</td>
+                <td>@account.State</td>
             </tr>
         </tbody>
     </table>

@@ -9,6 +9,7 @@ using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -232,23 +233,22 @@ namespace CMDB.Services
             else 
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public bool IsPeriodOverlapping(int? IdenID, DateTime ValidFrom, DateTime ValidUntil)
+        public async Task<bool> IsPeriodOverlapping(int IdenID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
-            //TODO: Fix this
-            /*if (IdenID == null)
-                throw new Exception("Missing required id");
-            else
+            IsPeriodOverlappingRequest request = new()
             {
-                var Identity = _context.IdenAccounts
-                        .Include(x => x.Identity)
-                        .Where(x => x.Identity.IdenId == IdenID && ValidFrom <= x.ValidFrom && x.ValidUntil >= ValidUntil)
-                        .ToList();
-                if (Identity.Count > 0)
-                    result = true;
-                else
-                    result = false;
-            }*/
+                IdentityId = IdenID,
+                StartDate = ValidFrom,
+                EndDate = ValidUntil,
+            };
+            BaseUrl = _url + $"api/IdenAccount/IsPeriodOverlapping";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl,request);
+            if (response.IsSuccessStatusCode)
+            {
+                result = await response.Content.ReadAsJsonAsync<bool>();
+            }
             return result;
         }
         public async Task AssignAccount2Idenity(IdentityDTO identity, int AccID, DateTime ValidFrom, DateTime ValidUntil)
@@ -295,7 +295,7 @@ namespace CMDB.Services
         }
         public async Task AssignSubscription(IdentityDTO identity, List<SubscriptionDTO> subscriptions)
         {
-            AssignSubscriptionRequest request = new()
+            AssignInternetSubscriptionRequest request = new()
             {
                 IdentityId = identity.IdenId,
                 SubscriptionIds = subscriptions.Select(x => x.SubscriptionId).ToList()
@@ -308,7 +308,7 @@ namespace CMDB.Services
         }
         public async Task ReleaseSubscription(IdentityDTO identity, List<SubscriptionDTO> subscriptions)
         {
-            AssignSubscriptionRequest request = new()
+            AssignInternetSubscriptionRequest request = new()
             {
                 IdentityId = identity.IdenId,
                 SubscriptionIds = subscriptions.Select(x => x.SubscriptionId).ToList()

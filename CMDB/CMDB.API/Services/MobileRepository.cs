@@ -113,8 +113,11 @@ namespace CMDB.API.Services
         {
             var mobiles = await _context.Mobiles.AsNoTracking()
                 .Include(x => x.MobileType)
-                .ThenInclude(x => x.Category).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
                 .Select(x => ConvertMobile(x))
                 .ToListAsync();
             return mobiles;
@@ -122,39 +125,51 @@ namespace CMDB.API.Services
         public async Task<IEnumerable<MobileDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
-            var mobiles = await _context.Mobiles.AsNoTracking()
+            var mobiles = await _context.Mobiles
                 .Include(x => x.MobileType)
-                .ThenInclude(x => x.Category).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
                 .Where(x => EF.Functions.Like(x.IMEI.ToString(), searhterm) || EF.Functions.Like(x.MobileType.Type, searhterm) || EF.Functions.Like(x.MobileType.Vendor, searhterm))
+                .AsNoTracking()
                 .Select(x => ConvertMobile(x))
                 .ToListAsync();
             return mobiles;
         }
         public async Task<MobileDTO?> GetById(int id)
         {
-            var mobile = await _context.Mobiles.AsNoTracking()
+            var mobile = await _context.Mobiles
                 .Include(x => x.MobileType)
-                .ThenInclude(x => x.Category).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
-                .Where(x => x.MobileId == id).AsNoTracking()
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
+                .Where(x => x.MobileId == id)
+                .AsNoTracking()
                 .Select(x => ConvertMobile(x))
                 .FirstOrDefaultAsync();
             if (mobile is not null)
             {
                 GetLogs(table,id,mobile);
                 await GetIdenityInfo(mobile);
-                //await GetSubscriptionInfo(mobile);
+                await GetSubscriptionInfo(mobile);
             }
             return mobile;
         }
         public async Task<IEnumerable<MobileDTO>> ListAllFreeMobiles()
         {
-            var mobiles = await _context.Mobiles.AsNoTracking()
+            var mobiles = await _context.Mobiles
                 .Include(x => x.MobileType)
-                .ThenInclude(x => x.Category).AsNoTracking()
-                .Include(x => x.Identity).AsNoTracking()
-                .Where(x => x.IdentityId == 1).AsNoTracking()
+                .ThenInclude(x => x.Category)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Type)
+                .Include(x => x.Identity)
+                .ThenInclude(x => x.Language)
+                .Where(x => x.IdentityId == 1)
+                .AsNoTracking()
                 .Select(x => ConvertMobile(x))
                 .ToListAsync();
             return mobiles;
@@ -207,6 +222,70 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(identity);
         }
+        public async Task AssignSubscription(AssignMobileSubscriptionRequest request)
+        {
+            var mobile = await GetMobileById(request.MobileId);
+            var assetType = await _context.AssetTypes.AsNoTracking().Where(x => x.TypeID == mobile.TypeId).FirstAsync();
+            string mobileInfo = $"mobile with type {assetType}";
+            foreach(var id in request.SubscriptionIds)
+            {
+                var subscription = await _context.Subscriptions
+                   .Include(x => x.SubscriptionType)
+                   .Where(x => x.SubscriptionId == id)
+                   .FirstAsync();
+                string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+                subscription.LastModifiedAdminId = TokenStore.AdminId;
+                subscription.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
+                });
+                _context.Subscriptions.Update(subscription);
+                mobile.LastModifiedAdminId = TokenStore.AdminId;
+                mobile.Logs.Add(new()
+                {
+                    LogDate = DateTime.Now,
+                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
+                });
+                _context.Mobiles.Update(mobile);
+            }
+        }
+        public async Task ReleaseSubscription(AssignMobileSubscriptionRequest request)
+        {
+            var mobile = await GetMobileById(request.MobileId);
+            var assetType = await _context.AssetTypes.AsNoTracking().Where(x => x.TypeID == mobile.TypeId).FirstAsync();
+            string mobileInfo = $"mobile with type {assetType}";
+            int subid = request.SubscriptionIds.First();
+            var subscription = await _context.Subscriptions
+                   .Include(x => x.SubscriptionType)
+                   .Where(x => x.SubscriptionId == subid)
+                   .FirstAsync();
+            string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+            subscription.LastModifiedAdminId = TokenStore.AdminId;
+            subscription.Logs.Add(new()
+            {
+                LogDate = DateTime.Now,
+                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
+            });
+            _context.Subscriptions.Update(subscription);
+            mobile.LastModifiedAdminId = TokenStore.AdminId;
+            mobile.Logs.Add(new()
+            {
+                LogDate = DateTime.Now,
+                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
+            });
+            _context.Mobiles.Update(mobile);
+        }
+        public async Task LogPdfFile(string pdfFile, int id)
+        {
+            var mobile = await GetMobileById(id);
+            mobile.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
+                LogDate = DateTime.Now
+            });
+            _context.Mobiles.Update(mobile);
+        }
         public static MobileDTO ConvertMobile(Mobile mobile) 
         {
             return new()
@@ -243,7 +322,22 @@ namespace CMDB.API.Services
                     EMail  = mobile.Identity.EMail,
                     Name = mobile.Identity.Name,
                     IdenId = mobile.Identity.IdenId,
-                    DeactivateReason = mobile.Identity.DeactivateReason
+                    DeactivateReason = mobile.Identity.DeactivateReason,
+                    LastModifiedAdminId = mobile.Identity.LastModifiedAdminId,
+                    Type = new()
+                    {
+                        Active = mobile.Identity.Type.active,
+                        LastModifiedAdminId = mobile.Identity.Type.LastModifiedAdminId,
+                        DeactivateReason = mobile.Identity.Type.DeactivateReason,
+                        Description = mobile.Identity.Type.Description, 
+                        TypeId = mobile.Identity.Type.TypeId,
+                        Type = mobile.Identity.Type.Type
+                    },
+                    Language = new() 
+                    { 
+                        Code = mobile.Identity.Language.Code,
+                        Description = mobile.Identity.Language.Description
+                    }
                 }
             };
         }
@@ -266,11 +360,13 @@ namespace CMDB.API.Services
         }
         private async Task GetSubscriptionInfo(MobileDTO mobile)
         {
-            /*mobile.Subscriptions = _context.Subscriptions
+            mobile.Subscriptions = await _context.Subscriptions
                 .Include(x => x.SubscriptionType)
+                .ThenInclude(x => x.Category)
                 .Include(x => x.Mobile)
-                .Where(x => x.Mobile.MobileId == mobile.MobileId)
-                .ToList();*/
+                .Where(x => x.Mobile.MobileId == mobile.MobileId).AsNoTracking()
+                .Select(x => SubscriptionRepository.ConvertSubscription(x))
+                .ToListAsync();
         }
     }
 }

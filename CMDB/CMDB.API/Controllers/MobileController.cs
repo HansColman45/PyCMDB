@@ -216,6 +216,46 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpPost("AssignSubscription"),Authorize]
+        public async Task<IActionResult> AssignSubscription(AssignMobileSubscriptionRequest assignMobileSubscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignSubscription"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.MobileRepository.AssignSubscription(assignMobileSubscription);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseSubscription"), Authorize]
+        public async Task<IActionResult> ReleaseSubscription(AssignMobileSubscriptionRequest assignMobileSubscription)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseSubscription"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.MobileRepository.ReleaseSubscription(assignMobileSubscription);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
         [HttpPost("IsExisting"),Authorize]
         public async Task<IActionResult> IsExisting(MobileDTO mobile)
         {

@@ -317,8 +317,8 @@ namespace CMDB.Controllers
                         await _PDFService.GenratePDFFile(Table, mobile.MobileId);
                         await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                         await service.ReleaseIdenity(mobile);
-                        return RedirectToAction(nameof(Index));
                     }
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
                 {
@@ -415,8 +415,8 @@ namespace CMDB.Controllers
                         await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
                         await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);*/
                     }
-                    return RedirectToAction(nameof(Index));
                 }
+                return RedirectToAction(nameof(Index));
             }
             return View(mobile);
         }

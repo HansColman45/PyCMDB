@@ -87,6 +87,9 @@ namespace CMDB.API.Controllers
                 case "subscription":
                     await _uow.SubscriptionRepository.LogPdfFile(pdfFile, id);
                     break;
+                case "mobile":
+                    await _uow.MobileRepository.LogPdfFile(pdfFile, id);
+                    break;
                 default:
                     throw new NotImplementedException($"The {entity} is not implemented");
             }
