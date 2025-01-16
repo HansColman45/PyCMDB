@@ -55,6 +55,8 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.Title.Should().BeEquivalentTo("Release subscription from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
+            Perform(new ClickTheGeneratePDFOnReleaseSubscriptionForm());
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Released");
         }
     }
 }

@@ -9,23 +9,25 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create a monitor
     /// </summary>
-    public class CreateTheMonitor : Question<Task<CMDB.Domain.Entities.Screen>>
+    public class CreateTheMonitor : Question<Task<Screen>>
     {
         public override async Task<Screen> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await ScreenHelper.CreateScreen(context.context, context.Admin);
+            var screen = await ScreenHelper.CreateScreen(context.context, context.Admin);
+            return (Screen)context.GetDevice(screen.AssetTag);
         }
     }
     /// <summary>
     /// This class is used to create an inactive monitor
     /// </summary>
-    public class CreateTheInactiveMonitor : Question<Task<CMDB.Domain.Entities.Screen>>
+    public class CreateTheInactiveMonitor : Question<Task<Screen>>
     {
         public override async Task<Screen> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await ScreenHelper.CreateScreen(context.context, context.Admin, false);
+            var screen = await ScreenHelper.CreateScreen(context.context, context.Admin, false);
+            return (Screen)context.GetDevice(screen.AssetTag);
         }
     }
 }

@@ -317,7 +317,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void TheMobileIsAssignedToIdentity()
         {
             identityMobileActor.Search(Identity.UserID);
-            string lastLogLine = identityAccountActor.IdentityLastLogLine;
+            string lastLogLine = identityMobileActor.IdentityLastLogLine;
             identityMobileActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
@@ -338,7 +338,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public void ThenTheMobileIsReleased()
         {
             identityMobileActor.Search(Identity.UserID);
-            string lastLogLine = identityAccountActor.IdentityLastLogLine;
+            string lastLogLine = identityMobileActor.IdentityLastLogLine;
             identityMobileActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion

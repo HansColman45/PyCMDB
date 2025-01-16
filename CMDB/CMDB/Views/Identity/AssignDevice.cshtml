@@ -44,8 +44,8 @@
         }
         @foreach(var mobile in mobiles){
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" value="1" name="@mobile.IMEI" id="@mobile.MobileId">
-                <label class="form-check-label" for="@mobile.MobileId">Mobile Type: @mobile.MobileType.Vendor @mobile.MobileType.Type IMEI: @mobile.IMEI</label>
+                <input class="form-check-input" type="checkbox" value="1" name="@mobile.IMEI" id="@mobile.IMEI">
+                <label class="form-check-label" for="@mobile.IMEI">Mobile Type: @mobile.MobileType.Vendor @mobile.MobileType.Type IMEI: @mobile.IMEI</label>
             </div>
         }
         @foreach (var sub in subscriptions)

@@ -8,12 +8,13 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create a token
     /// </summary>
-    public class CreateTheToken : Question<Task<CMDB.Domain.Entities.Token>>
+    public class CreateTheToken : Question<Task<Domain.Entities.Token>>
     {
         public override async Task<Domain.Entities.Token> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await TokenHelper.CreateNewToken(context.context, context.Admin);
+            var token = await TokenHelper.CreateNewToken(context.context, context.Admin);
+            return (Domain.Entities.Token)context.GetDevice(token.AssetTag);
         }
     }
     /// <summary>
@@ -24,7 +25,8 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
         public override async Task<Domain.Entities.Token> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await TokenHelper.CreateNewToken(context.context, context.Admin,false);
+            var token = await TokenHelper.CreateNewToken(context.context, context.Admin, false);
+            return (Domain.Entities.Token)context.GetDevice(token.AssetTag);
         }
     }
 }

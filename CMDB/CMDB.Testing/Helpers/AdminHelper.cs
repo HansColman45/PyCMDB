@@ -48,6 +48,10 @@ namespace CMDB.Testing.Helpers
                 context.Admins.Add(admin);
                 await context.SaveChangesAsync();
 
+                Account.LastModifiedAdminId = admin.AdminId;
+                context.Accounts.Update(Account);
+                await context.SaveChangesAsync();
+
                 var identity = new IdentityBuilder()
                     .With(x => x.LanguageCode, language.Code)
                     .With(x => x.TypeId, identype.TypeId)
@@ -198,16 +202,6 @@ namespace CMDB.Testing.Helpers
                     Data.Add("Identity" + identities.IndexOf(identity).ToString(), identity);
                     await IdentityHelper.Delete(context, identity);
                 }
-                //Account
-                var accounts = context.Accounts
-                    .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                    .ToList();
-                foreach (var account in accounts)
-                {
-                    Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
-                    await AccountHelper.Delete(context, account);
-                }
                 //Subscription
                 var subs = context.Subscriptions
                     .Include(x => x.Logs)
@@ -232,6 +226,16 @@ namespace CMDB.Testing.Helpers
                 context.RemoveRange(admin.Logs);
                 context.Remove<Admin>(admin);
                 await context.SaveChangesAsync();
+                //Account
+                var accounts = context.Accounts
+                    .Include(x => x.Logs)
+                    .Where(x => x.AccID == admin.Account.AccID)
+                    .ToList();
+                foreach (var account in accounts)
+                {
+                    Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
+                    await AccountHelper.Delete(context, account);
+                }
             }
             catch (Exception)
             {

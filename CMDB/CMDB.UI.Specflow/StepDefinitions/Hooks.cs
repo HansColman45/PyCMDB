@@ -20,7 +20,15 @@ namespace CMDB.UI.Specflow.StepDefinitions
         public async Task AfterScenario(ScenarioContext context, ActorRegistry actorRegistry)
         {
             log.Info("Scenario {0} ended", context.ScenarioInfo.Title);
-            await actorRegistry.DisposeActors();
+            try
+            {
+                await actorRegistry.DisposeActors();
+            }
+            catch (Exception e)
+            {
+                log.Fatal(e.Message);
+                throw;
+            }
         }
         [AfterStep]
         public void AfterStep(ScenarioContext context, ActorRegistry actorRegistry)

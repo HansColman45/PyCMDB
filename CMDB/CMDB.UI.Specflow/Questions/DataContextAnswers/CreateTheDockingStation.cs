@@ -9,12 +9,13 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create a docking station
     /// </summary>
-    public class CreateTheDockingStation : Question<Task<CMDB.Domain.Entities.Docking>>
+    public class CreateTheDockingStation : Question<Task<Domain.Entities.Docking>>
     {
         public override async Task<Domain.Entities.Docking> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await DockingHelpers.CreateSimpleDocking(context.context, context.Admin);
+            var doc =  await DockingHelpers.CreateSimpleDocking(context.context, context.Admin);
+            return (Domain.Entities.Docking)context.GetDevice(doc.AssetTag);
         }
     }
     /// <summary>
@@ -25,7 +26,8 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
         public override async Task<Domain.Entities.Docking> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await DockingHelpers.CreateSimpleDocking(context.context, context.Admin, false);
+            var doc = await DockingHelpers.CreateSimpleDocking(context.context, context.Admin, false);
+            return (Domain.Entities.Docking)context.GetDevice(doc.AssetTag);
         }
     }
 }

@@ -8,23 +8,25 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create a desktop
     /// </summary>
-    public class CreateTheDesktop : Question<Task<CMDB.Domain.Entities.Desktop>>
+    public class CreateTheDesktop : Question<Task<Domain.Entities.Desktop>>
     {
         public override async Task<Domain.Entities.Desktop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin);
+            var desktop = await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin);
+            return (Domain.Entities.Desktop)context.GetDevice(desktop.AssetTag);
         }
     }
     /// <summary>
     /// This class is used to create an inactive desktop
     /// </summary>
-    public class CreateTheInactiveDesktop : Question<Task<CMDB.Domain.Entities.Desktop>>
+    public class CreateTheInactiveDesktop : Question<Task<Domain.Entities.Desktop>>
     {
         public override async Task<Domain.Entities.Desktop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin, false);
+            var desktop = await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin, false);
+            return (Domain.Entities.Desktop)context.GetDevice(desktop.AssetTag);
         }
     }
 }

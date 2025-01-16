@@ -124,14 +124,15 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 return assetTypes.FirstOrDefault();
         }
         /// <summary>
-        /// This will return a laptop using the Asset Tag
+        /// This will return a devivce using the Asset Tag
         /// </summary>
         /// <param name="AssetTag">AssetTag</param>
-        /// <returns>Laptop</returns>
-        public Laptop GetLaptop(string AssetTag)
+        /// <returns>Device</returns>
+        public Device GetDevice(string AssetTag)
         {
-            var Laptop = context.Devices.OfType<Laptop>()
+            var Laptop = context.Devices
                 .Include(x => x.Type)
+                .Include(x => x.Category)
                 .Where(x => x.AssetTag == AssetTag).FirstOrDefault();
             return Laptop;
         }
@@ -212,10 +213,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             identity.Subscriptions.Add(subscription);
             await context.SaveChangesAsync();
         }
-        public new void Dispose()
-        {
-            context.Dispose();
-        }
         /// <summary>
         /// This function will create a subscription type
         /// </summary>
@@ -227,6 +224,10 @@ namespace CMDB.UI.Specflow.Abilities.Data
             AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
             SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
             return subscriptionType;
+        }
+        public new void Dispose()
+        {
+            context.Dispose();
         }
     }
 }

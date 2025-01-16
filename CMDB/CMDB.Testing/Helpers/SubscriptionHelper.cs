@@ -14,14 +14,14 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.SubsctiptionTypeId, subscriptionType.Id)
                 .With(x => x.active,1)
                 .With(x => x.AssetCategoryId,subscriptionType.AssetCategoryId)
-                .With(x => x.LastModifiedAdminId, admin.AccountId)
+                .With(x => x.LastModifiedAdminId, admin.AdminId)
                 .Build();
             context.Subscriptions.Add(subscription);
-
-            if(subscriptionType.Category.Category == "Internet Subscription")
+            await context.SaveChangesAsync();
+            
+            if (subscriptionType.Category.Category == "Internet Subscription")
             {
                 subscription.IdentityId = 1;
-                await context.SaveChangesAsync();
             }
 
             subscription.Logs.Add(new LogBuilder()
@@ -29,11 +29,12 @@ namespace CMDB.Testing.Helpers
                 .With(x => x.LogText, $"The subscription with: {subscriptionType.Category.Category} and type {subscriptionType} on {subscription.PhoneNumber} is created by {admin.Account.UserID} in table subscription")
                 .Build()
                 );
-
+            context.Subscriptions.Update(subscription);
             await context.SaveChangesAsync();
             if (!active) 
             {
                 subscription.active = 0;
+                context.Subscriptions.Update(subscription);
                 await context.SaveChangesAsync();
             }
             return subscription;

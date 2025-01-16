@@ -340,7 +340,9 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = TokenStore.AdminId;
             foreach (var id in subscriptionIds)
             {
-                var subscription = await _context.Subscriptions.Where(x => x.SubscriptionId == id).FirstAsync();
+                var subscription = await _context.Subscriptions
+                    .Include(x => x.SubscriptionType)
+                    .Where(x => x.SubscriptionId == id).FirstAsync();
                 subscription.LastModifiedAdminId = TokenStore.AdminId;
                 string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
                 subscription.IdentityId = 1;

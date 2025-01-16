@@ -10,7 +10,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// </summary>
     public class DeleteAllItemsCreatedOrUpdatedByAdmin : Question<Task<List<object>>>
     {
-        private NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        private readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         public override async Task<List<object>> PerformAs(IPerformer actor)
         {
             List<object> objects = new();
