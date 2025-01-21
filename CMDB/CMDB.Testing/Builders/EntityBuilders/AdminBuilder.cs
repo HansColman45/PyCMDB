@@ -10,7 +10,6 @@ namespace CMDB.Testing.Builders.EntityBuilders
         {
             SetDefaultRules((f, a) =>
             {
-                a.Account = new AccountBuilder().Build();
                 a.DateSet = DateTime.Now;
                 a.Level = 9;
                 a.Password = "1234";

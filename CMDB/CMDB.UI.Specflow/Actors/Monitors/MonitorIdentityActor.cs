@@ -31,7 +31,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
         }
         public void AssignTheIdentity2Monitor(Screen screen, Identity identity)
         {
-            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Screen with {screen.AssetTag}",
+            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Monitor with {screen.AssetTag}",
                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheMonitorAssignIdentityPage());
             page.WebDriver = Driver;
@@ -49,7 +49,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
         }
         public void ReleaseIdentity(Screen screen, Identity identity)
         {
-            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Laptop with {screen.AssetTag}",
+            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Monitor with {screen.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailPage = Perform(new OpenTheMonitorDetailPage());
             detailPage.WebDriver = Driver;

@@ -95,7 +95,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var type in accountType)
                 {
-                    Data.Add("AccountType" + accountType.IndexOf(type).ToString(), type);
+                    Data.Add($"AccountType{type.TypeId}", type);
                     await AccountTypeHelper.Delete(context, type);
                 }
                 //AssetType
@@ -104,7 +104,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var type in assetType)
                 {
-                    Data.Add("AssetType" + assetType.IndexOf(type).ToString(), type);
+                    Data.Add($"AssetType{type.TypeID}", type);
                     await AssetTypeHelper.Delete(context, type);
                 }
                 //IdentityTypes
@@ -115,7 +115,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var type in identypes)
                 {
-                    Data.Add("IdentityType" + identypes.IndexOf(type).ToString(), type);
+                    Data.Add($"IdentityType{type.TypeId}", type);
                     await IdentityTypeHelper.Delete(context, type);
                 }
                 //Laptop
@@ -126,7 +126,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var laptop in laptops)
                 {
-                    Data.Add("Laptop" + laptops.IndexOf(laptop).ToString(), laptop);
+                    Data.Add($"Laptop{laptop.AssetTag}", laptop);
                     await LaptopHelper.Delete(context, laptop);
                 }
                 //Desktop
@@ -137,7 +137,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var desktop in desktops)
                 {
-                    Data.Add("Desktop" + desktops.IndexOf(desktop).ToString(), desktop);
+                    Data.Add($"Desktop{desktop.AssetTag}", desktop);
                     await DesktopHelper.Delete(context, desktop);
                 }
                 //Screen
@@ -148,7 +148,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var screen in screens)
                 {
-                    Data.Add("Screen" + screens.IndexOf(screen).ToString(), screen);
+                    Data.Add($"Screen{screen.AssetTag}", screen);
                     await ScreenHelper.Delete(context, screen);
                 }
                 //Docking
@@ -159,7 +159,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var docking in dockings)
                 {
-                    Data.Add("Docking" + dockings.IndexOf(docking).ToString(), docking);
+                    Data.Add($"Docking{docking.AssetTag}", docking);
                     await DockingHelpers.Delete(context, docking);
                 }
                 //Token
@@ -170,7 +170,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var token in tokens)
                 {
-                    Data.Add("Token" + tokens.IndexOf(token).ToString(), token);
+                    Data.Add($"Token{token.AssetTag}", token);
                     await TokenHelper.Delete(context, token);
                 }
                 //mobiles
@@ -180,7 +180,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var mobile in mobiles)
                 {
-                    Data.Add("Mobile"+mobiles.IndexOf(mobile).ToString(),mobile);
+                    Data.Add($"Mobile{mobile.MobileId}",mobile);
                     await MobileHelper.Delete(context, mobile);
                 }
                 //IdenAccount
@@ -189,7 +189,7 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var idenacc in idenAccs)
                 {
-                    Data.Add("IdenAccount" + idenAccs.IndexOf(idenacc).ToString(), idenacc);
+                    Data.Add($"IdenAccount{idenacc.ID}", idenacc);
                     context.Remove<IdenAccount>(idenacc);
                 }
                 //Identity
@@ -199,8 +199,18 @@ namespace CMDB.Testing.Helpers
                     .ToList();
                 foreach (var identity in identities)
                 {
-                    Data.Add("Identity" + identities.IndexOf(identity).ToString(), identity);
+                    Data.Add($"Identity{identity.IdenId}", identity);
                     await IdentityHelper.Delete(context, identity);
+                }
+                //Account
+                var accounts = context.Accounts
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AccID != admin.Account.AccID)
+                    .ToList();
+                foreach (var account in accounts)
+                {
+                    Data.Add($"Account{account.AccID}", account);
+                    await AccountHelper.Delete(context, account);
                 }
                 //Subscription
                 var subs = context.Subscriptions
@@ -227,13 +237,13 @@ namespace CMDB.Testing.Helpers
                 context.Remove<Admin>(admin);
                 await context.SaveChangesAsync();
                 //Account
-                var accounts = context.Accounts
+                accounts = context.Accounts
                     .Include(x => x.Logs)
                     .Where(x => x.AccID == admin.Account.AccID)
                     .ToList();
                 foreach (var account in accounts)
                 {
-                    Data.Add("Account" + accounts.IndexOf(account).ToString(), account);
+                    Data.Add($"Account{account.AccID}", account);
                     await AccountHelper.Delete(context, account);
                 }
             }

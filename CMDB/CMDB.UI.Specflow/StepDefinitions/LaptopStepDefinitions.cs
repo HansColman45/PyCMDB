@@ -118,8 +118,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             laptopIdentityActor = new(ScenarioContext);
             ActorRegistry.RegisterActor(laptopIdentityActor);
-            Laptop = await laptopIdentityActor.CreateLaptop();
             Admin = await laptopIdentityActor.CreateNewAdmin();
+            Laptop = await laptopIdentityActor.CreateLaptop();
             laptopIdentityActor.DoLogin(Admin.Account.UserID, "1234");
             bool result = laptopIdentityActor.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();

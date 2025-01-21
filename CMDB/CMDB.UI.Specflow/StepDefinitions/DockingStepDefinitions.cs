@@ -24,8 +24,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             dockingCreator = new(ScenarioContext);
             ActorRegistry.RegisterActor(dockingCreator);
-            dockingStation = table.CreateInstance<Helpers.DockingStation>();
             Admin = await dockingCreator.CreateNewAdmin();
+            dockingStation = table.CreateInstance<Helpers.DockingStation>();
             dockingCreator.DoLogin(Admin.Account.UserID, "1234");
             bool result = dockingCreator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -49,8 +49,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             dockingUpdator = new(ScenarioContext);
             ActorRegistry.RegisterActor(dockingUpdator);
-            Docking = await dockingUpdator.CreateNewDocking();
             Admin = await dockingUpdator.CreateNewAdmin();
+            Docking = await dockingUpdator.CreateNewDocking();
             dockingUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = dockingUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -90,8 +90,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             dockingUpdator = new(ScenarioContext);
             ActorRegistry.RegisterActor(dockingUpdator);
-            Docking = await dockingUpdator.CreateNewDocking(false);
             Admin = await dockingUpdator.CreateNewAdmin();
+            Docking = await dockingUpdator.CreateNewDocking(false);
             dockingUpdator.DoLogin(Admin.Account.UserID, "1234");
             bool result = dockingUpdator.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();
@@ -117,8 +117,8 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             dockingIdentityActor = new(ScenarioContext);
             ActorRegistry.RegisterActor(dockingIdentityActor);
-            Docking = await dockingIdentityActor.CreateNewDocking();
             Admin = await dockingIdentityActor.CreateNewAdmin();
+            Docking = await dockingIdentityActor.CreateNewDocking();
             dockingIdentityActor.DoLogin(Admin.Account.UserID, "1234");
             bool result = dockingIdentityActor.Perform(new IsTheUserLoggedIn());
             result.Should().BeTrue();

@@ -21,34 +21,39 @@ namespace CMDB.UI.Specflow.Actors.Dockings
         public async Task<Docking> UpdateDocking(Docking docking, string field, string value)
         {
             rndNr = rnd.Next();
-            var updatePage = Perform(new OpenTheDockingEditPage());
-            updatePage.WebDriver = Driver;
-            updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             switch (field)
             {
                 case "SerialNumber":
+                    var updatePage = Perform(new OpenTheDockingEditPage());
+                    updatePage.WebDriver = Driver;
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, docking.SerialNumber, value + rndNr, admin.Account.UserID, Table);
                     updatePage.SerialNumber = value + rndNr;
                     docking.SerialNumber = value + rndNr;
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
-                    
+                    updatePage.Edit();
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     break;
                 case "Type":
-                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, $"{docking.Type}", value, admin.Account.UserID, Table);
                     string Vendor, Type;
                     Vendor = value.Split(" ")[0];
                     Type = value.Split(" ")[1];
-                    var assetType = await GetOrCreateAssetType("Docking station",Vendor, Type);
+                    var assetType = await GetOrCreateAssetType("Docking station", Vendor, Type);
+                    updatePage = Perform(new OpenTheDockingEditPage());
+                    updatePage.WebDriver = Driver;
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
+                    ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, $"{docking.Type}", value, admin.Account.UserID, Table);
                     updatePage.Type = assetType.TypeID.ToString();
                     docking.Type = assetType;
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
+                    updatePage.Edit();
+                    updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     break;
                 default: 
                     log.Fatal($"The update for the field {field} is not implemented");
                     throw new NotImplementedException();
             }
-            updatePage.Edit();
-            updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
+            
             return docking;
         }
         public void DeactivateDocking(Docking docking, string reason)
