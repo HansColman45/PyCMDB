@@ -42,3 +42,17 @@ Scenario: I want to release an Idenitity from an existing Mobile
 	And The Identity is assigned to my mobile
 	When I release the Identity from my mobile
 	Then The identity is released from my mobile
+
+Scenario: I want to assign a mobile subscription to an exisiting mobile
+	Given There is an mobile in the system
+	And An mobile subscription exist as well
+	When I assign the mobile subscription to my mobile
+	And I fill in the assign form for this subscription
+	Then The subscription is assigned to my mobile
+
+Scenario: I want to release a mobile subscription from an exisiting mobile
+	Given There is an mobile in the system
+	And An mobile subscription exist as well
+	And The subscription is assigned to my mobile
+	When I release the subscription from my mobile
+	Then The subscription is released

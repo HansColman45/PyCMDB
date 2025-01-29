@@ -186,7 +186,8 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.SubscriptionRepository.ListAllFreeSubscriptions(category));
+            var subs = await _uow.SubscriptionRepository.ListAllFreeSubscriptions(category);
+            return Ok(subs);
         }
     }
 }

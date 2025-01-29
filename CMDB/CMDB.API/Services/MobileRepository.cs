@@ -227,41 +227,13 @@ namespace CMDB.API.Services
             var mobile = await GetMobileById(request.MobileId);
             var assetType = await _context.AssetTypes.AsNoTracking().Where(x => x.TypeID == mobile.TypeId).FirstAsync();
             string mobileInfo = $"mobile with type {assetType}";
-            foreach(var id in request.SubscriptionIds)
-            {
-                var subscription = await _context.Subscriptions
-                   .Include(x => x.SubscriptionType)
-                   .Where(x => x.SubscriptionId == id)
-                   .FirstAsync();
-                string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
-                subscription.LastModifiedAdminId = TokenStore.AdminId;
-                subscription.Logs.Add(new()
-                {
-                    LogDate = DateTime.Now,
-                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
-                });
-                _context.Subscriptions.Update(subscription);
-                mobile.LastModifiedAdminId = TokenStore.AdminId;
-                mobile.Logs.Add(new()
-                {
-                    LogDate = DateTime.Now,
-                    LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
-                });
-                _context.Mobiles.Update(mobile);
-            }
-        }
-        public async Task ReleaseSubscription(AssignMobileSubscriptionRequest request)
-        {
-            var mobile = await GetMobileById(request.MobileId);
-            var assetType = await _context.AssetTypes.AsNoTracking().Where(x => x.TypeID == mobile.TypeId).FirstAsync();
-            string mobileInfo = $"mobile with type {assetType}";
-            int subid = request.SubscriptionIds.First();
             var subscription = await _context.Subscriptions
                    .Include(x => x.SubscriptionType)
-                   .Where(x => x.SubscriptionId == subid)
+                   .Where(x => x.SubscriptionId == request.SubscriptionId)
                    .FirstAsync();
             string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
             subscription.LastModifiedAdminId = TokenStore.AdminId;
+            subscription.MobileId = mobile.MobileId;
             subscription.Logs.Add(new()
             {
                 LogDate = DateTime.Now,
@@ -273,6 +245,33 @@ namespace CMDB.API.Services
             {
                 LogDate = DateTime.Now,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
+            });
+            _context.Mobiles.Update(mobile);
+        }
+        public async Task ReleaseSubscription(AssignMobileSubscriptionRequest request)
+        {
+            var mobile = await GetMobileById(request.MobileId);
+            var assetType = await _context.AssetTypes.AsNoTracking().Where(x => x.TypeID == mobile.TypeId).FirstAsync();
+            string mobileInfo = $"mobile with type {assetType}";
+            int subid = request.SubscriptionId;
+            var subscription = await _context.Subscriptions
+                   .Include(x => x.SubscriptionType)
+                   .Where(x => x.SubscriptionId == subid)
+                   .FirstAsync();
+            string subscriptionInfo = $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}";
+            subscription.LastModifiedAdminId = TokenStore.AdminId;
+            subscription.MobileId = null;
+            subscription.Logs.Add(new()
+            {
+                LogDate = DateTime.Now,
+                LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
+            });
+            _context.Subscriptions.Update(subscription);
+            mobile.LastModifiedAdminId = TokenStore.AdminId;
+            mobile.Logs.Add(new()
+            {
+                LogDate = DateTime.Now,
+                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
         }
@@ -360,13 +359,12 @@ namespace CMDB.API.Services
         }
         private async Task GetSubscriptionInfo(MobileDTO mobile)
         {
-            mobile.Subscriptions = await _context.Subscriptions
+            mobile.Subscription = await _context.Subscriptions
+                .Include(x => x.Category)
                 .Include(x => x.SubscriptionType)
-                .ThenInclude(x => x.Category)
                 .Include(x => x.Mobile)
                 .Where(x => x.Mobile.MobileId == mobile.MobileId).AsNoTracking()
-                .Select(x => SubscriptionRepository.ConvertSubscription(x))
-                .ToListAsync();
+                .Select(x => SubscriptionRepository.ConvertSubscription(x)).FirstOrDefaultAsync();
         }
     }
 }

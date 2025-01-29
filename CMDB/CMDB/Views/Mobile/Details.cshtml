@@ -56,7 +56,7 @@
     @if ((bool)ViewData["SubscriptionOverview"])
     {
         <H3>Subscription overview</H3>
-        @if (Model.Subscriptions.Count >0)
+        @if (Model.Subscription is not null)
         {
             <table class="table table-striped table-bordered">
                 <thead>
@@ -70,17 +70,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var item in Model.Subscriptions)
-                    {
-                        <tr>
-                            <td class="small">@item.SubscriptionType</td>
-                            <td class="small">@item.PhoneNumber</td>
-                            @if ((bool)ViewData["ReleaseSubscription"])
-                            {
-                                <td><a class="btn btn-danger" href="\Mobile\ReleaseSubscription\@Model.MobileId\@item.SubscriptionId" id="ReleaseSubscription" data-toggle="tooltip" data-placement="top" title="Release Subscription"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
-                            }
-                        </tr>
-                    }
+                    <tr>
+                        <td class="small">@Model.Subscription.SubscriptionType</td>
+                        <td class="small">@Model.Subscription.PhoneNumber</td>
+                        @if ((bool)ViewData["ReleaseSubscription"])
+                        {
+                            <td><a class="btn btn-danger" href="\Mobile\ReleaseSubscription\@Model.MobileId\@Model.Subscription.SubscriptionId" id="ReleaseSubscription" data-toggle="tooltip" data-placement="top" title="Release Subscription"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                        }
+                    </tr>
                 </tbody>
             </table>
         }

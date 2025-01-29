@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
@@ -306,8 +307,8 @@ namespace CMDB.Controllers
                     {
                         await _PDFService.SetUserinfo(
                             UserId: mobile.Identity.UserID,
-                            ITEmployee: admin.Account.UserID,
-                            Singer: mobile.Identity.Name,
+                            ITEmployee: ITPerson,
+                            Singer: Employee,
                             FirstName: mobile.Identity.FirstName,
                             LastName: mobile.Identity.LastName,
                             Receiver: mobile.Identity.Name,
@@ -329,15 +330,52 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
-        public async Task<IActionResult> ReleaseSubscription(IFormCollection values, int? id, int? subid)
+        public async Task<IActionResult> ReleaseSubscription(IFormCollection values, int? id, int? MobileId)
         {
-            if (id is null)
+            if (id is null && MobileId is null)
                 return NotFound();
             var mobile = await service.GetMobileById((int)id);
-            if (mobile is null)
+            var sub = await service.GetSubribtion((int)MobileId);
+            if (mobile is null && sub is null)
                 return NotFound();
             log.Debug($"Using Release subscription in {Table}");
+            ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseSubscription");
+            ViewData["backUrl"] = "Mobile";
+            ViewData["Action"] = "ReleaseSubscription";
             await BuildMenu();
+            var admin = await service.Admin();
+            IdentityDTO identity = mobile.Identity;
+            ViewData["Name"] = identity.Name;
+            ViewData["AdminName"] = admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                try
+                {
+                    await _PDFService.SetUserinfo(
+                            UserId: mobile.Identity.UserID,
+                            ITEmployee: ITPerson,
+                            Singer: Employee,
+                            FirstName: mobile.Identity.FirstName,
+                            LastName: mobile.Identity.LastName,
+                            Receiver: mobile.Identity.Name,
+                            Language: mobile.Identity.Language.Code,
+                            "Release");
+                    await _PDFService.SetSubscriptionInfo(sub);
+                    await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                    await _PDFService.GenratePDFFile("subscription", sub.SubscriptionId);
+                    await service.ReleaseSubscription(mobile);
+                }
+                catch (Exception ex) 
+                {
+                    log.Error("DB error: {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+                return RedirectToAction(nameof(Index));
+            }
             return View(mobile);
         }
         public async Task<IActionResult> AssignSubscription(IFormCollection values, int? id)
@@ -356,7 +394,7 @@ namespace CMDB.Controllers
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
-                SubscriptionDTO subscription =await service.GetSubribtion(Int32.Parse(values["Subscriptions"]));
+                SubscriptionDTO subscription =await service.GetSubribtion(Int32.Parse(values["Subscription"]));
                 if (!service.IsDeviceFree(mobile, true))
                     ModelState.AddModelError("", "Mobile can not be assigned to another user");
                 if (ModelState.IsValid)
@@ -388,11 +426,11 @@ namespace CMDB.Controllers
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];
                 if (ModelState.IsValid) {
-                    if (mobile.Identity != null) {
+                    if (mobile.Identity is not null) {
                         await _PDFService.SetUserinfo(
                             UserId: mobile.Identity.UserID,
-                            ITEmployee: admin.Account.UserID,
-                            Singer: mobile.Identity.Name,
+                            ITEmployee: ITPerson,
+                            Singer: Employee,
                             FirstName: mobile.Identity.FirstName,
                             LastName: mobile.Identity.LastName,
                             Receiver: mobile.Identity.Name,
@@ -401,19 +439,20 @@ namespace CMDB.Controllers
                         await _PDFService.GenratePDFFile(Table, mobile.MobileId);
                         await _PDFService.GenratePDFFile("identity", mobile.Identity.IdenId);
                     }
-                    else if (mobile.Subscriptions.Count > 0)
+                    else if (mobile.Subscription is not null)
                     {
-                        /*PDFGenerator _PDFGenerator = new()
-                        {
-                            ITEmployee = ITPerson,
-                            Singer = Employee
-                        };
-                        _PDFGenerator.SetMobileInfo(mobile);
-                        _PDFGenerator.SetSubscriptionInfo(mobile.Subscriptions.First());
-                        string pdfFile = _PDFGenerator.GeneratePath(_env);
-                        _PDFGenerator.GeneratePdf(pdfFile);
-                        await service.LogPdfFile(Table, mobile.MobileId, pdfFile);
-                        await service.LogPdfFile("subscription", mobile.Subscriptions.First().SubscriptionId, pdfFile);*/
+                        var identity = mobile.Subscription.Identity;
+                        await _PDFService.SetUserinfo(
+                            UserId: identity.UserID,
+                            ITEmployee: ITPerson,
+                            Singer: Employee,
+                            FirstName: identity.FirstName,
+                            LastName: identity.LastName,
+                            Receiver: identity.Name,
+                            Language: identity.Language.Code);
+                        await _PDFService.SetSubscriptionInfo(mobile.Subscription);
+                        await _PDFService.GenratePDFFile(Table, mobile.MobileId);
+                        await _PDFService.GenratePDFFile("subscription", mobile.Subscription.SubscriptionId);
                     }
                 }
                 return RedirectToAction(nameof(Index));

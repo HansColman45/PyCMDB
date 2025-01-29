@@ -11,10 +11,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private MobileCreator mobileCreator;
         private MobileUpdator mobileUpdator;
         private MobileIdentityActor mobileIdentityActor;
+        private MobileSubscriptionActor mobileSubscriptionActor;
 
         private Helpers.Mobile mobile;
         private Mobile Mobile;
         private Identity Identity;
+        private Subscription subscription;
 
         public MobileStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
@@ -170,6 +172,63 @@ namespace CMDB.UI.Specflow.StepDefinitions
             mobileIdentityActor.Search(Mobile.IMEI.ToString());
             string lastLogLine = mobileIdentityActor.GetLastMobileLogLine;
             mobileIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region assign subscription
+        [Given(@"There is an mobile in the system")]
+        public async Task GivenThereIsAnMobileInTheSystem()
+        {
+            mobileSubscriptionActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(mobileSubscriptionActor);
+            Admin = await mobileSubscriptionActor.CreateNewAdmin();
+            Mobile = await mobileSubscriptionActor.CreateMobile();
+            mobileSubscriptionActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = mobileSubscriptionActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            mobileSubscriptionActor.OpenMobileOverviewPage();
+            mobileSubscriptionActor.Search(Mobile.IMEI.ToString());
+        }
+        [Given(@"An mobile subscription exist as well")]
+        public async Task GivenAnMobileSubscriptionExistAsWell()
+        {
+            subscription = await mobileSubscriptionActor.CreateNewSubscription();
+        }
+
+        [When(@"I assign the mobile subscription to my mobile")]
+        public void WhenIAssignTheMobileSubscriptionToMyMobile()
+        {
+            mobileSubscriptionActor.AssignSubscription2Mobile(Mobile, subscription);
+        }
+        [When(@"I fill in the assign form for this subscription")]
+        public void WhenIFillInTheAssignFormForThisSubscription()
+        {
+            mobileSubscriptionActor.FillInAssignForm();
+        }
+        [Then(@"The subscription is assigned to my mobile")]
+        public void ThenTheSubscriptionIsAssignedToMyMobile()
+        {
+            mobileSubscriptionActor.Search(Mobile.IMEI.ToString());
+            string lastlog = mobileSubscriptionActor.GetLastMobileLogLine;
+            mobileSubscriptionActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #endregion
+        #region release sub
+        [Given(@"The subscription is assigned to my mobile")]
+        public async Task GivenTheSubscriptionIsAssignedToMyMobile()
+        {
+            await mobileSubscriptionActor.AssignSubscription(Mobile, subscription);
+        }
+        [When(@"I release the subscription from my mobile")]
+        public void WhenIReleaseTheSubscriptionFromMyMobile()
+        {
+            mobileSubscriptionActor.ReleaseSubscription(Mobile, subscription);
+        }
+        [Then(@"The subscription is released")]
+        public void ThenTheSubscriptionIsReleased()
+        {
+            mobileSubscriptionActor.Search(Mobile.IMEI.ToString());
+            string lastlog = mobileSubscriptionActor.GetLastMobileLogLine;
+            mobileSubscriptionActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
         }
         #endregion
     }

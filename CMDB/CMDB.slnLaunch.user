@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Default Startup",
+    "Projects": [
+      {
+        "Path": "CMDB\\CMDB.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "CMDB.API\\CMDB.API.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

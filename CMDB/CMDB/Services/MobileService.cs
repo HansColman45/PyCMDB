@@ -4,7 +4,9 @@ using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
@@ -195,13 +197,16 @@ namespace CMDB.Services
         }
         public async Task AssignSubscription(MobileDTO mobile, SubscriptionDTO subscription)
         {
-            subscription.Mobile = mobile;
-            /*mobile.LastModfiedAdmin = Admin;
-            subscription.LastModfiedAdmin = Admin;
-            mobile.Subscriptions.Add(subscription);
-            await _context.SaveChangesAsync();
-            await LogAssignSubscription2Mobile(table, mobile, subscription);
-            await LogAssignMobile2Subscription("mobile",subscription,mobile);*/
+            AssignMobileSubscriptionRequest request = new()
+            {
+                MobileId = mobile.MobileId,
+                SubscriptionId = subscription.SubscriptionId
+            };
+            BaseUrl = _url + $"api/Mobile/AssignSubscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
 
         public async Task<SubscriptionDTO> GetSubribtion(int id)
@@ -215,6 +220,20 @@ namespace CMDB.Services
             }
             else
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+
+        public async Task ReleaseSubscription(MobileDTO mobile)
+        {
+            AssignMobileSubscriptionRequest request = new()
+            {
+                MobileId = mobile.MobileId,
+                SubscriptionId = mobile.Subscription.SubscriptionId
+            };
+            BaseUrl = _url + $"api/Mobile/ReleaseSubscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode); ;
         }
     }
 }

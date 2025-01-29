@@ -349,7 +349,7 @@ namespace CMDB.API.Services
                 subscription.Logs.Add(new()
                 {
                     LogDate = DateTime.Now,
-                    LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(subscriptionInfo, ideninfo, TokenStore.Admin.Account.UserID, "subscription")
+                    LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, "subscription")
                 });
                 _context.Subscriptions.Update(subscription);
                 iden.Logs.Add(new()

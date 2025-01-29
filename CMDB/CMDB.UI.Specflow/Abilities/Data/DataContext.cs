@@ -214,6 +214,20 @@ namespace CMDB.UI.Specflow.Abilities.Data
             await context.SaveChangesAsync();
         }
         /// <summary>
+        /// This function will assign a subscription to my mobile
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="mobile"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        public async Task AssignMobile2Subscription(Admin admin, Mobile mobile,Subscription subscription)
+        {
+            mobile.LastModifiedAdmin= admin;
+            subscription.LastModifiedAdmin= admin;
+            subscription.Mobile = mobile;
+            await context.SaveChangesAsync();
+        }
+        /// <summary>
         /// This function will create a subscription type
         /// </summary>
         /// <param name="admin">The admin</param>

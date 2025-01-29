@@ -158,17 +158,17 @@ namespace CMDB.API.Services
             return category switch
             {
                 "Mobile" => await _context.Subscriptions
-                                        .Include(x => x.Category)
-                                        .Include(x => x.SubscriptionType)
-                                        .Where(x => x.SubscriptionType.AssetCategoryId == 3 && x.MobileId == 0).AsNoTracking()
-                                        .Select(x => ConvertSubscription(x))
-                                        .ToListAsync(),
+                    .Include(x => x.Category)
+                    .Include(x => x.SubscriptionType)
+                    .Where(x => x.AssetCategoryId == 3 && x.MobileId == null).AsNoTracking()
+                    .Select(x => ConvertSubscription(x))
+                    .ToListAsync(),
                 "Internet" => await _context.Subscriptions
-                                        .Include(x => x.Category)
-                                        .Include(x => x.SubscriptionType)
-                                        .Where(x => x.SubscriptionType.AssetCategoryId == 4 && (x.IdentityId ==0 || x.IdentityId == 1)).AsNoTracking()
-                                        .Select(x => ConvertSubscription(x))
-                                        .ToListAsync(),
+                    .Include(x => x.Category)
+                    .Include(x => x.SubscriptionType)
+                    .Where(x => x.AssetCategoryId == 4 && (x.IdentityId ==0 || x.IdentityId == 1)).AsNoTracking()
+                    .Select(x => ConvertSubscription(x))
+                    .ToListAsync(),
                 _ => throw new NotImplementedException($"The {category} is not implemented yet"),
             };
         }

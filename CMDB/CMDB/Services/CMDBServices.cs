@@ -61,6 +61,7 @@ namespace CMDB.Services
                 }; 
                 BaseUrl = _url + $"api/Configuration";
                 var response = _Client.PostAsJsonAsync(BaseUrl,request).Result;
+                _Client.SetBearerToken(TokenStore.Token);
                 if (response.IsSuccessStatusCode)
                 {
                     var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
@@ -104,6 +105,7 @@ namespace CMDB.Services
                     SubCode = "Company"
                 };
                 BaseUrl = _url + $"api/Configuration";
+                _Client.SetBearerToken(TokenStore.Token);
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
                 {

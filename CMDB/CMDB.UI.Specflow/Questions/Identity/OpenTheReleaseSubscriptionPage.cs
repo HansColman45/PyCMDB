@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Questions.Identity
         public override ReleaseSubscriptionPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityDetailPage>();
-            page.ClickElementByXpath(IdentityDetailPage.ReleaseSubscriptionXPath);
+            page.ClickElementByXpath(IdentityDetailPage.ReleaseInternetSubscriptionXPath);
             return new();
         }
     }

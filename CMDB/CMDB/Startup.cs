@@ -18,6 +18,7 @@ namespace CMDB
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddProblemDetails();
             services.AddControllersWithViews(x => x.SuppressAsyncSuffixInActionNames = false).AddRazorRuntimeCompilation();
             services.AddScoped<ITokenStore, TokenStore>();
             services.AddSingleton<IPasswordHasher, PasswordHasher>();
@@ -33,8 +34,8 @@ namespace CMDB
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseHsts();
             }
+            app.UseHsts();
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 

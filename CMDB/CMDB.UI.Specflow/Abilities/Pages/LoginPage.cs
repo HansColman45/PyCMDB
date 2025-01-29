@@ -9,7 +9,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         {
             WebSettings settings = new()
             {
-                BaseUrl = "https://localhost:44314/"
+                BaseUrl = "https://localhost:5001/"
             };
             Settings = settings;
         }

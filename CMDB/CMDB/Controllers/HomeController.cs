@@ -12,6 +12,11 @@ namespace CMDB.Controllers
         {
             service = new();
         }
+        public IActionResult Error()
+        {
+
+            return View();
+        }
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", "Home");

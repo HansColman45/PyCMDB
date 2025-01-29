@@ -7,5 +7,9 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
         public MobileAssignSubscriptionPage() : base()
         {
         }
+        public void SelectSubscription(Domain.Entities.Subscription subscription)
+        {
+            SelectValueInDropDownByXpath($"//*[@id='Subscription']",subscription.SubscriptionId.ToString());
+        }
     }
 }

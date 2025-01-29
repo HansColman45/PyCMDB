@@ -24,8 +24,8 @@
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label class="control-label">Subscription <span style="color:red;">*</span></label>
-        @Html.DropDownListFor(Model => Model.Subscriptions, (IEnumerable<SelectListItem>)ViewBag.Subscriptions, "Please select", new { @class = "form-control" })
-            <span class="text-danger field-validation-valid" asp-validation-for="Subscriptions" data-valmsg-replace="true"></span>
+        @Html.DropDownListFor(Model => Model.Subscription, (IEnumerable<SelectListItem>)ViewBag.Subscriptions, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Subscription" data-valmsg-replace="true"></span>
         </div>
         <input type="hidden" name="form-submitted" value="1" />
         <div class="form-actions">
