@@ -138,10 +138,10 @@ namespace CMDB.Services
                 return true;
             return result;
         }
-        public async Task<List<SelectListItem>> ListFreeIdentities()
+        public async Task<List<SelectListItem>> ListFreeIdentities(string table)
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities";
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/{table}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) 

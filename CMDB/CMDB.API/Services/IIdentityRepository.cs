@@ -7,7 +7,7 @@ namespace CMDB.API.Services
         Task<IdentityDTO?> GetById(int id);
         Task<IEnumerable<IdentityDTO>> GetAll();
         Task<IEnumerable<IdentityDTO>> GetAll(string searchStr);
-        Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities();
+        Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities(string sitePart);
         IdentityDTO Create(IdentityDTO identityDTO);
         Task LogPdfFile(string pdfFile, int id);
         Task<IdentityDTO> Deactivate(IdentityDTO identity, string reason);

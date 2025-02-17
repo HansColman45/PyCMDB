@@ -111,7 +111,7 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities";
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)

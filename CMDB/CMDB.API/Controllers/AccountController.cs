@@ -13,14 +13,18 @@ namespace CMDB.API.Controllers
     {
         private readonly IUnitOfWork _uow;
         private readonly string site = "Account";
+        private readonly ILogger<AccountController> _logger;
         private HasAdminAccessRequest request;
-        public AccountController(IUnitOfWork uow)
+        
+        public AccountController(IUnitOfWork uow, ILogger<AccountController> logger)
         {
             _uow = uow;
+            _logger = logger;
         }
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll() 
         {
+            _logger.LogInformation($"Using the GetAll {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)

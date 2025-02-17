@@ -1,8 +1,10 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -141,24 +143,108 @@ namespace CMDB.Services
                     throw new NotAValidSuccessCode(_url, response.StatusCode);
             }
         }
+        public async Task<List<SelectListItem>> ListFreeIdentities()
+        {
+            List<SelectListItem> identites = new();
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/subscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var idens = await response.Content.ReadAsJsonAsync<List<IdentityDTO>>();
+                foreach (var identity in idens)
+                {
+                    identites.Add(new(identity.Name + " " + identity.UserID, identity.IdenId.ToString()));
+                }
+            }
+            return identites;
+        }
+        public async Task<List<SelectListItem>> ListFreeMobiles()
+        {
+            List<SelectListItem> identites = new();
+            BaseUrl = _url + $"api/Mobile/ListAllFreeMobiles/subscription";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var mobiles = await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
+                foreach( var mobile in mobiles)
+                {
+                    identites.Add(new($"Type: {mobile.MobileType.Vendor} {mobile.MobileType.Type} IMEI:{mobile.IMEI}", $"{mobile.MobileId}"));
+                }
+            }
+            return identites ;
+        }
         public async Task ReleaseIdenity(SubscriptionDTO subscription, IdentityDTO identity)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            subscription.LastModfiedAdmin = Admin;
-            subscription.IdentityId = 1;
-            identity.Subscriptions.Remove(subscription);
-            /*await _context.SaveChangesAsync();
-            await LogReleaseIdentityFromSubscription("identity", identity,subscription);
-            await LogReleaseSubscriptionFromIdentity(table, subscription, identity);*/
+            AssignInternetSubscriptionRequest request = new() {
+                IdentityId = identity.IdenId,
+                SubscriptionIds = [subscription.SubscriptionId]
+            };
+            BaseUrl = _url + "api/Subscription/ReleaseIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
-        public async Task AssignIdentity(SubscriptionDTO subscription, IdentityDTO identity, string table)
+        public async Task AssignIdentity(SubscriptionDTO subscription, IdentityDTO identity)
         {
-            /*identity.LastModfiedAdmin = Admin;
-            subscription.LastModfiedAdmin = Admin;
-            identity.Subscriptions.Add(subscription);
-            /*await _context.SaveChangesAsync();
-            await LogAssignIdentity2Subscription("identity", identity, subscription);
-            await LogAssignSubsciption2Identity(table, subscription, identity);*/
+            AssignInternetSubscriptionRequest request = new()
+            {
+                IdentityId = identity.IdenId,
+                SubscriptionIds = [subscription.SubscriptionId]
+            };
+            BaseUrl = _url + "api/Subscription/AssignIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task<IdentityDTO> GetIdentity(int IdenId)
+        {
+            BaseUrl = _url + $"api/Identity/{IdenId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<IdentityDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task<MobileDTO> GetMobile(int mobileId)
+        {
+            BaseUrl = _url + $"api/Mobile/{mobileId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<MobileDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task AssignMobile(SubscriptionDTO subscription, MobileDTO mobile)
+        {
+            AssignMobileSubscriptionRequest request = new()
+            {
+                MobileId = mobile.MobileId,
+                SubscriptionId = subscription.SubscriptionId
+            };
+            BaseUrl = _url + "api/Subscription/AssignMobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
+        }
+        public async Task ReleaseMobile(SubscriptionDTO subscription, MobileDTO mobile)
+        {
+            AssignMobileSubscriptionRequest request = new()
+            {
+                MobileId = mobile.MobileId,
+                SubscriptionId = subscription.SubscriptionId
+            };
+            BaseUrl = _url + "api/Subscription/ReleaseMobile";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
     }
 }

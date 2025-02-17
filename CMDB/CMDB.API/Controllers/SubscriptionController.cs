@@ -3,6 +3,7 @@ using CMDB.API.Services;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers
@@ -93,7 +94,7 @@ namespace CMDB.API.Controllers
             return Ok();
         }
         [HttpDelete("{reason}"), Authorize]
-        public async Task<IActionResult> Delete(SubscriptionDTO subscription,string reason)
+        public async Task<IActionResult> Delete(SubscriptionDTO subscription, string reason)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -108,11 +109,11 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            subscription =  await _uow.SubscriptionRepository.Delete(subscription,reason);
+            subscription = await _uow.SubscriptionRepository.Delete(subscription, reason);
             await _uow.SaveChangesAsync();
             return Ok(subscription);
         }
-        [HttpPost("Activate"),Authorize]
+        [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(SubscriptionDTO subscription)
         {
             // Retrieve userId from the claims
@@ -132,7 +133,7 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(subscription);
         }
-        [HttpPut,Authorize]
+        [HttpPut, Authorize]
         public async Task<IActionResult> Update(SubscriptionDTO subscription)
         {
             // Retrieve userId from the claims
@@ -152,7 +153,7 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(subscription);
         }
-        [HttpPost("IsExisting"),Authorize]
+        [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsExisting(SubscriptionDTO subscription)
         {
             // Retrieve userId from the claims
@@ -170,7 +171,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.SubscriptionRepository.IsExisting(subscription));
         }
-        [HttpGet("ListAllFreeSubscriptions/{category}"),Authorize]
+        [HttpGet("ListAllFreeSubscriptions/{category}"), Authorize]
         public async Task<IActionResult> ListAllFreeSubscriptions(string category)
         {
             // Retrieve userId from the claims
@@ -188,6 +189,86 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             var subs = await _uow.SubscriptionRepository.ListAllFreeSubscriptions(category);
             return Ok(subs);
+        }
+        [HttpPost("AssignIdentity"), Authorize]
+        public async Task<IActionResult> AssignIdentity(AssignInternetSubscriptionRequest internetSubscriptionRequest)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignIdentity"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.SubscriptionRepository.AssignIdentity(internetSubscriptionRequest);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseIdentity"), Authorize]
+        public async Task<IActionResult> ReleaseIdentity(AssignInternetSubscriptionRequest internetSubscriptionRequest)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseIdentity"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.SubscriptionRepository.ReleaseIdentity(internetSubscriptionRequest);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("AssignMobile"), Authorize]
+        public async Task<IActionResult> AssignMobile(AssignMobileSubscriptionRequest assignMobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignMobile"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.SubscriptionRepository.AssignMobile(assignMobile);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseMobile"),Authorize]
+        public async Task<IActionResult> ReleaseMobile(AssignMobileSubscriptionRequest assignMobile)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignMobile"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.SubscriptionRepository.ReleaseMobile(assignMobile);
+            await _uow.SaveChangesAsync();
+            return Ok();
         }
     }
 }

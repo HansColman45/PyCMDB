@@ -118,7 +118,7 @@
         {
             pdfFile = pdfFile[36..];
             pdfFile = pdfFile.Replace('\\', '/');
-            pdfFile = "../.." + pdfFile;
+            pdfFile = "../../../../" + pdfFile;
             return $"Please find the PDFFile <a href='{pdfFile}' target='_blank'>here</a>";
         }
     }

@@ -180,7 +180,7 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListAllFreeIdentities()
         {
             List<SelectListItem> accounts = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities";
+            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/account";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) {

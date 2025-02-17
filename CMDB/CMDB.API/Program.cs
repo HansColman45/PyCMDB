@@ -4,15 +4,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Host.UseSerilog((context, configuration) =>
+{
+    configuration.WriteTo.Console().MinimumLevel.Information();
+});
+
 string? connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
 // configure strongly typed settings object
 builder.Services.AddDbContext<CMDBContext>(options => {
-    options.UseSqlServer(connectionString);
-    options.EnableSensitiveDataLogging();
+        options.UseSqlServer(connectionString);
+        options.EnableSensitiveDataLogging();
     }
 );
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

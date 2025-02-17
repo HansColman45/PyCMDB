@@ -241,7 +241,7 @@ namespace CMDB.Controllers
             var token = await service.GetDeviceById(SitePart, id);
             if (token == null)
                 return NotFound();
-            ViewBag.Identities = await service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities(Table);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

@@ -159,20 +159,33 @@ namespace CMDB.API.Services
             }
             return mobile;
         }
-        public async Task<IEnumerable<MobileDTO>> ListAllFreeMobiles()
+        public async Task<IEnumerable<MobileDTO>> ListAllFreeMobiles(string sitePart)
         {
-            var mobiles = await _context.Mobiles
-                .Include(x => x.MobileType)
-                .ThenInclude(x => x.Category)
-                .Include(x => x.Identity)
-                .ThenInclude(x => x.Type)
-                .Include(x => x.Identity)
-                .ThenInclude(x => x.Language)
-                .Where(x => x.IdentityId == 1)
-                .AsNoTracking()
-                .Select(x => ConvertMobile(x))
-                .ToListAsync();
-            return mobiles;
+            return sitePart switch
+            {
+                "identitiy" => await _context.Mobiles
+                    .Include(x => x.MobileType)
+                    .ThenInclude(x => x.Category)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language)
+                    .Where(x => x.IdentityId == 1).AsNoTracking()
+                    .Select(x => ConvertMobile(x))
+                    .ToListAsync(),
+                "subscription" => await _context.Mobiles
+                    .Include(x => x.MobileType)
+                    .ThenInclude(x => x.Category)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language)
+                    .Where(x => !x.Subscriptions.Any(y => y.active ==1 && y.IdentityId != 1))
+                    .Where(x => x.IdentityId > 1).AsNoTracking()
+                    .Select(x => ConvertMobile(x))
+                    .ToListAsync(),
+                _ => throw new NotImplementedException($"The return for {sitePart} is not implemented")
+            };
         }
         public async Task AssignIdentity(AssignMobileRequest request)
         {

@@ -12,7 +12,7 @@ namespace CMDB.API.Services
         Task<MobileDTO> Update(MobileDTO mobileDTO);
         Task<MobileDTO> Delete(MobileDTO mobileDTO, string reason);
         Task<MobileDTO> Activate(MobileDTO mobileDTO);
-        Task<IEnumerable<MobileDTO>> ListAllFreeMobiles();
+        Task<IEnumerable<MobileDTO>> ListAllFreeMobiles(string sitePart);
         Task<bool> IsMobileExisting(MobileDTO mobileDTO);
         Task AssignIdentity(AssignMobileRequest request);
         Task ReleaseIdentity(AssignMobileRequest request);

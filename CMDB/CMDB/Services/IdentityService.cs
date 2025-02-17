@@ -98,7 +98,7 @@ namespace CMDB.Services
         }
         public async Task<List<MobileDTO>> ListAllFreeMobiles()
         {
-            BaseUrl = _url + $"api/Mobile/ListAllFreeMobiles";
+            BaseUrl = _url + $"api/Mobile/ListAllFreeMobiles/identitiy";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)

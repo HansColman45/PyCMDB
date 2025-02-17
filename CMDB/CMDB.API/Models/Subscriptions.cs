@@ -7,6 +7,7 @@
         public string PhoneNumber { get; set; }
         public IdentityDTO? Identity { get; set; }
         public MobileDTO? Mobile { get; set; }
-        public int IdentityId { get; set; }
+        public int? IdentityId { get; set; }
+        public int? MobileId { get; set; }
     }
 }

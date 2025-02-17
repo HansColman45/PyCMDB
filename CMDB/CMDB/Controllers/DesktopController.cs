@@ -245,7 +245,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Assign identity to Desktop";
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["backUrl"] = "Desktop";
-            ViewBag.Identities = await service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities(Table);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

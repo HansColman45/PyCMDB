@@ -233,7 +233,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Laptop";
             ViewData["Controller"] = @$"\Docking\AssignIdentity\{id}";
             await BuildMenu();
-            ViewBag.Identities = await service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities(Table);
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {

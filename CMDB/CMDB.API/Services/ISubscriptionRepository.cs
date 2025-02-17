@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Requests;
 
 namespace CMDB.API.Services
 {
@@ -14,5 +15,9 @@ namespace CMDB.API.Services
         Task LogPdfFile(string pdfFile, int id);
         Task<bool> IsExisting(SubscriptionDTO subscription);
         Task<IEnumerable<SubscriptionDTO>> ListAllFreeSubscriptions(string category);
+        Task AssignIdentity(AssignInternetSubscriptionRequest subscriptionRequest);
+        Task ReleaseIdentity(AssignInternetSubscriptionRequest subscriptionRequest);
+        Task AssignMobile(AssignMobileSubscriptionRequest assignMobileRequest);
+        Task ReleaseMobile(AssignMobileSubscriptionRequest releaseMobileRequest);
     }
 }

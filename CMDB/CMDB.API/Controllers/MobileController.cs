@@ -152,8 +152,8 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(mobile);
         }
-        [HttpGet("ListAllFreeMobiles"), Authorize]
-        public async Task<IActionResult> ListAllFreeMobiles()
+        [HttpGet("ListAllFreeMobiles/{sitePart}"), Authorize]
+        public async Task<IActionResult> ListAllFreeMobiles(string sitePart)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -168,7 +168,7 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.MobileRepository.ListAllFreeMobiles());
+            return Ok(await _uow.MobileRepository.ListAllFreeMobiles(sitePart));
         }
         [HttpPost("AssignIdentity"),  Authorize]
         public async Task<IActionResult> AssignIdenity(AssignMobileRequest assignRequest)

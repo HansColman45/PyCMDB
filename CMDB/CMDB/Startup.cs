@@ -61,21 +61,6 @@ namespace CMDB
                 endpoints.MapControllerRoute(
                     name: "ReleaseSubscription",
                     pattern: "{controller=Mobile}/{action=ReleaseSubscription}/{id?}/{SubscriptionId}");
-                /*endpoints.MapControllerRoute(
-                    name: "ReleaseMobile",
-                    pattern: "{controller}/{action}/{id?}/{MobileId}",
-                    new { controller = "Identity", action = "ReleaseMobile" }
-                    );
-                endpoints.MapControllerRoute(
-                    name: "ReleaseDevice",
-                    pattern: "{controller}/{action}/{id?}/{AssetTag}",
-                    new { controller = "Identity", action = "ReleaseDevice" }
-                    );
-                endpoints.MapControllerRoute(
-                    name: "ReleaseSubscription",
-                    pattern: "{controller}/{action}/{id?}/{SubscriptionId}",
-                    new { controller = "Identity", action = "ReleaseSubscription" }
-                    );*/
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Login}/{action=Index}/{id?}");

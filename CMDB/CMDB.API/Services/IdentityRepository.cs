@@ -2,7 +2,6 @@
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
@@ -101,17 +100,64 @@ namespace CMDB.API.Services
             _context.Identities.Add(iden);
             return identityDTO;
         }
-        public async Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities()
+        public async Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities(string sitePart)
         {
-            var identities = await _context.Identities.AsNoTracking()
-                .Include(x => x.Accounts).AsNoTracking().AsNoTracking()
-                .Include(x => x.Type).AsNoTracking()
-                .Include(x => x.Language).AsNoTracking()
-                .Where(x => x.active == 1 && x.IdenId != 1).AsNoTracking()
-                .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now)).AsNoTracking()
-                .Select(x => ConvertIdentity(x))
-                .ToListAsync();
-            return identities;
+            return sitePart switch
+            {
+                "account" => await _context.Identities.AsNoTracking()
+                    .Include(x => x.Accounts).AsNoTracking().AsNoTracking()
+                    .Include(x => x.Type).AsNoTracking()
+                    .Include(x => x.Language).AsNoTracking()
+                    .Where(x => x.active == 1 && x.IdenId != 1).AsNoTracking()
+                    .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now)).AsNoTracking()
+                    .Select(x => ConvertIdentity(x))
+                    .ToListAsync(),
+                "laptop" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Devices.OfType<Laptop>().Any(y => y.active == 1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x)).ToListAsync(),
+                "desktop" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Devices.OfType<Desktop>().Any(y => y.active == 1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x)).ToListAsync(),
+                "token" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Devices.OfType<Token>().Any(y => y.active == 1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x)).ToListAsync(),
+                "screen" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Devices.OfType<Screen>().Any(y => y.active == 1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x)).ToListAsync(),
+                "docking" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Devices.OfType<Docking>().Any(y => y.active == 1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x)).ToListAsync(),
+                "mobile" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => !x.Mobiles.Any(y => y.active ==1 && y.IdentityId != 1))
+                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Select(x => ConvertIdentity(x))
+                    .ToListAsync(),
+                "subscription" => await _context.Identities
+                    .Include(x => x.Type)
+                    .Include(x => x.Language)
+                    .Where(x => x.IdenId != 1)
+                    .Where(x => !x.Subscriptions.Any(y => y.IdentityId != 1 && y.active == 1)).AsNoTracking()
+                    .Select(x => ConvertIdentity(x))
+                    .ToListAsync(),
+                _ => throw new NotImplementedException($"The return for {sitePart} is not implemented")
+            };
         }
         public async Task<IdentityDTO> Update(IdentityDTO dTO)
         {

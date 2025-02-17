@@ -247,7 +247,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Laptop";
             ViewData["Controller"] = @$"\Laptop\AssignIdentity\{id}";
             await BuildMenu();
-            ViewBag.Identities = await service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities(Table);
             string FormSubmit = values["form-submitted"];
             if (!String.IsNullOrEmpty(FormSubmit))
             {

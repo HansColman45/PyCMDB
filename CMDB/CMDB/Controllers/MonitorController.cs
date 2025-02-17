@@ -232,7 +232,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Monitor";
             await BuildMenu();
             ViewData["Controller"] = @$"\Monitor\AssignIdentity\{id}";
-            ViewBag.Identities = await service.ListFreeIdentities();
+            ViewBag.Identities = await service.ListFreeIdentities(Table);
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {

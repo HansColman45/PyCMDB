@@ -12,11 +12,13 @@ namespace CMDB.API.Controllers
     public class IdentityController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
+        private readonly ILogger<IdentityController> _logger;
         private readonly string site = "Identity";
         private HasAdminAccessRequest request;
-        public IdentityController(IUnitOfWork uow)
+        public IdentityController(IUnitOfWork uow, ILogger<IdentityController> logger)
         {
             _uow = uow;
+            _logger = logger;
         }
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
@@ -200,8 +202,8 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(acc);
         }
-        [HttpGet("ListAllFreeIdentities"), Authorize]
-        public async Task<IActionResult> ListAllFreeIdentities()
+        [HttpGet("ListAllFreeIdentities/{sitePart}"), Authorize]
+        public async Task<IActionResult> ListAllFreeIdentities(string sitePart)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -216,7 +218,8 @@ namespace CMDB.API.Controllers
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
-            return Ok(await _uow.IdentityRepository.ListAllFreeIdentities());
+            _logger.LogTrace($"The sitePart is: {sitePart}");
+            return Ok(await _uow.IdentityRepository.ListAllFreeIdentities(sitePart));
         }
         [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsIdentityExisting(IdentityDTO identity)
