@@ -18,6 +18,7 @@
         public IMobileRepository MobileRepository { get; }
         public ISubscriptionRepository SubscriptionRepository { get; }
         public ISubscriptionTypeRepository SubscriptionTypeRepository { get; }
+        public IKensingtonRepository KensingtonRepository { get; }
         public Task SaveChangesAsync();
     }
 }

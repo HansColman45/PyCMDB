@@ -218,7 +218,7 @@ namespace CMDB.API.Services
                 TypeId = typeDTO.TypeId
             };
         }
-        private async Task<IdentityType?> GetTypeById(int id)
+        private async Task<IdentityType> GetTypeById(int id)
         {
             return await _context.Types.OfType<IdentityType>()
                 .Where(x => x.TypeId == id)

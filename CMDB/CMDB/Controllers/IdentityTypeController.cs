@@ -72,10 +72,6 @@ namespace CMDB.Controllers
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            if (idenType == null)
-            {
-                return NotFound();
-            }
             return View(idenType);
         }
         public async Task<IActionResult> Create(IFormCollection values)

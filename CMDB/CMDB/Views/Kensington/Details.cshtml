@@ -1,0 +1,81 @@
+﻿@model CMDB.API.Models.KensingtonDTO
+@{
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["InfoAccess"])
+{
+    <h2>@ViewData["Title"] <a class="btn btn-default float-right" asp-area="" asp-controller="Kensington" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a></h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(m => m.AmountOfKeys)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.AmountOfKeys)</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_AddNew" />
+    @if ((bool)ViewData["DeviceOverview"])
+    {
+        <h3>Device overview</h3>
+        @if (Model.Device is not null)
+        {
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <td>Asset tag</td>
+                        <td>Serial number</td>
+                        <td>Asset type</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="small">@Model.Device.AssetTag</td>
+                        <td class="small">@Model.Device.SerialNumber</td>
+                        <td class="small">@Model.Device.AssetType.Vendor @Model.Device.AssetType.Type</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No device assigned to this Kensington</p>
+        }
+    }
+    <H3>Log overview</H3>
+    @if (Model.Logs.Count > 0)
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
+                        <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No logs for to this Key</p>
+    }
+}
+else
+{
+    <p>You do not access to this page</p>
+}

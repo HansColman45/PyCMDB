@@ -4,11 +4,13 @@
     "Projects": [
       {
         "Path": "CMDB\\CMDB.csproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": "IIS Express"
       },
       {
         "Path": "CMDB.API\\CMDB.API.csproj",
-        "Action": "Start"
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }

@@ -214,7 +214,7 @@ namespace CMDB.Services
                     assettypes.Add(new(type.ToString(), type.TypeID.ToString()));
                 }
             }
-            if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 await ReAuthenticate();
                 response = await _Client.GetAsync(BaseUrl);
