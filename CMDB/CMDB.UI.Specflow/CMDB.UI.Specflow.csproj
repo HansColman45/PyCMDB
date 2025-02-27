@@ -29,6 +29,7 @@
     <Folder Include="Features\Laptop\" />
     <Folder Include="Features\Mobile\" />
     <Folder Include="Features\Monitor\" />
+    <Folder Include="Features\Kensington\" />
     <Folder Include="Features\Subscription\" />
     <Folder Include="Features\SubscriptionType\" />
     <Folder Include="Features\Token\" />

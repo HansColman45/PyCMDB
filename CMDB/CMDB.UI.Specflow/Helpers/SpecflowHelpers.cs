@@ -79,4 +79,15 @@
         public string Type { get; set; }
         public string PhoneNumber { get; set; }
     }
+    public class Kensington
+    {
+        public string SerialNumber { get; set; }
+        public string Type { get; set; }
+        public int AmountOfKeys { get; set; }
+        public bool HasLock { get; set; }
+        public Kensington()
+        {
+            HasLock = true;
+        }
+    }
 }

@@ -32,7 +32,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         {
             identityTypeCreator.CreateIdentityType(IdentityType);
         }
-        [Then(@"The I can find the newly create Identity type back")]
+        [Then(@"I can find the newly create Identity type back")]
         public void ThenTheICanFindTheNewlyCreateIdentityTypeBack()
         {
             identityTypeCreator.SearchIdentityType(IdentityType);
