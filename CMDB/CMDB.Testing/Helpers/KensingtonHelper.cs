@@ -32,5 +32,14 @@ namespace CMDB.Testing.Helpers
             }
             return kensington;
         }
+        public static async Task Delete(CMDBContext context, Kensington kensington)
+        {
+            foreach (var log in kensington.Logs)
+            {
+                context.Remove(log);
+            }
+            context.Remove(kensington);
+            await context.SaveChangesAsync();
+        }
     }
 }

@@ -7,5 +7,10 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
         public KensingtonOverviewPage() : base()
         {   
         }
+        public void Activate()
+        {
+            ClickElementByXpath(ActivateXpath);
+            WaitUntilElmentVisableByXpath(NewXpath);
+        }
     }
 }

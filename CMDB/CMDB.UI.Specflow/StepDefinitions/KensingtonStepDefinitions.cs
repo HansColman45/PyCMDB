@@ -42,7 +42,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         #endregion
         #region update
-        [Given(@"There is an Kensington existing in the system")]
+        [Given(@"There is a Kensington existing in the system")]
         public async Task GivenThereIsAnKensingtonExistingInTheSystem()
         {
             kensingtonUpdator = new(ScenarioContext);
@@ -62,6 +62,45 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         [Then(@"I can find the updated Kensington back")]
         public void ThenICanFindTheUpdatedKensingtonBack()
+        {
+            kensingtonUpdator.Search(Kensington.SerialNumber);
+            string lastlog = kensingtonUpdator.LastLogLine;
+            kensingtonUpdator.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #endregion
+        [When(@"I deactivate the Kensington with the reason (.*)")]
+        public void WhenIDeactivateTheKensingtonWithTheReasonTest(string reason)
+        {
+            kensingtonUpdator.DeactivateKensington(Kensington, reason);
+        }
+        [Then(@"The Kensington is deactivated")]
+        public void ThenTheKensingtonIsDeactivated()
+        {
+            kensingtonUpdator.Search(Kensington.SerialNumber);
+            string lastlog = kensingtonUpdator.LastLogLine;
+            kensingtonUpdator.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #region activate
+        [Given(@"There is an inactive Kensington existing in the system")]
+        public async Task GivenThereIsAnInactiveKensingtonExistingInTheSystem()
+        {
+            kensingtonUpdator = new(ScenarioContext);
+            ActorRegistry.RegisterActor(kensingtonUpdator);
+            Admin = await kensingtonUpdator.CreateNewAdmin();
+            Kensington = await kensingtonUpdator.CreateKensington(false);
+            kensingtonUpdator.DoLogin(Admin.Account.UserID, "1234");
+            bool result = kensingtonUpdator.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            kensingtonUpdator.OpenKensingtonOverviewPage();
+            kensingtonUpdator.Search(Kensington.SerialNumber);
+        }
+        [When(@"I activate the Kensington")]
+        public void WhenIActivateTheKensington()
+        {
+            kensingtonUpdator.ActivateKensington(Kensington);
+        }
+        [Then(@"The Kensington is activated")]
+        public void ThenTheKensingtonIsActivated()
         {
             kensingtonUpdator.Search(Kensington.SerialNumber);
             string lastlog = kensingtonUpdator.LastLogLine;

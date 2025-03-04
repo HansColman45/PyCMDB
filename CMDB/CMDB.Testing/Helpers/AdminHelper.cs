@@ -87,6 +87,16 @@ namespace CMDB.Testing.Helpers
             Dictionary<string, Object> Data = new();
             try
             {
+                //Kensington
+                var kensingtons = context.Kensingtons
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var kensington in kensingtons)
+                {
+                    Data.Add($"Kensington{kensington.KeyID}", kensington);
+                    await KensingtonHelper.Delete(context, kensington);
+                }
                 //AccountType
                 var accountType = context.Types
                     .OfType<AccountType>()
