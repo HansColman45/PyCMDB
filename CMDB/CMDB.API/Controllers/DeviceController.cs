@@ -238,5 +238,14 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.ListAllFreeDevices());
         }
+        [HttpGet("AllFreeDevices/{sitePart}"), Authorize]
+        public async Task<IActionResult> ListAllFreeDevices(string sitePart)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            return Ok(await _uow.DeviceRepository.ListAllFreeDevices(sitePart));
+        }
     }
 }

@@ -68,6 +68,15 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetSubscriptionInfo(subscription);
             return Ok();
         }
+        [HttpPost("AddKeyInfo"), Authorize]
+        public IActionResult AddKeyInfo(KensingtonDTO kensington)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            PDFGenerator.SetKensingtonInfo(kensington);
+            return Ok();
+        }
         [HttpGet("{entity:alpha}/{id:int}"), Authorize]
         public async Task<IActionResult> GenertatePDF(string entity, int id)
         {
@@ -89,6 +98,9 @@ namespace CMDB.API.Controllers
                     break;
                 case "mobile":
                     await _uow.MobileRepository.LogPdfFile(pdfFile, id);
+                    break;
+                case "kensington":
+                    await _uow.KensingtonRepository.LogPdfFile(pdfFile, id);
                     break;
                 default:
                     throw new NotImplementedException($"The {entity} is not implemented");

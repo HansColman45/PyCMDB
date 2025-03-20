@@ -13,6 +13,7 @@ namespace CMDB.API.Services
         private List<MobileDTO> mobiles = new();
         private List<IdenAccount> accounts = new();
         private List<SubscriptionDTO> subscriptions = new();
+        private List<KensingtonDTO> kensingtons = new();
         private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle titleStyle = TextStyle.Default.FontFamily("Arial").FontSize(20).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle defaultStyle = TextStyle.Default.FontFamily("Arial").FontSize(9);
@@ -90,6 +91,10 @@ namespace CMDB.API.Services
         public void SetSubscriptionInfo(SubscriptionDTO subscription)
         {
             subscriptions.Add(subscription);
+        }
+        public void SetKensingtonInfo(KensingtonDTO kensington)
+        {
+            kensingtons.Add(kensington);
         }
         /// <summary>
         /// 
@@ -245,6 +250,11 @@ namespace CMDB.API.Services
                         {
                             column.Item().Element(ComposeSubscriptionTitle);
                             column.Item().Element(ComposeSubscriptionTable);
+                        }
+                        if (kensingtons.Count > 0)
+                        {
+                            column.Item().Element(ComposeKensingtonTitle);
+                            column.Item().Element(ComposeKensingtonTable);
                         }
                         if (!string.IsNullOrEmpty(Singer) && !string.IsNullOrEmpty(ITEmployee))
                         {
@@ -707,6 +717,75 @@ namespace CMDB.API.Services
                     table.Cell().Element(Style).Text(subcription.SubscriptionType.AssetCategory.Category).Style(defaultStyle);
                     table.Cell().Element(Style).Text($"{subcription.SubscriptionType}").Style(defaultStyle);
                     table.Cell().Element(Style).Text(subcription.PhoneNumber).Style(defaultStyle);
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                }
+            });
+        }
+        private void ComposeKensingtonTitle(IContainer container)
+        {
+            container.Row(row =>
+            {
+                row.RelativeItem().Column(colum =>
+                {
+                    switch (Language)
+                    {
+                        case "NL":
+                            colum.Item().Text("Gegevens van de Kensington").Style(h3Style);
+                            break;
+                        case "EN":
+                            colum.Item().Text("Info of the Kensington").Style(h3Style);
+                            break;
+                        case "FR":
+                            colum.Item().Text("Gegevens van de Kensington").Style(h3Style);
+                            break;
+                    }
+                });
+            });
+        }
+        private void ComposeKensingtonTable(IContainer container)
+        {
+            container.Table(table =>
+            {
+                table.ColumnsDefinition(col =>
+                {
+                    col.RelativeColumn();
+                    col.RelativeColumn();
+                    col.RelativeColumn();
+                });
+                table.Header(header =>
+                {
+                    header.Cell().Element(Style).Text("Category").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Asset Type").Style(defaultStyle).ExtraBold();
+                    header.Cell().Element(Style).Text("Serial Number").Style(defaultStyle).ExtraBold();
+                    IContainer Style(IContainer container)
+                    {
+                        return container
+                            .BorderTop(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderLeft(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderBottom(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .BorderRight(1)
+                            .BorderColor(Colors.Grey.Darken2)
+                            .Padding(5);
+                    }
+                });
+                foreach (var kensington in kensingtons)
+                {
+                    table.Cell().Element(Style).Text("Kensington").Style(defaultStyle);
+                    table.Cell().Element(Style).Text($"{kensington.Type}").Style(defaultStyle);
+                    table.Cell().Element(Style).Text(kensington.SerialNumber).Style(defaultStyle);
                     IContainer Style(IContainer container)
                     {
                         return container

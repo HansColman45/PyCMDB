@@ -1,0 +1,44 @@
+﻿@model CMDB.API.Models.KensingtonDTO
+@{
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["AssignDeviceAccess"])
+{
+    <h2>@ViewData["Title"]</h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.SerialNumber)</th>
+                <th>@Html.DisplayNameFor(model => model.Type)</th>
+                <th>@Html.DisplayNameFor(m => m.AmountOfKeys)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="SerialNumber">@Html.DisplayFor(model => model.SerialNumber)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.Type.Vendor) @Html.DisplayFor(model => model.Type.Type)</td>
+                <td id="AssetType">@Html.DisplayFor(model => model.AmountOfKeys)</td>
+            </tr>
+        </tbody>
+    </table>
+    <form role="form" class="form-horizontal" asp-action="AssignDevice" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label class="control-label">Device <span style="color:red;">*</span></label>
+            @Html.DropDownListFor(Model => Model.Device, (IEnumerable<SelectListItem>)ViewBag.Devices, "Please select", new { @class = "form-control" })
+            <span class="text-danger field-validation-valid" asp-validation-for="Device" data-valmsg-replace="true"></span>
+        </div>
+        <input type="hidden" name="form-submitted" value="1" /><br>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-success">Create</button>
+            <a class="btn" asp-area="" asp-controller="Kensington" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a>
+        </div>
+        <div class="form-group">
+            <span class="text-muted"><em><span style="color:red;">*</span> Indicates required field</em></span>
+        </div>
+    </form>
+}
+else
+{
+    <p>You do not access to this page</p>
+}

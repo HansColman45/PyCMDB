@@ -3,6 +3,7 @@ using CMDB.Domain.CustomExeptions;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Graph.Models.Security;
 using System;
@@ -89,6 +90,52 @@ namespace CMDB.Services
         public async Task Activate(KensingtonDTO key)
         {
             BaseUrl = _url + $"api/Kensington/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, key);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task<List<SelectListItem>> ListFreeDevices()
+        {
+            List<SelectListItem> devices = new();
+            BaseUrl = _url + $"api/Device/AllFreeDevices/Kensington";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var devicesDTO = await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
+                foreach (var device in devicesDTO)
+                {
+                    devices.Add(new SelectListItem($"{device.Category.Category} SerialNumber: {device.SerialNumber} type: {device.AssetType} AssetTag: {device.AssetTag}", device.AssetTag));
+                }
+            }
+            return devices;
+        }
+        public async Task<DeviceDTO> GetDeviceByAssetTag(string assetTag)
+        {
+            BaseUrl = _url + $"api/Device/{assetTag}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                return await response.Content.ReadAsJsonAsync<DeviceDTO>();
+            }
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task AssignKey2Device(KensingtonDTO key, DeviceDTO device)
+        {
+            key.Device = device;
+            key.AssetTag = device.AssetTag;
+            BaseUrl = _url + $"api/Kensington/AssignDevice";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, key);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task ReleaseDevice(KensingtonDTO key)
+        {
+            BaseUrl = _url + $"api/Kensington/ReleaseDevice";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, key);
             if (!response.IsSuccessStatusCode)

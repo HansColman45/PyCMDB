@@ -155,5 +155,45 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(activatedKensington);
         }
+        [HttpPost("AssignDevice"), Authorize]
+        public async Task<IActionResult> AssignKey2Device(KensingtonDTO key)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "AssignDevice"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.KensingtonRepository.AssignDevice(key);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost("ReleaseDevice"), Authorize]
+        public async Task<IActionResult> ReleaseKeyFromDevice(KensingtonDTO key)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "ReleaseDevice"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.KensingtonRepository.ReleaseDevice(key);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

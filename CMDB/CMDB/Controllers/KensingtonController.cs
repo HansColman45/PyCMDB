@@ -1,29 +1,24 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
+using CMDB.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.Graph.Models.Security;
-using Microsoft.Graph.Models;
-using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using System;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using CMDB.Util;
-using System.Drawing.Drawing2D;
 
 namespace CMDB.Controllers
 {
     public class KensingtonController : CMDBController
     {
-        private KensingtonService service = new();
+        private readonly KensingtonService service = new();
+        private readonly PDFService _PDFservice;
         public KensingtonController(IWebHostEnvironment env) : base(env)
         {
-            SitePart = "Account";
-            Table = "account";
+            SitePart = "Kensington";
+            Table = "kensington";
+            _PDFservice = new();
         }
         public async Task<IActionResult> Index()
         {
@@ -71,7 +66,7 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Kensington\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewBag.Type = await service.ListAssetTypes("Kensington");
-            KensingtonDTO kensington =new();
+            KensingtonDTO kensington = new();
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
@@ -156,6 +151,7 @@ namespace CMDB.Controllers
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["DeviceOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "DeviceOverview");
+            ViewData["ReleseDevice"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleseDevice");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             return View(key);
@@ -214,6 +210,104 @@ namespace CMDB.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
+        }
+        public async Task<IActionResult> AssignDevice(int? id, IFormCollection values)
+        {
+            log.Debug("Using assign for {0}", SitePart);
+            if (id is null)
+                return NotFound();
+            var key = await service.GetByID((int)id);
+            if (key is null)
+                return NotFound();
+            await BuildMenu();
+            ViewData["Title"] = "Assign Kensington";
+            ViewData["Controller"] = @$"\Kensington\AssignDevice\{id}";
+            ViewData["AssignDeviceAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
+            ViewData["Devices"] = await service.ListFreeDevices();
+            ViewData["backUrl"] = "Kensington";
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                string assetTag = values["Device"];
+                if (string.IsNullOrEmpty(assetTag))
+                {
+                    ModelState.AddModelError("", "No device selected");
+                }
+                if (ModelState.IsValid) {
+                    DeviceDTO device = await service.GetDeviceByAssetTag(assetTag);
+                    await service.AssignKey2Device(key, device);
+                    return RedirectToAction("AssignForm", "Kensington", new { id });
+                }
+
+            }
+            return View(key);
+        }
+        public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string MobileId)
+        {
+            log.Debug("Using release for {0}", SitePart);
+            if (id is null || string.IsNullOrEmpty(MobileId))
+                return NotFound();
+            var key = await service.GetByID((int)id);
+            if (key is null)
+                return NotFound();
+            var device = await service.GetDeviceByAssetTag(MobileId);
+            if (device == null)
+                return NotFound();
+            await BuildMenu();
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
+            ViewData["Name"] = key.Device.Identity.Name;
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            ViewData["Title"] = "Release Kensington";
+            ViewData["Controller"] = @$"\Kensington\ReleaseDevice\{id}\{MobileId}";
+            ViewData["AssignDeviceAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignDevice");
+            ViewData["backUrl"] = "Kensington";
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                await service.ReleaseDevice(key);
+                await _PDFservice.SetUserinfo(device.Identity.Name, ITPerson, Employee, device.Identity.Name, device.Identity.LastName, device.Identity.Name, device.Identity.Language.Code);
+                await _PDFservice.SetDeviceInfo(device);
+                await _PDFservice.SetKeyInfo(key);
+                await _PDFservice.GenratePDFFile(Table, key.KeyID);
+                await _PDFservice.GenratePDFFile("identity", key.Device.Identity.IdenId);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(key);
+        }
+        public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
+        {
+            if (id == null)
+                return NotFound();
+            var key = await service.GetByID((int)id);
+            if (key is null)
+                return NotFound();
+            await BuildMenu();
+            log.Debug("Using Assign Form in {0}", Table);
+            ViewData["Title"] = "Assign form";
+            ViewData["backUrl"] = "Kensington";
+            ViewData["Action"] = "AssignForm";
+            ViewData["Name"] = key.Device.Identity.Name;
+            var admin = await service.Admin();
+            ViewData["AdminName"] = admin.Account.UserID;
+            ViewData["LogDateFormat"] = service.LogDateFormat;
+            ViewData["DateFormat"] = service.DateFormat;
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit)) 
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                await _PDFservice.SetUserinfo(key.Device.Identity.Name,ITPerson,Employee, key.Device.Identity.Name, key.Device.Identity.LastName,key.Device.Identity.Name,key.Device.Identity.Language.Code);
+                await _PDFservice.SetDeviceInfo(key.Device);
+                await _PDFservice.SetKeyInfo(key);
+                await _PDFservice.GenratePDFFile(Table, key.KeyID);
+                await _PDFservice.GenratePDFFile("identity", key.Device.Identity.IdenId);
+                return RedirectToAction(nameof(Index));
+            }
+            return View(key);
         }
     }
 }

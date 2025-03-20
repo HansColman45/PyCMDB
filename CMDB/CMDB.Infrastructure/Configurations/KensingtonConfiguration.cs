@@ -25,6 +25,7 @@ namespace CMDB.Infrastructure.Configurations
 
             builder.HasOne(e => e.Device)
                 .WithMany(d => d.Keys)
+                .HasForeignKey(e => e.AssetTag)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Key_Device");
 

@@ -13,5 +13,6 @@ namespace CMDB.API.Models
         public string? MAC { get; set; }
         public string? RAM { get; set; }
         public IdentityDTO? Identity { get; set; }
+        public KensingtonDTO? Kensington { get; set; }
     }
 }

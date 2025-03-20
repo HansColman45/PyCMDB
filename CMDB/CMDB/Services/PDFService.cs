@@ -84,6 +84,14 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(_url, response.StatusCode);
         }
+        public async Task SetKeyInfo(KensingtonDTO kensington)
+        {
+            BaseUrl = _url + path + "/AddKeyInfo";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, kensington);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
         public async Task<string> GenratePDFFile(string entity, int id)
         {
             BaseUrl = _url + path + $"/{entity}/{id}";

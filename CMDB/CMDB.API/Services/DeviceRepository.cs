@@ -97,76 +97,82 @@ namespace CMDB.API.Services
         {
             string searhterm = "%" + searchString + "%";
             List<DeviceDTO> devices = new();
-            switch (category)
+            devices = category switch
             {
-                case "Laptop":
-                    devices = await _context.Devices.OfType<Laptop>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Desktop":
-                    devices = await _context.Devices.OfType<Desktop>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .Select(x => ConvertDesktop(x))
-                        .ToListAsync();
-                    break;
-                case "Docking station":
-                    devices = await _context.Devices
-                        .OfType<Docking>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Token":
-                    devices = await _context.Devices
-                        .OfType<Token>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Monitor":
-                case "Screen":
-                    devices = await _context.Devices
-                        .OfType<Screen>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                default:
-                    throw new Exception($"{category} not found");
-            }
+                "Laptop" => await _context.Devices.OfType<Laptop>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Desktop" => await _context.Devices.OfType<Desktop>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                                        .Select(x => ConvertDesktop(x))
+                                        .ToListAsync(),
+                "Docking station" => await _context.Devices
+                                        .OfType<Docking>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Token" => await _context.Devices
+                                        .OfType<Token>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Monitor" or "Screen" => await _context.Devices
+                                        .OfType<Screen>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                _ => throw new Exception($"{category} not found"),
+            };
             return devices;
+        }
+        public async Task<IEnumerable<DeviceDTO>> ListAllFreeDevices(string sitePart)
+        {
+            return sitePart switch
+            {
+                "Kensington" => await _context.Devices
+                    .Include(x => x.Category)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Type)
+                    .Include(x => x.Identity)
+                    .ThenInclude(x => x.Language)
+                    .Include(x => x.Type)
+                    .Where(x => x.IdentityId > 1)
+                    .Where(x => !x.Keys.Any()).AsNoTracking()
+                    .Select(x => ConvertDevice(x))
+                    .ToListAsync(),
+                _ => throw new NotImplementedException($"{sitePart} not implemented"),
+            };
         }
         public async Task<IEnumerable<DeviceDTO>> ListAllFreeDevices()
         {
@@ -261,6 +267,7 @@ namespace CMDB.API.Services
                     if(laptop is not null)
                     {
                         await GetAssignedIdentity(laptop);
+                        await GetAssignedKeys(laptop);
                         GetLogs(category, assetTag, laptop);
                     }
                     return laptop;
@@ -278,6 +285,7 @@ namespace CMDB.API.Services
                     if(desktop is not null) 
                     {
                         await GetAssignedIdentity(desktop);
+                        await GetAssignedKeys(desktop);
                         GetLogs(category, assetTag, desktop);
                     }
                     return desktop;
@@ -295,6 +303,7 @@ namespace CMDB.API.Services
                     if(docking is not null)
                     {
                         await GetAssignedIdentity(docking);
+                        await GetAssignedKeys(docking);
                         GetLogs(category, assetTag, docking);
                     }
                     return docking;
@@ -330,6 +339,7 @@ namespace CMDB.API.Services
                     if (screen is not null)
                     {
                         await GetAssignedIdentity(screen);
+                        await GetAssignedKeys(screen);
                         GetLogs(category, assetTag, screen);
                     }
                     return screen;
@@ -989,6 +999,14 @@ namespace CMDB.API.Services
                 .Select(x => x.Identity)
                 .Select(x => IdentityRepository.ConvertIdentity(x))
                 .FirstAsync();
+        }
+        private async Task GetAssignedKeys(DeviceDTO device)
+        {
+            device.Kensington = await _context.Kensingtons
+                .Include(x => x.Type)
+                .ThenInclude(x => x.Category)
+                .Where(x => x.AssetTag == device.AssetTag).AsNoTracking()
+                .Select(x => KensingtonRepository.Convert2DTO(x)).FirstOrDefaultAsync();
         }
         private async Task UpdateDesktop(DeviceDTO device)
         {

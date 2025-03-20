@@ -10,6 +10,7 @@ namespace CMDB.API.Services
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<DeviceDTO>> ListAllFreeDevices();
+        Task<IEnumerable<DeviceDTO>> ListAllFreeDevices(string sitePart);
         /// <summary>
         /// This will give a list of devices
         /// </summary>

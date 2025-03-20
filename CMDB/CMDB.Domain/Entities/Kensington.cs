@@ -16,5 +16,6 @@ namespace CMDB.Domain.Entities
         public bool HasLock { get; set; }
         public int? TypeId { get; set; }
         public int? CategoryId { get; set; }
+        public string AssetTag { get; set; }
     }
 }
