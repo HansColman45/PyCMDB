@@ -228,6 +228,24 @@ namespace CMDB.UI.Specflow.Abilities.Data
             await context.SaveChangesAsync();
         }
         /// <summary>
+        /// This function will assign a device 2 a key
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="device"></param>
+        /// <param name="kensington"></param>
+        /// <returns></returns>
+        public async Task AssignDevice2Key(Admin admin, Device device, Kensington kensington)
+        {
+            device.LastModifiedAdmin = admin;
+            kensington.LastModifiedAdmin = admin;
+            kensington.AssetTag = device.AssetTag;
+            await context.SaveChangesAsync();
+        }
+        public new void Dispose()
+        {
+            context.Dispose();
+        }
+        /// <summary>
         /// This function will create a subscription type
         /// </summary>
         /// <param name="admin">The admin</param>
@@ -238,10 +256,6 @@ namespace CMDB.UI.Specflow.Abilities.Data
             AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
             SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
             return subscriptionType;
-        }
-        public new void Dispose()
-        {
-            context.Dispose();
         }
     }
 }

@@ -1,6 +1,7 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.Kensingtons;
 using CMDB.UI.Specflow.Questions;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow.Assist;
 
 namespace CMDB.UI.Specflow.StepDefinitions
@@ -10,8 +11,12 @@ namespace CMDB.UI.Specflow.StepDefinitions
     {
         KensingtonCreator kensingtonCreator;
         KensingtonUpdator kensingtonUpdator;
+        KensingtonDeviceActor kensingtonDeviceActor;
+
         Helpers.Kensington kensington;
         Kensington Kensington;
+        Identity Identity;
+        Device Device;
         public KensingtonStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -105,6 +110,73 @@ namespace CMDB.UI.Specflow.StepDefinitions
             kensingtonUpdator.Search(Kensington.SerialNumber);
             string lastlog = kensingtonUpdator.LastLogLine;
             kensingtonUpdator.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #endregion
+        #region Assign device
+        [Given(@"There is an active Kensington existing in the system")]
+        public async Task GivenThereIsAnActiveKensingtonExistingInTheSystem()
+        {
+            kensingtonDeviceActor = new(ScenarioContext);
+            ActorRegistry.RegisterActor(kensingtonDeviceActor);
+            Admin = await kensingtonDeviceActor.CreateNewAdmin();
+            Kensington = await kensingtonDeviceActor.CreateKensington();
+            kensingtonDeviceActor.DoLogin(Admin.Account.UserID, "1234");
+            bool result = kensingtonDeviceActor.Perform(new IsTheUserLoggedIn());
+            result.Should().BeTrue();
+            kensingtonDeviceActor.OpenKensingtonOverviewPage();
+            kensingtonDeviceActor.Search(Kensington.SerialNumber);
+        }
+
+        [Given(@"a active (.*) existing in the system")]
+        public async Task GivenThereIsAnLaptopExistingInTheSystem(string category)
+        {
+            Device = await kensingtonDeviceActor.CreateNewDevice(category);
+        }
+        [Given(@"That (.*) is assiged to an Identity")]
+        public async Task GivenThatLaptopIsAssigedToAnIdentity(string category)
+        {
+            log.Info($"Assigning the device with category {category} to an identity");
+            Identity = await kensingtonDeviceActor.CreateNewIdentity();
+            await kensingtonDeviceActor.AssignDevice2Identity(Device, Identity);
+        }
+        [When(@"I link the Kensington to that (.*)")]
+        public void WhenILinkTheKensingtonToThatLaptop(string category)
+        {
+            log.Info($"Assigning the device with category {category} to an kensington");
+            kensingtonDeviceActor.DoAssignKey2Device(Kensington, Device);
+        }
+        [When(@"I fill in the assign form for that device")]
+        public void WhenIFillInTheAssignFormForThatDevice()
+        {
+            kensingtonDeviceActor.FillInAssignForm(Identity);
+        }
+        [Then(@"The Kensington is linked to the device")]
+        public void ThenTheKensingtonIsLinkedToTheDevice()
+        {
+            kensingtonDeviceActor.Search(Kensington.SerialNumber);
+            string lastlog = kensingtonDeviceActor.LastLogLine;
+            kensingtonDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
+        #endregion
+        #region release device
+        [Given(@"That (.*) is linked to my key")]
+        public async Task GivenThatLaptopIsLinkedToMyKey(string category)
+        {
+            log.Info($"Assigning the device with category {category} to an kensington");
+            await kensingtonDeviceActor.AssignDevice2Key(Device, Kensington);
+        }
+        [When(@"I release the (.*) from the Kensington")]
+        public void WhenIReleaseTheLaptopFromTheKensington(string category)
+        {
+            log.Info($"Release the device with category {category} from my kensington");
+            kensingtonDeviceActor.DoReleaseDevice(Kensington,Device,Identity);
+        }
+        [Then(@"The Kensington is released from the device")]
+        public void ThenTheKensingtonIsReleasedFromTheDevice()
+        {
+            kensingtonDeviceActor.Search(Kensington.SerialNumber);
+            string lastlog = kensingtonDeviceActor.LastLogLine;
+            kensingtonDeviceActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
         }
         #endregion
     }

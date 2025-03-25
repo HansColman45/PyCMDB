@@ -29,3 +29,31 @@ Scenario: I want to activate a deactivated Kensington
 	Given There is an inactive Kensington existing in the system
 	When I activate the Kensington
 	Then The Kensington is activated
+
+Scenario Outline: I want to link an existing device to my kenington
+	Given There is an active Kensington existing in the system
+	And a active <Device> existing in the system
+	And That <Device> is assiged to an Identity
+	When I link the Kensington to that <Device>
+	And I fill in the assign form for that device
+	Then The Kensington is linked to the device
+
+Examples: 
+	| Device  |
+	| Laptop  |
+	| Desktop |
+	| Docking |
+
+Scenario Outline: I want to release a device from my Kensington
+	Given There is an active Kensington existing in the system
+	And a active <Device> existing in the system
+	And That <Device> is assiged to an Identity
+	And That <Device> is linked to my key
+	When I release the <Device> from the Kensington
+	Then The Kensington is released from the device
+
+	Examples: 
+	| Device  |
+	| Laptop  |
+	| Desktop |
+	| Docking |
