@@ -2,6 +2,7 @@
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
@@ -27,70 +28,58 @@ namespace CMDB.API.Services
         public async Task<IEnumerable<DeviceDTO>> GetAll(string category)
         {
             List<DeviceDTO> devices = new();
-            switch (category)
+            devices = category switch
             {
-                case "Laptop":
-                    devices = await _context.Devices.OfType<Laptop>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Desktop":
-                    devices = await _context.Devices.OfType<Desktop>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Docking station":
-                    devices = await _context.Devices
-                        .OfType<Docking>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Token":
-                    devices = await _context.Devices
-                        .OfType<Token>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                case "Monitor":
-                case "Screen":
-                    devices = await _context.Devices
-                        .OfType<Screen>().AsNoTracking()
-                        .Include(x => x.Category).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Type).AsNoTracking()
-                        .Include(x => x.Identity)
-                        .ThenInclude(x => x.Language).AsNoTracking()
-                        .Include(x => x.Type).AsNoTracking()
-                        .Select(x => ConvertDevice(x))
-                        .ToListAsync();
-                    break;
-                default:
-                    throw new Exception($"{category} not found");
-            }
+                "Laptop" => await _context.Devices.OfType<Laptop>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Desktop" => await _context.Devices.OfType<Desktop>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Docking station" => await _context.Devices
+                                        .OfType<Docking>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Token" => await _context.Devices
+                                        .OfType<Token>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                "Monitor" or "Screen" => await _context.Devices
+                                        .OfType<Screen>().AsNoTracking()
+                                        .Include(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Identity)
+                                        .ThenInclude(x => x.Language).AsNoTracking()
+                                        .Include(x => x.Type).AsNoTracking()
+                                        .Select(x => ConvertDevice(x))
+                                        .ToListAsync(),
+                _ => throw new Exception($"{category} not found"),
+            };
             return devices;
         }
         public async Task<IEnumerable<DeviceDTO>> GetAll(string category,string searchString)
@@ -641,6 +630,138 @@ namespace CMDB.API.Services
                     throw new Exception($"{deviceDTO.Category.Category} not found");
             }
             return deviceDTO;
+        }
+        public async Task AssignKensington(DeviceDTO device)
+        {
+            string table = device.Category.Category.ToLower();
+            string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
+            var kensington = await _context.Kensingtons.Where(x => x.KeyID == device.Kensington.KeyID).FirstAsync();
+            string keyinfo = $"Kensington with serial number: {device.Kensington?.SerialNumber}";
+            kensington.LastModifiedAdminId = TokenStore.AdminId;
+            kensington.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.Now
+            });
+            _context.Kensingtons.Update(kensington);
+            switch (device.Category.Category)
+            {
+                case "Laptop":
+                    var laptop = await GetLaptopByAssetTag(device.AssetTag);
+                    laptop.LastModifiedAdminId = TokenStore.AdminId;
+                    laptop.Keys.Add(kensington);
+                    laptop.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine( keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(laptop);
+                    break;
+                case "Desktop":
+                    var desktop = await GetDesktopByAssetTag(device.AssetTag);
+                    desktop.LastModifiedAdminId = TokenStore.AdminId;
+                    desktop.Keys.Add(kensington);
+                    desktop.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(desktop);
+                    break;
+                case "Monitor":
+                case "Screen":
+                    table = "screen";
+                    var screen = await GetScreenByAssetTag(device.AssetTag);
+                    screen.LastModifiedAdminId = TokenStore.AdminId;
+                    screen.Keys.Add(kensington);
+                    screen.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(screen);
+                    break;
+                case "Docking station":
+                    table = "docking";
+                    var docking = await GetDockingByAssetTag(device.AssetTag);
+                    docking.LastModifiedAdminId = TokenStore.AdminId;
+                    docking.Keys.Add(kensington);
+                    docking.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(docking);
+                    break;
+                default:
+                    throw new NotImplementedException($"{device.Category.Category} not implemented");
+            }
+        }
+        public async Task ReleaseKensington(DeviceDTO device)
+        {
+            string table = device.Category.Category.ToLower();
+            string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
+            var kensington = await _context.Kensingtons.Where(x => x.KeyID == device.Kensington.KeyID).FirstAsync();
+            string keyinfo = $"Kensington with serial number: {device.Kensington?.SerialNumber}";
+            kensington.LastModifiedAdminId = TokenStore.AdminId;
+            kensington.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
+                LogDate = DateTime.Now
+            });
+            _context.Kensingtons.Update(kensington);
+            switch (device.Category.Category)
+            {
+                case "Laptop":
+                    var laptop = await GetLaptopByAssetTag(device.AssetTag);
+                    laptop.LastModifiedAdminId = TokenStore.AdminId;
+                    laptop.Keys.Remove(kensington);
+                    laptop.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(laptop);
+                    break;
+                case "Desktop":
+                    var desktop = await GetDesktopByAssetTag(device.AssetTag);
+                    desktop.LastModifiedAdminId = TokenStore.AdminId;
+                    desktop.Keys.Add(kensington);
+                    desktop.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(desktop);
+                    break;
+                case "Monitor":
+                case "Screen":
+                    table = "screen";
+                    var screen = await GetScreenByAssetTag(device.AssetTag);
+                    screen.LastModifiedAdminId = TokenStore.AdminId;
+                    screen.Keys.Add(kensington);
+                    screen.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(screen);
+                    break;
+                case "Docking station":
+                    table = "docking";
+                    var docking = await GetDockingByAssetTag(device.AssetTag);
+                    docking.LastModifiedAdminId = TokenStore.AdminId;
+                    docking.Keys.Add(kensington);
+                    docking.Logs.Add(new()
+                    {
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogDate = DateTime.Now
+                    });
+                    _context.Devices.Update(docking);
+                    break;
+                default:
+                    throw new NotImplementedException($"{device.Category.Category} not implemented");
+            }
         }
         public async Task<DeviceDTO> AssignIdentity(DeviceDTO device)
         {

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class AdminService : LogService
+    public class AdminService : CMDBServices
     {
         public AdminService() : base()
         {

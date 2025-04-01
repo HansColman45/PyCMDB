@@ -49,6 +49,7 @@ namespace CMDB.Controllers
             ViewBag.MobileIcon = "fas fa-mobile-alt";
             ViewBag.SubscriptionIcon = "fas fa-file-invoice-dollar";
             ViewBag.SearchIcon = "fas fa-search";
+            ViewBag.KeyIcon = "fa-solid fa-unlock-keyhole";
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

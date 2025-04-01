@@ -195,5 +195,24 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        [HttpGet("GetAllFreeKeys"), Authorize]
+        public async Task<IActionResult> GetAllFreeKeys()
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Action = "Read"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var accounts = await _uow.KensingtonRepository.ListAllFreeKeys();
+            return Ok(accounts);
+        }
     }
 }

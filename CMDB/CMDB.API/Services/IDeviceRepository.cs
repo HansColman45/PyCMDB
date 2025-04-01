@@ -93,5 +93,17 @@ namespace CMDB.API.Services
         /// <param name="device"></param>
         /// <returns></returns>
         Task<bool> IsDeviceExising(DeviceDTO device);
+        /// <summary>
+        /// This function will assign a Kensington lock to a device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        Task AssignKensington(DeviceDTO device);
+        /// <summary>
+        /// This function will release the Kensington lock from a device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        Task ReleaseKensington(DeviceDTO device);
     }
 }

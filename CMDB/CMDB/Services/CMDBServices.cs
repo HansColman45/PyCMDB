@@ -226,5 +226,23 @@ namespace CMDB.Services
             }
             return assettypes;
         }
+        #region Admin stuff
+        public async Task<bool> HasAdminAccess(int adminId, string site, string action)
+        {
+            BaseUrl = _url + $"api/Admin/HasAdminAccess";
+            _Client.SetBearerToken(TokenStore.Token);
+            HasAdminAccessRequest request = new()
+            {
+                AdminId = adminId,
+                Site = site,
+                Action = action
+            };
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<bool>();
+            else
+                return false;
+        }
+        #endregion
     }
 }

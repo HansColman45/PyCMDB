@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class MobileService : LogService
+    public class MobileService : CMDBServices
     {
         public MobileService() : base()
         {

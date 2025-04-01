@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class KensingtonService : LogService
+    public class KensingtonService : CMDBServices
     {
         public async Task<List<KensingtonDTO>> ListAll()
         {

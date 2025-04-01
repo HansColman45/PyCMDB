@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class IdentityService : LogService
+    public class IdentityService : CMDBServices
     {
         public IdentityService() : base()
         {

@@ -3,8 +3,6 @@
 
 # Pyre type checker
 .pyre/
-# Generated PDF Files
-CMDB/CMDB/wwwroot/PDF-Files/*.pdf
 # MSTest test Results
 [Tt]est[Rr]esult*/
 [Bb]uild[Ll]og.*
@@ -89,3 +87,5 @@ CMDB/CMDB.UI.Specflow/Screenshots/
 CMDB/CMDB.API/obj/
 CMDB/CMDB.API/obj/Debug/
 CMDB/CMDB.API/bin/Debug/
+# Generated PDF Files
+CMDB/CMDB/wwwroot/PDF-Files/*.pdf

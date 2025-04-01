@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class AssetTypeService : LogService
+    public class AssetTypeService : CMDBServices
     {
         public AssetTypeService() : base()
         {

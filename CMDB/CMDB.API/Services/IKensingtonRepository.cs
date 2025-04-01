@@ -14,5 +14,6 @@ namespace CMDB.API.Services
         Task AssignDevice(KensingtonDTO key);
         Task LogPdfFile(string pdfFile, int id);
         Task ReleaseDevice(KensingtonDTO key);
+        Task<List<KensingtonDTO>> ListAllFreeKeys();
     }
 }

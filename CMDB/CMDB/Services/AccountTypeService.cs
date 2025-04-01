@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class AccountTypeService : LogService
+    public class AccountTypeService : CMDBServices
     {
         public AccountTypeService() : base()
         {

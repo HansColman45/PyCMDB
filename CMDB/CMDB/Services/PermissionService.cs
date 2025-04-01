@@ -8,7 +8,7 @@ using System.Text;
 
 namespace CMDB.Services
 {
-    public class PermissionService : LogService
+    public class PermissionService : CMDBServices
     {
         public PermissionService() : base()
         {

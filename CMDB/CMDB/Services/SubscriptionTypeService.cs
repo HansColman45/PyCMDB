@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class SubscriptionTypeService : LogService
+    public class SubscriptionTypeService : CMDBServices
     {
         public SubscriptionTypeService() : base()
         {

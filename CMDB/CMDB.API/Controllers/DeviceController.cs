@@ -211,6 +211,54 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(device);
         }
+        [HttpPost("AssignKensington"),Authorize]
+        public async Task<IActionResult> AssignKensington(DeviceDTO device)
+        {
+            if (device is null)
+                return BadRequest("Device is required");
+            if (device.Kensington == null)
+                return BadRequest("Kensington is required");
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = device.Category.Category.ToLower(),
+                Action = "AssignKensington"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.DeviceRepository.AssignKensington(device);
+            await _uow.SaveChangesAsync();
+            return Ok(device);
+        }
+        [HttpPost("ReleaseKensington"), Authorize]
+        public async Task<IActionResult> ReleaseKensington(DeviceDTO device)
+        {
+            if (device is null)
+                return BadRequest("Device is required");
+            if (device.Kensington == null)
+                return BadRequest("Kensington is required");
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = device.Category.Category.ToLower(),
+                Action = "ReleaseKensington"
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            await _uow.DeviceRepository.ReleaseKensington(device);
+            await _uow.SaveChangesAsync();
+            return Ok(device);
+        }
         [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsDeviceExisting(DeviceDTO device)
         {

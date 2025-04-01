@@ -199,6 +199,14 @@ namespace CMDB.API.Services
             });
             _context.Devices.Update(device);
         }
+        public async Task<List<KensingtonDTO>> ListAllFreeKeys()
+        {
+            return await _context.Kensingtons
+                .Include(x => x.Type)
+                .ThenInclude(x => x.Category)
+                .Where(x => x.AssetTag == null)
+                .Select(x => Convert2DTO(x)).ToListAsync();
+        }
         public static KensingtonDTO Convert2DTO(Kensington entity)
         {
             return new KensingtonDTO

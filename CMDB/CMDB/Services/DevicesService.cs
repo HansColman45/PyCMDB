@@ -4,13 +4,14 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
-    public class DevicesService : LogService
+    public class DevicesService : CMDBServices
     {
         public DevicesService() : base()
         {
@@ -200,6 +201,49 @@ namespace CMDB.Services
         public async Task ReleaseIdenity(DeviceDTO device)
         {
             BaseUrl = _url + $"api/Device/ReleaseIdentity";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, device);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task<KensingtonDTO> GetKensingtonById(int keyId)
+        {
+            BaseUrl = _url + $"api/Kensington/{keyId}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<KensingtonDTO>();
+            else
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task<List<SelectListItem>> ListFreeKeys()
+        {
+            List<SelectListItem> keys = new();
+            BaseUrl = _url + $"api/Kensington/GetAllFreeKeys";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var kensingtons = await response.Content.ReadAsJsonAsync<List<KensingtonDTO>>();
+                foreach (var kensington in kensingtons)
+                {
+                    keys.Add(new($"Kensington {kensington.Type.Vendor} {kensington.Type.Type} and serialnumber: {kensington.SerialNumber}", kensington.KeyID.ToString()));
+                }
+            }
+            return keys;
+        }
+        public async Task AssignKensington2Device(KensingtonDTO kensington, DeviceDTO device)
+        {
+            device.Kensington = kensington;
+            BaseUrl = _url + $"api/Device/AssignKensington";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, device);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
+        public async Task ReleaseKensington(DeviceDTO device)
+        {
+            BaseUrl = _url + $"api/Device/ReleaseKensington";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
