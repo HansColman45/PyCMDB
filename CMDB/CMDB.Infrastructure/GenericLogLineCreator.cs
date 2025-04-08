@@ -74,28 +74,28 @@
             return $"The {accountInfo} is released from {IdentityInfo} by {releaser} in table {table}";
         }
         /// <summary>
-        /// This function will generate the Log line for when a device is assigned to an Identity
+        /// This function will generate the Log line for when a device is assigned to something else
         /// </summary>
-        /// <param name="deviceInfo"></param>
-        /// <param name="IdentityInfo"></param>
-        /// <param name="assignee"></param>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public static string AssingDevice2IdenityLogLine(string deviceInfo, string IdentityInfo, string assignee, string table)
+        /// <param name="deviceInfo">The info of the device</param>
+        /// <param name="AssigningInfo">The info of the other thing you are assing</param>
+        /// <param name="assignee">The person that does the assigning</param>
+        /// <param name="table">The table you are using</param>
+        /// <returns><c>string</c></returns>
+        public static string AssingDevice2IdenityLogLine(string deviceInfo, string AssigningInfo, string assignee, string table)
         {
-            return $"The {deviceInfo} is assigned to {IdentityInfo} by {assignee} in table {table}";
+            return $"The {deviceInfo} is assigned to {AssigningInfo} by {assignee} in table {table}";
         }
         /// <summary>
-        /// This function will generate the Log line for when a device is released from an Identity
+        /// This function will generate the Log line for when a device is released from something else
         /// </summary>
-        /// <param name="deviceInfo"></param>
-        /// <param name="IdentityInfo"></param>
-        /// <param name="releaser"></param>
-        /// <param name="table"></param>
+        /// <param name="deviceInfo">The info of the device</param>
+        /// <param name="AssigningInfo">The info of the other thing you are assing</param>
+        /// <param name="releaser">The person that does the release</param>
+        /// <param name="table">The table you are using</param>
         /// <returns></returns>
-        public static string ReleaseDeviceFromIdentityLogLine(string deviceInfo, string IdentityInfo, string releaser, string table)
+        public static string ReleaseDeviceFromIdentityLogLine(string deviceInfo, string AssigningInfo, string releaser, string table)
         {
-            return $"The {deviceInfo} is released from {IdentityInfo} by {releaser} in table {table}";
+            return $"The {deviceInfo} is released from {AssigningInfo} by {releaser} in table {table}";
         }
         /// <summary>
         /// 

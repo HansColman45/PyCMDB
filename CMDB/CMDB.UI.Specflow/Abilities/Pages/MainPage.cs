@@ -33,6 +33,10 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         /// </summary>
         public static string AssignIdenityXpath => "//a[@title='Assign Identity']";
         /// <summary>
+        /// Xpath for the Assign Key button
+        /// </summary>
+        public static string AssignKensingtonXpath => "//a[@title='Assign Kensington']";
+        /// <summary>
         /// This is the XPath for the assign Subscription
         /// </summary>
         public static string AssignSubscriptionXpath => "//a[@title='Assign Subscription']";
@@ -40,6 +44,10 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         /// Xpath for the Release Identity button
         /// </summary>
         public static string ReleaseIdenityXpath => "//a[@title='Release Identity']";
+        /// <summary>
+        /// Xpath for the Release Kensington button
+        /// </summary>
+        public static string ReleaseKensingtonXpath => "//a[@title='Release Kensington']";
         /// <summary>
         /// Xpath for the Release Device button
         /// </summary>

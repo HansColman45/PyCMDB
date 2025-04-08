@@ -44,3 +44,12 @@ Scenario: I want to release an assigned identity from my Laptop
 	And that Identity is assigned to my Laptop
 	When I release that identity from my Laptop and I fill in the release form
 	Then The identity is released from my Laptop
+
+Scenario: I want to assign an existing Key to my Laptop
+	Given There is an active Laptop existing
+	And The Identity to assign to my laptop is existing
+	And that Identity is assigned to my Laptop
+	And A Key is existing in the system
+	When I assign the Key to the Laptop
+	And I fill in the assign form for my Laptop
+	Then The Key is assigned to the Laptop

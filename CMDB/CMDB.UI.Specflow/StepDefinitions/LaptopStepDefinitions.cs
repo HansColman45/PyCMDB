@@ -15,6 +15,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         Helpers.Laptop laptop;
         Laptop Laptop;
         Identity Identity;
+        Kensington Kensington;
         public LaptopStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -162,6 +163,25 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         [Then(@"The identity is released from my Laptop")]
         public void ThenTheIdentityIsReleasedFromMyLaptop()
+        {
+            laptopIdentityActor.Search(Laptop.AssetTag);
+            var lastLogLine = laptopIdentityActor.LaptopLastLogLine;
+            laptopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region key
+        [Given(@"A Key is existing in the system")]
+        public async Task GivenAKeyIsExistingInTheSystem()
+        {
+            Kensington = await laptopIdentityActor.CreateKensington();
+        }
+        [When(@"I assign the Key to the Laptop")]
+        public void WhenIAssignTheKeyToTheLaptop()
+        {
+            laptopIdentityActor.AssignTheKey2Laptop(Laptop, Kensington);
+        }
+        [Then(@"The Key is assigned to the Laptop")]
+        public void ThenTheKeyIsAssignedToTheLaptop()
         {
             laptopIdentityActor.Search(Laptop.AssetTag);
             var lastLogLine = laptopIdentityActor.LaptopLastLogLine;
