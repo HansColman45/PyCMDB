@@ -4,6 +4,9 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class AccountReleaseIdentityPage : MainPage
     {
+        public AccountReleaseIdentityPage(IWebDriver web): base(web)
+        {
+        }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");
         public string Type => GetAttributeFromXpath("//td[@id='Type']", "innerHTML");
         public string Application => GetAttributeFromXpath("//td[@Application]", "innerHTML");

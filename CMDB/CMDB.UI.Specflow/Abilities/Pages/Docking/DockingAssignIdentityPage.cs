@@ -1,8 +1,10 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.Docking
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingAssignIdentityPage : MainPage
     {
-        public DockingAssignIdentityPage() : base()
+        public DockingAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

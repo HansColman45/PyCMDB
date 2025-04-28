@@ -1,8 +1,10 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class CreateAssetTypePage : MainPage
     {
-        public CreateAssetTypePage() : base()
+        public CreateAssetTypePage(IWebDriver web) : base(web)
         {
         }
         public string Category

@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
             get
             {
                 var page = Perform(new OpenTheSubscriptionTypeDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

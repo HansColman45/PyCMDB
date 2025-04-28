@@ -36,7 +36,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             string idenInfo = $"Account with UserID: {account.UserID}";
             ExpectedLog = GenericLogLineCreator.AssingAccount2IdenityLogLine(accountinfo, idenInfo, admin.Account.UserID,Table);
             var page = Perform(new OpenTheAssignAccountPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignAccountPage");
             page.SelectAccount(account);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountSelected");
@@ -60,10 +59,8 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             string idenInfo = $"Account with UserID: {account.UserID}";
             ExpectedLog = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountinfo,idenInfo,admin.Account.UserID,Table);
             var detailpage = Perform(new OpenTheIdentityDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var releasepage = Perform(new OpenTheReleaseAccountPage());
-            releasepage.WebDriver = Driver;
             releasepage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             releasepage.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             releasepage.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");

@@ -21,7 +21,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityTypes
         public IdentityType UpdateIdentity(IdentityType identityType, string field, string value)
         {
             var editPage = Perform(new OpenTheTypeEditPage());
-            editPage.WebDriver = Driver;
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             switch (field)
             {
@@ -47,7 +46,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityTypes
         public void DeactiveIdentityType(IdentityType identityType, string reason)
         {
             var editPage = Perform(new OpenTheTypeDeactivatePage());
-            editPage.WebDriver = Driver;
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Identitytype with type: {identityType.Type} and description: {identityType.Description}", admin.Account.UserID, reason, Table);
             editPage.Reason = reason;

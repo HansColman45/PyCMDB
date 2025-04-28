@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using Bright.ScreenPlay.Questions;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Laptop
 {
@@ -11,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions.Laptop
         {
             var page = actor.GetAbility<IdentityDetailPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.ReleaseIdenityXpath);
-            return new();
+            LaptopReleaseIdentityPage laptopReleaseIdentityPage = WebPageFactory.Create<LaptopReleaseIdentityPage>(page.WebDriver);
+            return laptopReleaseIdentityPage;
         }
     }
 }

@@ -1,7 +1,12 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
 {
     public class SubscriptionReleasePage :MainPage
     {
+        public SubscriptionReleasePage(IWebDriver web) : base(web)
+        {
+        }
         public string Employee
         {
             set => EnterInTextboxByXPath("//input[@id='Employee']", value);

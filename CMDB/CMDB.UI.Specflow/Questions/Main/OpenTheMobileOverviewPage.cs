@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Mobile23']");
             page.ClickElementByXpath("//a[@href='/Mobile']");
             page.WaitOnAddNew();
-            return new();
+            MobileOverviewPage mobileOverviewPage = WebPageFactory.Create<MobileOverviewPage>(page.WebDriver);
+            return mobileOverviewPage;
         }
     }
 }

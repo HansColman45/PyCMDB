@@ -21,14 +21,12 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         public UpdateIdentityPage OpenUpdateIdentityPage()
         {
             var page = Perform(new OpenTheUpdateIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_UpdatePage");
             return page;
         }
         public DeactivateIdentityPage OpenDeactivateIdentityPage()
         {
             var page = Perform(new OpenTheDeactivateIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             return page;
         }

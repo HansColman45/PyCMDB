@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
 {
     public class UpdateSubscriptionPage : MainPage
     {
-        public UpdateSubscriptionPage() : base()
+        public UpdateSubscriptionPage(IWebDriver web) : base(web)
         {
         }
         public string Phonenumber

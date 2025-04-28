@@ -26,7 +26,6 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             ExpectedLog = GenericLogLineCreator.AssingAccount2IdenityLogLine($"Account with UserID: {account.UserID}",
                 $"Identity with name: {identity.Name}",admin.Account.UserID,Table);
             var page = Perform(new OpenTheAccountAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
@@ -41,7 +40,6 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         public void FillInAssignForm()
         {
             var page = Perform(new OpenTheAccountAssignFormPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignFormPage");
             Perform<ClickTheGeneratePDFOnAssignForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
@@ -49,12 +47,10 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         public void ReleaseIdentity(Account account, Identity identity)
         {   
             var detailPage = Perform(new OpenTheAccountDetailPage());
-            detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             ExpectedLog = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine($"Account with UserID: {account.UserID}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheAccountReleaseIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.CreatePDF();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Released");

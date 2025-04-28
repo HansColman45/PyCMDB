@@ -640,7 +640,7 @@ namespace CMDB.API.Services
             kensington.LastModifiedAdminId = TokenStore.AdminId;
             kensington.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo,deviceinfo, TokenStore.Admin.Account.UserID, "kensington"),
                 LogDate = DateTime.Now
             });
             _context.Kensingtons.Update(kensington);
@@ -706,7 +706,7 @@ namespace CMDB.API.Services
             kensington.LastModifiedAdminId = TokenStore.AdminId;
             kensington.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
                 LogDate = DateTime.Now
             });
             _context.Kensingtons.Update(kensington);
@@ -718,7 +718,7 @@ namespace CMDB.API.Services
                     laptop.Keys.Remove(kensington);
                     laptop.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(laptop);
@@ -729,7 +729,7 @@ namespace CMDB.API.Services
                     desktop.Keys.Add(kensington);
                     desktop.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(desktop);
@@ -742,7 +742,7 @@ namespace CMDB.API.Services
                     screen.Keys.Add(kensington);
                     screen.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(screen);
@@ -754,7 +754,7 @@ namespace CMDB.API.Services
                     docking.Keys.Add(kensington);
                     docking.Logs.Add(new()
                     {
-                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                        LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
                         LogDate = DateTime.Now
                     });
                     _context.Devices.Update(docking);
@@ -835,7 +835,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine( ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine( ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, "identity"),
                 LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);
@@ -913,7 +913,7 @@ namespace CMDB.API.Services
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
-                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
+                LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, "identity"),
                 LogDate = DateTime.Now
             });
             _context.Identities.Update(iden);

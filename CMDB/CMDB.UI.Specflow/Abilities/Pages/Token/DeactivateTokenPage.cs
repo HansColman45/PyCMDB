@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class DeactivateTokenPage : MainPage
     {
-        public DeactivateTokenPage() : base()
+        public DeactivateTokenPage(IWebDriver web) : base(web)
         {
         }
         public string Reason

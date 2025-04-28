@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Monitor15']");
             page.ClickElementByXpath("//a[@href='/Monitor']");
             page.WaitOnAddNew();
-            return new();
+            MonitorOverviewPage monitorOverviewPage = WebPageFactory.Create<MonitorOverviewPage>(page.WebDriver);
+            return monitorOverviewPage;
         }
     }
 }

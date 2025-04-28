@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingReleaseIdentityPage : MainPage
     {
-        public DockingReleaseIdentityPage() : base()
+        public DockingReleaseIdentityPage(IWebDriver web) : base(web)
         {
         }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");

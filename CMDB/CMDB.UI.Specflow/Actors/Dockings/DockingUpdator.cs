@@ -25,7 +25,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             {
                 case "SerialNumber":
                     var updatePage = Perform(new OpenTheDockingEditPage());
-                    updatePage.WebDriver = Driver;
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, docking.SerialNumber, value + rndNr, admin.Account.UserID, Table);
                     updatePage.SerialNumber = value + rndNr;
@@ -40,7 +39,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
                     Type = value.Split(" ")[1];
                     var assetType = await GetOrCreateAssetType("Docking station", Vendor, Type);
                     updatePage = Perform(new OpenTheDockingEditPage());
-                    updatePage.WebDriver = Driver;
                     updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, $"{docking.Type}", value, admin.Account.UserID, Table);
                     updatePage.Type = assetType.TypeID.ToString();
@@ -59,7 +57,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
         public void DeactivateDocking(Docking docking, string reason)
         {
             var page = Perform(new OpenTheDockingDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

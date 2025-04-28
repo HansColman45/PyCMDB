@@ -15,7 +15,6 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
         {
             rndNr = rnd.Next();
             var editPage = Perform(new OpenTheAsseTypeCreatePage());
-            editPage.WebDriver = Driver;
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             AssetType assetType = new()
             {

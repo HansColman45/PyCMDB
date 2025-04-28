@@ -34,12 +34,10 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         {
             Search(identity.FirstName);
             var detailpage = Perform(new OpenTheIdentityDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             ExpectedLog = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine($"identity with name: {identity.Name}", 
                 $"{device.Category.Category} with {device.AssetTag}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheReleaceDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseDevicePage");
             page.Title.Should().BeEquivalentTo("Release device from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
@@ -50,7 +48,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Identity with name: {identity.Name}",
                 $"{device.Category.Category} with {device.AssetTag}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheAssignDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevicePage");
             page.ClickDevice(device);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedDevice");

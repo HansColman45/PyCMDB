@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Token19']");
             page.ClickElementByXpath("//a[@href='/Token']");
             page.WaitOnAddNew();
-            return new();
+            TokenOverviewPage tokenOverviewPage = WebPageFactory.Create<TokenOverviewPage>(page.WebDriver);
+            return tokenOverviewPage;
         }
     }
 }

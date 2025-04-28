@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class TypeDetailPage : MainPage
     {
-        public TypeDetailPage() : base()
+        public TypeDetailPage(IWebDriver web) : base(web)
         {
         }
         public string GetLastLog(string type)

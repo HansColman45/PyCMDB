@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             get
             {
                 var detailPage = Perform(new OpenTheDesktopDetailPage());
-                detailPage.WebDriver = Driver;
                 return detailPage.GetLastLog();
             }
         }

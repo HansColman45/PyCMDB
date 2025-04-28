@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class TokenOverviewPage : MainPage
     {
-        public TokenOverviewPage() : base()
+        public TokenOverviewPage(IWebDriver web) : base(web)
         {
         }
         public void Activate()

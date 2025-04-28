@@ -20,7 +20,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             rndNr = rnd.Next();
             var type = await GetOrCreateType(subscription.Type);
             var createPage = Perform(new OpenTheSubscriptionCreatePage());
-            createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             createPage.Type = type.Description;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedType");

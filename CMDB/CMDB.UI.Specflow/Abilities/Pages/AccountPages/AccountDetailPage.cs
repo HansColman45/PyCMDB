@@ -1,8 +1,10 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class AccountDetailPage : MainPage
     {
-        public AccountDetailPage() : base()
+        public AccountDetailPage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public int Id

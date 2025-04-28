@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Permissions49']");
             page.ClickElementByXpath("//a[@href='/Permission']");
             page.WaitOnAddNew();
-            return new();
+            PermissionOverviewPage permissionOverviewPage = WebPageFactory.Create<PermissionOverviewPage>(page.WebDriver);
+            return permissionOverviewPage;
         }
     }
 }

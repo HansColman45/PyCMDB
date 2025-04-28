@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Identity
 {
@@ -11,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions.Identity
             var page = actor.GetAbility<IdentityOverviewPage>();
             page.ClickElementByXpath("//a[@title='Assign Device']");
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            AssignDevicePage assignDevicePage = WebPageFactory.Create<AssignDevicePage>(page.WebDriver);
+            return assignDevicePage;
         }
     }
 }

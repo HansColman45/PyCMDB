@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Monitors
             get
             {
                 var page = Perform(new OpenTheMonitorDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

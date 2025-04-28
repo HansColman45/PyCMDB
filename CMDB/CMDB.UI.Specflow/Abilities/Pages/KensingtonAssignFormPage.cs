@@ -1,7 +1,12 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages
 {
     public class KensingtonAssignFormPage : MainPage
     {
+        public KensingtonAssignFormPage(IWebDriver web) : base(web)
+        {
+        }
         public string Name
         {
             get => TekstFromElementByXpath("//td[@id='Name']");

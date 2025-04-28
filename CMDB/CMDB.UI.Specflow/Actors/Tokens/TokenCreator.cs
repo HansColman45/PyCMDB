@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             Type = token.Type.Split(" ")[1];
             var assetType = await GetOrCreateAssetType("Token", Vendor, Type);
             var page = Perform(new OpenTheTokenCreatePage());
-            page.WebDriver = Driver;
             page.AssetTag = token.AssetTag + rndNr;
             page.SerialNumber = token.SerialNumber + rndNr;
             page.Type = $"{assetType.TypeID}";

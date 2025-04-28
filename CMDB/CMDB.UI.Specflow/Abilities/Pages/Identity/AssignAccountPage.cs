@@ -6,7 +6,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class AssignAccountPage : MainPage
     {
-        public AssignAccountPage() : base()
+        public AssignAccountPage(IWebDriver web) : base(web)
         {
         }
         public string Name

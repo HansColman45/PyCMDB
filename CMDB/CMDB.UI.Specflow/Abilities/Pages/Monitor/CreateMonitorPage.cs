@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class CreateMonitorPage : MainPage
     {
-        public CreateMonitorPage() : base()
+        public CreateMonitorPage(IWebDriver web) : base(web)
         {
         }
         public string AssetTag

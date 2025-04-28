@@ -10,7 +10,8 @@ namespace CMDB.UI.Specflow.Questions.Account
         {
             var page = actor.GetAbility<MainPage>();
             page.ClickElementByXpath("//button[@type='submit']");
-            return new();
+            AssignFormPage assignPage = WebPageFactory.Create<AssignFormPage>(page.WebDriver);
+            return assignPage;
         }
     }
 }

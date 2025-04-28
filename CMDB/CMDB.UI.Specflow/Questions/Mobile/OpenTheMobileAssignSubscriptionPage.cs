@@ -12,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions.Mobile
             var page = actor.GetAbility<MobileOverviewPage>();
             page.ClickElementByXpath(MainPage.AssignSubscriptionXpath);
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            MobileAssignSubscriptionPage mobileAssignSubscriptionPage = WebPageFactory.Create<MobileAssignSubscriptionPage>(page.WebDriver);
+            return mobileAssignSubscriptionPage;
         }
     }
 }

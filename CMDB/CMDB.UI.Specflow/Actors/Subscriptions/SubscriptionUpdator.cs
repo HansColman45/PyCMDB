@@ -30,7 +30,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             rndNr = rnd.Next();
             ExpectedLog = GenericLogLineCreator.UpdateLogLine("phone number", subscription.PhoneNumber, rndNr.ToString(), admin.Account.UserID, Table);
             var editPage = Perform(new OpenTheSubscriptionEditPage());
-            editPage.WebDriver = Driver;
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             editPage.Phonenumber = rndNr.ToString();
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_PhoneNumber");
@@ -45,7 +44,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             string value = $"Subscription with Category: {subscription.Category.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
             ExpectedLog = GenericLogLineCreator.DeleteLogLine(value, admin.Account.UserID, reason, Table);
             var page = Perform(new OpenTheSubscriptionDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Deactivate");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

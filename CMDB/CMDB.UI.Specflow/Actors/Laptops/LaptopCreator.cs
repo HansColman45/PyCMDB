@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             var assetType = GetOrCreateAssetType("Laptop", Vendor, Type).Result;
             rndNr = rnd.Next();
             var page = Perform(new OpenTheLaptopCreatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             page.AssetTag = laptop.AssetTag + rndNr.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_assetTag");

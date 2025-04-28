@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
 {
     public class KensingtonDeactivatePage : MainPage
     {
+        public KensingtonDeactivatePage(IWebDriver web) : base(web)
+        {
+        }
         public string Reason
         {
             set => EnterInTextboxByXPath("//input[@id='reason']", value);

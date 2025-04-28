@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.Docking;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Docking
 {
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Docking
         {
             var page = actor.GetAbility<DockingOverviewPage>();
             page.ClickElementByXpath(DockingOverviewPage.AssignIdenityXpath);
-            return new();
+            DockingAssignIdentityPage assignIdentityPage = WebPageFactory.Create<DockingAssignIdentityPage>(page.WebDriver);
+            return assignIdentityPage;
         }
     }
 }

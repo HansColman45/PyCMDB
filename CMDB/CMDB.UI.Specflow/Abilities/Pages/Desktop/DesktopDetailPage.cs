@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
 {
     public class DesktopDetailPage : MainPage
     {
-        public DesktopDetailPage() : base()
+        public DesktopDetailPage(IWebDriver web) : base(web)
         {
         }
         public string GetLastLog()

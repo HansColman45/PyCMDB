@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             get
             {
                 var page = Perform(new OpenTheLaptopDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

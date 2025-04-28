@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 
 namespace CMDB.UI.Specflow.Questions.Mobile
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         public override UpdateMobilePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<MobileOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.EditXpath);
-            return new();
+            page.ClickElementByXpath(MainPage.EditXpath);
+            UpdateMobilePage updateMobilePage = WebPageFactory.Create<UpdateMobilePage>(page.WebDriver);
+            return updateMobilePage;
         }
     }
 }

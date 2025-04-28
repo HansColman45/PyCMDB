@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Admin
 {
     public class PermissionOverviewPage : MainPage
     {
-        public PermissionOverviewPage() : base()
+        public PermissionOverviewPage(IWebDriver web) : base(web)
         {
         }
     }

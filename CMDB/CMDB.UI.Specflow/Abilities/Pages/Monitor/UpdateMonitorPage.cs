@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class UpdateMonitorPage : MainPage
     {
-        public UpdateMonitorPage() : base()
+        public UpdateMonitorPage(IWebDriver web) : base(web)
         {
         }
         public string AssetTag

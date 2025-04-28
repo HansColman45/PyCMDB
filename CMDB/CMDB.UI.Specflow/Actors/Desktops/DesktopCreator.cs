@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             var assetType = await GetOrCreateAssetType("Desktop", Vendor, Type);
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDesktopCreatePage());
-            createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             createPage.AssetTag = desktop.AssetTag + rndNr;
             desktop.AssetTag = desktop.AssetTag + rndNr;

@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Desktop13']");
             page.ClickElementByXpath("//a[@href='/Desktop']");
             page.WaitOnAddNew();
-            return new();
+            DesktopOverviewPage desktopOverviewPage = WebPageFactory.Create<DesktopOverviewPage>(page.WebDriver);
+            return desktopOverviewPage;
         }
     }
 }

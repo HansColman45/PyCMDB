@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class LaptopAssignIdentityPage : MainPage
     {
-        public LaptopAssignIdentityPage() : base()
+        public LaptopAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

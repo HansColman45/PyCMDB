@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 
 namespace CMDB.UI.Specflow.Questions.Subscription
@@ -9,9 +10,10 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         public override SubscriptionReleasePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<SubscriptionDetailPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.ReleaseIdenityXpath);
+            page.ClickElementByXpath(MainPage.ReleaseIdenityXpath);
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            SubscriptionReleasePage subscriptionReleasePage = WebPageFactory.Create<SubscriptionReleasePage>(page.WebDriver);
+            return subscriptionReleasePage;
         }
     }
     public class OpenTheMobileSubscriptionReleasePage : Question<SubscriptionReleasePage>
@@ -19,9 +21,10 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         public override SubscriptionReleasePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<SubscriptionDetailPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.ReleaseMobileXPath);
+            page.ClickElementByXpath(MainPage.ReleaseMobileXPath);
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            SubscriptionReleasePage subscriptionReleasePage = WebPageFactory.Create<SubscriptionReleasePage>(page.WebDriver);
+            return subscriptionReleasePage;
         }
     }
 }

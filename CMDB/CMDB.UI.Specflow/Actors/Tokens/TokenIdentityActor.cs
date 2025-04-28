@@ -28,7 +28,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Token with {token.AssetTag}",
                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheTokenAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
@@ -47,10 +46,8 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Token with {token.AssetTag}",
                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailPage = Perform(new OpenTheTokenDetailPage());
-            detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheTokenReleaseIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");

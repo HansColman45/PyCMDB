@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Token;
 
 namespace CMDB.UI.Specflow.Questions.Token
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Token
         public override CreateTokenPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<TokenOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.NewXpath);
-            return new();
+            page.ClickElementByXpath(MainPage.NewXpath);
+            CreateTokenPage createTokenPage = WebPageFactory.Create<CreateTokenPage>(page.WebDriver);
+            return createTokenPage;
         }
     }
 }

@@ -12,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions
             var page = actor.GetAbility<LoginPage>();
             page.ClickElementByXpath("//button[@type='submit']");
             page.WaitUntilElmentVisableByXpath("//h1");
-            return new();
+            var mainPage = WebPageFactory.Create<MainPage>(page.WebDriver);
+            return mainPage;
         }
     }
 }

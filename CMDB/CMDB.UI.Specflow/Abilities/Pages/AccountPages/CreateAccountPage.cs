@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class CreateAccountPage : MainPage
     {
-        public CreateAccountPage() : base()
+        public CreateAccountPage(IWebDriver web) : base(web)
         {
         }
         public string UserId

@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityTypes
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheTypeCreatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             page.Type = identiyType.Type + rndNr.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_type");

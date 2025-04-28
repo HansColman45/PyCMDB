@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages
 {
     public class AssignFormPage : MainPage
     {
-        public AssignFormPage() : base()
+        public AssignFormPage(IWebDriver web) : base(web)
         {
         }
         public string Name

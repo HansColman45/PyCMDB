@@ -32,7 +32,6 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheSubscriptionTypeEditPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
             switch (field) 
             {
@@ -67,7 +66,6 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
         {
             ExpectedLog = GenericLogLineCreator.DeleteLogLine($"{subscriptionType.Category.Category} with {subscriptionType.Provider} and {subscriptionType.Type}", admin.Account.UserID,reason,Table);
             var page = Perform(new OpenTheSubscriptionTypeDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileAssignIdentityPage : MainPage
     {
-        public MobileAssignIdentityPage() : base()
+        public MobileAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Kensington21']");
             page.ClickElementByXpath("//a[@href='/Kensington']");
             page.WaitOnAddNew();
-            return new();
+            KensingtonOverviewPage kensingtonOverviewPage = WebPageFactory.Create<KensingtonOverviewPage>(page.WebDriver);
+            return kensingtonOverviewPage;
         }
     }
 }

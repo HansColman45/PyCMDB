@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
             get
             {
                 var detail = Perform(new OpenTheKensingtonDetailPage());
-                detail.WebDriver = Driver;
                 detail.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
                 return detail.GetLastLog();
             }

@@ -53,3 +53,12 @@ Scenario: I want to assign an existing Key to my Laptop
 	When I assign the Key to the Laptop
 	And I fill in the assign form for my Laptop
 	Then The Key is assigned to the Laptop
+
+Scenario: I want to relase an assigned Key from my Laptop
+	Given There is an active Laptop existing
+	And The Identity to assign to my laptop is existing
+	And that Identity is assigned to my Laptop
+	And A Key is existing in the system
+	And that Key is assigned to my Laptop
+	When I release the Key from my Laptop and I fill in the release form
+	Then The Key is released from my Laptop

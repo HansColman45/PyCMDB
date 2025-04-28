@@ -1,7 +1,12 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
 {
     class KensingtonCreatePage: MainPage
     {
+        public KensingtonCreatePage(IWebDriver web) : base(web)
+        {
+        }
         public string SerialNumber
         {
             set => EnterInTextboxByXPath("//input[@id='SerialNumber']", value);

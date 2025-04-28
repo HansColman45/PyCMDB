@@ -4,13 +4,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorDetailPage : MainPage
     {
-        public MonitorDetailPage() : base()
+        public MonitorDetailPage(IWebDriver web) : base(web)
         {
         }
         public MonitorReleaseIdentityPage ReleaseIdentityPage()
         {
             ClickElementByXpath(ReleaseIdenityXpath);
-            return new();
+            return new(WebDriver);
         }
         public string GetLastLog()
         {

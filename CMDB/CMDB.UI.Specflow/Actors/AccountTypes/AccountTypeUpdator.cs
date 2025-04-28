@@ -22,7 +22,6 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheTypeEditPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
             switch (field)
             {
@@ -49,7 +48,6 @@ namespace CMDB.UI.Specflow.Actors.AccountTypes
         public void DeactivateAccount(AccountType accountType, string reason)
         {
             var page = Perform(new OpenTheTypeDeactivatePage());
-			page.WebDriver = Driver;
 			page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_detail");
 			page.Reason = reason;
 			page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");

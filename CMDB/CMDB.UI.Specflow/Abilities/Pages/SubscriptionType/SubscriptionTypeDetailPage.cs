@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.SubscriptionType
 {
     public class SubscriptionTypeDetailPage : MainPage
     {
-        public SubscriptionTypeDetailPage() : base()
+        public SubscriptionTypeDetailPage(IWebDriver web) : base(web)
         {
         }
         public string GetLastLog()

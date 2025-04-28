@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='System41']");
             page.ClickElementByXpath("//a[@href='/System']");
             page.WaitOnAddNew();
-            return new();
+            SystemOverviewPage systemOverviewPage = WebPageFactory.Create<SystemOverviewPage>(page.WebDriver);
+            return systemOverviewPage;
         }
     }
 }

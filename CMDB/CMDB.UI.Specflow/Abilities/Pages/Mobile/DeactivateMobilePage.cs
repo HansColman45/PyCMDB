@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class DeactivateMobilePage : MainPage
     {
-        public DeactivateMobilePage() : base()
+        public DeactivateMobilePage(IWebDriver web) : base(web)
         {
         }
         public string Reason

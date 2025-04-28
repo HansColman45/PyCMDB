@@ -28,7 +28,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
                 case "SerialNumber":
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field,token.SerialNumber, newValue+rndNr, admin.Account.UserID, Table);
                     var page = Perform(new OpenTheTokenEditPage());
-                    page.WebDriver = Driver;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     page.SerialNumber = newValue + rndNr;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SerialNumber");
@@ -42,7 +41,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
                     Type = newValue.Split(" ")[1];
                     var assetType = await GetOrCreateAssetType("Token", Vendor, Type);
                     page = Perform(new OpenTheTokenEditPage());
-                    page.WebDriver = Driver;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
                     page.Type = $"{assetType.TypeID}";
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Type");
@@ -55,7 +53,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
         {
             ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Token with type {token.Type}", admin.Account.UserID, reason, Table);
             var page = Perform(new OpenTheTokenDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeletePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

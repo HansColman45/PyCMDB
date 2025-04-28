@@ -12,7 +12,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         public CreateIdentityPage OpenCreateIdentityPage()
         {
             var createPage = Perform(new OpenTheCreateIdentityPage());
-            createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             return createPage;
         }

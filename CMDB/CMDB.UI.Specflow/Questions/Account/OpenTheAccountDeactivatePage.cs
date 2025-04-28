@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Account
 {
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Account
         public override DeactivateAccountPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<AccountOverviewPage>();
-            page.ClickElementByXpath(AccountOverviewPage.DeactivateXpath);
-            return new();
+            page.ClickElementByXpath(MainPage.DeactivateXpath);
+            DeactivateAccountPage deactivateAccount = WebPageFactory.Create<DeactivateAccountPage>(page.WebDriver);
+            return deactivateAccount;
         }
     }
 }

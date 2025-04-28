@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Subscription
 {
     public class SubscriptionOverviewPage : MainPage
     {
-        public SubscriptionOverviewPage() : base()
+        public SubscriptionOverviewPage(IWebDriver web) : base(web)
         {
         }
         public void Activate()

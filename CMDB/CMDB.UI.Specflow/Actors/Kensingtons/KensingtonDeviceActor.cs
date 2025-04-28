@@ -44,7 +44,6 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
             string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
             var page = Perform(new OpenTheKensingtonAssignDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevicePage");
             page.SelectDevice(device);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedDevice");
@@ -63,10 +62,8 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
             string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
             var detailpage = Perform(new OpenTheKensingtonDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheKensingtonReleaseDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseDevicePage");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");

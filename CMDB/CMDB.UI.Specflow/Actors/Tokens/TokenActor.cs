@@ -15,7 +15,6 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             get
             {
                 var page = Perform(new OpenTheTokenDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

@@ -11,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         {
             var page = actor.GetAbility<MobileDetailPage>();
             page.ClickElementByXpath(MainPage.ReleaseSubscriptionXpath);
-            return new();
+            MobileReleaseSubscriptionPage mobileReleaseSubscriptionPage = WebPageFactory.Create<MobileReleaseSubscriptionPage>(page.WebDriver);
+            return mobileReleaseSubscriptionPage;
         }
     }
 }

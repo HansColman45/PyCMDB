@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Account Type34']");
             page.ClickElementByXpath("//a[@href='/AccountType']");
             page.WaitOnAddNew();
-            return new();
+            TypeOverviewPage typeOverviewPage = WebPageFactory.Create<TypeOverviewPage>(page.WebDriver);
+            return typeOverviewPage;
         }
     }
 }

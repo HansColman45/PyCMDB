@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Admin47']");
             page.ClickElementByXpath("//a[@href='/Admin']");
             page.WaitOnAddNew();
-            return new();
+            AdminOverviewPage adminOverviewPage = WebPageFactory.Create<AdminOverviewPage>(page.WebDriver);
+            return adminOverviewPage;
         }
     }
 }

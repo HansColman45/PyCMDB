@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class AssetTypeOverviewPage : MainPage
     {
-        public AssetTypeOverviewPage() : base()
+        public AssetTypeOverviewPage(IWebDriver web) : base(web)
         {
         }
         public void Activate()

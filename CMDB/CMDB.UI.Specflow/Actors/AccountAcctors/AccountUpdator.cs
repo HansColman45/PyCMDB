@@ -21,7 +21,6 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         public EditAccountPage OpenEditAccountPage()
         {
             var page = Perform(new OpenTheAccountEditPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             return page;
         }
@@ -58,7 +57,6 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         public void DeactivateAccount(Account account, string reason)
         {
             var page = Perform(new OpenTheAccountDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

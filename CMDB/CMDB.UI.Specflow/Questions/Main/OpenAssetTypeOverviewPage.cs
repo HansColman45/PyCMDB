@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Asset Type28']");
             page.ClickElementByXpath("//a[@href='/AssetType']");
             page.WaitOnAddNew();
-            return new();
+            AssetTypeOverviewPage assetTypeOverviewPage = WebPageFactory.Create<AssetTypeOverviewPage>(page.WebDriver);
+            return assetTypeOverviewPage;
         }
     }
 }

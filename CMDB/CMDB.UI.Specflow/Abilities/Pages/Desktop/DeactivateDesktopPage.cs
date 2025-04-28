@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
 {
     public class DeactivateDesktopPage : MainPage
     {
-        public DeactivateDesktopPage() : base()
+        public DeactivateDesktopPage(IWebDriver web) : base(web)
         {
         }
         public string Reason

@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 
 namespace CMDB.UI.Specflow.Questions.Laptop
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Laptop
         {
             var page = actor.GetAbility<LaptopOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.NewXpath);
-            return new();
+            CreateLaptopPage createLaptopPage = WebPageFactory.Create<CreateLaptopPage>(page.WebDriver);
+            return createLaptopPage;
         }
     }
 }

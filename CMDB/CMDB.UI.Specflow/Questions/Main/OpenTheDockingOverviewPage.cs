@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Docking station17']");
             page.ClickElementByXpath("//a[@href='/Docking']");
             page.WaitOnAddNew();
-            return new();
+            DockingOverviewPage dockingOverviewPage = WebPageFactory.Create<DockingOverviewPage>(page.WebDriver);
+            return dockingOverviewPage;
         }
     }
 }

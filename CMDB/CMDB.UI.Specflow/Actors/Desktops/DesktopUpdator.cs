@@ -22,7 +22,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
         {
             rndNr = rnd.Next();
             var updatePage = Perform(new OpenTheDesktopEditPage());
-            updatePage.WebDriver = Driver;
             updatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
             switch (field)
             {
@@ -50,7 +49,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
         public void DeactivateDesktop(Desktop desktop, string reason)
         {
             var deactivatePage = Perform(new OpenTheDesktopDeactivatePage());
-            deactivatePage.WebDriver = Driver;
             deactivatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deactivatePage");
             deactivatePage.Reason = reason;
             deactivatePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

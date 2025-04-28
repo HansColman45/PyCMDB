@@ -16,7 +16,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Subscription Type38']");
             page.ClickElementByXpath("//a[@href='/SubscriptionType']");
             page.WaitOnAddNew();
-            return new();
+            SubscriptionTypeOverviewPage subscriptionTypeOverviewPage = WebPageFactory.Create<SubscriptionTypeOverviewPage>(page.WebDriver);
+            return subscriptionTypeOverviewPage;
         }
     }
 }

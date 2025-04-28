@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Laptop11']");
             page.ClickElementByXpath("//a[@href='/Laptop']");
             page.WaitOnAddNew();
-            return new();
+            LaptopOverviewPage laptopOverviewPage = WebPageFactory.Create<LaptopOverviewPage>(page.WebDriver);
+            return laptopOverviewPage;
         }
     }
 }

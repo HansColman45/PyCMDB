@@ -47,7 +47,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Laptop with {laptop.AssetTag}",
                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheLaptopAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
@@ -64,7 +63,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             else
             {
                 var assignForm = Perform(new OpenTheKensingtonAssignFormPage());
-                assignForm.WebDriver = Driver;
                 assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignForm");
                 assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
                 assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
@@ -77,10 +75,8 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Laptop with {laptop.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailPage = Perform(new OpenTheLaptopDetailPage());
-            detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheLaptopReleaseIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
@@ -93,9 +89,22 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             string deviceinfo = $"{laptop.Category.Category} with {laptop.AssetTag}";
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
             var page = Perform(new OpenTheLaptopAssignKensingtonPage());
-            page.WebDriver = Driver;
             page.SelectKensington(key);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedKey");
+        }
+        public void ReleaseTheKeyFromLaptop(Laptop laptop, Kensington key, Identity identity) 
+        { 
+            Search(laptop.AssetTag);
+            string keyinfo = $"Kensington with serial number: {key.SerialNumber}";
+            string deviceinfo = $"{laptop.Category.Category} with {laptop.AssetTag}";
+            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
+            var detailPage = Perform(new OpenTheLaptopDetailPage());
+            detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
+            var page = Perform(new OpenTheLaptopReleaseKensingtonPage());
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseKensingtonPage");
+            page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
+            page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
+            page.CreatePDF();
         }
     }
 }

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class LaptopReleaseIdentityPage : MainPage
     {
-        public LaptopReleaseIdentityPage() : base()
+        public LaptopReleaseIdentityPage(IWebDriver web) : base(web)
         {
         }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");

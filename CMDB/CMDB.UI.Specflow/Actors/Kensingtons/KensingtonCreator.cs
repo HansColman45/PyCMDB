@@ -19,7 +19,6 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
             var assetType = await GetOrCreateAssetType("Kensington", Vendor, Type);
             rndNr = rnd.Next();
             var page = Perform(new OpenTheKensingtonCreatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             page.SerialNumber = $"{kensington.SerialNumber}{rndNr}";
             page.AmountOfKeys = kensington.AmountOfKeys;

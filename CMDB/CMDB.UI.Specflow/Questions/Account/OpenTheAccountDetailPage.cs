@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.AccountPages;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Account
 {
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Account
         {
             var page = actor.GetAbility<AccountOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.InfoXpath);
-            return new();
+            AccountDetailPage accountDetail = WebPageFactory.Create<AccountDetailPage>(page.WebDriver);
+            return accountDetail;
         }
     }
 }

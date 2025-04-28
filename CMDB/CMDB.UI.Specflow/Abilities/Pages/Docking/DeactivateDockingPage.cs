@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DeactivateDockingPage : MainPage
     {
-        public DeactivateDockingPage() : base()
+        public DeactivateDockingPage(IWebDriver web) : base(web)
         {
         }
         public string Reason

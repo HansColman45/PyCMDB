@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
 {
     public class CreateDesktopPage : MainPage
     {
-        public CreateDesktopPage() : base()
+        public CreateDesktopPage(IWebDriver web) : base(web)
         {
         }
         public string AssetTag

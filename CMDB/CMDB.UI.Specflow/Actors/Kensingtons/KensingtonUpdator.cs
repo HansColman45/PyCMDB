@@ -31,7 +31,6 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheKensingtonEditPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EditPage");
             switch (field)
             {
@@ -55,7 +54,6 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
         public void DeactivateKensington(Kensington kensington, string reason)
         {
             var page = Perform(new OpenTheKensingtonDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DeactivatePage");
             ExpectedLog = GenericLogLineCreator.DeleteLogLine($"Kensington with serial number: {kensington.SerialNumber}", admin.Account.UserID, reason, Table);
             page.Reason = reason;

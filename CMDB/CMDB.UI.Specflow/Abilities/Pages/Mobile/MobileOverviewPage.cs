@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileOverviewPage : MainPage
     {
-        public MobileOverviewPage() : base()
+        public MobileOverviewPage(IWebDriver web) : base(web)
         {
         }
         public void Activate()

@@ -22,7 +22,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheLaptopEditPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
             switch (field)
             {
@@ -50,7 +49,6 @@ namespace CMDB.UI.Specflow.Actors.Laptops
         public void DeactivateLaptop(Laptop laptop, string reason)
         {
             var page = Perform(new OpenTheLaptopDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");

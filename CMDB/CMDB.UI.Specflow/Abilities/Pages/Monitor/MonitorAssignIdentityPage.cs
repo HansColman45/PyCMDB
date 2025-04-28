@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
 {
     public class MonitorAssignIdentityPage : MainPage
     {
-        public MonitorAssignIdentityPage() : base()
+        public MonitorAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

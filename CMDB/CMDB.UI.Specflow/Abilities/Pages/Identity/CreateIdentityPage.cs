@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Identity
 {
     public class CreateIdentityPage : MainPage
     {
-        public CreateIdentityPage() : base()
+        public CreateIdentityPage(IWebDriver web) : base(web)
         {
         }
         public string FirstName

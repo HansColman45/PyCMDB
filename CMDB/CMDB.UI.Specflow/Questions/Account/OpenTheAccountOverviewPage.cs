@@ -16,7 +16,8 @@ namespace CMDB.UI.Specflow.Questions.Account
             page.ClickElementByXpath("//a[@id='Account5']");
             page.ClickElementByXpath("//a[@href='/Account']");
             page.WaitOnAddNew();
-            return new();
+            AccountOverviewPage accountOverview= WebPageFactory.Create<AccountOverviewPage>(page.WebDriver);
+            return accountOverview;
         }
     }
 }

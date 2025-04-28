@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
 
 namespace CMDB.UI.Specflow.Questions.Types
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Types
         public override CreateTypePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<TypeOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.NewXpath);
-            return new();
+            page.ClickElementByXpath(MainPage.NewXpath);
+            CreateTypePage createTypePage = WebPageFactory.Create<CreateTypePage>(page.WebDriver);
+            return createTypePage;
         }
     }
 }

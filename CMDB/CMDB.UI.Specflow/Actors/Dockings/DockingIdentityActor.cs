@@ -34,7 +34,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"{docking.Category.Category} with {docking.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheDockingAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
@@ -52,10 +51,8 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"{docking.Category.Category} with {docking.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailPage = Perform(new OpenTheDockingDetailPage());
-            detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheDockingReleaseIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");

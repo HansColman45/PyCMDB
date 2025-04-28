@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Laptop
 {
     public class UpdateLaptopPage : MainPage
     {
-        public UpdateLaptopPage() : base()
+        public UpdateLaptopPage(IWebDriver web) : base(web)
         {
         }
         public string AssetTag

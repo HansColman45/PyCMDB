@@ -29,7 +29,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Identity with name: {identity.Name}",
                 $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheAssignDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevicePage");
             page.ClickSubscription(subscription);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectSubscription");
@@ -47,10 +46,8 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
                 $"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}", admin.Account.UserID, Table);
             Search(identity.FirstName);
             var detailpage = Perform(new OpenTheIdentityDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheReleaseSubscriptionPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseSubscriptionPage");
             page.Title.Should().BeEquivalentTo("Release subscription from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");

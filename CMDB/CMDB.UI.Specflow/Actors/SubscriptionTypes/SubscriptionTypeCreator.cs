@@ -15,7 +15,6 @@ namespace CMDB.UI.Specflow.Actors.SubscriptionTypes
         {
             rndNr = rnd.Next();
             var page = Perform(new OpenTheSubscriptionTypeCreatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_createPage");
             page.Category = subscriptionType.Category;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Category");

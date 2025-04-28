@@ -25,7 +25,6 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
             {
                 case "IMEI":
                     var page = Perform(new OpenTheMobileEditPage());
-                    page.WebDriver = Driver;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine(field, mobile.IMEI.ToString(),value + rndNr.ToString(),admin.Account.UserID,Table);
                     page.IMEI = value + rndNr.ToString();
@@ -40,7 +39,6 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
                     Type = value.Split(" ")[1];
                     var assetType = await GetOrCreateAssetType("Mobile", Vendor, Type);
                     page = Perform(new OpenTheMobileEditPage());
-                    page.WebDriver = Driver;
                     page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
                     ExpectedLog = GenericLogLineCreator.UpdateLogLine("MobileType", $"{mobile.MobileType}", value, admin.Account.UserID, Table);
                     page.Type = assetType.TypeID.ToString();
@@ -58,7 +56,6 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
         public void DeactivateMoble(Mobile mobile, string reason)
         {
             var page = Perform(new OpenTheMobileDeactivatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deactivatePage");
             page.Reason = reason;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_reason");

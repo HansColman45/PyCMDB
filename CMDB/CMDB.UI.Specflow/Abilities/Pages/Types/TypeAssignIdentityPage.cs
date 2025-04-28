@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Types
 {
     public class TypeAssignIdentityPage : MainPage
     {
-        public TypeAssignIdentityPage() : base()
+        public TypeAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
     }

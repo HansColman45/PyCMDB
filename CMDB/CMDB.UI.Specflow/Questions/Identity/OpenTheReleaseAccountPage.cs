@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Identity
 {
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Identity
         public override ReleaseAccountPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<IdentityDetailPage>();
-            page.ClickElementByXpath(IdentityOverviewPage.ReleaseAccountXPath);
-            return new();
+            page.ClickElementByXpath(MainPage.ReleaseAccountXPath);
+            ReleaseAccountPage releaseAccountPage = WebPageFactory.Create<ReleaseAccountPage>(page.WebDriver);
+            return releaseAccountPage;
         }
     }
 }

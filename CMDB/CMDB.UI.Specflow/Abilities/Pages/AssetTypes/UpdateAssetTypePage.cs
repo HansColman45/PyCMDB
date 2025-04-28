@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AssetTypes
 {
     public class UpdateAssetTypePage : MainPage
     {
-        public UpdateAssetTypePage() : base()
+        public UpdateAssetTypePage(IWebDriver web) : base(web)
         {
         }
         public string Category

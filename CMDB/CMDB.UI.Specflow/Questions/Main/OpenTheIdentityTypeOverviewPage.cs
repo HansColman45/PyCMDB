@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Identity Type32']");
             page.ClickElementByXpath("//a[@href='/IdentityType']");
             page.WaitOnAddNew();
-            return new();
+            TypeOverviewPage typeOverviewPage = WebPageFactory.Create<TypeOverviewPage>(page.WebDriver);
+            return typeOverviewPage;
         }
     }
 }

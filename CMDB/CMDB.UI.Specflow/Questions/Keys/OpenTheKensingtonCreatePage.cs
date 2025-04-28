@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Keys
 {
@@ -9,8 +10,9 @@ namespace CMDB.UI.Specflow.Questions.Keys
         public override KensingtonCreatePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<KensingtonOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.NewXpath);
-            return new();
+            page.ClickElementByXpath(MainPage.NewXpath);
+            KensingtonCreatePage kensingtonCreatePage = WebPageFactory.Create<KensingtonCreatePage>(page.WebDriver);
+            return kensingtonCreatePage;
         }
     }
 }

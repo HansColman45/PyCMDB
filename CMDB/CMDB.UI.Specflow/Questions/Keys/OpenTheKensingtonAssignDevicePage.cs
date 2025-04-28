@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 
 namespace CMDB.UI.Specflow.Questions.Keys
@@ -11,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions.Keys
             var page = actor.GetAbility<KensingtonOverviewPage>();
             page.ClickElementByXpath("//a[@title='Assign Device']");
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            KensingtonAssignDevicePage kensingtonAssignDevicePage = WebPageFactory.Create<KensingtonAssignDevicePage>(page.WebDriver);
+            return kensingtonAssignDevicePage;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages
         public MainPage()
         {
         }
+        public MainPage(IWebDriver webDriver) : base(webDriver) { }
         /// <summary>
         /// Xpath for the Add button
         /// </summary>

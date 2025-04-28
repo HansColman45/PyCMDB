@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.SubscriptionType
 {
     public class CreateSubscriptionTypePage : MainPage
     {
-        public CreateSubscriptionTypePage() : base()
+        public CreateSubscriptionTypePage(IWebDriver web) : base(web)
         {
         }
         public string Category

@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileDetailPage : MainPage
     {
-        public MobileDetailPage() : base()
+        public MobileDetailPage(IWebDriver web) : base(web)
         {
         }
         public string GetLastLog()

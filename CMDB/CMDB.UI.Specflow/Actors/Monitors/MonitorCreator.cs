@@ -18,7 +18,6 @@ namespace CMDB.UI.Specflow.Actors.Monitors
             Type = monitor.Type.Split(" ")[1];
             var assetType = await GetOrCreateAssetType("Monitor", Vendor, Type);
             var page = Perform(new OpenTheCreateMonitorPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             page.AssetTag = monitor.AssetTag + rndNr;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssetTag");

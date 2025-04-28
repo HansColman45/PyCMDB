@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Docking
 {
     public class DockingDetailPage : MainPage
     {
-        public DockingDetailPage() : base()
+        public DockingDetailPage(IWebDriver web) : base(web)
         {
         }
         public string GetLastLog()

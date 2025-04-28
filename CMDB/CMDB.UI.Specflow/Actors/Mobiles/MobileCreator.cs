@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
             Type = mobile.Type.Split(" ")[1];
             var assetType = await GetOrCreateAssetType("Mobile", Vendor, Type);
             var page = Perform(new OpenTheMobileCreatePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             page.IMEI = mobile.IMEI + rndNr.ToString();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_IMEI");

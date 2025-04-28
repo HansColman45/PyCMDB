@@ -14,7 +14,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             get
             {
                 var page = Perform(new OpenTheSubscriptionDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

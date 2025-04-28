@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Desktop
 {
     public class DesktopAssignIdentityPage : MainPage
     {
-        public DesktopAssignIdentityPage() : base()
+        public DesktopAssignIdentityPage(IWebDriver web) : base(web)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

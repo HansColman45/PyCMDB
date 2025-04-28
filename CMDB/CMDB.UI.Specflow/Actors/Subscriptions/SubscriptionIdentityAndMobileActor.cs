@@ -42,7 +42,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}", 
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheSubscriptionAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectSubscription");
@@ -53,7 +52,6 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             string mobileinfo = $"mobile with type {mobile.MobileType}";
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo, mobileinfo, admin.Account.UserID, Table);
             var page = Perform(new OpenTheSubscriptionAssignMobilePage());
-            page .WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignMobilePage");
             page.SelectMobile(mobile);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_MobileSelected");
@@ -71,10 +69,8 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Subscription: {subscription.SubscriptionType} on {subscription.PhoneNumber}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailpage = Perform(new OpenTheSubscriptionDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheSubscriptionReleasePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
@@ -87,10 +83,8 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
             string mobileinfo = $"mobile with type {mobile.MobileType}";
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(subscriptionInfo, mobileinfo, admin.Account.UserID, Table);
             var detailpage = Perform(new OpenTheSubscriptionDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheMobileSubscriptionReleasePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");

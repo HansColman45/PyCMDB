@@ -17,7 +17,6 @@ namespace CMDB.UI.Specflow.Actors.Dockings
             var assetType = await GetOrCreateAssetType("Docking station", Vendor, Type);
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheDockingCreatePage());
-            createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             createPage.SerialNumber = dockingStation.SerialNumber + rndNr;
             dockingStation.SerialNumber += rndNr;

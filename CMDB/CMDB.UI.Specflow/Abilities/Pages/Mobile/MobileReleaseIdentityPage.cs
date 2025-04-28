@@ -1,8 +1,10 @@
-﻿namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
+﻿using OpenQA.Selenium;
+
+namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class MobileReleaseIdentityPage : MainPage
     {
-        public MobileReleaseIdentityPage()
+        public MobileReleaseIdentityPage(IWebDriver web) : base(web)
         {
         }
         public string UserId => GetAttributeFromXpath("//td[@id='UserId']", "innerHTML");

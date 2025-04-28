@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
 {
     public class KensingtonOverviewPage: MainPage
     {
-        public KensingtonOverviewPage() : base()
+        public KensingtonOverviewPage(IWebDriver web) : base(web)
         {   
         }
         public void Activate()

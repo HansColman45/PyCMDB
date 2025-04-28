@@ -10,9 +10,10 @@ namespace CMDB.UI.Specflow.Questions.Laptop
         public override LaptopAssignKensingtonPage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<LaptopOverviewPage>();
-            page.ClickElementByXpath(Abilities.Pages.MainPage.AssignKensingtonXpath);
+            page.ClickElementByXpath(MainPage.AssignKensingtonXpath);
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            LaptopAssignKensingtonPage laptopAssignKensingtonPage = WebPageFactory.Create<LaptopAssignKensingtonPage>(page.WebDriver);
+            return laptopAssignKensingtonPage;
         }
     }
 }

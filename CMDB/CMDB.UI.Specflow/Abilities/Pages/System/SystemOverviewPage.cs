@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.System
 {
     public class SystemOverviewPage : MainPage
     {
-        public SystemOverviewPage() : base()
+        public SystemOverviewPage(IWebDriver web) : base(web)
         {
         }
     }

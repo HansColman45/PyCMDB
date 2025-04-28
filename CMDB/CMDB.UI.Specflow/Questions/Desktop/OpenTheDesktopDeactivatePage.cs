@@ -1,6 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages.Desktop;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 
 namespace CMDB.UI.Specflow.Questions.Desktop
 {
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Desktop
         {
             var page = actor.GetAbility<DesktopOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);
-            return new();
+            DeactivateDesktopPage deactivateDesktopPage = WebPageFactory.Create<DeactivateDesktopPage>(page.WebDriver);
+            return deactivateDesktopPage;
         }
     }
 }

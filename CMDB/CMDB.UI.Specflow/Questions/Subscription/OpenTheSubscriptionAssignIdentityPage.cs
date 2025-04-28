@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 
 namespace CMDB.UI.Specflow.Questions.Subscription
@@ -11,7 +12,8 @@ namespace CMDB.UI.Specflow.Questions.Subscription
             var page = actor.GetAbility<SubscriptionOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.AssignIdenityXpath);
             page.WaitUntilElmentVisableByXpath("//button[@type='submit']");
-            return new();
+            SubscriptionAssignIdentityPage subscriptionAssignIdentityPage = WebPageFactory.Create<SubscriptionAssignIdentityPage>(page.WebDriver);
+            return subscriptionAssignIdentityPage;
         }
     }
 }

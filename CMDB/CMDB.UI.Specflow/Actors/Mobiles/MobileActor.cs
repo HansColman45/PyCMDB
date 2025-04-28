@@ -14,7 +14,6 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
             get
             {
                 var page = Perform(new OpenTheMobileDetailPage());
-                page.WebDriver = Driver;
                 return page.GetLastLog();
             }
         }

@@ -5,7 +5,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.AccountPages
 {
     public class AccountAssignIdentityPage : MainPage
     {
-        public AccountAssignIdentityPage() : base()
+        public AccountAssignIdentityPage(IWebDriver webDriver) : base(webDriver)
         {
         }
         public void SelectIdentity(Domain.Entities.Identity identity)

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenQA.Selenium;
 
 namespace CMDB.UI.Specflow.Abilities.Pages.Kensington
 {
     public class KensingtonReleaseDevicePage: MainPage
     {
+        public KensingtonReleaseDevicePage(IWebDriver web) : base(web)
+        {   
+        }
         public string Employee
         {
             set => EnterInTextboxByXPath("//input[@id='Employee']", value);

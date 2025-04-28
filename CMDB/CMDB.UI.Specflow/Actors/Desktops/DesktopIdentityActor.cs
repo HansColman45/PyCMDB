@@ -34,7 +34,6 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Desktop with {desktop.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheDesktopAssignIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignIdentityPage");
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");

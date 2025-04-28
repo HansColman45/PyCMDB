@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Asset Category30']");
             page.ClickElementByXpath("//a[@href='/AssetCategory']");
             page.WaitOnAddNew();
-            return new();
+            AssetCategoryOverviewPage assetCategoryOverviewPage = WebPageFactory.Create<AssetCategoryOverviewPage>(page.WebDriver);
+            return assetCategoryOverviewPage;
         }
     }
 }

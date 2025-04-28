@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Role8']");
             page.ClickElementByXpath("//a[@href='/Role']");
             page.WaitOnAddNew();
-            return new();
+            RoleOverviewPage roleOverviewPage = WebPageFactory.Create<RoleOverviewPage>(page.WebDriver);
+            return roleOverviewPage;
         }
     }
 }

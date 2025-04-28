@@ -188,5 +188,24 @@ namespace CMDB.UI.Specflow.StepDefinitions
             laptopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
         }
         #endregion
+        #region Release key
+        [Given(@"that Key is assigned to my Laptop")]
+        public async Task GivenThatKeyIsAssignedToMyLaptop()
+        {
+            await laptopIdentityActor.AssignKey(Laptop, Kensington);
+        }
+        [When(@"I release the Key from my Laptop and I fill in the release form")]
+        public void WhenIReleaseTheKeyFromMyLaptopAndIFillInTheReleaseForm()
+        {
+            laptopIdentityActor.ReleaseTheKeyFromLaptop(Laptop, Kensington, Identity);
+        }
+        [Then(@"The Key is released from my Laptop")]
+        public void ThenTheKeyIsReleasedFromMyLaptop()
+        {
+            laptopIdentityActor.Search(Laptop.AssetTag);
+            var lastLogLine = laptopIdentityActor.LaptopLastLogLine;
+            laptopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
     }
 }

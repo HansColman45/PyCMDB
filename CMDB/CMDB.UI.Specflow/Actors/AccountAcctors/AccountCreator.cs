@@ -13,7 +13,6 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         {
             rndNr = rnd.Next();
             var createPage = Perform(new OpenTheAccountCreatePage());
-            createPage.WebDriver = Driver;
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_CreatePage");
             createPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_create");
             createPage.UserId = account.UserId + rndNr.ToString();

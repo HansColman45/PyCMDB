@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Application44']");
             page.ClickElementByXpath("//a[@href='/Application']");
             page.WaitOnAddNew();
-            return new();
+            ApplicationOverviewPage applicationOverviewPage = WebPageFactory.Create<ApplicationOverviewPage>(page.WebDriver);
+            return applicationOverviewPage;
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
 
 namespace CMDB.UI.Specflow.Questions.AssetType
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.AssetType
         {
             var page = actor.GetAbility<AssetTypeOverviewPage>();
             page.ClickElementByXpath(AssetTypeOverviewPage.NewXpath);
-            return new();
+            CreateAssetTypePage createAssetTypePage = WebPageFactory.Create<CreateAssetTypePage>(page.WebDriver);
+            return createAssetTypePage;
         }
     }
 }

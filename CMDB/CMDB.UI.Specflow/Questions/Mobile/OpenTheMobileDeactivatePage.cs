@@ -1,5 +1,6 @@
 ﻿using Bright.ScreenPlay.Actors;
 using Bright.ScreenPlay.Questions;
+using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 
 namespace CMDB.UI.Specflow.Questions.Mobile
@@ -10,7 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         {
             var page = actor.GetAbility<MobileOverviewPage>();
             page.ClickElementByXpath(Abilities.Pages.MainPage.DeactivateXpath);
-            return new();
+            DeactivateMobilePage deactivateMobilePage = WebPageFactory.Create<DeactivateMobilePage>(page.WebDriver);
+            return deactivateMobilePage;
         }
     }
 }

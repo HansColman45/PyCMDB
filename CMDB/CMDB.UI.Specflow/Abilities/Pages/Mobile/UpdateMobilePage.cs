@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Mobile
 {
     public class UpdateMobilePage : MainPage
     {
-        public UpdateMobilePage() : base()
+        public UpdateMobilePage(IWebDriver web) : base(web)
         {
         }
         public string IMEI

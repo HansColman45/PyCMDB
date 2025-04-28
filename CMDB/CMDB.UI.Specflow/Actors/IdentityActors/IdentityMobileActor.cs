@@ -29,7 +29,6 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine($"Identity with name: {identity.Name}", 
                 $"mobile with type {mobile.MobileType}", admin.Account.UserID, Table);
             var page = Perform(new OpenTheAssignDevicePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevicePage");
             page.ClickMobile(mobile);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedMobile");
@@ -49,10 +48,8 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
                 $"mobile with type {mobile.MobileType}", admin.Account.UserID, Table);
             Search(identity.FirstName);
             var detailpage = Perform(new OpenTheIdentityDetailPage());
-            detailpage.WebDriver = Driver;
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheReleaseMobilePage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseDevicePage");
             page.Title.Should().BeEquivalentTo("Release mobile from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");

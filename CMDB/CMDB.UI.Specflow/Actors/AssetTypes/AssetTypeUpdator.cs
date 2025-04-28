@@ -23,7 +23,6 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
             var oldtype = assetType.Type;
             rndNr = rnd.Next();
             var editPage = Perform(new OpenTheAssetTypeEditPage());
-            editPage.WebDriver = Driver;
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_editPage");
             assetType.Type = "Orange" + rndNr.ToString();
             editPage.Type = assetType.Type;
@@ -36,7 +35,6 @@ namespace CMDB.UI.Specflow.Actors.AssetTypes
         public void DeActivateAssetType(AssetType assetType, string reason)
         {
             var deletePage = Perform(new OpenTheAssetTypeDeactivatePage());
-            deletePage.WebDriver = Driver;
             deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deletePage");
             deletePage.Reason = reason;
             deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Reason");

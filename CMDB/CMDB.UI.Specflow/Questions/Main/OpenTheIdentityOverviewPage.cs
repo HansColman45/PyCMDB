@@ -15,7 +15,8 @@ namespace CMDB.UI.Specflow.Questions.Main
             page.ClickElementByXpath("//a[@id='Identity2']");
             page.ClickElementByXpath("//a[@href='/Identity']");
             page.WaitOnAddNew();
-            return new();
+            IdentityOverviewPage identityOverviewPage = WebPageFactory.Create<IdentityOverviewPage>(page.WebDriver);
+            return identityOverviewPage;
         }
     }
 }

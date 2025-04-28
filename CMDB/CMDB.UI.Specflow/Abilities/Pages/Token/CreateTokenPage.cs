@@ -4,7 +4,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Token
 {
     public class CreateTokenPage : MainPage
     {
-        public CreateTokenPage() : base()
+        public CreateTokenPage(IWebDriver web) : base(web)
         {
         }
         public string AssetTag
