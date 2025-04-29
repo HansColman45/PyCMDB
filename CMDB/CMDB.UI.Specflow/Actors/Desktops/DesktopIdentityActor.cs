@@ -51,10 +51,8 @@ namespace CMDB.UI.Specflow.Actors.Desktops
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Desktop with {desktop.AssetTag}",
                 $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
             var detailPage = Perform(new OpenTheDesktopDetailPage());
-            detailPage.WebDriver = Driver;
             detailPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheDesktopReleaseIdentityPage());
-            page.WebDriver = Driver;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ReleaseIdentityPage");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");

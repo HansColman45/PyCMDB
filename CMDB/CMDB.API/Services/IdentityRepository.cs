@@ -116,37 +116,37 @@ namespace CMDB.API.Services
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Devices.OfType<Laptop>().Any(y => y.active == 1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x)).ToListAsync(),
                 "desktop" => await _context.Identities
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Devices.OfType<Desktop>().Any(y => y.active == 1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x)).ToListAsync(),
                 "token" => await _context.Identities
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Devices.OfType<Token>().Any(y => y.active == 1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x)).ToListAsync(),
                 "screen" => await _context.Identities
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Devices.OfType<Screen>().Any(y => y.active == 1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x)).ToListAsync(),
                 "docking" => await _context.Identities
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Devices.OfType<Docking>().Any(y => y.active == 1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x)).ToListAsync(),
                 "mobile" => await _context.Identities
                     .Include(x => x.Type)
                     .Include(x => x.Language)
                     .Where(x => !x.Mobiles.Any(y => y.active ==1 && y.IdentityId != 1))
-                    .Where(x => x.active == 1 && x.IdenId == 1).AsNoTracking()
+                    .Where(x => x.active == 1).AsNoTracking()
                     .Select(x => ConvertIdentity(x))
                     .ToListAsync(),
                 "subscription" => await _context.Identities

@@ -97,6 +97,16 @@ namespace CMDB.Testing.Helpers
                     Data.Add($"Kensington{kensington.KeyID}", kensington);
                     await KensingtonHelper.Delete(context, kensington);
                 }
+                //mobiles
+                var mobiles = context.Mobiles
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var mobile in mobiles)
+                {
+                    Data.Add($"Mobile{mobile.MobileId}", mobile);
+                    await MobileHelper.Delete(context, mobile);
+                }
                 //AccountType
                 var accountType = context.Types
                     .OfType<AccountType>()
@@ -182,16 +192,6 @@ namespace CMDB.Testing.Helpers
                 {
                     Data.Add($"Token{token.AssetTag}", token);
                     await TokenHelper.Delete(context, token);
-                }
-                //mobiles
-                var mobiles = context.Mobiles
-                    .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
-                    .ToList();
-                foreach (var mobile in mobiles)
-                {
-                    Data.Add($"Mobile{mobile.MobileId}",mobile);
-                    await MobileHelper.Delete(context, mobile);
                 }
                 //IdenAccount
                 var idenAccs = context.IdenAccounts

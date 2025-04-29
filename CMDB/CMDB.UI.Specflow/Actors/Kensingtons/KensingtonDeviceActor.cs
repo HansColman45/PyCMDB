@@ -42,7 +42,7 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
         {
             string keyinfo = $"Kensington with serial number: {kensington.SerialNumber}";
             string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
-            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, admin.Account.UserID, Table);
             var page = Perform(new OpenTheKensingtonAssignDevicePage());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignDevicePage");
             page.SelectDevice(device);
@@ -60,7 +60,7 @@ namespace CMDB.UI.Specflow.Actors.Kensingtons
         {
             string keyinfo = $"Kensington with serial number: {kensington.SerialNumber}";
             string deviceinfo = $"{device.Category.Category} with {device.AssetTag}";
-            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
+            ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, admin.Account.UserID, Table);
             var detailpage = Perform(new OpenTheKensingtonDetailPage());
             detailpage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_DetailPage");
             var page = Perform(new OpenTheKensingtonReleaseDevicePage());
