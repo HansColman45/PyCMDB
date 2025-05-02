@@ -189,6 +189,14 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        public async Task ReleaseKensington(DeviceDTO device)
+        {
+            BaseUrl = _url + $"api/Device/ReleaseKensington";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, device);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(_url, response.StatusCode);
+        }
         public async Task ReleaseMobile(IdentityDTO identity, List<MobileDTO> mobiles)
         {
             AssignMobileRequest request = new()

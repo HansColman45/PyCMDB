@@ -89,6 +89,7 @@ namespace CMDB.UI.Specflow.Actors.Laptops
             string deviceinfo = $"{laptop.Category.Category} with {laptop.AssetTag}";
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
             var page = Perform(new OpenTheLaptopAssignKensingtonPage());
+            page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignKeyPage");
             page.SelectKensington(key);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedKey");
         }

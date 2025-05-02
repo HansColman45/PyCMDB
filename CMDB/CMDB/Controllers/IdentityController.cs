@@ -1,11 +1,14 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Device = CMDB.Domain.Entities.Device;
 
@@ -196,6 +199,28 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
+                    if(identity.Devices.Count > 0)
+                    {
+                        var admin = await service.Admin();
+                        await _PDFservice.SetUserinfo(identity.UserID,
+                        admin.Account.UserID,
+                        identity.Name,
+                        identity.FirstName,
+                        identity.LastName,
+                        identity.Name,
+                        identity.Language.Code);
+                        foreach (var device in identity.Devices)
+                        {
+                            await _PDFservice.SetDeviceInfo(device);
+                            if(device.Kensington is not null)
+                            {
+                                await _PDFservice.SetKeyInfo(device.Kensington);
+                                await service.ReleaseKensington(device);
+                            }
+                        }
+                        await service.ReleaseDevices(identity, identity.Devices.ToList());
+                        await _PDFservice.GenratePDFFile(Table, identity.IdenId);
+                    }
                     await service.Deactivate(identity, ViewData["reason"].ToString());
                     return RedirectToAction(nameof(Index));
                 }

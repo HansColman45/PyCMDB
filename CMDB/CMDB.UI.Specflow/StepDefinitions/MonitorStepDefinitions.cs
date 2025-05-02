@@ -1,6 +1,7 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.Monitors;
 using CMDB.UI.Specflow.Questions;
+using System.Threading.Tasks;
 using TechTalk.SpecFlow.Assist;
 
 namespace CMDB.UI.Specflow.StepDefinitions
@@ -15,6 +16,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private Helpers.Monitor monitor;
         private Screen Monitor;
         private Identity Identity;
+        private Kensington kensington;
         public MonitorStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -165,6 +167,43 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         [Then(@"The identity is released from my monitor")]
         public void ThenTheIdentityIsReleasedFromMyMonitor()
+        {
+            monitorIdentityActor.Search(Monitor.AssetTag);
+            var lastLogLine = monitorIdentityActor.GetLastMonitorLogLine;
+            monitorIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+        #endregion
+        #region Assign and release a Kensington
+        [Given(@"A Key to assign to my monitor is existing in the system")]
+        public async Task GivenAKeyToAssignToMyMonitorIsExistingInTheSystem()
+        {
+            kensington = await monitorIdentityActor.CreateKensington();
+        }
+        [When(@"I assign the Key to the monitor")]
+        public void WhenIAssignTheKeyToTheMonitor()
+        {
+            monitorIdentityActor.DoAssignTheKey2Monitor(Monitor, kensington);
+        }
+        [Then(@"The Key is assigned to the monitor")]
+        public void ThenTheKeyIsAssignedToTheMonitor()
+        {
+            monitorIdentityActor.Search(Monitor.AssetTag);
+            var lastLogLine = monitorIdentityActor.GetLastMonitorLogLine;
+            monitorIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLogLine);
+        }
+
+        [Given(@"that Key is assigned to my monitor")]
+        public async Task GivenThatKeyIsAssignedToMyMonitor()
+        {
+            await monitorIdentityActor.AssignKey(Monitor, kensington);
+        }
+        [When(@"I release the Key from my monitor and I fill in the release form")]
+        public void WhenIReleaseTheKeyFromMyMonitorAndIFillInTheReleaseForm()
+        {
+            monitorIdentityActor.DoReleaseKey4Monitor(Monitor, kensington, Identity);
+        }
+        [Then(@"The Key is released from my monitor")]
+        public void ThenTheKeyIsReleasedFromMyMonitor()
         {
             monitorIdentityActor.Search(Monitor.AssetTag);
             var lastLogLine = monitorIdentityActor.GetLastMonitorLogLine;

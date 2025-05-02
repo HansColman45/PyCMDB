@@ -24,10 +24,11 @@ namespace CMDB.Infrastructure.Configurations
                 .IsRequired();
 
             builder.HasOne(e => e.Device)
-                .WithMany(d => d.Keys)
-                .HasForeignKey(e => e.AssetTag)
+                .WithOne(d => d.Kensington)
+                .HasForeignKey<Kensington>(e => e.AssetTag)
                 .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("FK_Key_Device");
+                .HasConstraintName("FK_Key_Device")
+                .IsRequired(false);
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Kensingtons)

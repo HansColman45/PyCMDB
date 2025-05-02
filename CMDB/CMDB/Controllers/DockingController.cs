@@ -32,6 +32,7 @@ namespace CMDB.Controllers
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
             ViewData["actionUrl"] = @"\Docking\Search";
             ViewData["Controller"] = @"\Docking\Create";
             return View(Desktops);
@@ -51,6 +52,7 @@ namespace CMDB.Controllers
                 ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
                 ViewData["actionUrl"] = @"\Docking\Search";
                 ViewData["Controller"] = @"\Docking\Create";
                 return View(Desktops);
@@ -94,6 +96,11 @@ namespace CMDB.Controllers
                                 Receiver: docking.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(docking);
+                            if (docking.Kensington != null)
+                            {
+                                await _PDFservice.SetKeyInfo(docking.Kensington);
+                                await service.ReleaseKensington(docking);
+                            }
                             await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
                             await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                             await service.ReleaseIdenity(docking);
@@ -150,6 +157,7 @@ namespace CMDB.Controllers
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["KeyOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "KeyOverview");
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             return View(docking);

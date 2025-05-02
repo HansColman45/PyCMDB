@@ -15,6 +15,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         Helpers.DockingStation dockingStation;
         Docking Docking;
         Identity Identity;
+        Kensington Kensington;
         public DockingStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -162,6 +163,43 @@ namespace CMDB.UI.Specflow.StepDefinitions
         }
         [Then(@"The Identity is released from the Docking")]
         public void ThenTheIdentityIsReleasedFromTheDocking()
+        {
+            dockingIdentityActor.Search(Docking.AssetTag);
+            var lastLog = dockingIdentityActor.DockingLastLogLine;
+            dockingIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+        #endregion
+        #region Assign and release Key
+        [Given(@"A Key to assign to my Docking is existing in the system")]
+        public async Task GivenAKeyToAssignToMyDockingIsExistingInTheSystem()
+        {
+            Kensington = await dockingIdentityActor.CreateKensington();
+        }
+        [When(@"I assign the Key to the Docking")]
+        public void WhenIAssignTheKeyToTheDocking()
+        {
+            dockingIdentityActor.DoAssignTheKey2Docking(Docking, Kensington);
+        }
+        [Then(@"The Key is assigned to the Docking")]
+        public void ThenTheKeyIsAssignedToTheDocking()
+        {
+            dockingIdentityActor.Search(Docking.AssetTag);
+            var lastLog = dockingIdentityActor.DockingLastLogLine;
+            dockingIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
+        }
+
+        [Given(@"that Key is assigned to my Docking")]
+        public async Task GivenThatKeyIsAssignedToMyDocking()
+        {
+            await dockingIdentityActor.AssignKey(Docking, Kensington);
+        }
+        [When(@"I release the Key from my Docking and I fill in the release form")]
+        public void WhenIReleaseTheKeyFromMyDockingAndIFillInTheReleaseForm()
+        {
+            dockingIdentityActor.DoReleaseKey4Docking(Docking, Kensington, Identity);
+        }
+        [Then(@"The Key is released from my Docking")]
+        public void ThenTheKeyIsReleasedFromMyDocking()
         {
             dockingIdentityActor.Search(Docking.AssetTag);
             var lastLog = dockingIdentityActor.DockingLastLogLine;

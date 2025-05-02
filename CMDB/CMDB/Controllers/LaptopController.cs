@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -199,6 +200,11 @@ namespace CMDB.Controllers
                                 Receiver: laptop.Identity.Name,
                                 type:"Release");
                             await _PDFservice.SetDeviceInfo(laptop);
+                            if (laptop.Kensington != null)
+                            {
+                                await _PDFservice.SetKeyInfo(laptop.Kensington);
+                                await service.ReleaseKensington(laptop);
+                            }
                             await _PDFservice.GenratePDFFile(Table, laptop.AssetTag);
                             await _PDFservice.GenratePDFFile("identity", laptop.Identity.IdenId);
                             await service.ReleaseIdenity(laptop);

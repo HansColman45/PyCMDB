@@ -37,7 +37,7 @@
                     {
                         <a class="btn btn-info" asp-action="Details" asp-route-id="@item.KeyID" data-toggle="tooltip" data-placement="top" title="Info"><span class="@ViewBag.InfoIcon"></span></a>
                     }
-                    @if (item.Active == 1 && (bool)ViewData["AssignDeviceAccess"])
+                    @if (item.Active == 1 && (bool)ViewData["AssignDeviceAccess"] && item.AssetTag is null) 
                     {
                         <a class="btn btn-success" href="\Kensington\AssignDevice\@item.KeyID" data-toggle="tooltip" data-placement="top" title="Assign Device"><span class="@ViewBag.AddDeviceIcon"></span></a>
                     }

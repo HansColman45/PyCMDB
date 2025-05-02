@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,7 @@ namespace CMDB.Controllers
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Monitor\Search";
             ViewData["Controller"] = @"\Monitor\Create";
@@ -49,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
                 ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Monitor\Search";
                 ViewData["Controller"] = @"\Monitor\Create";
@@ -93,6 +96,11 @@ namespace CMDB.Controllers
                                 Receiver: monitor.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(monitor);
+                            if (monitor.Kensington != null)
+                            {
+                                await _PDFservice.SetKeyInfo(monitor.Kensington);
+                                await service.ReleaseKensington(monitor);
+                            }
                             await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
                             await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                             await service.ReleaseIdenity(monitor);
@@ -188,6 +196,7 @@ namespace CMDB.Controllers
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["KeyOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "KeyOverview");
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             return View(screen);

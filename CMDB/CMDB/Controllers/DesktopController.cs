@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Models;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -31,6 +32,7 @@ namespace CMDB.Controllers
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
             ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
             ViewData["actionUrl"] = @"\Desktop\Search";
             ViewData["Controller"] = @"\Desktop\Create";
@@ -49,6 +51,7 @@ namespace CMDB.Controllers
                 ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
                 ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
                 ViewData["AssignIdentityAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
+                ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
                 ViewData["ActiveAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate");
                 ViewData["actionUrl"] = @"\Desktop\Search";
                 ViewData["Controller"] = @"\Desktop\Create";
@@ -157,6 +160,7 @@ namespace CMDB.Controllers
             ViewData["AssignIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignIdentity");
             ViewData["ReleaseIdentity"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseIdentity");
             ViewData["KeyOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "KeyOverview");
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
             return View(desktop);
@@ -195,6 +199,11 @@ namespace CMDB.Controllers
                                 Receiver: desktop.Identity.Name,
                                 type: "Release");
                             await _PDFservice.SetDeviceInfo(desktop);
+                            if (desktop.Kensington != null)
+                            {
+                                await _PDFservice.SetKeyInfo(desktop.Kensington);
+                                await service.ReleaseKensington(desktop);
+                            }
                             await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
                             await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
                             await service.ReleaseIdenity(desktop);
@@ -233,6 +242,42 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             }
             return View();
+        }
+        public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
+        {
+            log.Debug("Using Assign Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var desktop = await service.GetDeviceById(SitePart, id);
+            if (desktop == null)
+                return NotFound();
+            ViewData["Title"] = "Assign Kensington to Desktop";
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Controller"] = @$"\Desktop\AssignKensington\{id}";
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
+            ViewBag.Keys = await service.ListFreeKeys();
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                int keyId = Int32.Parse(values["Kensington"]);
+                var key = await service.GetKensingtonById(keyId);
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await service.AssignKensington2Device(key, desktop);
+                        return RedirectToAction("AssignForm", "Desktop", new { id });
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Database exception {0}", ex.ToString());
+                        ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                            "see your system administrator.");
+                    }
+                }
+            }
+            return View(desktop);
         }
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
@@ -345,6 +390,50 @@ namespace CMDB.Controllers
                     await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
                     await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
                     await service.ReleaseIdenity(desktop);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(desktop);
+        }
+        public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var desktop = await service.GetDeviceById(SitePart, id);
+            if (desktop == null)
+                return NotFound();
+            ViewData["Title"] = "Release Kensington from Desktop";
+            ViewData["backUrl"] = "Desktop";
+            ViewData["Action"] = "ReleaseKensington";
+            ViewData["Controller"] = @$"\Desktop\ReleaseKensington\{id}";
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
+            await BuildMenu();
+            var identity = desktop.Identity;
+            ViewData["Name"] = identity.Name;
+            var admin = await service.Admin();
+            var key = desktop.Kensington;
+            ViewData["AdminName"] = admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid)
+                {
+                    await _PDFservice.SetUserinfo(
+                        UserId: desktop.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: desktop.Identity.Name,
+                        FirstName: desktop.Identity.FirstName,
+                        LastName: desktop.Identity.LastName,
+                        Language: desktop.Identity.Language.Code,
+                        Receiver: desktop.Identity.Name);
+                    await service.ReleaseKensington(desktop);
+                    await _PDFservice.SetDeviceInfo(desktop);
+                    await _PDFservice.SetKeyInfo(key);
+                    await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
+                    await _PDFservice.GenratePDFFile("kensington", key.KeyID);
+                    await _PDFservice.GenratePDFFile("identity", identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }

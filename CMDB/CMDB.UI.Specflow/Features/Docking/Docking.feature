@@ -43,3 +43,21 @@ Scenario: I want to release an assigned identity from my Docking
 	And that Identity is assigned to my Docking
 	When I release the Identity from the Docking and I have filled in the release form
 	Then The Identity is released from the Docking
+
+Scenario: I want to assign an existing Key to my Docking
+	Given There is an active Docking existing
+	And the Identity exist as well
+	And that Identity is assigned to my Docking
+	And A Key to assign to my Docking is existing in the system
+	When I assign the Key to the Docking
+	And I fill in the assign form for my Docking
+	Then The Key is assigned to the Docking
+
+Scenario: I want to relase an assigned Key from my Docking
+	Given There is an active Docking existing
+	And the Identity exist as well
+	And that Identity is assigned to my Docking
+	And A Key to assign to my Docking is existing in the system
+	And that Key is assigned to my Docking
+	When I release the Key from my Docking and I fill in the release form
+	Then The Key is released from my Docking

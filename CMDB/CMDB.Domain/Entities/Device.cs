@@ -9,7 +9,6 @@ namespace CMDB.Domain.Entities
     {
         public Device()
         {
-            Keys = new List<Kensington>();
         }
         [Key]
         [Required(ErrorMessage = "Please enter a Assettag")]
@@ -25,6 +24,6 @@ namespace CMDB.Domain.Entities
         public int? CategoryId { get; set; }
         public int? IdentityId { get; set; }
 
-        public virtual ICollection<Kensington> Keys { get; set; }
+        public virtual Kensington Kensington { get; set; }
     }
 }

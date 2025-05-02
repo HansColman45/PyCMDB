@@ -37,6 +37,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
                 "Desktop" => await _context.Devices.OfType<Desktop>().AsNoTracking()
@@ -46,6 +50,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
                 "Docking station" => await _context.Devices
@@ -56,6 +64,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
                 "Token" => await _context.Devices
@@ -76,6 +88,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
                 _ => throw new Exception($"{category} not found"),
@@ -95,6 +111,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
@@ -105,8 +125,12 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
-                                        .Select(x => ConvertDesktop(x))
+                                        .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
                 "Docking station" => await _context.Devices
                                         .OfType<Docking>().AsNoTracking()
@@ -116,6 +140,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
@@ -138,6 +166,10 @@ namespace CMDB.API.Services
                                         .Include(x => x.Identity)
                                         .ThenInclude(x => x.Language).AsNoTracking()
                                         .Include(x => x.Type).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Category).AsNoTracking()
+                                        .Include(x => x.Kensington)
+                                        .ThenInclude(x => x.Type).AsNoTracking()
                                         .Where(x => EF.Functions.Like(x.SerialNumber, searhterm) || EF.Functions.Like(x.AssetTag, searhterm))
                                         .Select(x => ConvertDevice(x))
                                         .ToListAsync(),
@@ -157,7 +189,7 @@ namespace CMDB.API.Services
                     .ThenInclude(x => x.Language)
                     .Include(x => x.Type)
                     .Where(x => x.IdentityId > 1)
-                    .Where(x => !x.Keys.Any()).AsNoTracking()
+                    .Where(x => x.Kensington == null).AsNoTracking()
                     .Select(x => ConvertDevice(x))
                     .ToListAsync(),
                 _ => throw new NotImplementedException($"{sitePart} not implemented"),
@@ -188,7 +220,7 @@ namespace CMDB.API.Services
                 .Include(x => x.Identity)
                 .ThenInclude(x => x.Language).AsNoTracking()
                 .Where(x => x.IdentityId == 1).AsNoTracking()
-                .Select(x => ConvertDesktop(x))
+                .Select(x => ConvertDevice(x))
                 .ToListAsync();
             foreach (var desktop in Desktops)
             {
@@ -269,7 +301,7 @@ namespace CMDB.API.Services
                     .ThenInclude(x => x.Language).AsNoTracking()
                     .Include(x => x.Type).AsNoTracking()
                     .Where(x => x.AssetTag == assetTag).AsNoTracking()
-                    .Select(x => ConvertDesktop(x))
+                    .Select(x => ConvertDevice(x))
                     .FirstOrDefaultAsync();
                     if(desktop is not null) 
                     {
@@ -649,7 +681,7 @@ namespace CMDB.API.Services
                 case "Laptop":
                     var laptop = await GetLaptopByAssetTag(device.AssetTag);
                     laptop.LastModifiedAdminId = TokenStore.AdminId;
-                    laptop.Keys.Add(kensington);
+                    laptop.Kensington = kensington;
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo,  TokenStore.Admin.Account.UserID, table),
@@ -660,7 +692,7 @@ namespace CMDB.API.Services
                 case "Desktop":
                     var desktop = await GetDesktopByAssetTag(device.AssetTag);
                     desktop.LastModifiedAdminId = TokenStore.AdminId;
-                    desktop.Keys.Add(kensington);
+                    desktop.Kensington = kensington; 
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -673,7 +705,7 @@ namespace CMDB.API.Services
                     table = "screen";
                     var screen = await GetScreenByAssetTag(device.AssetTag);
                     screen.LastModifiedAdminId = TokenStore.AdminId;
-                    screen.Keys.Add(kensington);
+                    screen.Kensington = kensington; ;
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -685,7 +717,7 @@ namespace CMDB.API.Services
                     table = "docking";
                     var docking = await GetDockingByAssetTag(device.AssetTag);
                     docking.LastModifiedAdminId = TokenStore.AdminId;
-                    docking.Keys.Add(kensington);
+                    docking.Kensington = kensington;
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -704,6 +736,7 @@ namespace CMDB.API.Services
             var kensington = await _context.Kensingtons.Where(x => x.KeyID == device.Kensington.KeyID).FirstAsync();
             string keyinfo = $"Kensington with serial number: {device.Kensington?.SerialNumber}";
             kensington.LastModifiedAdminId = TokenStore.AdminId;
+            kensington.AssetTag = null;
             kensington.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
@@ -715,7 +748,6 @@ namespace CMDB.API.Services
                 case "Laptop":
                     var laptop = await GetLaptopByAssetTag(device.AssetTag);
                     laptop.LastModifiedAdminId = TokenStore.AdminId;
-                    laptop.Keys.Remove(kensington);
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -726,7 +758,6 @@ namespace CMDB.API.Services
                 case "Desktop":
                     var desktop = await GetDesktopByAssetTag(device.AssetTag);
                     desktop.LastModifiedAdminId = TokenStore.AdminId;
-                    desktop.Keys.Add(kensington);
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -739,7 +770,6 @@ namespace CMDB.API.Services
                     table = "screen";
                     var screen = await GetScreenByAssetTag(device.AssetTag);
                     screen.LastModifiedAdminId = TokenStore.AdminId;
-                    screen.Keys.Add(kensington);
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -751,7 +781,6 @@ namespace CMDB.API.Services
                     table = "docking";
                     var docking = await GetDockingByAssetTag(device.AssetTag);
                     docking.LastModifiedAdminId = TokenStore.AdminId;
-                    docking.Keys.Add(kensington);
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
@@ -921,22 +950,34 @@ namespace CMDB.API.Services
         }
         public static DeviceDTO ConvertDevice(Device device)
         {
-            return new()
+            if (device.Kensington is not null)
             {
-                AssetTag = device.AssetTag,
-                DeactivateReason = device.DeactivateReason,
-                Active = device.active,
-                SerialNumber = device.SerialNumber,
-                AssetType = new()
+                return new()
                 {
-                    Type = device.Type.Type,
-                    Vendor = device.Type.Vendor,
-                    Active = device.Type.active,
-                    DeactivateReason = device.Type.DeactivateReason,
-                    LastModifiedAdminId = device.Type.LastModifiedAdminId,
-                    TypeID = device.Type.TypeID,
-                    CategoryId = device.Type.CategoryId,
-                    AssetCategory = new() 
+                    AssetTag = device.AssetTag,
+                    DeactivateReason = device.DeactivateReason,
+                    Active = device.active,
+                    SerialNumber = device.SerialNumber,
+                    AssetType = new()
+                    {
+                        Type = device.Type.Type,
+                        Vendor = device.Type.Vendor,
+                        Active = device.Type.active,
+                        DeactivateReason = device.Type.DeactivateReason,
+                        LastModifiedAdminId = device.Type.LastModifiedAdminId,
+                        TypeID = device.Type.TypeID,
+                        CategoryId = device.Type.CategoryId,
+                        AssetCategory = new()
+                        {
+                            Category = device.Category.Category,
+                            Prefix = device.Category.Prefix,
+                            Active = device.Category.active,
+                            LastModifiedAdminId = device.Category.LastModifiedAdminId,
+                            DeactivateReason = device.Category.DeactivateReason,
+                            Id = device.Category.Id
+                        }
+                    },
+                    Category = new()
                     {
                         Category = device.Category.Category,
                         Prefix = device.Category.Prefix,
@@ -944,97 +985,127 @@ namespace CMDB.API.Services
                         LastModifiedAdminId = device.Category.LastModifiedAdminId,
                         DeactivateReason = device.Category.DeactivateReason,
                         Id = device.Category.Id
-                    }
-                },
-                Category = new()
-                {
-                    Category = device.Category.Category,
-                    Prefix = device.Category.Prefix,
-                    Active = device.Category.active,
-                    LastModifiedAdminId = device.Category.LastModifiedAdminId,
-                    DeactivateReason = device.Category.DeactivateReason,
-                    Id = device.Category.Id
-                },
-                Identity = new()
-                {
-                    Active = device.Identity.active,
-                    Company = device.Identity.Company,
-                    DeactivateReason = device.Identity.DeactivateReason,
-                    UserID = device.Identity.UserID,
-                    EMail = device.Identity.EMail,
-                    FirstName = device.Identity.FirstName,
-                    LastName = device.Identity.LastName,
-                    Name = device.Identity.Name,
-                    IdenId = device.Identity.IdenId,
-                    LastModifiedAdminId = device.Identity.LastModifiedAdminId,
-                    Type = new()
-                    {
-                        Active = device.Identity.Type.active,
-                        DeactivateReason = device.Identity.Type.DeactivateReason,
-                        Description = device.Identity.Type.Description,
-                        Type = device.Identity.Type.Type,
-                        TypeId = device.Identity.Type.TypeId,
-                        LastModifiedAdminId= device.Identity.LastModifiedAdminId
                     },
-                    Language = new()
+                    Identity = new()
                     {
-                        Code = device.Identity.Language.Code,
-                        Description = device.Identity.Type.Description
-                    }
-                }
-            };
-        }
-        public static DeviceDTO ConvertDesktop(Desktop desktop)
-        {
-            return new()
-            {
-                AssetTag = desktop.AssetTag,
-                DeactivateReason = desktop.DeactivateReason,
-                Active = desktop.active,
-                SerialNumber = desktop.SerialNumber,
-                RAM = desktop.RAM,
-                AssetType = new()
-                {
-                    Type = desktop.Type.Type,
-                    Vendor = desktop.Type.Vendor,
-                    Active = desktop.Type.active,
-                    DeactivateReason = desktop.Type.DeactivateReason,
-                    LastModifiedAdminId = desktop.Type.LastModifiedAdminId,
-                    TypeID = desktop.Type.TypeID,
-                    CategoryId = desktop.Type.CategoryId,
-                    AssetCategory = new()
+                        Active = device.Identity.active,
+                        Company = device.Identity.Company,
+                        DeactivateReason = device.Identity.DeactivateReason,
+                        UserID = device.Identity.UserID,
+                        EMail = device.Identity.EMail,
+                        FirstName = device.Identity.FirstName,
+                        LastName = device.Identity.LastName,
+                        Name = device.Identity.Name,
+                        IdenId = device.Identity.IdenId,
+                        LastModifiedAdminId = device.Identity.LastModifiedAdminId,
+                        Type = new()
+                        {
+                            Active = device.Identity.Type.active,
+                            DeactivateReason = device.Identity.Type.DeactivateReason,
+                            Description = device.Identity.Type.Description,
+                            Type = device.Identity.Type.Type,
+                            TypeId = device.Identity.Type.TypeId,
+                            LastModifiedAdminId = device.Identity.LastModifiedAdminId
+                        },
+                        Language = new()
+                        {
+                            Code = device.Identity.Language.Code,
+                            Description = device.Identity.Type.Description
+                        }
+                    },
+                    Kensington = new()
                     {
-                        Category = desktop.Category.Category,
-                        Prefix = desktop.Category.Prefix,
-                        Active = desktop.Category.active,
-                        LastModifiedAdminId = desktop.Category.LastModifiedAdminId,
-                        DeactivateReason = desktop.Category.DeactivateReason,
-                        Id = desktop.Category.Id
+                        KeyID = device.Kensington.KeyID,
+                        SerialNumber = device.Kensington.SerialNumber,
+                        AssetTag = device.Kensington.AssetTag,
+                        LastModifiedAdminId = device.Kensington.LastModifiedAdminId,
+                        DeactivateReason = device.Kensington.DeactivateReason,
+                        Active = device.Kensington.active,
+                        Type = new()
+                        {
+                            Type = device.Kensington.Type.Type,
+                            Vendor = device.Kensington.Type.Vendor,
+                            Active = device.Kensington.Type.active,
+                            DeactivateReason = device.Kensington.Type.DeactivateReason,
+                            LastModifiedAdminId = device.Kensington.Type.LastModifiedAdminId,
+                            TypeID = device.Kensington.Type.TypeID,
+                            CategoryId = device.Kensington.Type.CategoryId,
+                            AssetCategory = new()
+                            {
+                                Category = device.Kensington.Category.Category,
+                                Prefix = device.Kensington.Category.Prefix,
+                                Active = device.Kensington.Category.active,
+                                LastModifiedAdminId = device.Kensington.Category.LastModifiedAdminId,
+                                DeactivateReason = device.Kensington.Category.DeactivateReason,
+                                Id = device.Kensington.Category.Id
+                            }
+                        }
                     }
-                },
-                Category = new()
+                };
+            }
+            else
+                return new()
                 {
-                    Category = desktop.Category.Category,
-                    Prefix = desktop.Category.Prefix,
-                    Active = desktop.Category.active,
-                    LastModifiedAdminId = desktop.Category.LastModifiedAdminId,
-                    DeactivateReason = desktop.Category.DeactivateReason,
-                    Id = desktop.Category.Id
-                },
-                Identity = new()
-                {
-                    Active = desktop.Identity.active,
-                    Company = desktop.Identity.Company,
-                    DeactivateReason = desktop.Identity.DeactivateReason,
-                    UserID = desktop.Identity.UserID,
-                    EMail = desktop.Identity.EMail,
-                    FirstName = desktop.Identity.FirstName,
-                    LastName = desktop.Identity.LastName,
-                    Name = desktop.Identity.Name,
-                    IdenId = desktop.Identity.IdenId,
-                    LastModifiedAdminId = desktop.Identity.LastModifiedAdminId
-                }
-            };
+                    AssetTag = device.AssetTag,
+                    DeactivateReason = device.DeactivateReason,
+                    Active = device.active,
+                    SerialNumber = device.SerialNumber,
+                    AssetType = new()
+                    {
+                        Type = device.Type.Type,
+                        Vendor = device.Type.Vendor,
+                        Active = device.Type.active,
+                        DeactivateReason = device.Type.DeactivateReason,
+                        LastModifiedAdminId = device.Type.LastModifiedAdminId,
+                        TypeID = device.Type.TypeID,
+                        CategoryId = device.Type.CategoryId,
+                        AssetCategory = new()
+                        {
+                            Category = device.Category.Category,
+                            Prefix = device.Category.Prefix,
+                            Active = device.Category.active,
+                            LastModifiedAdminId = device.Category.LastModifiedAdminId,
+                            DeactivateReason = device.Category.DeactivateReason,
+                            Id = device.Category.Id
+                        }
+                    },
+                    Category = new()
+                    {
+                        Category = device.Category.Category,
+                        Prefix = device.Category.Prefix,
+                        Active = device.Category.active,
+                        LastModifiedAdminId = device.Category.LastModifiedAdminId,
+                        DeactivateReason = device.Category.DeactivateReason,
+                        Id = device.Category.Id
+                    },
+                    Identity = new()
+                    {
+                        Active = device.Identity.active,
+                        Company = device.Identity.Company,
+                        DeactivateReason = device.Identity.DeactivateReason,
+                        UserID = device.Identity.UserID,
+                        EMail = device.Identity.EMail,
+                        FirstName = device.Identity.FirstName,
+                        LastName = device.Identity.LastName,
+                        Name = device.Identity.Name,
+                        IdenId = device.Identity.IdenId,
+                        LastModifiedAdminId = device.Identity.LastModifiedAdminId,
+                        Type = new()
+                        {
+                            Active = device.Identity.Type.active,
+                            DeactivateReason = device.Identity.Type.DeactivateReason,
+                            Description = device.Identity.Type.Description,
+                            Type = device.Identity.Type.Type,
+                            TypeId = device.Identity.Type.TypeId,
+                            LastModifiedAdminId = device.Identity.LastModifiedAdminId
+                        },
+                        Language = new()
+                        {
+                            Code = device.Identity.Language.Code,
+                            Description = device.Identity.Type.Description
+                        }
+                    }
+                };
         }
         public async Task LogPdfFile(string category, string pdfFile, string asassetTag)
         {

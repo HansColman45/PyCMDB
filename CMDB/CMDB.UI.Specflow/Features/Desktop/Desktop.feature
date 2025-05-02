@@ -44,3 +44,21 @@ Scenario: I want to release an assigned identity from my Desktop
 	And that Identity is assigned to my Desktop
 	When I release that identity from my Desktop and I fill in the release form
 	Then The identity is released from my Desktop
+
+Scenario: I want to assign an existing Key to my Desktop
+	Given There is an active Desktop existing
+	And the Identity exist as well
+	And that Identity is assigned to my Desktop
+	And A Key to assign to my desktop is existing in the system
+	When I assign the Key to the Desktop
+	And I fill in the assign form for my Desktop
+	Then The Key is assigned to the Desktop
+
+Scenario: I want to relase an assigned Key from my Desktop
+	Given There is an active Desktop existing
+	And the Identity exist as well
+	And that Identity is assigned to my Desktop
+	And A Key to assign to my desktop is existing in the system
+	And that Key is assigned to my Desktop
+	When I release the Key from my Desktop and I fill in the release form
+	Then The Key is released from my Desktop

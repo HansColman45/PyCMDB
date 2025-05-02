@@ -14,6 +14,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         private Helpers.Desktop _desktop;
         private Domain.Entities.Desktop Desktop;
         private Domain.Entities.Identity Identity;
+        private Domain.Entities.Kensington Kensington;
         public DesktopStepDefinitions(ScenarioContext scenarioContext, ActorRegistry actorRegistry) : base(scenarioContext, actorRegistry)
         {
         }
@@ -166,7 +167,43 @@ namespace CMDB.UI.Specflow.StepDefinitions
             var lastlog = _desktopIdentityActor.DesktopLastLogLine;
             _desktopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
         }
+        #endregion
+        #region Assign and release key
+        [Given(@"A Key to assign to my desktop is existing in the system")]
+        public async Task GivenAKeyToAssignToMyDesktopIsExistingInTheSystem()
+        {
+            Kensington = await _desktopIdentityActor.CreateKensington();
+        }
+        [When(@"I assign the Key to the Desktop")]
+        public void WhenIAssignTheKeyToTheDesktop()
+        {
+            _desktopIdentityActor.DoAssignTheKey2Desktop(Desktop, Kensington);
+        }
+        [Then(@"The Key is assigned to the Desktop")]
+        public void ThenTheKeyIsAssignedToTheDesktop()
+        {
+            _desktopIdentityActor.Search(Desktop.AssetTag);
+            var lastlog = _desktopIdentityActor.DesktopLastLogLine;
+            _desktopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
 
+        [Given(@"that Key is assigned to my Desktop")]
+        public async Task GivenThatKeyIsAssignedToMyDesktop()
+        {
+            await _desktopIdentityActor.AssignKey(Desktop, Kensington);
+        }
+        [When(@"I release the Key from my Desktop and I fill in the release form")]
+        public void WhenIReleaseTheKeyFromMyDesktopAndIFillInTheReleaseForm()
+        {
+            _desktopIdentityActor.DoReleaseKey4Desktop(Desktop,Kensington,Identity);
+        }
+        [Then(@"The Key is released from my Desktop")]
+        public void ThenTheKeyIsReleasedFromMyDesktop()
+        {
+            _desktopIdentityActor.Search(Desktop.AssetTag);
+            var lastlog = _desktopIdentityActor.DesktopLastLogLine;
+            _desktopIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastlog);
+        }
         #endregion
     }
 }

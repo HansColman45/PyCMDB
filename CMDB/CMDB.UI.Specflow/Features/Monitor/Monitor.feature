@@ -43,3 +43,21 @@ Scenario: I want to release an assigned identity from my monitor
 	And that Identity is assigned to my monitor
 	When I release that identity from my monitor and I fill in the release form
 	Then The identity is released from my monitor
+
+Scenario: I want to assign an existing Key to my monitor
+	Given There is an active monitor existing
+	And The Identity to assign to my monitor is existing
+	And that Identity is assigned to my monitor
+	And A Key to assign to my monitor is existing in the system
+	When I assign the Key to the monitor
+	And I fill in the assign form for my monitor
+	Then The Key is assigned to the monitor
+
+Scenario: I want to relase an assigned Key from my monitor
+	Given There is an active monitor existing
+	And The Identity to assign to my monitor is existing
+	And that Identity is assigned to my monitor
+	And A Key to assign to my monitor is existing in the system
+	And that Key is assigned to my monitor
+	When I release the Key from my monitor and I fill in the release form
+	Then The Key is released from my monitor

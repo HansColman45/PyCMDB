@@ -68,16 +68,22 @@
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
-                        <td>Type</td>
-                        <td>Serial number</td>
-                        <td>Action</td>
+                        <th>Type</th>
+                        <th>Serial number</th>
+                        @if ((bool)ViewData["ReleaseKensington"])
+                        {
+                            <td>Action</td>
+                        }
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="small">@Model.Kensington.Type.Vendor @Model.Kensington.Type.Type</td>
                         <td class="small">@Model.Kensington.SerialNumber</td>
-                        <td><a class="btn btn-danger" asp-action="ReleaseKensington" asp-route-id="@Model.AssetTag" asp-route-kensid="@Model.Kensington.KeyID" id="ReleaseKensington" data-toggle="tooltip" data-placement="top" title="Release Kensington"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                        @if ((bool)ViewData["ReleaseKensington"])
+                        {
+                            <td><a class="btn btn-danger" asp-action="ReleaseKensington" asp-route-id="@Model.AssetTag" id="ReleaseKensington" data-toggle="tooltip" data-placement="top" title="Release Kensington"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
+                        }
                     </tr>
                 </tbody>
             </table>
