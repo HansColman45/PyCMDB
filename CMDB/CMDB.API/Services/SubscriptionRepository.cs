@@ -33,7 +33,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertSubscription(x))
                 .ToListAsync();
         }
-        public async Task<SubscriptionDTO?> GetById(int id)
+        public async Task<SubscriptionDTO> GetById(int id)
         {
             var sub = await _context.Subscriptions
                 .Include(x => x.Category)

@@ -3,10 +3,13 @@ using CMDB.Domain.Entities;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Account repository interface
+    /// </summary>
     public interface IAccountRepository
     {
         AccountDTO Create(AccountDTO account);
-        Task<AccountDTO?> GetById(int id);
+        Task<AccountDTO> GetById(int id);
         Task<List<AccountDTO>> GetAll();
         Task<List<AccountDTO>> GetAll(string searchstr);
         Task<AccountDTO> DeActivate(AccountDTO account, string reason);

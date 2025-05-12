@@ -270,7 +270,7 @@ namespace CMDB.API.Services
             }
             return devices;
         }
-        public async Task<DeviceDTO?> GetByAssetTag(string category, string assetTag)
+        public async Task<DeviceDTO> GetByAssetTag(string category, string assetTag)
         {
             switch (category)
             {
@@ -368,7 +368,7 @@ namespace CMDB.API.Services
                     throw new Exception($"{category} not found");
             }
         }
-        public async Task<DeviceDTO?> GetByAssetTag(string assetTag)
+        public async Task<DeviceDTO> GetByAssetTag(string assetTag)
         {
             return await _context.Devices.AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()

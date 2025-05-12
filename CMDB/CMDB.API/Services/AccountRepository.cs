@@ -5,9 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Account repository
+    /// </summary>
     public class AccountRepository : GenericRepository, IAccountRepository
     {
         private readonly string table = "account";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public AccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
@@ -49,7 +57,7 @@ namespace CMDB.API.Services
             }
             return account;
         }
-        public async Task<AccountDTO?> GetById(int id)
+        public async Task<AccountDTO> GetById(int id)
         {
             var account = await _context.Accounts.AsNoTracking()
                 .Include(x => x.Application).AsNoTracking()

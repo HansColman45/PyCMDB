@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.Domain.Entities.Admin>
+﻿@model CMDB.API.Models.AdminDTO;
 @{
     Layout = "_Layout";
 }
@@ -15,45 +15,39 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
-            {
-                <tr>
-                    <td id="UserID">@Html.DisplayFor(modelItem => item.Account.UserID)</td>
-                    <td id="Level">@Html.DisplayFor(modelItem => item.Level)</td>
-                    <td id="State">@Html.DisplayFor(modelItem => item.Active)</td>
-                    <td class="d-none" id="Id">@Html.DisplayFor(modelItem => item.AdminId)</td>
-                </tr>
-            }
+            <tr>
+                <td id="UserID">@Html.DisplayFor(modelItem => modelItem.Account.UserID)</td>
+                <td id="Level">@Html.DisplayFor(modelItem => modelItem.Level)</td>
+                <td id="State">@Html.DisplayFor(modelItem => modelItem.Active)</td>
+                <td class="d-none" id="Id">@Html.DisplayFor(modelItem => modelItem.AdminId)</td>
+            </tr>
         </tbody>
     </table>
     <partial name="_AddNew" />
-    @foreach (var item in Model)
+    <H3>Log overview</H3>
+    @if (Model.Logs.Count > 0)
     {
-        <H3>Log overview</H3>
-        @if (item.Logs.Count > 0)
-        {
-            <table class="table table-striped table-bordered">
-                <thead class="thead-light">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                {
                     <tr>
-                        <th>Date</th>
-                        <th>Text</th>
+                        <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
+                        <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
                     </tr>
-                </thead>
-                <tbody>
-                    @foreach (CMDB.Domain.Entities.Log log in item.Logs)
-                    {
-                        <tr>
-                            <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
-                            <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        else
-        {
-            <p>No logs for to this Admin</p>
-        }
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No logs for to this Admin</p>
     }
 }
 else

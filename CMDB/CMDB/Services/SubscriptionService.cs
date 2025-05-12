@@ -18,37 +18,37 @@ namespace CMDB.Services
         }
         public async Task<ICollection<SubscriptionDTO>> ListAll()
         {
-            BaseUrl = _url + $"api/Subscription/GetAll";
+            BaseUrl = Url + $"api/Subscription/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<ICollection<SubscriptionDTO>> ListAll(string searchString)
         {
-            BaseUrl = _url + $"api/Subscription/GetAll/{searchString}";
+            BaseUrl = Url + $"api/Subscription/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<SubscriptionDTO>>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<SubscriptionDTO> GetByID(int id)
         {
-            BaseUrl = _url + $"api/Subscription/{id}";
+            BaseUrl = Url + $"api/Subscription/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<SubscriptionDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Create(SubscriptionTypeDTO type, string phoneNumber)
         {
-            BaseUrl = _url + $"api/Subscription";
+            BaseUrl = Url + $"api/Subscription";
             _Client.SetBearerToken(TokenStore.Token);
             SubscriptionDTO dto = new()
             {
@@ -57,47 +57,47 @@ namespace CMDB.Services
             };
             var response = await _Client.PostAsJsonAsync(BaseUrl, dto);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Edit(SubscriptionDTO subscription, string phoneNumber)
         {
             subscription.PhoneNumber = phoneNumber;
-            BaseUrl = _url + $"api/Subscription";
+            BaseUrl = Url + $"api/Subscription";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PutAsJsonAsync(BaseUrl,subscription);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Activate(SubscriptionDTO subscription)
         {
-            BaseUrl = _url + $"api/Subscription/Activate";
+            BaseUrl = Url + $"api/Subscription/Activate";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, subscription);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Deactivate(SubscriptionDTO subscription, string reason)
         {
-            BaseUrl = _url + $"api/Subscription/{reason}";
+            BaseUrl = Url + $"api/Subscription/{reason}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.DeleteAsJsonAsync(BaseUrl, subscription);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<SubscriptionTypeDTO> GetSubscriptionTypeById(int id)
         {
-            BaseUrl = _url + $"api/SubscriptionType/{id}";
+            BaseUrl = Url + $"api/SubscriptionType/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<SubscriptionTypeDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> GetSubscriptionTypes()
         {
             List<SelectListItem> types = new();
-            BaseUrl = _url + $"api/SubscriptionType/GetAll";
+            BaseUrl = Url + $"api/SubscriptionType/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) { 
@@ -115,7 +115,7 @@ namespace CMDB.Services
             {
                 var sub = await GetByID(id);
                 sub.PhoneNumber = phoneNumber;
-                BaseUrl = _url + $"api/Subscription/IsExisting";
+                BaseUrl = Url + $"api/Subscription/IsExisting";
                 _Client.SetBearerToken(TokenStore.Token);
                 var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
                 if (response.IsSuccessStatusCode) 
@@ -123,7 +123,7 @@ namespace CMDB.Services
                     return await response.Content.ReadAsJsonAsync<bool>();
                 }
                 else
-                    throw new NotAValidSuccessCode(_url, response.StatusCode);
+                    throw new NotAValidSuccessCode(Url, response.StatusCode);
             }
             else
             {
@@ -132,7 +132,7 @@ namespace CMDB.Services
                     SubscriptionType = subscriptionType,
                     PhoneNumber = phoneNumber
                 };
-                BaseUrl = _url + $"api/Subscription/IsExisting";
+                BaseUrl = Url + $"api/Subscription/IsExisting";
                 _Client.SetBearerToken(TokenStore.Token);
                 var response = await _Client.PostAsJsonAsync(BaseUrl, sub);
                 if (response.IsSuccessStatusCode)
@@ -140,13 +140,13 @@ namespace CMDB.Services
                     return await response.Content.ReadAsJsonAsync<bool>();
                 }
                 else
-                    throw new NotAValidSuccessCode(_url, response.StatusCode);
+                    throw new NotAValidSuccessCode(Url, response.StatusCode);
             }
         }
         public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/subscription";
+            BaseUrl = Url + $"api/Identity/ListAllFreeIdentities/subscription";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -162,7 +162,7 @@ namespace CMDB.Services
         public async Task<List<SelectListItem>> ListFreeMobiles()
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Mobile/ListAllFreeMobiles/subscription";
+            BaseUrl = Url + $"api/Mobile/ListAllFreeMobiles/subscription";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -181,7 +181,7 @@ namespace CMDB.Services
                 IdentityId = identity.IdenId,
                 SubscriptionIds = [subscription.SubscriptionId]
             };
-            BaseUrl = _url + "api/Subscription/ReleaseIdentity";
+            BaseUrl = Url + "api/Subscription/ReleaseIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)
@@ -194,7 +194,7 @@ namespace CMDB.Services
                 IdentityId = identity.IdenId,
                 SubscriptionIds = [subscription.SubscriptionId]
             };
-            BaseUrl = _url + "api/Subscription/AssignIdentity";
+            BaseUrl = Url + "api/Subscription/AssignIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)
@@ -202,23 +202,23 @@ namespace CMDB.Services
         }
         public async Task<IdentityDTO> GetIdentity(int IdenId)
         {
-            BaseUrl = _url + $"api/Identity/{IdenId}";
+            BaseUrl = Url + $"api/Identity/{IdenId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<IdentityDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<MobileDTO> GetMobile(int mobileId)
         {
-            BaseUrl = _url + $"api/Mobile/{mobileId}";
+            BaseUrl = Url + $"api/Mobile/{mobileId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<MobileDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task AssignMobile(SubscriptionDTO subscription, MobileDTO mobile)
         {
@@ -227,7 +227,7 @@ namespace CMDB.Services
                 MobileId = mobile.MobileId,
                 SubscriptionId = subscription.SubscriptionId
             };
-            BaseUrl = _url + "api/Subscription/AssignMobile";
+            BaseUrl = Url + "api/Subscription/AssignMobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)
@@ -240,7 +240,7 @@ namespace CMDB.Services
                 MobileId = mobile.MobileId,
                 SubscriptionId = subscription.SubscriptionId
             };
-            BaseUrl = _url + "api/Subscription/ReleaseMobile";
+            BaseUrl = Url + "api/Subscription/ReleaseMobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)

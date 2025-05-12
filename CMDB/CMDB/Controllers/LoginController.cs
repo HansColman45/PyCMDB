@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// The LoginController is used to login to the CMDB system
+    /// </summary>
     public class LoginController : CMDBController
     {
         private readonly CMDBServices service;
+        /// <summary>
+        /// The constructor is used to inject the IWebHostEnvironment
+        /// </summary>
+        /// <param name="env"></param>
         public LoginController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -18,6 +25,11 @@ namespace CMDB.Controllers
         {
             return View();
         }
+        /// <summary>
+        /// The login page
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Login(IFormCollection values)
         {
             log.Debug("Using Login in {0}", "Login");

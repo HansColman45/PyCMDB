@@ -6,7 +6,7 @@ namespace CMDB.API.Services
     {
         Task<List<KensingtonDTO>> ListAll();
         Task<List<KensingtonDTO>> ListAll(string search);
-        Task<KensingtonDTO?> GetById(int id);
+        Task<KensingtonDTO> GetById(int id);
         KensingtonDTO Create(KensingtonDTO key);
         Task<KensingtonDTO> Update(KensingtonDTO key);
         Task<KensingtonDTO> DeActivate(KensingtonDTO key, string reason);

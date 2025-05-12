@@ -4,17 +4,31 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Generic repository
+    /// </summary>
     public class GenericRepository
     {
         protected readonly ILogger _logger;
         protected readonly CMDBContext _context;
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public GenericRepository(CMDBContext context, ILogger logger)
         {
             _logger = logger;
             _context = context;
         }
         #region log functions
+        /// <summary>
+        /// This will get the logs for the given table and ID
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="ID"></param>
+        /// <param name="model"></param>
+        /// <exception cref="Exception"></exception>
         public void GetLogs(string table, int ID, ModelDTO model)
         {
             model.Logs = table switch

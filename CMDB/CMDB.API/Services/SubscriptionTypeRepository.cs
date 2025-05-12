@@ -32,7 +32,7 @@ namespace CMDB.API.Services
             return types;
         }
 
-        public async Task<SubscriptionTypeDTO?> GetById(int id)
+        public async Task<SubscriptionTypeDTO> GetById(int id)
         {
             var types = await _context.SubscriptionTypes.AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()

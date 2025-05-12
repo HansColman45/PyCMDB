@@ -138,7 +138,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return mobiles;
         }
-        public async Task<MobileDTO?> GetById(int id)
+        public async Task<MobileDTO> GetById(int id)
         {
             var mobile = await _context.Mobiles
                 .Include(x => x.MobileType)

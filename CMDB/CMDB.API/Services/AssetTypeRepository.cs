@@ -111,7 +111,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertType(x))
                 .ToListAsync();
         }
-        public async Task<AssetTypeDTO?> GetById(int id)
+        public async Task<AssetTypeDTO> GetById(int id)
         {
             var type = await _context.AssetTypes.AsNoTracking()
                 .Include(x => x.Category).AsNoTracking()

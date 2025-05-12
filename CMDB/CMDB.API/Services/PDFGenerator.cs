@@ -17,7 +17,7 @@ namespace CMDB.API.Services
         private readonly TextStyle h3Style = TextStyle.Default.FontFamily("Arial").FontSize(16).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle titleStyle = TextStyle.Default.FontFamily("Arial").FontSize(20).SemiBold().FontColor(Colors.Black);
         private readonly TextStyle defaultStyle = TextStyle.Default.FontFamily("Arial").FontSize(9);
-        private string? Type;
+        private string Type;
         private string Language;
         private string Receiver;
         private string FirstName;

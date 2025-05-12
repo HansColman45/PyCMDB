@@ -2,6 +2,9 @@
 
 namespace CMDB.API.Models
 {
+    /// <summary>
+    /// Generic Type used for AccountType and IdentityType
+    /// </summary>
     public class TypeDTO : ModelDTO
     {
         public int TypeId { get; set; }

@@ -8,7 +8,7 @@ namespace CMDB.API.Services
     public interface ILanguageRepository
     {
         Task<List<LanguageDTO>> GetAll();
-        Task<LanguageDTO?> GetByCode(string code);
+        Task<LanguageDTO> GetByCode(string code);
     }
     public class LanguageRepository : GenericRepository, ILanguageRepository
     {
@@ -23,7 +23,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return languages;
         }
-        public async Task<LanguageDTO?> GetByCode(string code)
+        public async Task<LanguageDTO> GetByCode(string code)
         {
             var language =  await _context.Languages.AsNoTracking()
                 .Where(x => x.Code == code).AsNoTracking()

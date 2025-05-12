@@ -39,7 +39,7 @@ namespace CMDB.API.Services
                 .Select(x => Convert2DTO(x)).ToListAsync();
             return keys;
         }
-        public async Task<KensingtonDTO?> GetById(int id)
+        public async Task<KensingtonDTO> GetById(int id)
         {
             var key = await _context.Kensingtons
                 .Include(x => x.Type)

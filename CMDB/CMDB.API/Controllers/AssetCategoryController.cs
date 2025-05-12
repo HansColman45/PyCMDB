@@ -7,6 +7,9 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing asset categories
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AssetCategoryController : ControllerBase
@@ -14,11 +17,22 @@ namespace CMDB.API.Controllers
         private readonly IUnitOfWork _uow;
         private readonly string site = "Asset Category";
         private HasAdminAccessRequest request;
-
+        private AssetCategoryController()
+        {
+        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="uow"></param>
         public AssetCategoryController(IUnitOfWork uow)
         {
                 _uow = uow;
         }
+        /// <summary>
+        /// Will get all asset categories
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -37,6 +51,10 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetCategoryRepository.GetById(id));
         }
+        /// <summary>
+        /// Will get all asset categories
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -55,6 +73,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetCategoryRepository.GetAll());
         }
+        /// <summary>
+        /// Will get all asset categories with a search string
+        /// </summary>
+        /// <param name="searchstr"></param>
+        /// <returns></returns>
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
@@ -73,6 +96,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetCategoryRepository.GetAll(searchstr));
         }
+        /// <summary>
+        /// Will get all asset categories with a category string
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
         [HttpGet("{category}"),Authorize]
         public async Task<IActionResult> GetBycategory(string category)
         {
@@ -91,6 +119,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetCategoryRepository.GetByCategory(category));
         }
+        /// <summary>
+        /// Will create a new asset category
+        /// </summary>
+        /// <param name="assetCategory"></param>
+        /// <returns></returns>
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(AssetCategoryDTO assetCategory)
         {
@@ -111,6 +144,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetCategory);
         }
+        /// <summary>
+        /// Will update an existing asset category
+        /// </summary>
+        /// <param name="assetCategory"></param>
+        /// <returns></returns>
         [HttpPut, Authorize]
         public async Task<IActionResult> Update(AssetCategoryDTO assetCategory)
         {
@@ -131,6 +169,12 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetCategory);
         }
+        /// <summary>
+        /// Will deactivate an existing asset category
+        /// </summary>
+        /// <param name="assetCategory"><see cref="AssetCategoryDTO"/></param>
+        /// <param name="reason">The reason of terminaton</param>
+        /// <returns></returns>
         [HttpDelete("{reason}")]
         public async Task<IActionResult> Delete(AssetCategoryDTO assetCategory, string reason)
         {
@@ -151,6 +195,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetCategory);
         }
+        /// <summary>
+        /// Will activate an existing asset category
+        /// </summary>
+        /// <param name="assetCategory"></param>
+        /// <returns></returns>
         [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(AssetCategoryDTO assetCategory)
         {
@@ -171,6 +220,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetCategory);
         }
+        /// <summary>
+        /// Will check if the asset category exists
+        /// </summary>
+        /// <param name="assetCategory"></param>
+        /// <returns></returns>
         [HttpGet("IsExisting"),Authorize]
         public async Task<IActionResult> IsCategoryExisting(AssetCategoryDTO assetCategory) 
         {

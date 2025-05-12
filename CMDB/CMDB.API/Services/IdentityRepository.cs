@@ -33,7 +33,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
-        public async Task<IdentityDTO?> GetById(int id)
+        public async Task<IdentityDTO> GetById(int id)
         {
             var iden = await _context.Identities.AsNoTracking()
                 .Include(x => x.Type).AsNoTracking()

@@ -6,7 +6,7 @@ namespace CMDB.API.Services
     {
         Task<IEnumerable<SubscriptionTypeDTO>> GetAll();
         Task<IEnumerable<SubscriptionTypeDTO>> GetAll(string search);
-        Task<SubscriptionTypeDTO?> GetById(int id);
+        Task<SubscriptionTypeDTO> GetById(int id);
         SubscriptionTypeDTO Create(SubscriptionTypeDTO subscriptionDTO);
         Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionDTO);
         Task<SubscriptionTypeDTO> Deactivate(SubscriptionTypeDTO subscriptionDTO, string reason);

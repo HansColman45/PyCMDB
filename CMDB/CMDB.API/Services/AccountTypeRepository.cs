@@ -28,7 +28,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accountTypes;
         }
-        public async Task<TypeDTO?> GetById(int id)
+        public async Task<TypeDTO> GetById(int id)
         {
             var type =  await _context.Types.OfType<AccountType>().AsNoTracking()
                 .Where(x => x.TypeId == id).AsNoTracking()
@@ -216,11 +216,11 @@ namespace CMDB.API.Services
                 TypeId = typeDTO.TypeId
             };
         }
-        private async Task<AccountType?> GetTypeById(int id)
+        private async Task<AccountType> GetTypeById(int id)
         {
             return await _context.Types.OfType<AccountType>()
                 .Where(x => x.TypeId == id)
-                .FirstAsync();
+                .FirstOrDefaultAsync();
         }
     }
 }

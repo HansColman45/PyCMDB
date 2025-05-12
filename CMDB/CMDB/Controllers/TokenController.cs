@@ -9,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for Token
+    /// </summary>
     public class TokenController : CMDBController
     {
         private readonly DevicesService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public TokenController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -20,6 +27,10 @@ namespace CMDB.Controllers
             Table = "token";
             _PDFservice = new();
         }
+        /// <summary>
+        /// List all tokens
+        /// </summary>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -36,6 +47,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Token\Create";
             return View(Desktops);
         }
+        /// <summary>
+        /// List all token based on search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -60,6 +76,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// This will show the form to delete the token
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -111,6 +133,11 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        /// <summary>
+        /// This will activate the token
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -133,6 +160,11 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This will show the details of the token
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Details(string id)
         {
             if (String.IsNullOrEmpty(id))
@@ -153,6 +185,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Token\Create";
             return View(token);
         }
+        /// <summary>
+        /// This will show the form to create a new token
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
@@ -192,6 +229,12 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        /// <summary>
+        /// This will show the form to edit the token
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -229,6 +272,12 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        /// <summary>
+        /// This will show the form to assign an identity to a token
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
@@ -265,6 +314,12 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        /// <summary>
+        /// This will show the form to assign a token to an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
@@ -302,6 +357,12 @@ namespace CMDB.Controllers
             }
             return View(token);
         }
+        /// <summary>
+        /// This will show the form to release an identity from a token
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);

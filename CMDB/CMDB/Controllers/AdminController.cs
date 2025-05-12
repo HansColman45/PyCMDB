@@ -1,25 +1,34 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// The Admin controller
+    /// </summary>
     public class AdminController : CMDBController
     {
         private readonly AdminService service;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public AdminController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             Table = "admin";
             SitePart = "Admin";
         }
-
+        /// <summary>
+        /// This will return the view with the list of all admins
+        /// </summary>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -35,6 +44,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Admin\Create";
             return View(list);
         }
+        /// <summary>
+        /// This will open the view with a list of admins based on the search string
+        /// </summary>
+        /// <param name="search">The search string</param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using List all in {0}", Table);
@@ -58,10 +72,15 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// This will open the view to create a new admin
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
-            Admin admin = new();
+            AdminDTO admin = new();
             ViewData["Title"] = "Create Admin";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["Controller"] = @"\Admin\Create";
@@ -73,14 +92,14 @@ namespace CMDB.Controllers
             {
                 try
                 {
-                    var accounts = await service.GetAccountByID(Convert.ToInt32(values["Account"]));
-                    admin.Account = accounts.First();
+                    var account = await service.GetAccountByID(Convert.ToInt32(values["Account"]));
+                    admin.Account = account;
                     admin.Level = Convert.ToInt32(values["Level"]);
                     if (service.IsExisting(admin))
                         ModelState.AddModelError("", "Admin is already existing");
                     if (ModelState.IsValid)
                     {
-                        await service.Create(admin, Table);
+                        await service.Create(admin);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -93,6 +112,12 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
+        /// <summary>
+        /// This will open the view to edit an admin
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -104,8 +129,7 @@ namespace CMDB.Controllers
             if (id == null)
                 return NotFound();
             string FormSubmit = values["form-submitted"];
-            var admins = await service.GetByID((int)id);
-            Admin admin = admins.FirstOrDefault();
+            var admin = await service.GetByID((int)id);
             if (admin == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -115,7 +139,7 @@ namespace CMDB.Controllers
                     int Level = Convert.ToInt32(values["Level"]);
                     if (ModelState.IsValid)
                     {
-                        await service.Update(admin, Level, Table);
+                        await service.Update(admin, Level);
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -128,6 +152,11 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
+        /// <summary>
+        /// This will open the view to show the details of an admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
@@ -139,12 +168,17 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             if (id == null)
                 return NotFound();
-            var admins = await service.GetByID((int)id);
-            Admin admin = admins.FirstOrDefault();
+            var admin = await service.GetByID((int)id);
             if (admin == null)
                 return NotFound();
-            return View(admins);
+            return View(admin);
         }
+        /// <summary>
+        /// This will open the view to delete an admin
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="Delegate"/></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -155,8 +189,7 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Admin";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];
-            var admins = await service.GetByID((int)id);
-            Admin admin = admins.FirstOrDefault();
+            var admin = await service.GetByID((int)id);
             if (admin == null)
                 return NotFound();
             if (!String.IsNullOrEmpty(FormSubmit))
@@ -166,7 +199,7 @@ namespace CMDB.Controllers
                     ViewData["reason"] = values["reason"];
                     if (ModelState.IsValid)
                     {
-                        await service.Deactivate(admin, values["reason"].ToString(), Table);
+                        await service.Deactivate(admin, values["reason"].ToString());
                         return RedirectToAction(nameof(Index));
                     }
                 }
@@ -179,6 +212,11 @@ namespace CMDB.Controllers
             }
             return View(admin);
         }
+        /// <summary>
+        /// This will activate an admin
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -187,13 +225,12 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (id == null)
                 return NotFound();
-            var admins = await service.GetByID((int)id);
-            Admin admin = admins.FirstOrDefault();
+            var admin = await service.GetByID((int)id);
             if (admin == null)
                 return NotFound();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(admin, Table);
+                await service.Activate(admin);
                 return RedirectToAction(nameof(Index));
             }
             else

@@ -100,7 +100,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accountTypes;
         }
-        public async Task<TypeDTO?> GetById(int id)
+        public async Task<TypeDTO> GetById(int id)
         {
             var type = await _context.Types.OfType<IdentityType>().AsNoTracking()
                 .Where(x => x.TypeId == id).AsNoTracking()

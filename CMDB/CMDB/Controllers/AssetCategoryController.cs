@@ -9,15 +9,26 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// The controller for the asset category
+    /// </summary>
     public class AssetCategoryController : CMDBController
     {
         private readonly AssetCategoryService service;
+        /// <summary>
+        /// constructor
+        /// </summary>
+        /// <param name="env"></param>
         public AssetCategoryController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             SitePart = "Asset Category";
             Table = "assetcategory";
         }
+        /// <summary>
+        /// Retruns the index page with all categories
+        /// </summary>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
@@ -33,6 +44,11 @@ namespace CMDB.Controllers
             var Categories = await service.ListAll();
             return View(Categories);
         }
+        /// <summary>
+        /// This will return the search page with the search results
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -54,6 +70,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// This will open the view to create a new category
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -86,12 +107,18 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
+        /// <summary>
+        /// This will open the view to edit a category
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
             if (id == null)
                 return NotFound();
-            var category = await service.ListByID((int)id); ;
+            var category = await service.GetByID((int)id); ;
             if (category == null)
                 return NotFound();
             ViewData["Title"] = "Edit Account";
@@ -123,12 +150,17 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
+        /// <summary>
+        /// This will open the view to show the details of a category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
             if (id == null)
                 return NotFound();
-            var category = await service.ListByID((int)id);
+            var category = await service.GetByID((int)id);
             if (category == null)
                 return NotFound();
             ViewData["Title"] = "Category Details";
@@ -140,12 +172,18 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(category);
         }
+        /// <summary>
+        /// This will open the view to delete a category
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
             if (id == null)
                 return NotFound();
-            var category = await service.ListByID((int)id);
+            var category = await service.GetByID((int)id);
             if (category == null)
                 return NotFound();
             ViewData["Title"] = "Deactivate Account";
@@ -174,12 +212,17 @@ namespace CMDB.Controllers
             }
             return View(category);
         }
+        /// <summary>
+        /// This will open the view to activate a category
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
             if (id == null)
                 return NotFound();
-            var category = await service.ListByID((int)id);
+            var category = await service.GetByID((int)id);
             if (category == null)
                 return NotFound();
             ViewData["Title"] = "Activate Category";
@@ -187,7 +230,7 @@ namespace CMDB.Controllers
             await BuildMenu();
             if (await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Activate"))
             {
-                await service.Activate(category, Table);
+                await service.Activate(category);
                 return RedirectToAction(nameof(Index));
             }
             else

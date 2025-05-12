@@ -15,7 +15,7 @@ namespace CMDB.Services
         }
         public async Task<ICollection<TypeDTO>> ListAll()
         {
-            BaseUrl = _url + $"api/IdentityType/GetAll";
+            BaseUrl = Url + $"api/IdentityType/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -27,7 +27,7 @@ namespace CMDB.Services
         }
         public async Task<ICollection<TypeDTO>> ListAll(string searchString)
         {
-            BaseUrl = _url + $"api/IdentityType/GetAll/{searchString}";
+            BaseUrl = Url + $"api/IdentityType/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -39,7 +39,7 @@ namespace CMDB.Services
         }
         public async Task<TypeDTO> GetByID(int id)
         {
-            BaseUrl = _url + $"api/IdentityType/{id}";
+            BaseUrl = Url + $"api/IdentityType/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -49,7 +49,7 @@ namespace CMDB.Services
         }
         public async Task Create(TypeDTO identityType)
         {
-            BaseUrl = _url + $"api/IdentityType";
+            BaseUrl = Url + $"api/IdentityType";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
             if (response.IsSuccessStatusCode)
@@ -61,7 +61,7 @@ namespace CMDB.Services
         }
         public async Task Update(TypeDTO identityType, string Type, string Description)
         {
-            BaseUrl = _url + $"api/IdentityType";
+            BaseUrl = Url + $"api/IdentityType";
             _Client.SetBearerToken(TokenStore.Token);
             identityType.Type = Type;
             identityType.Description = Description;
@@ -71,7 +71,7 @@ namespace CMDB.Services
         }
         public async Task Deactivate(TypeDTO identityType, string reason)
         {
-            BaseUrl = _url + $"api/IdentityType/{reason}";
+            BaseUrl = Url + $"api/IdentityType/{reason}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.DeleteAsJsonAsync(BaseUrl, identityType);
             if (!response.IsSuccessStatusCode)
@@ -79,7 +79,7 @@ namespace CMDB.Services
         }
         public async Task Activate(TypeDTO identityType)
         {
-            BaseUrl = _url + $"api/IdentityType/Activate";
+            BaseUrl = Url + $"api/IdentityType/Activate";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
             if (!response.IsSuccessStatusCode)
@@ -90,7 +90,7 @@ namespace CMDB.Services
             bool result = false;
             identityType.Type = Type == "" ? identityType.Type : Type;
             identityType.Description = Description == "" ? identityType.Description : Description;
-            BaseUrl = _url + $"api/IdentityType/IsExisting";
+            BaseUrl = Url + $"api/IdentityType/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, identityType);
             if (response.IsSuccessStatusCode)

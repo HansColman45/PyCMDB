@@ -1,26 +1,34 @@
-﻿using System;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using CMDB.API.Models;
 using CMDB.Infrastructure;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
-using CMDB.Domain.Entities;
 using CMDB.Services;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Threading.Tasks;
-using CMDB.API.Models;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// The IdentityTypeController is used to manage the IdentityType
+    /// </summary>
     public class IdentityTypeController : CMDBController
     {
         private readonly IdentityTypeService service;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public IdentityTypeController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             Table = "identitytype";
             SitePart = "Identity Type";
         }
+        /// <summary>
+        /// The index page with the list of all IdentityTypes
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -36,6 +44,11 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\IdentityType\Search";
             return View(list);
         }
+        /// <summary>
+        /// The search page with the list of all IdentityTypes matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using List all in {0}", Table);
@@ -57,6 +70,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// The details page with the details of the IdentityType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
@@ -74,6 +92,11 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(idenType);
         }
+        /// <summary>
+        /// The page to create a new IdentityType
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
@@ -106,6 +129,12 @@ namespace CMDB.Controllers
             }
             return View(idenType);
         }
+        /// <summary>
+        /// The page to edit the IdentityType
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -142,6 +171,12 @@ namespace CMDB.Controllers
             }
             return View(idenType);
         }
+        /// <summary>
+        /// The page to delete the IdentityType
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -176,6 +211,11 @@ namespace CMDB.Controllers
             }
             return View(idenType);
         }
+        /// <summary>
+        /// The page to activate the IdentityType
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);

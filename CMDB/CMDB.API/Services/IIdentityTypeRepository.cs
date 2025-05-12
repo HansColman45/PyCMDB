@@ -6,7 +6,7 @@ namespace CMDB.API.Services
     {
         Task<List<TypeDTO>> GetAll();
         Task<List<TypeDTO>> GetAll(string searchStr);
-        Task<TypeDTO?> GetById(int id);
+        Task<TypeDTO> GetById(int id);
         TypeDTO Create(TypeDTO typeDTO);
         Task<TypeDTO> DeActivate(TypeDTO type, string reason);
         Task<TypeDTO> Activate(TypeDTO type);

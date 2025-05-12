@@ -10,16 +10,27 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// The controller that handles the Kensington keys
+    /// </summary>
     public class KensingtonController : CMDBController
     {
         private readonly KensingtonService service = new();
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public KensingtonController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Kensington";
             Table = "kensington";
             _PDFservice = new();
         }
+        /// <summary>
+        /// The index page which shows all the keys
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
@@ -36,6 +47,11 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Kensington\Search";
             return View(keys);
         }
+        /// <summary>
+        /// The search page which shows all the keys matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", Table);
@@ -58,6 +74,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// The page to create a new Kensington key
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using create for {0}", SitePart);
@@ -96,6 +117,12 @@ namespace CMDB.Controllers
             }
             return View(kensington);
         }
+        /// <summary>
+        /// The page to edit a Kensington key
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit for {0}", SitePart);
@@ -137,6 +164,11 @@ namespace CMDB.Controllers
             }
             return View(key);
         }
+        /// <summary>
+        /// The details page of a Kensington key
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details for {0}", SitePart);
@@ -156,6 +188,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(key);
         }
+        /// <summary>
+        /// The page to delete a Kensington key
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? Id)
         {
             log.Debug("Using delete for {0}", SitePart);
@@ -188,6 +226,11 @@ namespace CMDB.Controllers
             }
             return View(key);
         }
+        /// <summary>
+        /// The page to activate a Kensington key
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using activate for {0}", SitePart);
@@ -211,6 +254,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// The page to assign a Kensington key to a device
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignDevice(int? id, IFormCollection values)
         {
             log.Debug("Using assign for {0}", SitePart);
@@ -242,6 +291,13 @@ namespace CMDB.Controllers
             }
             return View(key);
         }
+        /// <summary>
+        /// The page to release a Kensington key from a device
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string MobileId)
         {
             log.Debug("Using release for {0}", SitePart);
@@ -278,6 +334,12 @@ namespace CMDB.Controllers
             }
             return View(key);
         }
+        /// <summary>
+        /// The page that shows the assign form
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id == null)

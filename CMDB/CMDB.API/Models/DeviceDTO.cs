@@ -10,9 +10,9 @@ namespace CMDB.API.Models
         public string SerialNumber { get; set; }
         public AssetCategoryDTO Category { get; set; }
         public AssetTypeDTO AssetType { get; set; }
-        public string? MAC { get; set; }
-        public string? RAM { get; set; }
-        public IdentityDTO? Identity { get; set; }
-        public KensingtonDTO? Kensington { get; set; }
+        public string MAC { get; set; }
+        public string RAM { get; set; }
+        public IdentityDTO Identity { get; set; }
+        public KensingtonDTO Kensington { get; set; }
     }
 }

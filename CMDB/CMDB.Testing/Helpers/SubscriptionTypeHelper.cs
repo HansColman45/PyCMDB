@@ -32,9 +32,8 @@ namespace CMDB.Testing.Helpers
                 }
                 return subscriptionType;
             }
-            catch (Exception e)
+            catch (Exception)
             {
-
                 throw;
             }
         }

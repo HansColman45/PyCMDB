@@ -1,5 +1,4 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for Desktop
+    /// </summary>
     public class DesktopController : CMDBController
     {
         private readonly DevicesService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public DesktopController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -21,6 +27,10 @@ namespace CMDB.Controllers
             Table = "desktop";
             _PDFservice = new PDFService();
         }
+        /// <summary>
+        /// This is the index page for the desktop
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -38,6 +48,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Desktop\Create";
             return View(Desktops);
         }
+        /// <summary>
+        /// This is the search page for the desktop
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -62,6 +77,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// This is the create page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
@@ -103,6 +123,12 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the edit page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -143,6 +169,11 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the details page for the desktop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(string id)
         {
             log.Debug("Using details in {0}", Table);
@@ -165,6 +196,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(desktop);
         }
+        /// <summary>
+        /// This is the delete page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -221,6 +258,11 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the activate page for the desktop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -243,6 +285,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This is the assign Kensington page for the desktop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
         {
             log.Debug("Using Assign Kensington in {0}", Table);
@@ -279,6 +327,12 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the assign identity page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
@@ -315,6 +369,12 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the assign form page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
@@ -353,6 +413,12 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the release identity page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
@@ -395,6 +461,12 @@ namespace CMDB.Controllers
             }
             return View(desktop);
         }
+        /// <summary>
+        /// This is the release Kensington page for the desktop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
         {
             if (string.IsNullOrEmpty(id))

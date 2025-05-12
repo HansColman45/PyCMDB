@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string Category { get; set; }
-        public string? Prefix { get; set; }
+        public string Prefix { get; set; }
     }
 }

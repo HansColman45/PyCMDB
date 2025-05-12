@@ -10,19 +10,48 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Base controller for CMDB
+    /// </summary>
     public class CMDBController : Controller
     {
+        /// <summary>
+        /// Logger
+        /// </summary>
         protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
+        /// <summary>
+        /// Environment
+        /// </summary>
         protected readonly IWebHostEnvironment _env;
+        /// <summary>
+        /// The sitepart
+        /// </summary>
         protected string SitePart { get; set; }
+        /// <summary>
+        /// The table
+        /// </summary>
         protected string Table { get; set; }
+        /// <summary>
+        /// The token that is been used
+        /// </summary>
         protected string Token { get; set; }
         private readonly CMDBServices service;
+        private CMDBController()
+        {
+        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public CMDBController(IWebHostEnvironment env)
         {
             _env = env;
             service = new();
         }
+        /// <summary>
+        /// Build the menu
+        /// </summary>
+        /// <returns></returns>
         protected async Task BuildMenu()
         {
             Token ??= TokenStore.Token;
@@ -33,7 +62,7 @@ namespace CMDB.Controllers
                 m.Children = mL2;
                 foreach (Menu m1 in mL2)
                 {
-                    m1.Children = await service.ListPersonalMenu(Token,m1.MenuId);
+                    m1.Children = await service.ListPersonalMenu(m1.MenuId);
                 }
             }
             ViewBag.Menu = menul1;
@@ -51,6 +80,10 @@ namespace CMDB.Controllers
             ViewBag.SearchIcon = "fas fa-search";
             ViewBag.KeyIcon = "fa-solid fa-unlock-keyhole";
         }
+        /// <summary>
+        /// Error page
+        /// </summary>
+        /// <returns></returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

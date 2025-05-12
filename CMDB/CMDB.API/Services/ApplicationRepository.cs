@@ -27,7 +27,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return applications;
         }
-        public async Task<ApplicationDTO?> GetById(int Id)
+        public async Task<ApplicationDTO> GetById(int Id)
         {
             _logger.LogInformation("Get information about ApplicationDTO by Id: {Id}",Id);
             return await _context.Applications.AsNoTracking()
@@ -99,7 +99,7 @@ namespace CMDB.API.Services
                 Name = dto.Name,
             };
         }
-        private async Task<Application?> GetAppById(int Id)
+        private async Task<Application> GetAppById(int Id)
         {
             return await _context.Applications.FirstOrDefaultAsync(x => x.AppID == Id);
         }

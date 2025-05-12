@@ -5,18 +5,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
-    public interface IAssetCategoryRepository
-    {
-        Task<IEnumerable<AssetCategoryDTO>> GetAll();
-        Task<IEnumerable<AssetCategoryDTO>> GetAll(string search);
-        Task<AssetCategoryDTO?> GetById(int id);
-        Task<AssetCategoryDTO> GetByCategory(string category);
-        Task<bool> IsCategoryExisting(AssetCategoryDTO assetCategory);
-        AssetCategoryDTO Create(AssetCategoryDTO assetCategoryDTO);
-        Task<AssetCategoryDTO> Update(AssetCategoryDTO assetCategoryDTO);
-        Task<AssetCategoryDTO> Delete(AssetCategoryDTO assetCategoryDTO, string reason);
-        Task<AssetCategoryDTO> Activate(AssetCategoryDTO assetCategoryDTO);
-    }
     public class AssetCategoryRepository : GenericRepository, IAssetCategoryRepository
     {
         private readonly string table = "assetcategory";
@@ -63,7 +51,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertCategory(x))
                 .FirstAsync();
         }
-        public async Task<AssetCategoryDTO?> GetById(int id)
+        public async Task<AssetCategoryDTO> GetById(int id)
         {
             var category = await _context.AssetCategories.AsNoTracking()
                 .Where(x => x.Id == id)

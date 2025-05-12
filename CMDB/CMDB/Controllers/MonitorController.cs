@@ -10,10 +10,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// This controller is used to manage the monitor devices
+    /// </summary>
     public class MonitorController : CMDBController
     {
         private readonly DevicesService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// The constructor is used to inject the IWebHostEnvironment
+        /// </summary>
+        /// <param name="env"></param>
         public MonitorController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -21,6 +28,10 @@ namespace CMDB.Controllers
             Table = "screen";
             _PDFservice = new();
         }
+        /// <summary>
+        /// The index page which will show all the monitors
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -38,6 +49,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Monitor\Create";
             return View(Desktops);
         }
+        /// <summary>
+        /// The search page which will show all the monitors matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -62,6 +78,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// The delete page which will delete the monitor
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -118,6 +140,11 @@ namespace CMDB.Controllers
             }
             return View(monitor);
         }
+        /// <summary>
+        /// The activate page which will activate the monitor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -140,6 +167,11 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// The create page which will create a new monitor
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
@@ -179,6 +211,11 @@ namespace CMDB.Controllers
             }
             return View(screen);
         }
+        /// <summary>
+        /// The details page which will show the details of the monitor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -201,6 +238,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(screen);
         }
+        /// <summary>
+        /// The edit page which will edit the monitor
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -229,6 +272,12 @@ namespace CMDB.Controllers
             }
             return View(screen);
         }
+        /// <summary>
+        /// The assign identity page which will assign the identity to the monitor
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
@@ -266,6 +315,12 @@ namespace CMDB.Controllers
             }
             return View(moniror);
         }
+        /// <summary>
+        /// The assign form page which will show the information of the monitor and what is assigned to it
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
@@ -303,6 +358,12 @@ namespace CMDB.Controllers
             }
             return View(monitor);
         }
+        /// <summary>
+        /// The release identity page which will release the identity from the monitor
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
@@ -341,6 +402,87 @@ namespace CMDB.Controllers
                     await _PDFservice.GenratePDFFile("identity", monitor.Identity.IdenId);
                     await service.ReleaseIdenity(monitor);
                     return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(monitor);
+        }
+        /// <summary>
+        /// Page to assign a Kensington key to a laptop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
+        {
+            log.Debug("Using Assign Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var monitor = await service.GetDeviceById(SitePart, id);
+            if (monitor == null)
+                return NotFound();
+            ViewData["Title"] = "Assign Kensington to Monitor";
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Controller"] = @$"\Monitor\AssignKensington\{id}";
+            ViewBag.Keys = await service.ListFreeKeys();
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                int keyId = Int32.Parse(values["Kensington"]);
+                var key = await service.GetKensingtonById(keyId);
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await service.AssignKensington2Device(key, monitor);
+                        return RedirectToAction("AssignForm", "Laptop", new { id });
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Database exception {0}", ex.ToString());
+                        ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                            "see your system administrator.");
+                    }
+                }
+            }
+            return View(monitor);
+        }
+        /// <summary>
+        /// Page to release a Kensington key from a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
+        {
+            log.Debug("Using Release Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var monitor = await service.GetDeviceById(SitePart, id);
+            if (monitor == null)
+                return NotFound();
+            ViewData["Title"] = "Release Kensington from Monitor";
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
+            ViewData["backUrl"] = "Monitor";
+            ViewData["Controller"] = @$"\Monitor\ReleaseKensington\{id}";
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                try
+                {
+                    if (ModelState.IsValid)
+                    {
+                        await service.ReleaseKensington(monitor);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
                 }
             }
             return View(monitor);

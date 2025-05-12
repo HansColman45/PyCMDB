@@ -4,7 +4,9 @@ using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -13,15 +15,31 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// General service
+    /// </summary>
     public class CMDBServices
     {
-        protected string _url => "https://localhost:7055/";
+        /// <summary>
+        /// The URL of the API
+        /// </summary>
+        protected string Url => "https://localhost:7055/";
+        /// <summary>
+        /// The <see cref="HttpClient"/>
+        /// </summary>
         protected HttpClient _Client;
+        /// <summary>
+        /// The BaseUrl
+        /// </summary>
         protected string BaseUrl { get; set; }
+        /// <summary>
+        /// The Admin we are working with
+        /// </summary>
+        /// <returns></returns>
         public async Task<Admin> Admin()
         {
             var admin = new Admin();
-            BaseUrl = _url + $"api/Admin/{TokenStore.AdminId}";
+            BaseUrl = Url + $"api/Admin/{TokenStore.AdminId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -36,7 +54,9 @@ namespace CMDB.Services
             }
             return admin;
         }
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public CMDBServices()
         {
             HttpClientHandler clientHandler = new()
@@ -49,6 +69,9 @@ namespace CMDB.Services
             _Client = new HttpClient(clientHandler);
         }
         #region generic app things
+        /// <summary>
+        /// The format for the dates in the logs
+        /// </summary>
         public string LogDateFormat
         {
             get
@@ -59,7 +82,7 @@ namespace CMDB.Services
                     Code = "General",
                     SubCode = "LogDateFormat"
                 }; 
-                BaseUrl = _url + $"api/Configuration";
+                BaseUrl = Url + $"api/Configuration";
                 var response = _Client.PostAsJsonAsync(BaseUrl,request).Result;
                 _Client.SetBearerToken(TokenStore.Token);
                 if (response.IsSuccessStatusCode)
@@ -72,6 +95,9 @@ namespace CMDB.Services
                 return format;
             }
         }
+        /// <summary>
+        /// The format for all the other dates in the app
+        /// </summary>
         public string DateFormat
         {
             get
@@ -82,7 +108,7 @@ namespace CMDB.Services
                     Code = "General",
                     SubCode = "DateFormat"
                 };
-                BaseUrl = _url + $"api/Configuration";
+                BaseUrl = Url + $"api/Configuration";
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
                 {
@@ -94,6 +120,9 @@ namespace CMDB.Services
                 return format;
             }
         }
+        /// <summary>
+        /// The company name we have build the app for
+        /// </summary>
         public string Company
         {
             get
@@ -104,7 +133,7 @@ namespace CMDB.Services
                     Code = "General",
                     SubCode = "Company"
                 };
-                BaseUrl = _url + $"api/Configuration";
+                BaseUrl = Url + $"api/Configuration";
                 _Client.SetBearerToken(TokenStore.Token);
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
@@ -118,6 +147,10 @@ namespace CMDB.Services
             }
         }
         #endregion
+        /// <summary>
+        /// This method will reauthenticate the user
+        /// </summary>
+        /// <returns></returns>
         public async Task ReAuthenticate()
         {
             var token = await Login(TokenStore.UserName, TokenStore.Password);
@@ -126,6 +159,12 @@ namespace CMDB.Services
                 _Client.SetBearerToken(token);
             }
         }
+        /// <summary>
+        /// This will log the Admin in
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="pwd"></param>
+        /// <returns></returns>
         public async Task<string> Login(string userID, string pwd)
         {
             AuthenticateRequest request = new()
@@ -133,7 +172,7 @@ namespace CMDB.Services
                 Username = userID,
                 Password = pwd
             };
-            BaseUrl = _url + "api/Admin/Login";
+            BaseUrl = Url + "api/Admin/Login";
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (response.IsSuccessStatusCode)
             {
@@ -144,13 +183,19 @@ namespace CMDB.Services
                 TokenStore.Password = pwd;
                 return TokenStore.Token;
             }
+            else if(response.StatusCode == HttpStatusCode.BadRequest)
+                throw new Exception($"The error is {response.StatusCode} and {response.Content}");
             else
                 return null;
         }
         #region generic menu
+        /// <summary>
+        /// This method will get the first level of the menu
+        /// </summary>
+        /// <returns></returns>
         public async Task<ICollection<Menu>> ListFirstMenuLevel()
         {
-            BaseUrl = _url + "api/Menu/FirstLevel";
+            BaseUrl = Url + "api/Menu/FirstLevel";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -166,9 +211,14 @@ namespace CMDB.Services
             else
                 return new List<Menu>();
         }
+        /// <summary>
+        /// This method will get the second level of the menu
+        /// </summary>
+        /// <param name="menuID"></param>
+        /// <returns></returns>
         public async Task<ICollection<Menu>> ListSecondMenuLevel(int menuID)
         {
-            BaseUrl = _url + $"api/Menu/SecondLevel/{menuID}";
+            BaseUrl = Url + $"api/Menu/SecondLevel/{menuID}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -179,9 +229,14 @@ namespace CMDB.Services
             else
                 return new List<Menu>();
         }
-        public async Task<ICollection<Menu>> ListPersonalMenu(string token, int menuID)
+        /// <summary>
+        /// This method will get the personal menu for the admin that is logged in
+        /// </summary>
+        /// <param name="menuID"></param>
+        /// <returns></returns>
+        public async Task<ICollection<Menu>> ListPersonalMenu(int menuID)
         {
-            BaseUrl = _url + $"api/Menu/PersonalMenu/{menuID}";
+            BaseUrl = Url + $"api/Menu/PersonalMenu/{menuID}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -200,10 +255,15 @@ namespace CMDB.Services
                 return new List<Menu>();
         }
         #endregion
+        /// <summary>
+        /// This method will get the asset types for a specific category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListAssetTypes(string category)
         {
             List<SelectListItem> assettypes = new();
-            BaseUrl = _url + $"api/AssetType/GetByCategory/{category}";
+            BaseUrl = Url + $"api/AssetType/GetByCategory/{category}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) 
@@ -227,9 +287,16 @@ namespace CMDB.Services
             return assettypes;
         }
         #region Admin stuff
+        /// <summary>
+        /// This function will check if the admin has access to a specific site and action
+        /// </summary>
+        /// <param name="adminId">The adminId</param>
+        /// <param name="site">The part of the site requestion action to</param>
+        /// <param name="action">The action we are performing</param>
+        /// <returns>bool</returns>
         public async Task<bool> HasAdminAccess(int adminId, string site, string action)
         {
-            BaseUrl = _url + $"api/Admin/HasAdminAccess";
+            BaseUrl = Url + $"api/Admin/HasAdminAccess";
             _Client.SetBearerToken(TokenStore.Token);
             HasAdminAccessRequest request = new()
             {

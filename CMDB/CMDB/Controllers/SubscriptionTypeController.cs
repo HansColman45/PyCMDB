@@ -9,15 +9,26 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for the subscription type
+    /// </summary>
     public class SubscriptionTypeController : CMDBController
     {
         private SubscriptionTypeService service;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public SubscriptionTypeController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Subscription Type";
             Table = "subscriptiontype";
             service = new();
         }
+        /// <summary>
+        /// The index page with the overview of the subscription types
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -35,6 +46,11 @@ namespace CMDB.Controllers
             var types = await service.ListAll();
             return View(types);
         }
+        /// <summary>
+        /// The search page for the subscription types
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", Table);
@@ -57,6 +73,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// The create page for the subscription types
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
@@ -91,6 +112,12 @@ namespace CMDB.Controllers
             }
             return View(subscriptionType);
         }
+        /// <summary>
+        /// The edit page for the subscription types
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             if (id == null)
@@ -127,6 +154,11 @@ namespace CMDB.Controllers
             }
             return View(subscriptionType);
         }
+        /// <summary>
+        /// The details page for the subscription types
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -144,6 +176,12 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\SubscriptionType\Create";
             return View(subscriptionType);
         }
+        /// <summary>
+        /// The delete page for the subscription types
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             if (id == null)
@@ -177,6 +215,11 @@ namespace CMDB.Controllers
             }
             return View(subscriptionType);
         }
+        /// <summary>
+        /// The activate page for the subscription types
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             if (id == null)

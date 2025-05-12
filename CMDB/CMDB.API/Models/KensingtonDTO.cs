@@ -9,9 +9,9 @@ namespace CMDB.API.Models
         public AssetTypeDTO Type { get; set; }
         [Required(ErrorMessage = "Please enter a serial number")]
         public string SerialNumber { get; set; }
-        public DeviceDTO? Device { get; set; }
+        public DeviceDTO Device { get; set; }
         public int AmountOfKeys { get; set; }
         public bool HasLock { get; set; }
-        public string? AssetTag { get; set; }
+        public string AssetTag { get; set; }
     }
 }

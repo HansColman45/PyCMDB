@@ -1,7 +1,6 @@
 ﻿using CMDB.API.Helper;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -9,10 +8,16 @@ using System.Text;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// This class is used to generate JWT token
+    /// </summary>
     public class JwtService
     {
         private readonly JwtSettings _jwtSettings;
-
+        /// <summary>
+        /// This constructor is used to inject the configuration
+        /// </summary>
+        /// <param name="configuration"></param>
         public JwtService(IConfiguration configuration)
         {
             _jwtSettings = configuration.GetSection("Jwt").Get<JwtSettings>();
@@ -21,6 +26,7 @@ namespace CMDB.API.Services
         /// This function will generate the JWT token
         /// </summary>
         /// <param name="user"></param>
+        /// <param name="context"></param>
         /// <returns></returns>
         public string GenerateToken(CMDBContext context, Admin user)
         {

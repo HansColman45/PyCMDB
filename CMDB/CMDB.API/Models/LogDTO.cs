@@ -4,6 +4,6 @@
     {
         public int? Id { get; set; }
         public DateTime LogDate { get; set; }
-        public string? LogText { get; set; }
+        public string LogText { get; set; }
     }
 }

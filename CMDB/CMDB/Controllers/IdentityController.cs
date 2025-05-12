@@ -1,23 +1,27 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Device = CMDB.Domain.Entities.Device;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for managing identities
+    /// </summary>
     public class IdentityController : CMDBController
     {
         private readonly IdentityService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// The identity controller constructor
+        /// </summary>
+        /// <param name="env"></param>
         public IdentityController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -25,6 +29,10 @@ namespace CMDB.Controllers
             SitePart = "Identity";
             _PDFservice = new();
         }
+        /// <summary>
+        /// Return the view with a list of identities
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -43,6 +51,11 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Identity\Search";
             return View(list);
         }
+        /// <summary>
+        /// Return the view with a list of identities based on the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", Table);
@@ -66,6 +79,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// Return the view with the details of the identity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -93,6 +111,11 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to create a new identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
@@ -137,6 +160,12 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to edit an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             if (id == null)
@@ -180,6 +209,12 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to delete an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             if (id == null)
@@ -233,6 +268,11 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Activate an identity
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             if (id == null)
@@ -254,6 +294,12 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             return View();
         }
+        /// <summary>
+        /// Return the view to assign a device to an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignDevice(IFormCollection values, int? id)
         {
             if (id == null)
@@ -319,6 +365,12 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Assign an account to an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignAccount(IFormCollection values, int? id)
         {
             if (id == null)
@@ -357,6 +409,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// Release an account from an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseAccount(IFormCollection values, int id)
         {
             if (id == 0)
@@ -397,6 +455,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// Return the assign form
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id == null)
@@ -452,6 +516,13 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to release a mobile from an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="AssetTag"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseDevice(IFormCollection values, int? id, string AssetTag)
         {
             if (id == null || string.IsNullOrEmpty(AssetTag))
@@ -496,6 +567,13 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to release a mobile from an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int MobileId)
         {
             if (id == null && MobileId == 0)
@@ -538,6 +616,12 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// return the view to release devices from an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseDevices(IFormCollection values, int? id)
         {
             if (id == null)
@@ -583,6 +667,13 @@ namespace CMDB.Controllers
             }
             return View(identity);
         }
+        /// <summary>
+        /// Return the view to release a subscription from an identity
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseInternetSubscription(IFormCollection values, int? id, int MobileId)
         {
             if (id == null && MobileId == 0)

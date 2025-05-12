@@ -35,7 +35,7 @@ namespace CMDB.Services
             string Language, 
             string type = null)
         {
-            BaseUrl = _url + path + "/AddUserInfo";
+            BaseUrl = Url + path + "/AddUserInfo";
             PDFInformation info = new()
             {
                 ITEmployee = ITEmployee,
@@ -50,65 +50,65 @@ namespace CMDB.Services
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, info);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task SetAccontInfo(IdenAccountDTO account)
         {
-            BaseUrl = _url + "api/PDFGenerator/AddAccountInfo";
+            BaseUrl = Url + "api/PDFGenerator/AddAccountInfo";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl,account);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task SetDeviceInfo(DeviceDTO device)
         {
-            BaseUrl = _url + path + "/AddAssetInfo";
+            BaseUrl = Url + path + "/AddAssetInfo";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task SetMobileInfo(MobileDTO mobile)
         {
-            BaseUrl = _url + path + "/AddMobileInfo";
+            BaseUrl = Url + path + "/AddMobileInfo";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task SetSubscriptionInfo(SubscriptionDTO subscription)
         {
-            BaseUrl = _url + path + "/AddSubscriptionInfo";
+            BaseUrl = Url + path + "/AddSubscriptionInfo";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, subscription);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task SetKeyInfo(KensingtonDTO kensington)
         {
-            BaseUrl = _url + path + "/AddKeyInfo";
+            BaseUrl = Url + path + "/AddKeyInfo";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, kensington);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<string> GenratePDFFile(string entity, int id)
         {
-            BaseUrl = _url + path + $"/{entity}/{id}";
+            BaseUrl = Url + path + $"/{entity}/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url,response.StatusCode);
+                throw new NotAValidSuccessCode(Url,response.StatusCode);
             else
                 return await response.Content.ReadAsJsonAsync<string>();
         }
         public async Task<string> GenratePDFFile(string entity, string assetTag)
         {
-            BaseUrl = _url + path + $"/{entity}/{assetTag}";
+            BaseUrl = Url + path + $"/{entity}/{assetTag}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
             else
                 return await response.Content.ReadAsJsonAsync<string>();
         }

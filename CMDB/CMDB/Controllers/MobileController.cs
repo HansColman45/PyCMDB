@@ -1,20 +1,25 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for the mobile
+    /// </summary>
     public class MobileController : CMDBController
     {
         private readonly MobileService service;
         private readonly PDFService _PDFService;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public MobileController(IWebHostEnvironment env) : base(env)
         {
             SitePart = "Mobile";
@@ -22,6 +27,10 @@ namespace CMDB.Controllers
             service = new();
             _PDFService = new();
         }
+        /// <summary>
+        /// The index page which will show all the mobiles
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
@@ -39,6 +48,11 @@ namespace CMDB.Controllers
             var mobiles = await service.ListAll();
             return View(mobiles);
         }
+        /// <summary>
+        /// The search page which will show all the mobiles matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -63,6 +77,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// The create page which will show the form to create a new mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
@@ -101,6 +120,11 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The details page which will show the details of the mobile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -124,6 +148,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(mobile);
         }
+        /// <summary>
+        /// The edit page which will show the form to edit a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             if (id == null)
@@ -162,6 +192,12 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The delete page which will show the form to delete a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             if (id == null)
@@ -213,6 +249,11 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The activate page which will show the form to activate a mobile
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             if (id == null)
@@ -242,6 +283,12 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             return View();
         }
+        /// <summary>
+        /// The assign identity page which will show the form to assign an identity to a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
             if (id == null)
@@ -279,6 +326,12 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The release identity page which will show the form to release the identity from a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id)
         {
             if (id == null)
@@ -330,6 +383,13 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The release subscription page which will show the form to release the subscription from a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseSubscription(IFormCollection values, int? id, int? MobileId)
         {
             if (id is null && MobileId is null)
@@ -378,6 +438,12 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The assign subscription page which will show the form to assign a subscription to a mobile
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignSubscription(IFormCollection values, int? id)
         {
             if (id == null)
@@ -405,6 +471,12 @@ namespace CMDB.Controllers
             }
             return View(mobile);
         }
+        /// <summary>
+        /// The assignForm page which will show the form with the information of the mobile and what is assigned to it
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id == null)
@@ -421,7 +493,7 @@ namespace CMDB.Controllers
             var admin = await service.Admin();
             ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
-            if (!String.IsNullOrEmpty(FormSubmit))
+            if (!string.IsNullOrEmpty(FormSubmit))
             {
                 string Employee = values["Employee"];
                 string ITPerson = values["ITEmp"];

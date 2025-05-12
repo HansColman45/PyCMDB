@@ -1,5 +1,4 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller that handles the laptops
+    /// </summary>
     public class LaptopController : CMDBController
     {
         private readonly DevicesService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public LaptopController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -21,7 +27,10 @@ namespace CMDB.Controllers
             Table = "laptop";
             _PDFservice = new();
         }
-
+        /// <summary>
+        /// The index page with a list of all the laptops
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -39,6 +48,11 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Laptop\Search";
             return View(Desktops);
         }
+        /// <summary>
+        /// The search page with a list of all the laptops matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -63,6 +77,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// Page to create a new laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
@@ -104,6 +123,12 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to edit a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, string id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -144,6 +169,11 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to show the details of a laptop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(string id)
         {
             log.Debug("Using details in {0}", Table);
@@ -166,6 +196,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(laptop);
         }
+        /// <summary>
+        /// Page to delete a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -222,6 +258,11 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to activate a laptop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -244,6 +285,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// Page to assign a Kensington key to a laptop
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
         {
             log.Debug("Using Assign Kensington in {0}", Table);
@@ -280,6 +327,12 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to assign an identity to a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
@@ -317,6 +370,12 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to release an identity from a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
@@ -359,6 +418,12 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// Page to release a Kensington key from a laptop
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
         {
             log.Debug("Using Release Key in {0}", Table);
@@ -404,6 +469,12 @@ namespace CMDB.Controllers
             }
             return View(laptop);
         }
+        /// <summary>
+        /// The asign form page
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);

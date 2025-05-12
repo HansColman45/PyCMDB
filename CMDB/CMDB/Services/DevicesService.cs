@@ -4,21 +4,32 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// This is the Devices service
+    /// </summary>
     public class DevicesService : CMDBServices
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public DevicesService() : base()
         {
         }
+        /// <summary>
+        /// This method gets all devices by category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<DeviceDTO>> ListAll(string category)
         {
-            BaseUrl = _url + $"api/Device/{category}/GetAll";
+            BaseUrl = Url + $"api/Device/{category}/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -32,11 +43,18 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method gets all devices by category and searchstring
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="searchString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<DeviceDTO>> ListAll(string category, string searchString)
         {
-            BaseUrl = _url + $"api/Device/{category}/GetAll/{searchString}";
+            BaseUrl = Url + $"api/Device/{category}/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -50,12 +68,16 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<List<DeviceDTO>>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method gets all listed RAM
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListRams()
         {
             List<SelectListItem> assettypes = new();
-            BaseUrl = _url + $"api/Device/GetAllRams";
+            BaseUrl = Url + $"api/Device/GetAllRams";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -68,51 +90,95 @@ namespace CMDB.Services
             }
             return assettypes;
         }
+        /// <summary>
+        /// This method will create a new device
+        /// </summary>
+        /// <param name="device"><see cref="DeviceDTO"/></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task CreateNewDevice(DeviceDTO device)
         {
-            BaseUrl = _url + $"api/Device";
+            BaseUrl = Url + $"api/Device";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will update a device
+        /// </summary>
+        /// <param name="desktop">The <see cref="DeviceDTO"/></param>
+        /// <param name="newRam"></param>
+        /// <param name="newMAC"></param>
+        /// <param name="newAssetType"></param>
+        /// <param name="newSerialNumber"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task UpdateDevice(DeviceDTO desktop, string newRam, string newMAC, AssetTypeDTO newAssetType, string newSerialNumber)
         {
             var device = ConvertLaptopOrDesktop(desktop,newRam,newMAC,newAssetType,newSerialNumber);
-            BaseUrl = _url + $"api/Device";
+            BaseUrl = Url + $"api/Device";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PutAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will update a device
+        /// </summary>
+        /// <param name="screen"></param>
+        /// <param name="newSerialNumber"></param>
+        /// <param name="newAssetType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task UpdateDevice(DeviceDTO screen, string newSerialNumber, AssetTypeDTO newAssetType)
         {
             var device = ConvertDevice(screen, newAssetType, newSerialNumber);
-            BaseUrl = _url + $"api/Device";
+            BaseUrl = Url + $"api/Device";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PutAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will deactivate a device
+        /// </summary>
+        /// <param name="device"><see cref="DeviceDTO"/></param>
+        /// <param name="Reason"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Deactivate(DeviceDTO device, string Reason)
         {
-            BaseUrl = _url + $"api/Device/{Reason}";
+            BaseUrl = Url + $"api/Device/{Reason}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.DeleteAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will activate a device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Activate(DeviceDTO device)
         {
-            BaseUrl = _url + $"api/Device/Activate";
+            BaseUrl = Url + $"api/Device/Activate";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will get a device by category and assettag
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="assetTag"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<DeviceDTO> GetDeviceById(string category, string assetTag)
         {
-            BaseUrl = _url + $"api/Device/{category}/{assetTag}";
+            BaseUrl = Url + $"api/Device/{category}/{assetTag}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -120,18 +186,28 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<DeviceDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will check if a device is existing
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         public async Task<bool> IsDeviceExisting(DeviceDTO device) 
         {
             bool result = false;
-            BaseUrl = _url + $"api/Device/IsExisting";
+            BaseUrl = Url + $"api/Device/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<bool>();
             return result;
         }
+        /// <summary>
+        /// This method will check if the device is not linked to an identity
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         public bool IsDeviceFree(DeviceDTO device)
         {
             bool result = false;
@@ -139,10 +215,15 @@ namespace CMDB.Services
                 return true;
             return result;
         }
+        /// <summary>
+        /// This method will get all free identities
+        /// </summary>
+        /// <param name="table"></param>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeIdentities(string table)
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/{table}";
+            BaseUrl = Url + $"api/Identity/ListAllFreeIdentities/{table}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode) 
@@ -155,9 +236,15 @@ namespace CMDB.Services
             }
             return identites;
         }
+        /// <summary>
+        /// This method will get the assetType by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<AssetTypeDTO> GetAssetTypeById(int id)
         {
-            BaseUrl = _url + $"api/AssetType/{id}";
+            BaseUrl = Url + $"api/AssetType/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -165,11 +252,17 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<AssetTypeDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will get the assetType by category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<AssetCategoryDTO> GetAsstCategoryByCategory(string category)
         {
-            BaseUrl = _url + $"api/AssetCategory/{category}";
+            BaseUrl = Url + $"api/AssetCategory/{category}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -177,49 +270,78 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<AssetCategoryDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will get the identity by id
+        /// </summary>
+        /// <param name="idenId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<IdentityDTO> GetAssignedIdentity(int idenId)
         {
-            BaseUrl = _url + $"api/Identity/{idenId}";
+            BaseUrl = Url + $"api/Identity/{idenId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<IdentityDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will assign an identity to a device
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignIdentity2Device(IdentityDTO identity, DeviceDTO device)
         {
             device.Identity = identity;
-            BaseUrl = _url + $"api/Device/AssignIdentity";
+            BaseUrl = Url + $"api/Device/AssignIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will release the identity from a device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseIdenity(DeviceDTO device)
         {
-            BaseUrl = _url + $"api/Device/ReleaseIdentity";
+            BaseUrl = Url + $"api/Device/ReleaseIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will get the kensington by id
+        /// </summary>
+        /// <param name="keyId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<KensingtonDTO> GetKensingtonById(int keyId)
         {
-            BaseUrl = _url + $"api/Kensington/{keyId}";
+            BaseUrl = Url + $"api/Kensington/{keyId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<KensingtonDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will get all free keys
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeKeys()
         {
             List<SelectListItem> keys = new();
-            BaseUrl = _url + $"api/Kensington/GetAllFreeKeys";
+            BaseUrl = Url + $"api/Kensington/GetAllFreeKeys";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -232,24 +354,37 @@ namespace CMDB.Services
             }
             return keys;
         }
+        /// <summary>
+        /// This method will assign a kensington to a device
+        /// </summary>
+        /// <param name="kensington"></param>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignKensington2Device(KensingtonDTO kensington, DeviceDTO device)
         {
             device.Kensington = kensington;
-            BaseUrl = _url + $"api/Device/AssignKensington";
+            BaseUrl = Url + $"api/Device/AssignKensington";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This method will release the kensington from a device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseKensington(DeviceDTO device)
         {
-            BaseUrl = _url + $"api/Device/ReleaseKensington";
+            BaseUrl = Url + $"api/Device/ReleaseKensington";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, device);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        private DeviceDTO ConvertDevice(DeviceDTO device, AssetTypeDTO newAssetType = null, string newSerialNumber = null)
+        private static DeviceDTO ConvertDevice(DeviceDTO device, AssetTypeDTO newAssetType = null, string newSerialNumber = null)
         {
             DeviceDTO dto = new()
             {
@@ -289,7 +424,7 @@ namespace CMDB.Services
             };
             return dto;
         }
-        private DeviceDTO ConvertLaptopOrDesktop(DeviceDTO desktop, string newRam = null, string newMAC = null, AssetTypeDTO newAssetType = null, string newSerialNumber = null)
+        private static DeviceDTO ConvertLaptopOrDesktop(DeviceDTO desktop, string newRam = null, string newMAC = null, AssetTypeDTO newAssetType = null, string newSerialNumber = null)
         {
             DeviceDTO device = new()
             {

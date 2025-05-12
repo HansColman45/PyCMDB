@@ -10,10 +10,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for Account
+    /// </summary>
     public class AccountController : CMDBController
     {
         private readonly AccountService service;
         private readonly PDFService PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public AccountController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -21,6 +28,10 @@ namespace CMDB.Controllers
             SitePart = "Account";
             Table = "account";
         }
+        /// <summary>
+        /// This will return the view with all the accounts
+        /// </summary>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
@@ -37,6 +48,11 @@ namespace CMDB.Controllers
             ViewData["actionUrl"] = @"\Account\Search";
             return View(accounts);
         }
+        /// <summary>
+        /// This will return the view with all the account based on the search string
+        /// </summary>
+        /// <param name="search">The searchstring</param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -61,6 +77,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// This will return the view to create a new account
+        /// </summary>
+        /// <param name="values">The values from the form</param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
@@ -100,6 +121,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This will return the view to edit an account
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -140,6 +167,11 @@ namespace CMDB.Controllers
             }
             return View(account);
         }
+        /// <summary>
+        /// This will return the view with the details of an account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
@@ -162,6 +194,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(account);
         }
+        /// <summary>
+        /// This will return the view to delete an account
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
@@ -193,6 +231,11 @@ namespace CMDB.Controllers
             }
             return View(account);
         }
+        /// <summary>
+        /// This will activate an account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -216,6 +259,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This will assign an identity to an account
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Identity in {0}", Table);
@@ -245,6 +294,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This will release an identity from an account
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Identity in {0}", Table);
@@ -287,6 +342,12 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// This will open the Assign Form
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             log.Debug("Using Assign Form in {0}", Table);

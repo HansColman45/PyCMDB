@@ -11,13 +11,15 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for the AssetType
+    /// </summary>
     public class AssetTypeController : CMDBController
     {
         private readonly AssetTypeService service;
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="context"></param>
         /// <param name="env"></param>
         public AssetTypeController(IWebHostEnvironment env) : base(env)
         {

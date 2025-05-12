@@ -1,23 +1,25 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Linq;
-using System.Security.Cryptography.Pkcs;
 using System.Threading.Tasks;
-using Subscription = CMDB.Domain.Entities.Subscription;
 
 namespace CMDB.Controllers
 {
-
+    /// <summary>
+    /// Controller for the subscription
+    /// </summary>
     public class SubscriptionController : CMDBController
     {
         private readonly SubscriptionService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public SubscriptionController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -25,6 +27,10 @@ namespace CMDB.Controllers
             SitePart = "Subscription";
             Table = "subscription";
         }
+        /// <summary>
+        /// The index page with the overview of the subscriptions
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -42,6 +48,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Subscription\Create";
             return View(list);
         }
+        /// <summary>
+        /// The search page for the subscriptions matching the search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
 
@@ -67,6 +78,11 @@ namespace CMDB.Controllers
             else
                 return RedirectToAction(nameof(Index));
         }
+        /// <summary>
+        /// The create page for creating a new subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
@@ -101,6 +117,12 @@ namespace CMDB.Controllers
             
             return View(subscription);
         }
+        /// <summary>
+        /// The edit page for editing a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             if (id is null)
@@ -137,6 +159,11 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
+        /// <summary>
+        /// The details page for showing the details of a subscription
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
             if (id is null)
@@ -160,6 +187,12 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(subscription);
         }
+        /// <summary>
+        /// The delete page for deleting a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             if (id is null)
@@ -209,6 +242,11 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
+        /// <summary>
+        /// The activate page for activating a subscription
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             if (id is null)
@@ -238,6 +276,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             return View();
         }
+        /// <summary>
+        /// The page for assigning an identity to a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
             if (id is null)
@@ -273,6 +317,12 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
+        /// <summary>
+        /// The page for assigning a mobile to a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignMobile(IFormCollection values, int? id)
         {
             if (id is null)
@@ -308,6 +358,12 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
+        /// <summary>
+        /// The assign form page for assigning a form to a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
             if (id is null)
@@ -375,7 +431,13 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
-        
+        /// <summary>
+        /// The page for releasing an identity from a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, int? id, int? MobileId)
         {
             if (id is null && MobileId is null)
@@ -418,6 +480,13 @@ namespace CMDB.Controllers
             }
             return View(subscription);
         }
+        /// <summary>
+        /// The page for releasing a mobile from a subscription
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <param name="MobileId"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseMobile(IFormCollection values, int? id, int? MobileId)
         {
             if (id is null && MobileId is null)

@@ -4,7 +4,7 @@ namespace CMDB.API.Services
 {
     public interface IIdentityRepository
     {
-        Task<IdentityDTO?> GetById(int id);
+        Task<IdentityDTO> GetById(int id);
         Task<IEnumerable<IdentityDTO>> GetAll();
         Task<IEnumerable<IdentityDTO>> GetAll(string searchStr);
         Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities(string sitePart);

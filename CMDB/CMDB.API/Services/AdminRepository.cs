@@ -7,35 +7,71 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Admin repository
+    /// </summary>
     public class AdminRepository : GenericRepository, IAdminRepository
     {
         private readonly JwtService _jwtService;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
+        /// <param name="jwtService"></param>
         public AdminRepository(CMDBContext context, ILogger logger, JwtService jwtService) : base(context, logger)
         {
             _jwtService = jwtService;
         }
-        public async Task<bool> IsExisting(Admin admin)
+        /// <summary>
+        /// Will check if the admin exists
+        /// </summary>
+        /// <param name="admindto"></param>
+        /// <returns><c>bool</c></returns>
+        public async Task<bool> IsExisting(AdminDTO admindto)
         {
             bool result = false;
-            admin = await GetAdminByID(admin.AdminId);
+            var admin = await GetAdminByID(admindto.AdminId);
+            var account = await _context.Accounts.Where(x => x.AccID == admin.AccountId).AsNoTracking().FirstOrDefaultAsync();
+            if (string.Compare(admindto.Account.UserID, account.UserID) == 0 && admindto.Account.ApplicationId == account.ApplicationId)
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
             return result;
         }
-        public Admin Add(Admin entity)
+        /// <summary>
+        /// Will Create a new admin
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <returns><c>bool</c></returns>
+        public AdminDTO Add(AdminDTO entity)
         {
+            Admin admin = new()
+            {
+                AccountId = entity.Account.AccID,
+                Level = entity.Level,
+                active = 1,
+                DateSet = DateTime.Now,
+                LastModifiedAdminId = TokenStore.AdminId
+            };
+            admin.Password = new PasswordHasher().EncryptPassword("Br!ght1CmDb");
             string value = "Admin with UserID: " + entity.Account.UserID + " and level: " + entity.Level.ToString();
             var logLine = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, "admin");
             entity.Logs.Add(new()
             {
                 LogText = logLine,
                 LogDate = DateTime.Now,
-                AdminId = entity.AdminId
             });
-            _context.Admins.Add(entity);
+            _context.Admins.Add(admin);
             return entity;
         }
-        public async Task<Admin> Update(Admin admin, int adminId)
+        public async Task<Admin> Update(AdminDTO admin)
         {
-            var _admin = await GetAdminByID(adminId);
+            var _admin = await GetAdminByID(admin.AdminId);
             if (admin.Level != _admin.Level)
             {
                 _admin.Level = admin.Level;
@@ -46,12 +82,12 @@ namespace CMDB.API.Services
                     LogText = logLine,
                     LogDate = DateTime.Now
                 });
-                _context.Admins.Update(admin);
+                _context.Admins.Update(_admin);
                 return _admin;
             }
             return _admin;
         }
-        public async Task<AuthenticateResponse?> Authenticate(AuthenticateRequest model)
+        public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
             var admin = await _context.Admins.AsNoTracking()
                 .Include(x => x.Account)
@@ -101,34 +137,40 @@ namespace CMDB.API.Services
                 .Select(x => ConvertAdmin(x))
                 .ToListAsync();
         }
-        public async Task<AdminDTO?> GetById(int id)
+        public async Task<AdminDTO> GetById(int id)
         {
-            return await _context.Admins.AsNoTracking()
+             var admin = await _context.Admins
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Type).AsNoTracking()
+                .ThenInclude(x => x.Type)
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Application).AsNoTracking()
-                .Where(x => x.AdminId == id)
+                .ThenInclude(x => x.Application)
+                .Where(x => x.AdminId == id).AsNoTracking()
                 .Select(x => ConvertAdmin(x))
                 .FirstOrDefaultAsync();
+            if (admin is not null)
+            {
+                GetLogs("admin", admin.AdminId, admin);
+            }
+            return admin;
         }
         public async Task<IEnumerable<AdminDTO>> GetAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
-            return await _context.Admins.AsNoTracking()
+            return await _context.Admins
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Type).AsNoTracking()
+                .ThenInclude(x => x.Type)
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Application).AsNoTracking()
+                .ThenInclude(x => x.Application)
                 .Where(x => EF.Functions.Like(x.Level.ToString(), searhterm) || EF.Functions.Like(x.Account.UserID, searhterm)).AsNoTracking()
                 .Select(x => ConvertAdmin(x))
                 .ToListAsync();
         }
-        private async Task<Admin?> GetAdminByID(int Id)
-        {
-            return await _context.Admins.Where(x => x.AdminId == Id).FirstOrDefaultAsync();
-        }
-        public static AdminDTO ConvertAdmin(in Admin admin)
+        /// <summary>
+        /// Converts the admin to a DTO
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <returns><see cref="AdminDTO"/></returns>
+        public static AdminDTO ConvertAdmin(Admin admin)
         {
             return new()
             {
@@ -167,6 +209,41 @@ namespace CMDB.API.Services
                     }
                 }
             };
+        }
+        public async Task<AdminDTO> Activate(AdminDTO admin)
+        {
+            var _admin = await GetAdminByID(admin.AdminId);
+            _admin.active = 1;
+            _admin.DeactivateReason = null;
+            _admin.LastModifiedAdmin = TokenStore.Admin;
+            var logLine = GenericLogLineCreator.ActivateLogLine($"Admin with {admin.Account.UserID}", TokenStore.Admin.Account.UserID, "admin");
+            _admin.Logs.Add(new()
+            {
+                LogText = logLine,
+                LogDate = DateTime.Now
+            });
+            _context.Admins.Update(_admin);
+            return admin;
+        }
+        public async Task<AdminDTO> DeActivate(AdminDTO admin, string reason)
+        {
+            var _admin = await GetAdminByID(admin.AdminId);
+            _admin.active = 0;
+            _admin.DeactivateReason = reason;
+            _admin.LastModifiedAdmin = TokenStore.Admin;
+            var logLine = GenericLogLineCreator.DeleteLogLine($"Admin with {admin.Account.UserID}", TokenStore.Admin.Account.UserID,reason, "admin");
+            _admin.Logs.Add(new()
+            {
+                LogText = logLine,
+                LogDate = DateTime.Now
+            });
+            _context.Admins.Update(_admin);
+            return admin;
+        }
+
+        private async Task<Admin> GetAdminByID(int Id)
+        {
+            return await _context.Admins.Where(x => x.AdminId == Id).FirstOrDefaultAsync();
         }
     }
 }

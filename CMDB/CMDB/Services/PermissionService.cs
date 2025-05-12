@@ -8,8 +8,14 @@ using System.Text;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// This is the Permission service
+    /// </summary>
     public class PermissionService : CMDBServices
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public PermissionService() : base()
         {
         }

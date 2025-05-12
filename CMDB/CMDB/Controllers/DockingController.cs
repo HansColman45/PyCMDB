@@ -9,10 +9,17 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for managing docking stations
+    /// </summary>
     public class DockingController : CMDBController
     {
         private readonly DevicesService service;
         private readonly PDFService _PDFservice;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public DockingController(IWebHostEnvironment env) : base(env)
         {
             service = new();
@@ -20,6 +27,10 @@ namespace CMDB.Controllers
             Table = "docking";
             _PDFservice = new ();
         }
+        /// <summary>
+        /// Return view with all docking stations
+        /// </summary>
+        /// <returns></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
@@ -37,6 +48,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\Docking\Create";
             return View(Desktops);
         }
+        /// <summary>
+        /// Return view with all docking stations based on search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -62,6 +78,12 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// return view to delete docking station
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -118,6 +140,11 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        /// <summary>
+        /// Return view to activate docking station
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(string id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -140,6 +167,11 @@ namespace CMDB.Controllers
             }
             return View();
         }
+        /// <summary>
+        /// Return view with docking station details
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Details(string id)
         {
             if (string.IsNullOrEmpty(id))
@@ -162,6 +194,11 @@ namespace CMDB.Controllers
             ViewData["DateFormat"] = service.DateFormat;
             return View(docking);
         }
+        /// <summary>
+        /// Return view to create new docking station
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
@@ -201,6 +238,12 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        /// <summary>
+        /// Return view to edit docking station
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -229,6 +272,12 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        /// <summary>
+        /// Return view to assign identity to docking station
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
@@ -266,6 +315,12 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        /// <summary>
+        /// Return the assign form view
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
@@ -304,6 +359,12 @@ namespace CMDB.Controllers
             }
             return View(docking);
         }
+        /// <summary>
+        /// Return view to release identity from docking station
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);

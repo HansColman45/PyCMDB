@@ -18,62 +18,62 @@ namespace CMDB.Services
         }
         public async Task<List<MobileDTO>> ListAll()
         {
-            BaseUrl = _url + $"api/Mobile/GetAll";
+            BaseUrl = Url + $"api/Mobile/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<List<MobileDTO>> ListAll(string searchString)
         {
-            BaseUrl = _url + $"api/Mobile/GetAll/{searchString}";
+            BaseUrl = Url + $"api/Mobile/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<List<MobileDTO>>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task CreateNew(MobileDTO mobile)
         {
             string value = $"{mobile.MobileType.AssetCategory.Category} with type {mobile.MobileType}";
-            BaseUrl = _url + $"api/Mobile";
+            BaseUrl = Url + $"api/Mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Update(MobileDTO mobile, long newImei, AssetTypeDTO newAssetType)
         {
             mobile.IMEI = newImei;
             mobile.MobileType = newAssetType;
-            BaseUrl = _url + $"api/Mobile";
+            BaseUrl = Url + $"api/Mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PutAsJsonAsync(BaseUrl, mobile);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Deactivate(MobileDTO mobile, string reason)
         {
-            BaseUrl = _url + $"api/Mobile/{reason}";
+            BaseUrl = Url + $"api/Mobile/{reason}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.DeleteAsJsonAsync(BaseUrl, mobile);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task Activate(MobileDTO mobile)
         {
-            BaseUrl = _url + $"api/Mobile/Activate";
+            BaseUrl = Url + $"api/Mobile/Activate";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, mobile);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<AssetTypeDTO> ListAssetTypeById(int id)
         {
-            BaseUrl = _url + $"api/AssetType/{id}";
+            BaseUrl = Url + $"api/AssetType/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -81,7 +81,7 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<AssetTypeDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<bool> IsMobileExisting(MobileDTO mobile, long? imei = null)
         {
@@ -89,7 +89,7 @@ namespace CMDB.Services
             if (imei is not null)
                 mobile.IMEI = (long)imei;
 
-            BaseUrl = _url + $"api/Mobile/IsMobileExisting";
+            BaseUrl = Url + $"api/Mobile/IsMobileExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -100,18 +100,18 @@ namespace CMDB.Services
         }
         public async Task<MobileDTO> GetMobileById(int id)
         {
-            BaseUrl = _url + $"api/Mobile/{id}";
+            BaseUrl = Url + $"api/Mobile/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<MobileDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Identity/ListAllFreeIdentities/mobile";
+            BaseUrl = Url + $"api/Identity/ListAllFreeIdentities/mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -126,13 +126,13 @@ namespace CMDB.Services
         }
         public async Task<IdentityDTO> GetIdentity(int IdenId) 
         {
-            BaseUrl = _url + $"api/Identity/{IdenId}";
+            BaseUrl = Url + $"api/Identity/{IdenId}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
                 return await response.Content.ReadAsJsonAsync<IdentityDTO>();
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public bool IsDeviceFree(MobileDTO mobile, bool checkSub = false)
         {
@@ -160,11 +160,11 @@ namespace CMDB.Services
                 IdentityId = identity.IdenId,
                 MobileIds = [mobile.MobileId]
             };
-            BaseUrl = _url + $"api/Mobile/AssignIdentity";
+            BaseUrl = Url + $"api/Mobile/AssignIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl,assignRequest);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task ReleaseIdenity(MobileDTO mobile)
         {
@@ -173,16 +173,16 @@ namespace CMDB.Services
                 IdentityId = mobile.Identity.IdenId,
                 MobileIds = [mobile.MobileId]
             };
-            BaseUrl = _url + $"api/Mobile/ReleaseIdentity";
+            BaseUrl = Url + $"api/Mobile/ReleaseIdentity";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, assignRequest);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
         public async Task<List<SelectListItem>> ListFreeMobileSubscriptions()
         {
             List<SelectListItem> identites = new();
-            BaseUrl = _url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
+            BaseUrl = Url + $"api/Subscription/ListAllFreeSubscriptions/Mobile";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -202,16 +202,16 @@ namespace CMDB.Services
                 MobileId = mobile.MobileId,
                 SubscriptionId = subscription.SubscriptionId
             };
-            BaseUrl = _url + $"api/Mobile/AssignSubscription";
+            BaseUrl = Url + $"api/Mobile/AssignSubscription";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
 
         public async Task<SubscriptionDTO> GetSubribtion(int id)
         {
-            BaseUrl = _url + $"api/Subscription/{id}";
+            BaseUrl = Url + $"api/Subscription/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -219,7 +219,7 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<SubscriptionDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
 
         public async Task ReleaseSubscription(MobileDTO mobile)
@@ -229,11 +229,11 @@ namespace CMDB.Services
                 MobileId = mobile.MobileId,
                 SubscriptionId = mobile.Subscription.SubscriptionId
             };
-            BaseUrl = _url + $"api/Mobile/ReleaseSubscription";
+            BaseUrl = Url + $"api/Mobile/ReleaseSubscription";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (!response.IsSuccessStatusCode)
-                throw new NotAValidSuccessCode(_url, response.StatusCode); ;
+                throw new NotAValidSuccessCode(Url, response.StatusCode); ;
         }
     }
 }

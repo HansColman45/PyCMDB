@@ -9,15 +9,26 @@ using System.Threading.Tasks;
 
 namespace CMDB.Controllers
 {
+    /// <summary>
+    /// Controller for AccountType
+    /// </summary>
     public class AccountTypeController : CMDBController
     {
         private readonly AccountTypeService service;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="env"></param>
         public AccountTypeController(IWebHostEnvironment env) : base(env)
         {
             service = new();
             SitePart = "Account Type";
             Table = "accounttype";
         }
+        /// <summary>
+        /// This wii return the view with all AccountTypes
+        /// </summary>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
@@ -33,6 +44,11 @@ namespace CMDB.Controllers
             ViewData["Controller"] = @"\AccountType\Create";
             return View(types);
         }
+        /// <summary>
+        /// This will search for specific accounttypes
+        /// </summary>
+        /// <param name="search">>The search string</param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
@@ -56,6 +72,11 @@ namespace CMDB.Controllers
                 return RedirectToAction(nameof(Index));
             }
         }
+        /// <summary>
+        /// THis will open the form to create a new accounttype
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
@@ -91,6 +112,12 @@ namespace CMDB.Controllers
             }
             return View(type);
         }
+        /// <summary>
+        /// This will open the form to edit an accounttype
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
@@ -127,6 +154,12 @@ namespace CMDB.Controllers
             }
             return View(accountType);
         }
+        /// <summary>
+        /// This will open the form to delete an accounttype
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", SitePart);
@@ -161,6 +194,11 @@ namespace CMDB.Controllers
             }
             return View(accountType);
         }
+        /// <summary>
+        /// This will activate an accounttype
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
@@ -181,6 +219,11 @@ namespace CMDB.Controllers
                 RedirectToAction(nameof(Index));
             return View();
         }
+        /// <summary>
+        /// This will open the form with the details of an accounttype
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="ViewResult"/></returns>
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);

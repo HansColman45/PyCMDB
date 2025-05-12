@@ -6,6 +6,9 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing applications
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class ApplicationController : ControllerBase
@@ -13,11 +16,21 @@ namespace CMDB.API.Controllers
         private readonly IUnitOfWork _uow;
         private readonly string site = "Application";
         private HasAdminAccessRequest request;
+        private ApplicationController()
+        {
+        }
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="uow"></param>
         public ApplicationController(IUnitOfWork uow)
         {
             _uow = uow;
         }
-
+        /// <summary>
+        /// Will get all applications
+        /// </summary>
+        /// <returns></returns>
         [HttpGet, Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -36,6 +49,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.ApplicationRepository.GetAll());
         }
+        /// <summary>
+        /// Will get all applications with a search string
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {

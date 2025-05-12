@@ -5,18 +5,31 @@ using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// The admin service
+    /// </summary>
     public class AdminService : CMDBServices
     {
+        /// <summary>
+        /// The constructor
+        /// </summary>
         public AdminService() : base()
         {
         }
+        /// <summary>
+        /// List all admins
+        /// </summary>
+        /// <returns>List of <see cref="Admin"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<Admin>> ListAll()
         {
-            BaseUrl = _url + $"api/Admin/ListAll";
+            BaseUrl = Url + $"api/Admin/GetAll";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -24,11 +37,17 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<List<Admin>>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// List all admins with a search string
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<Admin>> ListAll(string searchString)
         {
-            BaseUrl = _url + $"api/Admin/ListAll/{searchString}";
+            BaseUrl = Url + $"api/Admin/GetAll/{searchString}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
@@ -36,20 +55,30 @@ namespace CMDB.Services
                 return await response.Content.ReadAsJsonAsync<List<Admin>>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        public async Task<List<Admin>> GetByID(int id)
+        /// <summary>
+        /// Get an admin by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
+        public async Task<AdminDTO> GetByID(int id)
         {
-            BaseUrl = _url + $"api/Admin/{id}";
+            BaseUrl = Url + $"api/Admin/{id}";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.GetAsync(BaseUrl);
             if (response.IsSuccessStatusCode)
             {
-                return await response.Content.ReadAsJsonAsync<List<Admin>>();
+                return await response.Content.ReadAsJsonAsync<AdminDTO>();
             }
             else
-                throw new NotAValidSuccessCode(_url, response.StatusCode);
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// List all levels
+        /// </summary>
+        /// <returns></returns>
         public List<SelectListItem> ListAllLevels()
         {
             List<SelectListItem> Levels = new();
@@ -59,63 +88,89 @@ namespace CMDB.Services
             }
             return Levels;
         }
+        /// <summary>
+        /// This will return a list of all CMDB accounts
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<SelectListItem>> ListActiveCMDBAccounts()
         {
             List<SelectListItem> Levels = new();
-            /*var accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Identities)
-                .Where(x => x.Application.Name == "CMDB")
-                .ToListAsync();
-            foreach (var account in accounts)
-            {
-                foreach (var idenAcc in account.Identities.Where(x => DateTime.Now <= x.ValidFrom && x.ValidUntil >= DateTime.Now))
+            BaseUrl = Url + $"api/Account/GetAll";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode) { 
+                var accounts = await response.Content.ReadAsJsonAsync<List<AccountDTO>>();
+                foreach (var account in accounts.Where(x => x.Application.Name == "CMDB" && x.Active == 1))
                 {
-                    Levels.Add(new SelectListItem(idenAcc.Account.UserID, idenAcc.Account.AccID.ToString()));
+                    Levels.Add(new SelectListItem(account.UserID, account.AccID.ToString()));
                 }
-            }*/
+            }
+            else
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
             return Levels;
         }
-        public async Task Create(Admin admin, string Table)
+        /// <summary>
+        /// This will create a new admin
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <returns></returns>
+        public async Task Create(AdminDTO admin)
         {
-            string pwd = new PasswordHasher().EncryptPassword("cmdb");
-            /*admin.Password = pwd;
-            admin.DateSet = DateTime.Now;
-            admin.LastModfiedAdmin = Admin;
-            _context.Admins.Add(admin);
-            await _context.SaveChangesAsync();
-            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogCreate(Table, Admin.AdminId, Value);*/
+            BaseUrl = Url + $"api/Admin";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, admin);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        public async Task Update(Admin admin, int level, string Table)
+        /// <summary>
+        /// This will update an existing admin
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="level"></param>
+        /// <returns></returns>
+        public async Task Update(AdminDTO admin, int level)
         {
-            if (admin.Level != level)
-            {
-                /*admin.Level = level;
-                admin.LastModfiedAdmin = Admin;
-                await _context.SaveChangesAsync();
-                await LogUpdate(Table, admin.AdminId, "Level", admin.Level.ToString(), level.ToString());*/
-            }
+            admin.Level = level;
+            BaseUrl = Url + $"api/Admin";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PutAsJsonAsync(BaseUrl, admin);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        public async Task Deactivate(Admin admin, string reason, string table)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        public async Task Deactivate(AdminDTO admin, string reason)
         {
-            /*admin.Active = State.Inactive;
-            admin.DeactivateReason = reason;
-            admin.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogDeactivate(table, admin.AdminId, Value, reason);*/
+            BaseUrl = Url + $"api/Admin/{reason}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, admin);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        public async Task Activate(Admin admin, string table)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <returns></returns>
+        public async Task Activate(AdminDTO admin)
         {
-            /*admin.Active = State.Active;
-            admin.DeactivateReason = "";
-            admin.LastModfiedAdmin = Admin;
-            await _context.SaveChangesAsync();
-            string Value = "Admin with UserID: " + admin.Account.UserID + " and level: " + admin.Level.ToString();
-            await LogActivate(table, admin.AdminId, Value);*/
+            BaseUrl = Url + $"api/Admin/Activate";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, admin);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-        public bool IsExisting(Admin admin)
+        /// <summary>
+        /// This will check if the admin already exists
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <returns></returns>
+        public bool IsExisting(AdminDTO admin)
         {
             bool result = false;
             /*var admins = _context.Admins.Include(x => x.Account).Where(x => x.Account.UserID == admin.Account.UserID);
@@ -123,15 +178,24 @@ namespace CMDB.Services
                 result = true;*/
             return result;
         }
-        public async Task<List<Account>> GetAccountByID(int ID)
+        /// <summary>
+        /// This will return the Account Info
+        /// </summary>
+        /// <param name="ID"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
+        public async Task<AccountDTO> GetAccountByID(int ID)
         {
-            /*List<Account> accounts = await _context.Accounts
-                .Include(x => x.Application)
-                .Include(x => x.Type)
-                .Where(x => x.AccID == ID)
-                .ToListAsync();
-            return accounts;*/
-            return [];
+            BaseUrl = Url + $"api/Account/{ID}";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.GetAsync(BaseUrl);
+            if (response.IsSuccessStatusCode)
+            {
+                var account = await response.Content.ReadAsJsonAsync<AccountDTO>();
+                return account;
+            }
+            else
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
     }
 }
