@@ -1,6 +1,7 @@
 ﻿using CMDB.API.Models;
 using CMDB.API.Services;
 using CMDB.Domain.Requests;
+using CMDB.Domain.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -127,6 +128,11 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will update the admin account
+        /// </summary>
+        /// <param name="admin"></param>
+        /// <returns></returns>
         [HttpPut(), Authorize]
         public async Task<IActionResult> Update(AdminDTO admin)
         {
@@ -153,6 +159,11 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will do the authentication for the admin
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns><see cref="AuthenticateResponse"/></returns>
         [HttpPost("Login"), AllowAnonymous]
         public async Task<IActionResult> Login(AuthenticateRequest model)
         {

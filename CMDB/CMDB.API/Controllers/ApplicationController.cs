@@ -30,7 +30,8 @@ namespace CMDB.API.Controllers
         /// <summary>
         /// Will get all applications
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns <see
+        /// cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkObjectResult"/></returns>
         [HttpGet, Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -53,7 +54,8 @@ namespace CMDB.API.Controllers
         /// Will get all applications with a search string
         /// </summary>
         /// <param name="id"></param>
-        /// <returns></returns>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns <see
+        /// cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkObjectResult"/></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {

@@ -7,6 +7,9 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing identities
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class IdentityController : ControllerBase
@@ -15,11 +18,20 @@ namespace CMDB.API.Controllers
         private readonly ILogger<IdentityController> _logger;
         private readonly string site = "Identity";
         private HasAdminAccessRequest request;
+        /// <summary>
+        /// Constructor for the IdentityController
+        /// </summary>
+        /// <param name="uow"></param>
+        /// <param name="logger"></param>
         public IdentityController(IUnitOfWork uow, ILogger<IdentityController> logger)
         {
             _uow = uow;
             _logger = logger;
         }
+        /// <summary>
+        /// This will return all the identities
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -38,6 +50,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetAll());
         }
+        /// <summary>
+        /// This will return all the identities matching the search string
+        /// </summary>
+        /// <param name="searchstr"></param>
+        /// <returns></returns>
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
@@ -56,6 +73,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetAll(searchstr));
         }
+        /// <summary>
+        /// This will return the identity matching the id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -74,6 +96,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.GetById(id));
         }
+        /// <summary>
+        /// This will assign an account to an identity
+        /// </summary>
+        /// <param name="idenAccount"></param>
+        /// <returns></returns>
         [HttpPost("AssignAccount"), Authorize]
         public async Task<IActionResult> AssignAccount(IdenAccountDTO idenAccount)
         {
@@ -98,6 +125,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will release an account from an identity
+        /// </summary>
+        /// <param name="idenAccount"></param>
+        /// <returns></returns>
         [HttpPost("ReleaseAccount"), Authorize]
         public async Task<IActionResult> ReleaseAccount(IdenAccountDTO idenAccount)
         {
@@ -122,6 +154,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will create a new identity
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(IdentityDTO identity)
         {
@@ -142,6 +179,12 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will deactivate an identity
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
         [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(IdentityDTO identity, string reason)
         {
@@ -162,6 +205,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(iden);
         }
+        /// <summary>
+        /// This will activate an identity
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(IdentityDTO identity)
         {
@@ -182,6 +230,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will update an identity
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         [HttpPut, Authorize]
         public async Task<IActionResult> Update(IdentityDTO identity)
         {
@@ -202,6 +255,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(acc);
         }
+        /// <summary>
+        /// This will return all the free identities
+        /// </summary>
+        /// <param name="sitePart"></param>
+        /// <returns></returns>
         [HttpGet("ListAllFreeIdentities/{sitePart}"), Authorize]
         public async Task<IActionResult> ListAllFreeIdentities(string sitePart)
         {
@@ -221,6 +279,11 @@ namespace CMDB.API.Controllers
             _logger.LogTrace($"The sitePart is: {sitePart}");
             return Ok(await _uow.IdentityRepository.ListAllFreeIdentities(sitePart));
         }
+        /// <summary>
+        /// This will check if the identity already exists
+        /// </summary>
+        /// <param name="identity"></param>
+        /// <returns></returns>
         [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsIdentityExisting(IdentityDTO identity)
         {
@@ -239,6 +302,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityRepository.IsExisting(identity));
         }
+        /// <summary>
+        /// This will assign devices to an identity
+        /// </summary>
+        /// <param name="assignDevice"></param>
+        /// <returns></returns>
         [HttpPost("AssignDevices"), Authorize]
         public async Task<IActionResult> AssignDevices(AssignDeviceRequest assignDevice)
         {
@@ -262,6 +330,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will release devices from an identity
+        /// </summary>
+        /// <param name="assignDevice"></param>
+        /// <returns></returns>
         [HttpPost("ReleaseDevices"), Authorize]
         public async Task<IActionResult> ReleaseDevices(AssignDeviceRequest assignDevice)
         {
@@ -285,6 +358,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will assign mobiles to an identity
+        /// </summary>
+        /// <param name="assignMobile"></param>
+        /// <returns></returns>
         [HttpPost("AssignMobile"),Authorize]
         public async Task<IActionResult> AssignMobile(AssignMobileRequest assignMobile)
         {
@@ -308,6 +386,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will release mobiles from an identity
+        /// </summary>
+        /// <param name="assignMobile"></param>
+        /// <returns></returns>
         [HttpPost("ReleaseMobile"), Authorize]
         public async Task<IActionResult> ReleaseMobile(AssignMobileRequest assignMobile)
         {
@@ -331,6 +414,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will assign subscriptions to an identity
+        /// </summary>
+        /// <param name="assignSubscription"></param>
+        /// <returns></returns>
         [HttpPost("AssignSubscription"), Authorize]
         public async Task<IActionResult> AssignSubscription(AssignInternetSubscriptionRequest assignSubscription)
         {
@@ -354,6 +442,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will release subscriptions from an identity
+        /// </summary>
+        /// <param name="assignSubscription"></param>
+        /// <returns></returns>
         [HttpPost("ReleaseSubscription"), Authorize]
         public async Task<IActionResult> ReleaseSubscription(AssignInternetSubscriptionRequest assignSubscription)
         {

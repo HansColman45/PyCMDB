@@ -14,6 +14,10 @@ namespace CMDB.API.Services
     public class JwtService
     {
         private readonly JwtSettings _jwtSettings;
+        private JwtService()
+        {
+            
+        }
         /// <summary>
         /// This constructor is used to inject the configuration
         /// </summary>
@@ -26,9 +30,8 @@ namespace CMDB.API.Services
         /// This function will generate the JWT token
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="context"></param>
         /// <returns></returns>
-        public string GenerateToken(CMDBContext context, Admin user)
+        public string GenerateToken(Admin user)
         {
             var claims = new List<Claim>
             {

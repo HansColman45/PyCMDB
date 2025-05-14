@@ -10,7 +10,12 @@ namespace CMDB.API.Services
     /// </summary>
     public class AccountRepository : GenericRepository, IAccountRepository
     {
+        private AccountRepository()
+        {
+        }
+        
         private readonly string table = "account";
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -19,6 +24,7 @@ namespace CMDB.API.Services
         public AccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc/>
         public async Task LogPdfFile(string pdfFile, int id)
         {
             Account acc = await TrackedAccount(id);
@@ -29,6 +35,7 @@ namespace CMDB.API.Services
             });
             _context.Accounts.Update(acc);
         }
+        /// <inheritdoc/>
         public AccountDTO Create(AccountDTO account)
         {
             Account acc = new()
@@ -57,6 +64,7 @@ namespace CMDB.API.Services
             }
             return account;
         }
+        /// <inheritdoc/>
         public async Task<AccountDTO> GetById(int id)
         {
             var account = await _context.Accounts.AsNoTracking()
@@ -71,6 +79,7 @@ namespace CMDB.API.Services
             }
             return account;
         }
+        /// <inheritdoc/>
         public async Task<List<AccountDTO>> GetAll()
         {
             var accounts = await _context.Accounts.AsNoTracking()
@@ -80,6 +89,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accounts;
         }
+        /// <inheritdoc/>
         public async Task<List<AccountDTO>> GetAll(string searchstr)
         {
             string searhterm = "%" + searchstr + "%";
@@ -95,6 +105,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accounts;
         }
+        /// <inheritdoc/>
         public async Task<AccountDTO> DeActivate(AccountDTO account,string reason)
         {
             var _account = await TrackedAccount(account.AccID);
@@ -111,6 +122,7 @@ namespace CMDB.API.Services
             _context.Accounts.Update(_account);
             return account;
         }
+        /// <inheritdoc/>
         public async Task<AccountDTO> Activate(AccountDTO account) 
         {
             var _account = await TrackedAccount(account.AccID);
@@ -127,6 +139,7 @@ namespace CMDB.API.Services
             _context.Accounts.Update(_account);
             return account;
         }
+        /// <inheritdoc/>
         public async Task<bool> IsExisitng(AccountDTO account)
         {
             var oldAccount = await GetById(account.AccID);
@@ -167,6 +180,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
+        /// <inheritdoc/>
         public async Task<AccountDTO> Update(AccountDTO account)
         {
             var _account = await TrackedAccount(account.AccID); 
@@ -209,6 +223,7 @@ namespace CMDB.API.Services
             _context.Accounts.Update(_account);
             return account;
         }
+        /// <inheritdoc/>
         public async Task AssignAccount2Identity(IdenAccountDTO request)
         {
             var iden = _context.Identities.First(x => x.IdenId == request.Identity.IdenId);
@@ -243,6 +258,7 @@ namespace CMDB.API.Services
             };
             _context.Logs.Add(log);
         }
+        /// <inheritdoc/>
         public async Task ReleaseAccountFromIdentity(IdenAccountDTO request)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == request.Id).FirstAsync();
@@ -268,6 +284,11 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(iden);
         }
+        /// <summary>
+        /// Converts an <see cref="AccountDTO"/> object to an <see cref="Account"/> object.
+        /// </summary>
+        /// <param name="accountDTO">The <see cref="AccountDTO"/></param>
+        /// <returns>An <see cref="Account"/> object populated with the data from the specified <see cref="AccountDTO"/>.</returns>
         public static Account ConvertDto(AccountDTO accountDTO)
         {
             return new()
@@ -296,6 +317,16 @@ namespace CMDB.API.Services
                 TypeId = accountDTO.TypeId
             };
         }
+        /// <summary>
+        /// Converts an <see cref="Account"/> object into an <see cref="AccountDTO"/> object.
+        /// </summary>
+        /// <remarks>This method performs a deep conversion of the <see cref="Account"/> object, including
+        /// its nested properties, into an <see cref="AccountDTO"/> object. The resulting object is a data transfer
+        /// object (DTO) suitable for use in scenarios such as API responses or inter-layer communication.</remarks>
+        /// <param name="account">The <see cref="Account"/> instance to convert. This parameter is passed by reference for performance
+        /// optimization.</param>
+        /// <returns>An <see cref="AccountDTO"/> object that represents the data from the provided <see cref="Account"/>
+        /// instance.</returns>
         public static AccountDTO ConvertAccount(in Account account)
         {
             return new()
@@ -326,6 +357,7 @@ namespace CMDB.API.Services
                 }
             };
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<IdentityAccountInfo>> ListAllFreeAccounts()
         {
             var ideninfo = await _context.IdentityAccountInfos.FromSqlRaw(

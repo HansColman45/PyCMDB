@@ -8,9 +8,16 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// This class is used to generate PDF files
+    /// </summary>
     public class PDFService: CMDBServices
     {
         private readonly string path = $"api/PDFGenerator";
+
+        /// <summary>
+        /// This constructor will set the base url of the PDF service
+        /// </summary>
         public PDFService()
         {
         }
@@ -52,6 +59,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will set the info of the account
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task SetAccontInfo(IdenAccountDTO account)
         {
             BaseUrl = Url + "api/PDFGenerator/AddAccountInfo";
@@ -60,6 +73,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will set the info of the device
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task SetDeviceInfo(DeviceDTO device)
         {
             BaseUrl = Url + path + "/AddAssetInfo";
@@ -68,6 +87,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will set the info of the mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task SetMobileInfo(MobileDTO mobile)
         {
             BaseUrl = Url + path + "/AddMobileInfo";
@@ -76,6 +101,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will set the info of the subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task SetSubscriptionInfo(SubscriptionDTO subscription)
         {
             BaseUrl = Url + path + "/AddSubscriptionInfo";
@@ -84,6 +115,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will set the info of the kensington
+        /// </summary>
+        /// <param name="kensington"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task SetKeyInfo(KensingtonDTO kensington)
         {
             BaseUrl = Url + path + "/AddKeyInfo";
@@ -92,6 +129,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will generate teh PDF file
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<string> GenratePDFFile(string entity, int id)
         {
             BaseUrl = Url + path + $"/{entity}/{id}";
@@ -102,6 +146,13 @@ namespace CMDB.Services
             else
                 return await response.Content.ReadAsJsonAsync<string>();
         }
+        /// <summary>
+        /// This function will generate the PDF File
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="assetTag"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<string> GenratePDFFile(string entity, string assetTag)
         {
             BaseUrl = Url + path + $"/{entity}/{assetTag}";

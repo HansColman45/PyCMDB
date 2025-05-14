@@ -2,12 +2,23 @@
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Unit of Work class for managing repositories and database context
+    /// </summary>
     public class UnitOfWork : IUnitOfWork
     {
+        private UnitOfWork()
+        {
+        }
         private bool _disposed = false;
         private readonly CMDBContext _context;
         private readonly ILogger _logger;
-
+        /// <summary>
+        /// Constructor for the UnitOfWork class
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="factory"></param>
+        /// <param name="jwtService"></param>
         public UnitOfWork(CMDBContext context, ILoggerFactory factory, JwtService jwtService)
         {
             _context = context;
@@ -30,23 +41,41 @@ namespace CMDB.API.Services
             SubscriptionTypeRepository = new SubscriptionTypeRepository(_context, _logger);
             KensingtonRepository = new KensingtonRepository(_context, _logger);
         }
+        /// <inheritdoc/>
         public IAccountRepository AccountRepository { get; private set; }
+        /// <inheritdoc/>
         public IMenuRepository MenuRepository { get; private set; }
+        /// <inheritdoc/>
         public IAccountTypeRepository  AccountTypeRepository { get; private set; }
+        /// <inheritdoc/>
         public IAdminRepository AdminRepository { get;private set; }
+        /// <inheritdoc/>
         public IApplicationRepository ApplicationRepository{ get; private set; }
+        /// <inheritdoc/>
         public IIdenAccountRepository IdenAccountRepository { get; private set; }
+        /// <inheritdoc/>
         public IIdentityRepository IdentityRepository { get; private set; }
+        /// <inheritdoc/>
         public IConfigurationRepository ConfigurationRepository { get; private set; }
+        /// <inheritdoc/>
         public IIdentityTypeRepository IdentityTypeRepository { get; private set; }
+        /// <inheritdoc/>
         public ILanguageRepository LanguageRepository { get; private set; }
+        /// <inheritdoc/>
         public IDeviceRepository DeviceRepository { get; private set; }
+        /// <inheritdoc/>
         public IAssetTypeRepository AssetTypeRepository { get; private set; }
+        /// <inheritdoc/>
         public IAssetCategoryRepository AssetCategoryRepository { get; private set; }
+        /// <inheritdoc/>
         public IMobileRepository MobileRepository { get; private set; }
+        /// <inheritdoc/>
         public ISubscriptionRepository SubscriptionRepository { get; private set; }
+        /// <inheritdoc/>
         public ISubscriptionTypeRepository SubscriptionTypeRepository { get; private set; }
+        /// <inheritdoc/>
         public IKensingtonRepository KensingtonRepository { get; private set; }
+        /// <inheritdoc/>
         public async Task SaveChangesAsync()
         {
             try
@@ -59,11 +88,18 @@ namespace CMDB.API.Services
                 throw;
             }
         }
+        /// <summary>
+        /// Disposes the UnitOfWork and its resources
+        /// </summary>
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+        /// <summary>
+        /// Disposes the UnitOfWork and its resources
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (!_disposed)
@@ -71,7 +107,7 @@ namespace CMDB.API.Services
                 if (disposing)
                 {
                     _context.Dispose();
-                    _logger.LogInformation("Dispossed context");
+                    _logger.LogInformation($"Dispossed context for {GetType().FullName}");
                 }
                 _disposed = true;
             }

@@ -7,17 +7,31 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for IdentityType
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class IdentityTypeController : ControllerBase
     {
+        private IdentityTypeController()
+        {
+        }
         private readonly IUnitOfWork _uow;
         private readonly string site = "Identity Type";
         private HasAdminAccessRequest request;
+        /// <summary>
+        /// Constructor for IdentityTypeController
+        /// </summary>
+        /// <param name="uow"></param>
         public IdentityTypeController(IUnitOfWork uow)
         {
                 _uow = uow;
         }
+        /// <summary>
+        /// This will list all IdentityTypes
+        /// </summary>
+        /// <returns>list of <see cref="TypeDTO"/></returns>
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -36,6 +50,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityTypeRepository.GetAll());
         }
+        /// <summary>
+        /// This will return a list of all IdentityTypes matching the search string
+        /// </summary>
+        /// <param name="searchstr"></param>
+        /// <returns>list of <see cref="TypeDTO"/></returns>
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
@@ -54,6 +73,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityTypeRepository.GetAll(searchstr));
         }
+        /// <summary>
+        /// This will return a IdentityType by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="TypeDTO"/></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -72,8 +96,13 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.IdentityTypeRepository.GetById(id));
         }
+        /// <summary>
+        /// This will create a new IdentityType
+        /// </summary>
+        /// <param name="type"><see cref="TypeDTO"/></param>
+        /// <returns></returns>
         [HttpPost, Authorize]
-        public async Task<IActionResult> Create(TypeDTO account)
+        public async Task<IActionResult> Create(TypeDTO type)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -90,7 +119,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = _uow.IdentityTypeRepository.Create(account);
+                var acc = _uow.IdentityTypeRepository.Create(type);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -99,8 +128,14 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will deactivate a IdentityType
+        /// </summary>
+        /// <param name="type"><see cref="TypeDTO"/></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
         [HttpDelete("{reason}"), Authorize]
-        public async Task<IActionResult> Delete(TypeDTO account, string reason)
+        public async Task<IActionResult> Delete(TypeDTO type, string reason)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -117,7 +152,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.IdentityTypeRepository.DeActivate(account, reason);
+                var acc = await _uow.IdentityTypeRepository.DeActivate(type, reason);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -126,8 +161,13 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will activate a IdentityType
+        /// </summary>
+        /// <param name="type"><see cref="TypeDTO"/></param>
+        /// <returns></returns>
         [HttpPost("Activate"), Authorize]
-        public async Task<IActionResult> Activate(TypeDTO account)
+        public async Task<IActionResult> Activate(TypeDTO type)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -144,7 +184,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.IdentityTypeRepository.Activate(account);
+                var acc = await _uow.IdentityTypeRepository.Activate(type);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -153,8 +193,13 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will update a IdentityType
+        /// </summary>
+        /// <param name="type"><see cref="TypeDTO"/></param>
+        /// <returns></returns>
         [HttpPut, Authorize]
-        public async Task<IActionResult> Update(TypeDTO account)
+        public async Task<IActionResult> Update(TypeDTO type)
         {
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
@@ -171,7 +216,7 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             try
             {
-                var acc = await _uow.IdentityTypeRepository.Update(account);
+                var acc = await _uow.IdentityTypeRepository.Update(type);
                 await _uow.SaveChangesAsync();
                 return Ok(acc);
             }
@@ -180,6 +225,11 @@ namespace CMDB.API.Controllers
                 return BadRequest(ex);
             }
         }
+        /// <summary>
+        /// This will check if a IdentityType already exists
+        /// </summary>
+        /// <param name="type"><see cref="TypeDTO"/></param>
+        /// <returns></returns>
         [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsTypeExisting(TypeDTO type)
         {

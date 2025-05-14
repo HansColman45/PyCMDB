@@ -3,6 +3,9 @@ using CMDB.Domain.Entities;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// The interface for the Device Repository
+    /// </summary>
     public interface IDeviceRepository
     {
         /// <summary>
@@ -10,6 +13,11 @@ namespace CMDB.API.Services
         /// </summary>
         /// <returns></returns>
         Task<IEnumerable<DeviceDTO>> ListAllFreeDevices();
+        /// <summary>
+        /// This will return a list of devices that are not linked to a site part
+        /// </summary>
+        /// <param name="sitePart"></param>
+        /// <returns></returns>
         Task<IEnumerable<DeviceDTO>> ListAllFreeDevices(string sitePart);
         /// <summary>
         /// This will give a list of devices
@@ -18,7 +26,7 @@ namespace CMDB.API.Services
         /// <returns></returns>
         Task<IEnumerable<DeviceDTO>> GetAll(string category);
         /// <summary>
-        /// This will give a list of devices
+        /// This will give a list of devices matching the search string
         /// </summary>
         /// <param name="category">The category of the device</param>
         /// <param name="searchString">The search string</param>

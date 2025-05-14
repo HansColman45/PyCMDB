@@ -8,12 +8,24 @@ using Microsoft.Graph.Solutions.BackupRestore.SharePointProtectionPolicies.Item.
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for Subscription
+    /// </summary>
     public class SubscriptionRepository : GenericRepository, ISubscriptionRepository
     {
+        private SubscriptionRepository()
+        {
+        }
         private readonly string table = "subscription";
+        /// <summary>
+        /// Constructor for the SubscriptionRepository
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public SubscriptionRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<SubscriptionDTO>> GetAll()
         {
             return await _context.Subscriptions
@@ -22,6 +34,7 @@ namespace CMDB.API.Services
                  .Select(x => ConvertSubscription(x))
                  .ToListAsync();
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<SubscriptionDTO>> GetAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
@@ -33,6 +46,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertSubscription(x))
                 .ToListAsync();
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionDTO> GetById(int id)
         {
             var sub = await _context.Subscriptions
@@ -49,6 +63,7 @@ namespace CMDB.API.Services
             }
             return sub;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionDTO> Activate(SubscriptionDTO subscription)
         {
             string Value = $"Subscription with Category: {subscription.SubscriptionType.AssetCategory.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
@@ -64,6 +79,7 @@ namespace CMDB.API.Services
             _context.Subscriptions.Update(sub);
             return subscription;
         }
+        /// <inheritdoc/>
         public SubscriptionDTO Create(SubscriptionDTO subscription)
         {
             string Value = $"Subscription with: {subscription.SubscriptionType.AssetCategory.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
@@ -87,6 +103,7 @@ namespace CMDB.API.Services
             _context.Subscriptions.Add(sub);
             return subscription;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionDTO> Delete(SubscriptionDTO subscription, string reason)
         {
             string Value = $"Subscription with Category: {subscription.SubscriptionType.AssetCategory.Category} and type {subscription.SubscriptionType} on {subscription.PhoneNumber}";
@@ -102,6 +119,7 @@ namespace CMDB.API.Services
             _context.Subscriptions.Update(sub);
             return subscription;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionDTO> Update(SubscriptionDTO subscription)
         {
             var sub = await TrackedSubscription(subscription.SubscriptionId);
@@ -119,6 +137,7 @@ namespace CMDB.API.Services
             _context.Subscriptions.Update(sub);
             return subscription;
         }
+        /// <inheritdoc/>
         public async Task LogPdfFile(string pdfFile, int id)
         {
             var sub = await TrackedSubscription(id);
@@ -129,6 +148,7 @@ namespace CMDB.API.Services
             });
             _context.Subscriptions.Update(sub);
         }
+        /// <inheritdoc/>
         public async Task<bool> IsExisting(SubscriptionDTO subscription)
         {
             var sub = await GetById(subscription.SubscriptionId);
@@ -157,6 +177,7 @@ namespace CMDB.API.Services
             }
             return false;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<SubscriptionDTO>> ListAllFreeSubscriptions(string category)
         {
             return category switch
@@ -176,6 +197,7 @@ namespace CMDB.API.Services
                 _ => throw new NotImplementedException($"The {category} is not implemented yet"),
             };
         }
+        /// <inheritdoc/>
         public async Task AssignIdentity(AssignInternetSubscriptionRequest subscriptionRequest)
         {
             var subscription = await TrackedSubscription(subscriptionRequest.SubscriptionIds.First());
@@ -199,6 +221,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(identity);
         }
+        /// <inheritdoc/>
         public async Task ReleaseIdentity(AssignInternetSubscriptionRequest subscriptionRequest)
         {
             var subscription = await TrackedSubscription(subscriptionRequest.SubscriptionIds.First());
@@ -222,6 +245,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(identity);
         }
+        /// <inheritdoc/>
         public async Task AssignMobile(AssignMobileSubscriptionRequest assignMobileRequest)
         {
             var subscription = await TrackedSubscription(assignMobileRequest.SubscriptionId);
@@ -247,6 +271,7 @@ namespace CMDB.API.Services
             });
             _context.Mobiles.Update(mobile);
         }
+        /// <inheritdoc/>
         public async Task ReleaseMobile(AssignMobileSubscriptionRequest assignMobileRequest)
         {
             var subscription = await TrackedSubscription(assignMobileRequest.SubscriptionId);
@@ -272,6 +297,11 @@ namespace CMDB.API.Services
             });
             _context.Mobiles.Update(mobile);
         }
+        /// <summary>
+        /// This function will convert the Subscription to a DTO
+        /// </summary>
+        /// <param name="subscription"><see cref="Subscription"/></param>
+        /// <returns><see cref="SubscriptionDTO"/></returns>
         public static SubscriptionDTO ConvertSubscription(Subscription subscription)
         {
             return new()

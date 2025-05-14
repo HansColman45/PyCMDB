@@ -6,12 +6,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// The class of the kensington repo
+    /// </summary>
     public class KensingtonRepository : GenericRepository, IKensingtonRepository
     {
+        private KensingtonRepository()
+        {
+        }
         private readonly string table = "kensington";
+        /// <summary>
+        /// The default constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public KensingtonRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc/>
         public async Task LogPdfFile(string pdfFile, int id)
         {
             var identity = await GetTrackedKensington(id);
@@ -21,6 +33,7 @@ namespace CMDB.API.Services
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
             });
         }
+        /// <inheritdoc/>
         public async Task<List<KensingtonDTO>> ListAll()
         {
             var keys = await _context.Kensingtons
@@ -29,6 +42,7 @@ namespace CMDB.API.Services
                 .Select(x => Convert2DTO(x)).ToListAsync();
             return keys;
         }
+        /// <inheritdoc/>
         public async Task<List<KensingtonDTO>> ListAll(string search)
         {
             string searhterm = "%" + search + "%";
@@ -39,6 +53,7 @@ namespace CMDB.API.Services
                 .Select(x => Convert2DTO(x)).ToListAsync();
             return keys;
         }
+        /// <inheritdoc/>
         public async Task<KensingtonDTO> GetById(int id)
         {
             var key = await _context.Kensingtons
@@ -54,6 +69,7 @@ namespace CMDB.API.Services
             }
             return key;
         }
+        /// <inheritdoc/>
         public KensingtonDTO Create(KensingtonDTO key)
         {
             Kensington kensington = new()
@@ -76,6 +92,7 @@ namespace CMDB.API.Services
             _context.Kensingtons.Add(kensington);
             return key;
         }
+        /// <inheritdoc/>
         public async Task<KensingtonDTO> Update(KensingtonDTO key)
         {
             var identity = await GetTrackedKensington(key.KeyID);
@@ -120,6 +137,7 @@ namespace CMDB.API.Services
             _context.Kensingtons.Update(identity);
             return key;
         }
+        /// <inheritdoc/>
         public async Task<KensingtonDTO> DeActivate(KensingtonDTO key, string reason)
         {
             var identity = await GetTrackedKensington(key.KeyID);
@@ -136,6 +154,7 @@ namespace CMDB.API.Services
             _context.Kensingtons.Update(identity);
             return key;
         }
+        /// <inheritdoc/>
         public async Task<KensingtonDTO> Activate(KensingtonDTO key)
         {
             var identity = await GetTrackedKensington(key.KeyID);
@@ -152,6 +171,7 @@ namespace CMDB.API.Services
             _context.Kensingtons.Update(identity);
             return key;
         }
+        /// <inheritdoc/>
         public async Task AssignDevice(KensingtonDTO key)
         {
             var kensington = await GetTrackedKensington(key.KeyID);
@@ -175,6 +195,7 @@ namespace CMDB.API.Services
             });
             _context.Devices.Update(device);
         }
+        /// <inheritdoc/>
         public async Task ReleaseDevice(KensingtonDTO key)
         {
             var kensington = await GetTrackedKensington(key.KeyID);
@@ -199,6 +220,7 @@ namespace CMDB.API.Services
             });
             _context.Devices.Update(device);
         }
+        /// <inheritdoc/>
         public async Task<List<KensingtonDTO>> ListAllFreeKeys()
         {
             return await _context.Kensingtons
@@ -207,6 +229,11 @@ namespace CMDB.API.Services
                 .Where(x => x.AssetTag == null)
                 .Select(x => Convert2DTO(x)).ToListAsync();
         }
+        /// <summary>
+        /// This will convert a Kensington to a DTO
+        /// </summary>
+        /// <param name="entity"><see cref="Kensington"/></param>
+        /// <returns><see cref="KensingtonDTO"/></returns>
         public static KensingtonDTO Convert2DTO(Kensington entity)
         {
             return new KensingtonDTO

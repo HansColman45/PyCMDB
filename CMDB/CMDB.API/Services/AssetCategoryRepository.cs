@@ -5,12 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for AssetCategory
+    /// </summary>
     public class AssetCategoryRepository : GenericRepository, IAssetCategoryRepository
     {
+        private AssetCategoryRepository()
+        {
+        }
+
         private readonly string table = "assetcategory";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public AssetCategoryRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc />
         public async Task<bool> IsCategoryExisting(AssetCategoryDTO assetCategory)
         {
             List<AssetCategory> Catogories;
@@ -30,6 +43,7 @@ namespace CMDB.API.Services
             else
                 return false;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<AssetCategoryDTO>> GetAll()
         {
             var category = await _context.AssetCategories.AsNoTracking()
@@ -37,6 +51,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return category;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<AssetCategoryDTO>> GetAll(string search)
         {
             var category = await _context.AssetCategories.AsNoTracking()
@@ -44,6 +59,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return category;
         }
+        /// <inheritdoc />
         public async Task<AssetCategoryDTO> GetByCategory(string category)
         {
             return await _context.AssetCategories.AsNoTracking()
@@ -51,6 +67,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertCategory(x))
                 .FirstAsync();
         }
+        /// <inheritdoc />
         public async Task<AssetCategoryDTO> GetById(int id)
         {
             var category = await _context.AssetCategories.AsNoTracking()
@@ -63,6 +80,11 @@ namespace CMDB.API.Services
             }
             return category;
         }
+        /// <summary>
+        /// This will convert the DTO to the entity
+        /// </summary>
+        /// <param name="dto"><see cref="AssetCategoryDTO"/></param>
+        /// <returns><see cref="AssetCategory"/></returns>
         public static AssetCategory ConvertDTO(AssetCategoryDTO dto)
         {
             return new()
@@ -74,6 +96,11 @@ namespace CMDB.API.Services
                 DeactivateReason = dto.DeactivateReason
             };
         }
+        /// <summary>
+        /// This will convert the entity to the DTO
+        /// </summary>
+        /// <param name="assetCategory"><see cref="AssetCategory"/></param>
+        /// <returns><see cref="AssetCategoryDTO"/></returns>
         public static AssetCategoryDTO ConvertCategory(AssetCategory assetCategory)
         {
             return new()
@@ -86,6 +113,7 @@ namespace CMDB.API.Services
                 Prefix = assetCategory.Prefix
             };
         }
+        /// <inheritdoc />
         public AssetCategoryDTO Create(AssetCategoryDTO assetCategoryDTO)
         {
             AssetCategory category = new()
@@ -103,6 +131,7 @@ namespace CMDB.API.Services
             _context.AssetCategories.Add(category);
             return assetCategoryDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetCategoryDTO> Update(AssetCategoryDTO assetCategoryDTO)
         {
             var oldType = await GetCategory(assetCategoryDTO.Id);
@@ -132,6 +161,7 @@ namespace CMDB.API.Services
             _context.AssetCategories.Update(oldType);
             return assetCategoryDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetCategoryDTO> Delete(AssetCategoryDTO assetCategoryDTO, string reason)
         {
             var cat = await GetCategory(assetCategoryDTO.Id);
@@ -145,6 +175,7 @@ namespace CMDB.API.Services
             });
             return assetCategoryDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetCategoryDTO> Activate(AssetCategoryDTO assetCategoryDTO)
         {
             var cat = await GetCategory(assetCategoryDTO.Id);

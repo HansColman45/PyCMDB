@@ -7,18 +7,31 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for managing asset types
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class AssetTypeController : ControllerBase
     {
+        private AssetTypeController()
+        {
+        }   
         private readonly IUnitOfWork _uow;
         private readonly string site = "Asset Type";
         private HasAdminAccessRequest request;
-
+        /// <summary>
+        /// The constructor for the AssetTypeController
+        /// </summary>
+        /// <param name="uow"></param>
         public AssetTypeController(IUnitOfWork uow)
         {
             _uow = uow;
         }
+        /// <summary>
+        /// This will return all the asset types
+        /// </summary>
+        /// <returns>List of <see cref="AssetTypeDTO"/></returns>
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -37,6 +50,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetTypeRepository.GetAll());
         }
+        /// <summary>
+        /// This will return all the asset types matching the search string
+        /// </summary>
+        /// <param name="searchstr"></param>
+        /// <returns>List of <see cref="AssetTypeDTO"/></returns>
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
@@ -55,6 +73,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetTypeRepository.GetAll(searchstr));
         }
+        /// <summary>
+        /// This will return all the asset types matching the category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns>List of <see cref="AssetTypeDTO"/></returns>
         [HttpGet("GetByCategory/{category}"), Authorize]
         public async Task<IActionResult> GetByAssetCategory(string category)
         {
@@ -73,6 +96,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetTypeRepository.GetByCategory(category));
         }
+        /// <summary>
+        /// This will create a new asset type
+        /// </summary>
+        /// <param name="assetTypeDTO"></param>
+        /// <returns></returns>
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(AssetTypeDTO assetTypeDTO)
         {
@@ -93,6 +121,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetTypeDTO);
         }
+        /// <summary>
+        /// This will update an existing asset type
+        /// </summary>
+        /// <param name="assetTypeDTO"></param>
+        /// <returns></returns>
         [HttpPut, Authorize]
         public async Task<IActionResult> Update(AssetTypeDTO assetTypeDTO)
         {
@@ -113,6 +146,12 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetTypeDTO);
         }
+        /// <summary>
+        /// This will deactivate an existing asset type
+        /// </summary>
+        /// <param name="assetTypeDTO"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
         [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Deactivate(AssetTypeDTO assetTypeDTO, string reason)
         {
@@ -133,6 +172,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(assetTypeDTO);
         }
+        /// <summary>
+        /// This will return an asset type by ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -151,6 +195,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.AssetTypeRepository.GetById(id));
         }
+        /// <summary>
+        /// This will activate an existing asset type
+        /// </summary>
+        /// <param name="assetTypeDTO"></param>
+        /// <returns></returns>
         [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(AssetTypeDTO assetTypeDTO)
         {

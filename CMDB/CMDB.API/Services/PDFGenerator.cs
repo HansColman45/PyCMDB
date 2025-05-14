@@ -7,6 +7,9 @@ using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace CMDB.API.Services
 {   
+    /// <summary>
+    /// The PDF creator
+    /// </summary>
     public class PDFGenerator : IDocument
     {
         private List<DeviceDTO> devices = new();
@@ -25,8 +28,20 @@ namespace CMDB.API.Services
         private string UserID;
         private string Singer;
         private string ITEmployee;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public DocumentMetadata GetMetadata() => DocumentMetadata.Default;
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public DocumentSettings GetSettings() => DocumentSettings.Default;
+
+        /// <summary>
+        /// constructor
+        /// </summary>
         public PDFGenerator()
         {
             QuestPDF.Settings.License = LicenseType.Community;
@@ -39,7 +54,7 @@ namespace CMDB.API.Services
             ITEmployee = "";
         }
         /// <summary>
-        /// 
+        /// This will set the info about the user who the PDF is generated for
         /// </summary>
         /// <param name="language"></param>
         /// <param name="reciever"></param>
@@ -61,7 +76,7 @@ namespace CMDB.API.Services
             this.ITEmployee = ITEmployee;
         }
         /// <summary>
-        /// 
+        /// Thiw will set the Devive info to the PDF
         /// </summary>
         /// <param name="device"></param>
         public void SetAssetInfo(DeviceDTO device)
@@ -69,7 +84,7 @@ namespace CMDB.API.Services
             devices.Add(device);
         }
         /// <summary>
-        /// 
+        /// This will set the Mobile info
         /// </summary>
         /// <param name="mobile"></param>
         public void SetMobileInfo(MobileDTO mobile)
@@ -85,19 +100,23 @@ namespace CMDB.API.Services
             accounts.Add(idenaccount);
         }
         /// <summary>
-        /// 
+        /// This function will set the Subscription info to the PDF
         /// </summary>
         /// <param name="subscription"></param>
         public void SetSubscriptionInfo(SubscriptionDTO subscription)
         {
             subscriptions.Add(subscription);
         }
+        /// <summary>
+        /// This function will set the Kensington info to the PDF
+        /// </summary>
+        /// <param name="kensington"></param>
         public void SetKensingtonInfo(KensingtonDTO kensington)
         {
             kensingtons.Add(kensington);
         }
         /// <summary>
-        /// 
+        /// This will generate the path where the PDF will be saved
         /// </summary>
         /// <param name="_env"></param>
         /// <returns></returns>

@@ -5,13 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for SubscriptionType
+    /// </summary>
     public class SubscriptionTypeRepository : GenericRepository, ISubscriptionTypeRepository
     {
-        private readonly string table = "subscriptiontype";
-        public SubscriptionTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
+        private SubscriptionTypeRepository()
         {
         }
 
+        private readonly string table = "subscriptiontype";
+        /// <summary>
+        /// Constructor for the SubscriptionTypeRepository
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
+        public SubscriptionTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
+        {
+        }
+        /// <inheritdoc/>
         public async Task<IEnumerable<SubscriptionTypeDTO>> GetAll()
         {
             var types = await _context.SubscriptionTypes.AsNoTracking()
@@ -20,7 +32,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return types;
         }
-
+        /// <inheritdoc/>
         public async Task<IEnumerable<SubscriptionTypeDTO>> GetAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
@@ -31,7 +43,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return types;
         }
-
+        /// <inheritdoc/>
         public async Task<SubscriptionTypeDTO> GetById(int id)
         {
             var types = await _context.SubscriptionTypes.AsNoTracking()
@@ -45,6 +57,7 @@ namespace CMDB.API.Services
             }
             return types;
         }
+        /// <inheritdoc/>
         public SubscriptionTypeDTO Create(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             SubscriptionType type = new()
@@ -65,6 +78,7 @@ namespace CMDB.API.Services
             _context.SubscriptionTypes.Add(type);
             return subscriptionTypeDTO;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionTypeDTO> Update(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
@@ -104,6 +118,7 @@ namespace CMDB.API.Services
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionTypeDTO> Deactivate(SubscriptionTypeDTO subscriptionTypeDTO, string reason)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
@@ -118,6 +133,7 @@ namespace CMDB.API.Services
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
         }
+        /// <inheritdoc/>
         public async Task<SubscriptionTypeDTO> Activate(SubscriptionTypeDTO subscriptionTypeDTO)
         {
             var type = await GetSubscriptionType(subscriptionTypeDTO.Id);
@@ -132,6 +148,7 @@ namespace CMDB.API.Services
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
         }
+        /// <inheritdoc/>
         public async Task<bool> IsExisting(SubscriptionTypeDTO subscriptionType)
         {
             var type = await GetSubscriptionType(subscriptionType.Id);
@@ -157,7 +174,11 @@ namespace CMDB.API.Services
                     return false;
             }
         }
-
+        /// <summary>
+        /// This will convert a SubscriptionType to a SubscriptionTypeDTO
+        /// </summary>
+        /// <param name="subscriptionType"></param>
+        /// <returns></returns>
         public static SubscriptionTypeDTO ConvertType(SubscriptionType subscriptionType)
         {
             return new()

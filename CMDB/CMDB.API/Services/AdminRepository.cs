@@ -13,6 +13,7 @@ namespace CMDB.API.Services
     public class AdminRepository : GenericRepository, IAdminRepository
     {
         private readonly JwtService _jwtService;
+
         /// <summary>
         /// Constructor
         /// </summary>
@@ -23,11 +24,7 @@ namespace CMDB.API.Services
         {
             _jwtService = jwtService;
         }
-        /// <summary>
-        /// Will check if the admin exists
-        /// </summary>
-        /// <param name="admindto"></param>
-        /// <returns><c>bool</c></returns>
+        ///inheritdoc />
         public async Task<bool> IsExisting(AdminDTO admindto)
         {
             bool result = false;
@@ -43,11 +40,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
-        /// <summary>
-        /// Will Create a new admin
-        /// </summary>
-        /// <param name="entity"></param>
-        /// <returns><c>bool</c></returns>
+        ///inheritdoc />
         public AdminDTO Add(AdminDTO entity)
         {
             Admin admin = new()
@@ -69,6 +62,7 @@ namespace CMDB.API.Services
             _context.Admins.Add(admin);
             return entity;
         }
+        ///inheritdoc />
         public async Task<Admin> Update(AdminDTO admin)
         {
             var _admin = await GetAdminByID(admin.AdminId);
@@ -87,6 +81,7 @@ namespace CMDB.API.Services
             }
             return _admin;
         }
+        ///inheritdoc />
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
             var admin = await _context.Admins.AsNoTracking()
@@ -100,7 +95,7 @@ namespace CMDB.API.Services
             TokenStore.Admin = admin;
             if (string.Equals(admin.Password, new PasswordHasher().EncryptPassword(model.Password)))
             {
-                var token = _jwtService.GenerateToken(_context, admin);
+                var token = _jwtService.GenerateToken(admin);
                 return new AuthenticateResponse()
                 {
                     Id = admin.AdminId,
@@ -112,6 +107,7 @@ namespace CMDB.API.Services
             else
                 return null;
         }
+        ///inheritdoc />
         public async Task<bool> HasAdminAccess(HasAdminAccessRequest request)
         {
             var admin = await GetAdminByID(request.AdminId);
@@ -127,6 +123,7 @@ namespace CMDB.API.Services
             else
                 return false;
         }
+        ///inheritdoc />
         public async Task<IEnumerable<AdminDTO>> GetAll()
         {
             return await _context.Admins.AsNoTracking()
@@ -137,6 +134,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertAdmin(x))
                 .ToListAsync();
         }
+        ///inheritdoc />
         public async Task<AdminDTO> GetById(int id)
         {
              var admin = await _context.Admins
@@ -153,6 +151,7 @@ namespace CMDB.API.Services
             }
             return admin;
         }
+        ///inheritdoc />
         public async Task<IEnumerable<AdminDTO>> GetAll(string searchString)
         {
             string searhterm = "%" + searchString + "%";
@@ -210,6 +209,7 @@ namespace CMDB.API.Services
                 }
             };
         }
+        ///inheritdoc />
         public async Task<AdminDTO> Activate(AdminDTO admin)
         {
             var _admin = await GetAdminByID(admin.AdminId);
@@ -225,6 +225,7 @@ namespace CMDB.API.Services
             _context.Admins.Update(_admin);
             return admin;
         }
+        ///inheritdoc />
         public async Task<AdminDTO> DeActivate(AdminDTO admin, string reason)
         {
             var _admin = await GetAdminByID(admin.AdminId);

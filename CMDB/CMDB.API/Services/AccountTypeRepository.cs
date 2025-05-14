@@ -5,13 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for managing AccountType entities.
+    /// </summary>
     public class AccountTypeRepository : GenericRepository, IAccountTypeRepository
     {
-        private readonly string table = "accounttype";
+        private AccountTypeRepository()
+        {
+        }
 
+        private readonly string table = "accounttype";
+        /// <summary>
+        /// Constructor for AccountTypeRepository.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public AccountTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc />
         public async Task<List<TypeDTO>> GetAll()
         {
             List<TypeDTO> accountTypes = await _context.Types.OfType<AccountType>().AsNoTracking()
@@ -19,6 +31,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accountTypes;
         }
+        /// <inheritdoc />
         public async Task<List<TypeDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -28,6 +41,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accountTypes;
         }
+        /// <inheritdoc />
         public async Task<TypeDTO> GetById(int id)
         {
             var type =  await _context.Types.OfType<AccountType>().AsNoTracking()
@@ -40,6 +54,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        /// <inheritdoc />
         public TypeDTO Create(TypeDTO typeDTO)
         {
             string logline = GenericLogLineCreator.CreateLogLine($"accounttype with type: {typeDTO.Type} and description: {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
@@ -62,6 +77,7 @@ namespace CMDB.API.Services
             }
             return typeDTO;
         }
+        /// <inheritdoc />
         public async Task<TypeDTO> DeActivate(TypeDTO type, string reason)
         {
             var acctype = await GetTypeById(type.TypeId);
@@ -86,6 +102,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        /// <inheritdoc />
         public async Task<TypeDTO> Activate(TypeDTO type)
         {
             var acctype = await GetTypeById(type.TypeId);
@@ -110,6 +127,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        /// <inheritdoc />
         public async Task<TypeDTO> Update(TypeDTO type)
         {
             var oldType = await GetTypeById(type.TypeId);
@@ -159,6 +177,7 @@ namespace CMDB.API.Services
             _context.Types.Update(oldType);
             return type;
         }
+        /// <inheritdoc />
         public async Task<bool> IsExisitng(TypeDTO type)
         {
             bool result = false;
@@ -192,6 +211,12 @@ namespace CMDB.API.Services
             }
             return result;
         }
+        /// <summary>
+        /// Converts an <see cref="AccountType"/> instance to a <see cref="TypeDTO"/> instance.
+        /// </summary>
+        /// <param name="type">The <see cref="AccountType"/> instance to convert. This parameter is passed by reference for performance
+        /// optimization.</param>
+        /// <returns>A <see cref="TypeDTO"/> instance containing the mapped values from the specified <see cref="AccountType"/>.</returns>
         public static TypeDTO ConvertType(in AccountType type)
         {
             return new()
@@ -204,6 +229,12 @@ namespace CMDB.API.Services
                 TypeId = type.TypeId
             };
         }
+        /// <summary>
+        /// Converts a <see cref="TypeDTO"/> object to an <see cref="AccountType"/> object.
+        /// </summary>
+        /// <param name="typeDTO">The <see cref="TypeDTO"/> instance to convert. Must not be <see langword="null"/>.</param>
+        /// <returns>An <see cref="AccountType"/> object populated with the corresponding values from the specified <see
+        /// cref="TypeDTO"/>.</returns>
         public static AccountType ConvertDTO(TypeDTO typeDTO) 
         {
             return new()

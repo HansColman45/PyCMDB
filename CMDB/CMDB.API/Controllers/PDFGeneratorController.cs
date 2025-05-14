@@ -9,18 +9,35 @@ using CMDB.API.Models;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for PDF generation
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class PDFGeneratorController : ControllerBase
     {
+        private PDFGeneratorController()
+        {
+        }
+
         private readonly IUnitOfWork _uow;
         private static readonly PDFGenerator PDFGenerator = new();
         private readonly IWebHostEnvironment _env;
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="uow"><see cref="IUnitOfWork"/></param>
+        /// <param name="env"></param>
         public PDFGeneratorController(IUnitOfWork uow, IWebHostEnvironment env)
         {
             _uow = uow;
             _env = env;
         }
+        /// <summary>
+        /// Set user information for PDF generation
+        /// </summary>
+        /// <param name="info"></param>
+        /// <returns></returns>
         [HttpPost("AddUserInfo"), Authorize]
         public IActionResult AddUserInfo(PDFInformation info)
         {
@@ -31,6 +48,11 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetPDFInfo(info.Language,info.Receiver,info.FirstName,info.LastName,info.UserID,info.Singer,info.ITEmployee,info.Type);
             return Ok();
         }
+        /// <summary>
+        /// Set device information for PDF generation
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         [HttpPost("AddAssetInfo"), Authorize]
         public IActionResult AddAssetInfo(DeviceDTO device)
         {
@@ -40,6 +62,11 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetAssetInfo(device);
             return Ok();
         }
+        /// <summary>
+        /// Set Mobile information for PDF generation
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         [HttpPost("AddMobileInfo"), Authorize]
         public IActionResult AddMobileInfo(MobileDTO mobile) 
         {
@@ -49,6 +76,11 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetMobileInfo(mobile);
             return Ok();
         }
+        /// <summary>
+        /// Set the account information for PDF generation
+        /// </summary>
+        /// <param name="account"></param>
+        /// <returns></returns>
         [HttpPost("AddAccountInfo"), Authorize]
         public async Task<IActionResult> AddAccountInfo(IdenAccountDTO account)
         {
@@ -59,6 +91,11 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetAccontInfo(idenacc);
             return Ok();
         }
+        /// <summary>
+        /// Set the subscription information for PDF generation
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
         [HttpPost("AddSubscriptionInfo"), Authorize]
         public IActionResult AddSubscriptionInfo(SubscriptionDTO subscription) 
         {
@@ -68,6 +105,11 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetSubscriptionInfo(subscription);
             return Ok();
         }
+        /// <summary>
+        /// Set the kensington information for PDF generation
+        /// </summary>
+        /// <param name="kensington"></param>
+        /// <returns></returns>
         [HttpPost("AddKeyInfo"), Authorize]
         public IActionResult AddKeyInfo(KensingtonDTO kensington)
         {
@@ -77,6 +119,13 @@ namespace CMDB.API.Controllers
             PDFGenerator.SetKensingtonInfo(kensington);
             return Ok();
         }
+        /// <summary>
+        /// Generate the PDF file and log it in the database
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         [HttpGet("{entity:alpha}/{id:int}"), Authorize]
         public async Task<IActionResult> GenertatePDF(string entity, int id)
         {
@@ -108,6 +157,13 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// Generate the PDF file and log it in the database
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="assetTag"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         [HttpGet("{entity:alpha}/{assetTag}"),Authorize]
         public async Task<IActionResult> GeneratePDF(string entity, string assetTag)
         {

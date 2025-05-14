@@ -5,12 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// This is the repository for the Identity
+    /// </summary>
     public class IdentityRepository : GenericRepository, IIdentityRepository
     {
+        private IdentityRepository()
+        {
+        }
         private readonly string table = "identity";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public IdentityRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc />
         public async Task<bool> IsExisting(IdentityDTO identity)
         {
             bool result = false;
@@ -33,6 +45,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
+        /// <inheritdoc />
         public async Task<IdentityDTO> GetById(int id)
         {
             var iden = await _context.Identities.AsNoTracking()
@@ -49,6 +62,7 @@ namespace CMDB.API.Services
             }
             return iden;
         }
+        /// <inheritdoc />
         public async Task LogPdfFile(string pdfFile, int id)
         {
             Identity iden = await TrackedIden(id);
@@ -59,6 +73,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(iden);
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<IdentityDTO>> GetAll()
         {
             return await _context.Identities.AsNoTracking()
@@ -66,6 +81,7 @@ namespace CMDB.API.Services
                 .Include(x => x.Language).AsNoTracking()
                 .Select(x => ConvertIdentity(x)).ToListAsync();
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<IdentityDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -77,6 +93,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertIdentity(x))
                 .ToListAsync();
         }
+        /// <inheritdoc />
         public IdentityDTO Create(IdentityDTO identityDTO)
         {
             Identity iden = new()
@@ -100,6 +117,7 @@ namespace CMDB.API.Services
             _context.Identities.Add(iden);
             return identityDTO;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<IdentityDTO>> ListAllFreeIdentities(string sitePart)
         {
             return sitePart switch
@@ -159,6 +177,7 @@ namespace CMDB.API.Services
                 _ => throw new NotImplementedException($"The return for {sitePart} is not implemented")
             };
         }
+        /// <inheritdoc />
         public async Task<IdentityDTO> Update(IdentityDTO dTO)
         {
             var oldIden = await TrackedIden(dTO.IdenId);
@@ -241,6 +260,7 @@ namespace CMDB.API.Services
             _context.Identities.Update(oldIden);
             return dTO;
         }
+        /// <inheritdoc />
         public async Task AssignDevices(IdentityDTO identity, List<string> assetTags)
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -269,6 +289,7 @@ namespace CMDB.API.Services
             }
             _context.Identities.Update(iden);
         }
+        /// <inheritdoc />
         public async Task ReleaseDevices(IdentityDTO identity, List<string> assetTags)
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -297,6 +318,7 @@ namespace CMDB.API.Services
             }
             _context.Identities.Update(iden);
         }
+        /// <inheritdoc />
         public async Task AssignMobile(IdentityDTO identity, List<int> mobileIDs) 
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -324,6 +346,7 @@ namespace CMDB.API.Services
                 _context.Identities.Update(iden);
             }
         }
+        /// <inheritdoc />
         public async Task ReleaseMobile(IdentityDTO identity, List<int> mobileIDs)
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -351,6 +374,7 @@ namespace CMDB.API.Services
                 _context.Identities.Update(iden);
             }
         }
+        /// <inheritdoc />
         public async Task AssignSubscription(IdentityDTO identity, List<int> subscriptionIds)
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -379,6 +403,7 @@ namespace CMDB.API.Services
                 _context.Identities.Update(iden);
             }
         }
+        /// <inheritdoc />
         public async Task ReleaseSubscription(IdentityDTO identity, List<int> subscriptionIds)
         {
             string ideninfo = $"Identity with name: {identity.Name}";
@@ -406,6 +431,7 @@ namespace CMDB.API.Services
                 _context.Identities.Update(iden);
             }
         }
+        /// <inheritdoc />
         public async Task AssignAccount(IdenAccountDTO idenAccount)
         {
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
@@ -436,6 +462,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(iden);
         }
+        /// <inheritdoc />
         public async Task ReleaseAccount(IdenAccountDTO idenAccount)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == idenAccount.Id).FirstAsync();
@@ -461,6 +488,11 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(iden);
         }
+        /// <summary>
+        /// This will convert the identity to a DTO
+        /// </summary>
+        /// <param name="identity"><see cref="Identity"/></param>
+        /// <returns><see cref="IdentityDTO"/></returns>
         public static IdentityDTO ConvertIdentity(in Identity identity)
         {
             return new IdentityDTO()
@@ -489,36 +521,7 @@ namespace CMDB.API.Services
                 }
             };
         }
-        public static Identity ConvertDTO(IdentityDTO dto)
-        {
-            var iden = new Identity()
-            {
-                active = dto.Active,
-                Company = dto.Company,
-                DeactivateReason = dto.DeactivateReason,
-                EMail = dto.EMail,
-                IdenId = dto.IdenId,
-                Name = dto.Name,
-                LastModifiedAdminId = dto.LastModifiedAdminId,
-                UserID = dto.UserID,
-                TypeId = dto.Type.TypeId,
-                Type = new IdentityType()
-                {
-                    DeactivateReason = dto.Type.DeactivateReason,
-                    Type = dto.Type.Type,
-                    Description = dto.Type.Description,
-                    LastModifiedAdminId = dto.Type.LastModifiedAdminId,
-                    active = dto.Type.Active,
-                    TypeId = dto.Type.TypeId
-                },
-                Language = new Language()
-                {
-                    Code = dto.Language.Code,
-                    Description = dto.Language.Description
-                }
-            };
-            return iden;
-        }
+        /// <inheritdoc />
         public async Task<IdentityDTO> Deactivate(IdentityDTO identity, string reason)
         {
             Identity iden = await TrackedIden(identity.IdenId);
@@ -533,6 +536,7 @@ namespace CMDB.API.Services
             _context.Identities.Update(iden);
             return identity;
         }
+        /// <inheritdoc />
         public async Task<IdentityDTO> Activate(IdentityDTO identity)
         {
             Identity iden = await TrackedIden(identity.IdenId);

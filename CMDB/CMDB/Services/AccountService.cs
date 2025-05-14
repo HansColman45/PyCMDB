@@ -284,6 +284,13 @@ namespace CMDB.Services
             }
             return accounts;
         }
+        /// <summary>
+        /// This will check if the period is overlapping with an existing account
+        /// </summary>
+        /// <param name="AccID"></param>
+        /// <param name="ValidFrom"></param>
+        /// <param name="ValidUntil"></param>
+        /// <returns></returns>
         public bool IsPeriodOverlapping(int AccID, DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;

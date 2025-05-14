@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CMDB.Views.Identity
 {
+    /// <summary>
+    /// Model for the Create page
+    /// </summary>
     public class CreateModel : PageModel
     {
+        /// <summary>
+        /// The onget method
+        /// </summary>
         public void OnGet()
         {
         }

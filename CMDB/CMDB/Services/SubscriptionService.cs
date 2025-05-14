@@ -11,11 +11,22 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// This class is used to manage subscriptions
+    /// </summary>
     public class SubscriptionService : CMDBServices
     {
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public SubscriptionService() : base()
         {
         }
+        /// <summary>
+        /// This function will list all subscriptions
+        /// </summary>
+        /// <returns>List of <see cref="SubscriptionDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<ICollection<SubscriptionDTO>> ListAll()
         {
             BaseUrl = Url + $"api/Subscription/GetAll";
@@ -26,6 +37,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will list all subscriptions based on the search string
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <returns>List of <see cref="SubscriptionDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<ICollection<SubscriptionDTO>> ListAll(string searchString)
         {
             BaseUrl = Url + $"api/Subscription/GetAll/{searchString}";
@@ -36,6 +53,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will get a subscriptiontype by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="SubscriptionTypeDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<SubscriptionDTO> GetByID(int id)
         {
             BaseUrl = Url + $"api/Subscription/{id}";
@@ -46,6 +69,13 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will create a subscription
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Create(SubscriptionTypeDTO type, string phoneNumber)
         {
             BaseUrl = Url + $"api/Subscription";
@@ -59,6 +89,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will edit a subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="phoneNumber"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Edit(SubscriptionDTO subscription, string phoneNumber)
         {
             subscription.PhoneNumber = phoneNumber;
@@ -68,6 +105,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will activate a subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Activate(SubscriptionDTO subscription)
         {
             BaseUrl = Url + $"api/Subscription/Activate";
@@ -76,6 +119,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will deactivate a subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Deactivate(SubscriptionDTO subscription, string reason)
         {
             BaseUrl = Url + $"api/Subscription/{reason}";
@@ -84,6 +134,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will get a subscriptiontype by id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<SubscriptionTypeDTO> GetSubscriptionTypeById(int id)
         {
             BaseUrl = Url + $"api/SubscriptionType/{id}";
@@ -94,6 +150,10 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will get all subscriptiontypes
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> GetSubscriptionTypes()
         {
             List<SelectListItem> types = new();
@@ -109,6 +169,14 @@ namespace CMDB.Services
             }
             return types;
         }
+        /// <summary>
+        /// This function will check if a subscription is existing
+        /// </summary>
+        /// <param name="subscriptionType"></param>
+        /// <param name="phoneNumber"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<bool> IsSubscritionExisting(SubscriptionTypeDTO subscriptionType, string phoneNumber, int id =0)
         {
             if (id != 0)
@@ -143,6 +211,10 @@ namespace CMDB.Services
                     throw new NotAValidSuccessCode(Url, response.StatusCode);
             }
         }
+        /// <summary>
+        /// This function will list all free identities
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
@@ -159,6 +231,10 @@ namespace CMDB.Services
             }
             return identites;
         }
+        /// <summary>
+        /// This function will list all free mobiles
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeMobiles()
         {
             List<SelectListItem> identites = new();
@@ -175,6 +251,13 @@ namespace CMDB.Services
             }
             return identites ;
         }
+        /// <summary>
+        /// This function will release the identity from the subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseIdenity(SubscriptionDTO subscription, IdentityDTO identity)
         {
             AssignInternetSubscriptionRequest request = new() {
@@ -187,6 +270,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        /// <summary>
+        /// This function will assign the identity to the subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignIdentity(SubscriptionDTO subscription, IdentityDTO identity)
         {
             AssignInternetSubscriptionRequest request = new()
@@ -200,6 +290,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        /// <summary>
+        /// This function will get the identity by id
+        /// </summary>
+        /// <param name="IdenId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<IdentityDTO> GetIdentity(int IdenId)
         {
             BaseUrl = Url + $"api/Identity/{IdenId}";
@@ -210,6 +306,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will get the mobile by id
+        /// </summary>
+        /// <param name="mobileId"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<MobileDTO> GetMobile(int mobileId)
         {
             BaseUrl = Url + $"api/Mobile/{mobileId}";
@@ -220,6 +322,13 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This function will assign the mobile to the subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignMobile(SubscriptionDTO subscription, MobileDTO mobile)
         {
             AssignMobileSubscriptionRequest request = new()
@@ -233,6 +342,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(BaseUrl, response.StatusCode);
         }
+        /// <summary>
+        /// This function will release the mobile from the subscription
+        /// </summary>
+        /// <param name="subscription"></param>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseMobile(SubscriptionDTO subscription, MobileDTO mobile)
         {
             AssignMobileSubscriptionRequest request = new()

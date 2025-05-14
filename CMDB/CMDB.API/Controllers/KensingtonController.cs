@@ -7,18 +7,32 @@ using System.Security.Claims;
 
 namespace CMDB.API.Controllers
 {
+    /// <summary>
+    /// Controller for Kensington
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class KensingtonController : ControllerBase 
     {
-        IUnitOfWork _uow;
+        private KensingtonController()
+        {
+        }
+
+        private readonly IUnitOfWork _uow;
         private readonly string site = "Kensington";
         private HasAdminAccessRequest request;
-
+        /// <summary>
+        /// Constructor for KensingtonController
+        /// </summary>
+        /// <param name="uow"></param>
         public KensingtonController(IUnitOfWork uow)
         {
             _uow = uow;
         }
+        /// <summary>
+        /// This will list all Kensingtons
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll()
         {
@@ -38,6 +52,11 @@ namespace CMDB.API.Controllers
             var accounts = await _uow.KensingtonRepository.ListAll();
             return Ok(accounts);
         }
+        /// <summary>
+        /// This will return a list of all Kensingtons matching the search string
+        /// </summary>
+        /// <param name="searchstr"></param>
+        /// <returns></returns>
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
@@ -57,6 +76,11 @@ namespace CMDB.API.Controllers
             var accounts = await _uow.KensingtonRepository.ListAll(searchstr);
             return Ok(accounts);
         }
+        /// <summary>
+        /// This will return a Kensington by Id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
@@ -75,6 +99,11 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.KensingtonRepository.GetById(id));
         }
+        /// <summary>
+        /// This will create a new Kensington
+        /// </summary>
+        /// <param name="kensington"></param>
+        /// <returns></returns>
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(KensingtonDTO kensington)
         {
@@ -95,6 +124,12 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(newKensington);
         }
+        /// <summary>
+        /// This will delete a Kensington
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
         [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(KensingtonDTO key, string reason)
         {
@@ -115,6 +150,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(deletedKensington);
         }
+        /// <summary>
+        /// This will update a Kensington
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpPut, Authorize]
         public async Task<IActionResult> Update(KensingtonDTO key)
         {
@@ -135,6 +175,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(key);
         }
+        /// <summary>
+        /// This will activate a Kensington
+        /// </summary>
+        /// <param name="kensington"></param>
+        /// <returns></returns>
         [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(KensingtonDTO kensington)
         {
@@ -155,6 +200,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok(activatedKensington);
         }
+        /// <summary>
+        /// This will assign a Kensington to a device
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpPost("AssignDevice"), Authorize]
         public async Task<IActionResult> AssignKey2Device(KensingtonDTO key)
         {
@@ -175,6 +225,11 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will release a Kensington from a device
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         [HttpPost("ReleaseDevice"), Authorize]
         public async Task<IActionResult> ReleaseKeyFromDevice(KensingtonDTO key)
         {
@@ -195,6 +250,10 @@ namespace CMDB.API.Controllers
             await _uow.SaveChangesAsync();
             return Ok();
         }
+        /// <summary>
+        /// This will list all Kensingtons that are free
+        /// </summary>
+        /// <returns></returns>
         [HttpGet("GetAllFreeKeys"), Authorize]
         public async Task<IActionResult> GetAllFreeKeys()
         {

@@ -5,12 +5,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for AssetType
+    /// </summary>
     public class AssetTypeRepository : GenericRepository, IAssetTypeRepository
     {
+        private AssetTypeRepository()
+        {
+        }
         private readonly string table = "assettype";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public AssetTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<AssetTypeDTO>> GetAll()
         {
             var types =  await _context.AssetTypes.AsNoTracking()
@@ -19,6 +31,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return types;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<AssetTypeDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -30,6 +43,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertType(x))
                 .ToListAsync();
         }
+        /// <inheritdoc />
         public AssetTypeDTO Create(AssetTypeDTO assetTypeDTO)
         {
             AssetType type = new()
@@ -48,6 +62,7 @@ namespace CMDB.API.Services
             _context.AssetTypes.Add(type);
             return assetTypeDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetTypeDTO> Update(AssetTypeDTO assetTypeDTO)
         {
             var oldType = await GetTypeById(assetTypeDTO);
@@ -76,6 +91,7 @@ namespace CMDB.API.Services
             _context.AssetTypes.Update(oldType);
             return assetTypeDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetTypeDTO> Deactivate(AssetTypeDTO assetTypeDTO, string reason)
         {
             var oldType = await GetTypeById(assetTypeDTO);
@@ -90,6 +106,7 @@ namespace CMDB.API.Services
             _context.AssetTypes.Update(oldType);
             return assetTypeDTO;
         }
+        /// <inheritdoc />
         public async Task<AssetTypeDTO> Activate(AssetTypeDTO assetTypeDTO)
         {
             var oldType = await GetTypeById(assetTypeDTO);
@@ -103,6 +120,7 @@ namespace CMDB.API.Services
             });
             return assetTypeDTO;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<AssetTypeDTO>> GetByCategory(string category)
         {
             return await _context.AssetTypes
@@ -111,6 +129,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertType(x))
                 .ToListAsync();
         }
+        /// <inheritdoc />
         public async Task<AssetTypeDTO> GetById(int id)
         {
             var type = await _context.AssetTypes.AsNoTracking()
@@ -122,6 +141,11 @@ namespace CMDB.API.Services
                 GetLogs(table,id,type);
             return type;
         }
+        /// <summary>
+        /// This will convert the AssetType to DTO
+        /// </summary>
+        /// <param name="assetType"><see cref="AssetType"/></param>
+        /// <returns><see cref="AssetTypeDTO"/></returns>
         public static AssetTypeDTO ConvertType(AssetType assetType)
         {
             return new()

@@ -6,17 +6,44 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Interface for the IdenAccountRepository
+    /// </summary>
     public interface IIdenAccountRepository
     {
+        /// <summary>
+        /// This will return the details of an identity account
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<IdenAccountDTO> GetById(int id);
+        /// <summary>
+        /// This will return the details of an identity account by using the Account ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         Task<IdenAccount> GetIdenAccountById(int id);
+        /// <summary>
+        /// This will check if the period is overlapping
+        /// </summary>
+        /// <param name="request"></param>
+        /// <returns></returns>
         Task<bool> IsPeriodOverlapping(IsPeriodOverlappingRequest request);
     }
+    /// <summary>
+    /// Repository for managing identity accounts
+    /// </summary>
     public class IdenAccountRepository : GenericRepository, IIdenAccountRepository
     {
+        /// <summary>
+        /// Constructor for the IdenAccountRepository
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public IdenAccountRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc/>
         public async Task<IdenAccountDTO> GetById(int id) 
         {
             _logger.LogInformation("Get by Id");
@@ -34,6 +61,7 @@ namespace CMDB.API.Services
                 .FirstAsync();
             return iden;
         }
+        /// <inheritdoc/>
         public async Task<IdenAccount> GetIdenAccountById(int id)
         {
             var iden = await _context.IdenAccounts.AsNoTracking()
@@ -48,6 +76,7 @@ namespace CMDB.API.Services
                 .FirstAsync();
             return iden;
         }
+        /// <inheritdoc/>
         public async Task<bool> IsPeriodOverlapping(IsPeriodOverlappingRequest request)
         {
             var Identity = await _context.IdenAccounts
@@ -59,6 +88,11 @@ namespace CMDB.API.Services
             else
                 return false;
         }
+        /// <summary>
+        /// This will convert the identity account to a DTO
+        /// </summary>
+        /// <param name="idenAccount"></param>
+        /// <returns></returns>
         public static IdenAccountDTO ConvertIdenenty(IdenAccount idenAccount)
         {
             return new IdenAccountDTO()

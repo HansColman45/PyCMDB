@@ -21,6 +21,10 @@ namespace CMDB.Controllers
         {
             service = new();
         }
+        /// <summary>
+        /// The home page of the applocation
+        /// </summary>
+        /// <returns></returns>
         public IActionResult Index()
         {
             return View();

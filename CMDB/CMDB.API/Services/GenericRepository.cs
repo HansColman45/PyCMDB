@@ -9,7 +9,19 @@ namespace CMDB.API.Services
     /// </summary>
     public class GenericRepository
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
+        protected GenericRepository()
+        {
+        }
+        /// <summary>
+        /// The logger
+        /// </summary>
         protected readonly ILogger _logger;
+        /// <summary>
+        /// The Db context
+        /// </summary>
         protected readonly CMDBContext _context;
         /// <summary>
         /// Constructor
@@ -68,6 +80,13 @@ namespace CMDB.API.Services
                 _ => throw new Exception("No get log statement created for table: " + table),
             };
         }
+        /// <summary>
+        /// This will get the logs for the given table and AssetTag
+        /// </summary>
+        /// <param name="table"></param>
+        /// <param name="AssetTag"></param>
+        /// <param name="model"></param>
+        /// <exception cref="Exception"></exception>
         public void GetLogs(string table, string AssetTag, ModelDTO model)
         {
             model.Logs = table switch

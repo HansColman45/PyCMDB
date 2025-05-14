@@ -6,11 +6,20 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// This is the Device Repository
+    /// </summary>
     public class DeviceRepository : GenericRepository, IDeviceRepository
     {
+        /// <summary>
+        /// The constructor for the Device Repository
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public DeviceRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc/>
         public async Task<bool> IsDeviceExising(DeviceDTO device)
         {
             bool result = false;
@@ -21,10 +30,12 @@ namespace CMDB.API.Services
                 result = true;
             return result;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<RAM>> GetAllRams()
         {
             return await _context.RAMs.AsNoTracking().ToListAsync();
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<DeviceDTO>> GetAll(string category)
         {
             List<DeviceDTO> devices = new();
@@ -98,6 +109,7 @@ namespace CMDB.API.Services
             };
             return devices;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<DeviceDTO>> GetAll(string category,string searchString)
         {
             string searhterm = "%" + searchString + "%";
@@ -177,6 +189,7 @@ namespace CMDB.API.Services
             };
             return devices;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<DeviceDTO>> ListAllFreeDevices(string sitePart)
         {
             return sitePart switch
@@ -195,6 +208,7 @@ namespace CMDB.API.Services
                 _ => throw new NotImplementedException($"{sitePart} not implemented"),
             };
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<DeviceDTO>> ListAllFreeDevices()
         {
             List<DeviceDTO> devices = new();
@@ -270,6 +284,7 @@ namespace CMDB.API.Services
             }
             return devices;
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> GetByAssetTag(string category, string assetTag)
         {
             switch (category)
@@ -368,6 +383,7 @@ namespace CMDB.API.Services
                     throw new Exception($"{category} not found");
             }
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> GetByAssetTag(string assetTag)
         {
             return await _context.Devices.AsNoTracking()
@@ -381,6 +397,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertDevice(x))
                 .FirstOrDefaultAsync();
         }
+        /// <inheritdoc/>
         public DeviceDTO Create(DeviceDTO deviceDTO)
         {
             string table = deviceDTO.Category.Category.ToLower();
@@ -490,6 +507,7 @@ namespace CMDB.API.Services
             }
             return deviceDTO;
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> Update(DeviceDTO deviceDTO)
         {
             switch (deviceDTO.Category.Category)
@@ -515,6 +533,7 @@ namespace CMDB.API.Services
             };
             return deviceDTO;
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> Deactivate(DeviceDTO deviceDTO, string reason)
         {
             string table = deviceDTO.Category.Category.ToLower();
@@ -589,6 +608,7 @@ namespace CMDB.API.Services
             }
             return deviceDTO;
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> Activate(DeviceDTO deviceDTO)
         {
             string table = deviceDTO.Category.Category.ToLower();
@@ -663,6 +683,7 @@ namespace CMDB.API.Services
             }
             return deviceDTO;
         }
+        /// <inheritdoc/>
         public async Task AssignKensington(DeviceDTO device)
         {
             string table = device.Category.Category.ToLower();
@@ -729,6 +750,7 @@ namespace CMDB.API.Services
                     throw new NotImplementedException($"{device.Category.Category} not implemented");
             }
         }
+        /// <inheritdoc/>
         public async Task ReleaseKensington(DeviceDTO device)
         {
             string table = device.Category.Category.ToLower();
@@ -792,6 +814,7 @@ namespace CMDB.API.Services
                     throw new NotImplementedException($"{device.Category.Category} not implemented");
             }
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> AssignIdentity(DeviceDTO device)
         {
             string table = device.Category.Category.ToLower();
@@ -870,6 +893,7 @@ namespace CMDB.API.Services
             _context.Identities.Update(iden);
             return device;
         }
+        /// <inheritdoc/>
         public async Task<DeviceDTO> ReleaseIdentity(DeviceDTO device)
         {
             string table = device.Category.Category.ToLower();
@@ -948,6 +972,11 @@ namespace CMDB.API.Services
             _context.Identities.Update(iden);
             return device;
         }
+        /// <summary>
+        /// This method converts a device to a DeviceDTO object.
+        /// </summary>
+        /// <param name="device"></param>
+        /// <returns></returns>
         public static DeviceDTO ConvertDevice(Device device)
         {
             if (device.Kensington is not null)
@@ -1107,6 +1136,7 @@ namespace CMDB.API.Services
                     }
                 };
         }
+        /// <inheritdoc/>
         public async Task LogPdfFile(string category, string pdfFile, string asassetTag)
         {
             switch (category)

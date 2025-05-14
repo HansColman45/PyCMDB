@@ -5,12 +5,25 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// Repository for managing Application entities.
+    /// </summary>
     public class ApplicationRepository : GenericRepository, IApplicationRepository
     {
+        private ApplicationRepository()
+        {
+        }
+
         private readonly string table = "application";
+        /// <summary>
+        /// Constructor for ApplicationRepository.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public ApplicationRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<ApplicationDTO>> GetAll()
         {
             var applications = await _context.Applications.AsNoTracking()
@@ -18,6 +31,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return applications;
         }
+        /// <inheritdoc />
         public async Task<IEnumerable<ApplicationDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -27,6 +41,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return applications;
         }
+        /// <inheritdoc />
         public async Task<ApplicationDTO> GetById(int Id)
         {
             _logger.LogInformation("Get information about ApplicationDTO by Id: {Id}",Id);
@@ -35,6 +50,7 @@ namespace CMDB.API.Services
                 .Select(x => ConvertApplication(x))
                 .FirstOrDefaultAsync();
         }
+        /// <inheritdoc />
         public async Task<Application> Update(ApplicationDTO appDTO)
         {
             var oldApp = await GetAppById(appDTO.AppID);
@@ -51,6 +67,7 @@ namespace CMDB.API.Services
             _context.Applications.Update(oldApp);
             return oldApp;
         }
+        /// <inheritdoc />
         public async Task<Application> DeActivate(ApplicationDTO application, string reason)
         {
             var app = await GetAppById(application.AppID);
@@ -64,6 +81,7 @@ namespace CMDB.API.Services
             _context.Applications.Update(app);
             return app;
         }
+        /// <inheritdoc />
         public async Task<Application> Activate(ApplicationDTO application)
         {
             var app = await GetAppById(application.AppID);
@@ -77,6 +95,11 @@ namespace CMDB.API.Services
             _context.Applications.Update(app);
             return app;
         }
+        /// <summary>
+        /// Converts an Application entity to an ApplicationDTO.
+        /// </summary>
+        /// <param name="application"><see cref="Application"/></param>
+        /// <returns><see cref="ApplicationDTO"/></returns>
         public static ApplicationDTO ConvertApplication(in Application application)
         {
             return new()
@@ -88,6 +111,11 @@ namespace CMDB.API.Services
                 Name = application.Name
             };
         }
+        /// <summary>
+        /// Converts an ApplicationDTO to an Application entity.
+        /// </summary>
+        /// <param name="dto"><see cref="ApplicationDTO"/></param>
+        /// <returns><see cref="Application"/></returns>
         public static Application ConvertDTO(ApplicationDTO dto)
         {
             return new()

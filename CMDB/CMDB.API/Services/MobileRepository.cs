@@ -6,13 +6,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// This is the mobile repository
+    /// </summary>
     public class MobileRepository : GenericRepository, IMobileRepository
     {
         private static readonly string table = "mobile";
+        /// <summary>
+        /// The constructor for the mobile repository
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public MobileRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
-
+        /// <inheritdoc/>
         public async Task<MobileDTO> Activate(MobileDTO mobileDTO)
         {
             var mobile = await GetMobileById(mobileDTO.MobileId);
@@ -27,6 +35,7 @@ namespace CMDB.API.Services
             _context.Mobiles.Update(mobile);
             return mobileDTO;
         }
+        /// <inheritdoc/>
         public async Task<bool> IsMobileExisting(MobileDTO mobileDTO)
         {
             bool result = false;
@@ -45,6 +54,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
+        /// <inheritdoc/>
         public MobileDTO Create(MobileDTO mobileDTO)
         {
             Mobile mobile = new()
@@ -65,6 +75,7 @@ namespace CMDB.API.Services
             _context.Mobiles.Add(mobile);
             return mobileDTO;
         }
+        /// <inheritdoc/>
         public async Task<MobileDTO> Delete(MobileDTO mobileDTO, string reason)
         {
             var mobile = await GetMobileById(mobileDTO.MobileId);
@@ -79,6 +90,7 @@ namespace CMDB.API.Services
             _context.Mobiles.Update(mobile);
             return mobileDTO;
         }
+        /// <inheritdoc/>
         public async Task<MobileDTO> Update(MobileDTO mobileDTO)
         {
             var mobile = await GetMobileById(mobileDTO.MobileId);
@@ -109,6 +121,7 @@ namespace CMDB.API.Services
             _context.Mobiles.Update(mobile);
             return mobileDTO;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<MobileDTO>> GetAll()
         {
             var mobiles = await _context.Mobiles.AsNoTracking()
@@ -122,6 +135,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return mobiles;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<MobileDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -138,6 +152,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return mobiles;
         }
+        /// <inheritdoc/>
         public async Task<MobileDTO> GetById(int id)
         {
             var mobile = await _context.Mobiles
@@ -159,6 +174,7 @@ namespace CMDB.API.Services
             }
             return mobile;
         }
+        /// <inheritdoc/>
         public async Task<IEnumerable<MobileDTO>> ListAllFreeMobiles(string sitePart)
         {
             return sitePart switch
@@ -187,6 +203,7 @@ namespace CMDB.API.Services
                 _ => throw new NotImplementedException($"The return for {sitePart} is not implemented")
             };
         }
+        /// <inheritdoc/>
         public async Task AssignIdentity(AssignMobileRequest request)
         {
             var mobileid = request.MobileIds.First();
@@ -211,6 +228,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(identity);
         }
+        /// <inheritdoc/>
         public async Task ReleaseIdentity(AssignMobileRequest request)
         {
             var mobileid = request.MobileIds.First();
@@ -235,6 +253,7 @@ namespace CMDB.API.Services
             });
             _context.Identities.Update(identity);
         }
+        /// <inheritdoc/>
         public async Task AssignSubscription(AssignMobileSubscriptionRequest request)
         {
             var mobile = await GetMobileById(request.MobileId);
@@ -261,6 +280,7 @@ namespace CMDB.API.Services
             });
             _context.Mobiles.Update(mobile);
         }
+        /// <inheritdoc/>
         public async Task ReleaseSubscription(AssignMobileSubscriptionRequest request)
         {
             var mobile = await GetMobileById(request.MobileId);
@@ -288,6 +308,7 @@ namespace CMDB.API.Services
             });
             _context.Mobiles.Update(mobile);
         }
+        /// <inheritdoc/>
         public async Task LogPdfFile(string pdfFile, int id)
         {
             var mobile = await GetMobileById(id);
@@ -298,6 +319,11 @@ namespace CMDB.API.Services
             });
             _context.Mobiles.Update(mobile);
         }
+        /// <summary>
+        /// This will convert the given mobile to a DTO
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
         public static MobileDTO ConvertMobile(Mobile mobile) 
         {
             return new()

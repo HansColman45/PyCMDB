@@ -1,19 +1,23 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.CustomExeptions;
-using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Primitives;
-using Microsoft.Graph.Models.Security;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// KensingtonService is used to manage the Kensington keys
+    /// </summary>
     public class KensingtonService : CMDBServices
     {
+        /// <summary>
+        /// This will return a list of all Kensington keys
+        /// </summary>
+        /// <returns>List of <see cref="KensingtonDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<KensingtonDTO>> ListAll()
         {
             BaseUrl = Url + $"api/Kensington/GetAll";
@@ -24,6 +28,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a list of all Kensington keys with a search string
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns>List of <see cref="KensingtonDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<KensingtonDTO>> Search(string search)
         {
             BaseUrl = Url + $"api/Kensington/GetAll/{search}";
@@ -34,6 +44,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return the AssetType with the given ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="AssetTypeDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<AssetTypeDTO> GetAssetTypeById(int id)
         {
             BaseUrl = Url + $"api/AssetType/{id}";
@@ -46,6 +62,15 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will create a new Kensington key
+        /// </summary>
+        /// <param name="serialNumber"></param>
+        /// <param name="hasLock"></param>
+        /// <param name="amountOfKeys"></param>
+        /// <param name="assetType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Create(string serialNumber, bool hasLock, int amountOfKeys, AssetTypeDTO assetType)
         {
             KensingtonDTO kensington = new()
@@ -61,6 +86,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a Kensington key with the given ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="KensingtonDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<KensingtonDTO> GetByID(int id)
         {
             BaseUrl = Url + $"api/Kensington/{id}";
@@ -71,6 +102,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will update a Kensington key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Update(KensingtonDTO key)
         {
             BaseUrl = Url + $"api/Kensington";
@@ -79,6 +116,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will deactivate a Kensington key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Deactivate(KensingtonDTO key, string reason)
         {
             BaseUrl = Url + $"api/Kensington/{reason}";
@@ -87,6 +131,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will activate a Kensington key
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Activate(KensingtonDTO key)
         {
             BaseUrl = Url + $"api/Kensington/Activate";
@@ -95,6 +145,10 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a list of all free devices
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeDevices()
         {
             List<SelectListItem> devices = new();
@@ -111,6 +165,12 @@ namespace CMDB.Services
             }
             return devices;
         }
+        /// <summary>
+        /// This will retunrn a device with the given asset tag
+        /// </summary>
+        /// <param name="assetTag"></param>
+        /// <returns><see cref="DeviceDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<DeviceDTO> GetDeviceByAssetTag(string assetTag)
         {
             BaseUrl = Url + $"api/Device/{assetTag}";
@@ -123,6 +183,13 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will assign a Kensington key to a device
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="device"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignKey2Device(KensingtonDTO key, DeviceDTO device)
         {
             key.Device = device;
@@ -133,6 +200,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will release a Kensington key from a device
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseDevice(KensingtonDTO key)
         {
             BaseUrl = Url + $"api/Kensington/ReleaseDevice";

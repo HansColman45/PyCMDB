@@ -6,13 +6,24 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace CMDB.API.Services
 {
+    /// <summary>
+    /// IdentityType repository
+    /// </summary>
     public class IdentityTypeRepository : GenericRepository, IIdentityTypeRepository
     {
+        private IdentityTypeRepository()
+        {
+        }
         private readonly string table = "identitytype";
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="logger"></param>
         public IdentityTypeRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
         }
-
+        ///<inheritdoc/>
         public async Task<TypeDTO> Activate(TypeDTO type)
         {
             var acctype = await GetTypeById(type.TypeId);
@@ -37,6 +48,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        ///<inheritdoc/>
         public TypeDTO Create(TypeDTO typeDTO)
         {
             string logline = GenericLogLineCreator.CreateLogLine($"Identitytype with type: {typeDTO.Type} and description: {typeDTO.Description}", TokenStore.Admin.Account.UserID, table);
@@ -59,6 +71,7 @@ namespace CMDB.API.Services
             }
             return typeDTO;
         }
+        ///<inheritdoc/>
         public async Task<TypeDTO> DeActivate(TypeDTO type, string reason)
         {
             var acctype = await GetTypeById(type.TypeId);
@@ -83,6 +96,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        ///<inheritdoc/>
         public async Task<List<TypeDTO>> GetAll()
         {
             List<TypeDTO> accountTypes = await _context.Types.OfType<IdentityType>().AsNoTracking()
@@ -90,6 +104,7 @@ namespace CMDB.API.Services
                .ToListAsync();
             return accountTypes;
         }
+        ///<inheritdoc/>
         public async Task<List<TypeDTO>> GetAll(string searchStr)
         {
             string searhterm = "%" + searchStr + "%";
@@ -100,6 +115,7 @@ namespace CMDB.API.Services
                 .ToListAsync();
             return accountTypes;
         }
+        ///<inheritdoc/>
         public async Task<TypeDTO> GetById(int id)
         {
             var type = await _context.Types.OfType<IdentityType>().AsNoTracking()
@@ -112,6 +128,7 @@ namespace CMDB.API.Services
             }
             return type;
         }
+        ///<inheritdoc/>
         public async Task<bool> IsExisitng(TypeDTO type)
         {
             bool result = false;
@@ -145,6 +162,7 @@ namespace CMDB.API.Services
             }
             return result;
         }
+        ///<inheritdoc/>
         public async Task<TypeDTO> Update(TypeDTO type)
         {
             var oldType = await GetTypeById(type.TypeId);
@@ -194,6 +212,11 @@ namespace CMDB.API.Services
             _context.Types.Update(oldType);
             return type;
         }
+        /// <summary>
+        /// This will convert a IdentityType to a TypeDTO
+        /// </summary>
+        /// <param name="type"><see cref="IdentityType"/></param>
+        /// <returns><see cref="TypeDTO"/></returns>
         public static TypeDTO ConvertType(IdentityType type)
         {
             return new()
@@ -206,6 +229,11 @@ namespace CMDB.API.Services
                 TypeId = type.TypeId
             };
         }
+        /// <summary>
+        /// This will convert a TypeDTO to a IdentityType
+        /// </summary>
+        /// <param name="typeDTO"><see cref="TypeDTO"/></param>
+        /// <returns><see cref="IdentityType"/></returns>
         public static IdentityType ConvertDTO(TypeDTO typeDTO)
         {
             return new()

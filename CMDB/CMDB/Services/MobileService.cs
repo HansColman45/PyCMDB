@@ -11,11 +11,22 @@ using System.Threading.Tasks;
 
 namespace CMDB.Services
 {
+    /// <summary>
+    /// MobileService is used to manage the mobile devices
+    /// </summary>
     public class MobileService : CMDBServices
     {
+        /// <summary>
+        /// Constructor for the MobileService
+        /// </summary>
         public MobileService() : base()
         {
         }
+        /// <summary>
+        /// This will return a list of all mobiles
+        /// </summary>
+        /// <returns>List of <see cref="MobileDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<MobileDTO>> ListAll()
         {
             BaseUrl = Url + $"api/Mobile/GetAll";
@@ -26,6 +37,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a list of all mobiles matching the search string
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <returns>list of <see cref="MobileDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<List<MobileDTO>> ListAll(string searchString)
         {
             BaseUrl = Url + $"api/Mobile/GetAll/{searchString}";
@@ -36,6 +53,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will create a new mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task CreateNew(MobileDTO mobile)
         {
             string value = $"{mobile.MobileType.AssetCategory.Category} with type {mobile.MobileType}";
@@ -45,6 +68,14 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will update the mobile with the new IMEI and AssetType
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="newImei"></param>
+        /// <param name="newAssetType"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Update(MobileDTO mobile, long newImei, AssetTypeDTO newAssetType)
         {
             mobile.IMEI = newImei;
@@ -55,6 +86,13 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will deactivate the mobile with the given reason
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="reason"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Deactivate(MobileDTO mobile, string reason)
         {
             BaseUrl = Url + $"api/Mobile/{reason}";
@@ -63,6 +101,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will activate the mobile with the given reason
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task Activate(MobileDTO mobile)
         {
             BaseUrl = Url + $"api/Mobile/Activate";
@@ -71,6 +115,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will the AssetType with the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="AssetTypeDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<AssetTypeDTO> ListAssetTypeById(int id)
         {
             BaseUrl = Url + $"api/AssetType/{id}";
@@ -83,6 +133,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will check if the mobile is existing in the database
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="imei"></param>
+        /// <returns><see cref="bool"/></returns>
         public async Task<bool> IsMobileExisting(MobileDTO mobile, long? imei = null)
         {
             bool result = false;
@@ -98,6 +154,12 @@ namespace CMDB.Services
             }
             return result;
         }
+        /// <summary>
+        /// This will return the mobile with the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<MobileDTO> GetMobileById(int id)
         {
             BaseUrl = Url + $"api/Mobile/{id}";
@@ -108,6 +170,10 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a list of all free identities
+        /// </summary>
+        /// <returns>List of <see cref="SelectListItem"/></returns>
         public async Task<List<SelectListItem>> ListFreeIdentities()
         {
             List<SelectListItem> identites = new();
@@ -124,6 +190,12 @@ namespace CMDB.Services
             }
             return identites;
         }
+        /// <summary>
+        /// This will return the identity with the given id
+        /// </summary>
+        /// <param name="IdenId"></param>
+        /// <returns><see cref="IdentityDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<IdentityDTO> GetIdentity(int IdenId) 
         {
             BaseUrl = Url + $"api/Identity/{IdenId}";
@@ -134,6 +206,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will check if the mobile is free
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="checkSub"></param>
+        /// <returns></returns>
         public bool IsDeviceFree(MobileDTO mobile, bool checkSub = false)
         {
             bool result = true;
@@ -153,6 +231,13 @@ namespace CMDB.Services
             }*/
             return result;
         }
+        /// <summary>
+        /// This will assign the identity to the mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="identity"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignIdentity2Mobile(MobileDTO mobile, IdentityDTO identity)
         {
             AssignMobileRequest assignRequest = new()
@@ -166,6 +251,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will release the identity from the mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseIdenity(MobileDTO mobile)
         {
             AssignMobileRequest assignRequest = new()
@@ -179,6 +270,10 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// This will return a list of all free subscriptions
+        /// </summary>
+        /// <returns></returns>
         public async Task<List<SelectListItem>> ListFreeMobileSubscriptions()
         {
             List<SelectListItem> identites = new();
@@ -195,6 +290,13 @@ namespace CMDB.Services
             }
             return identites;
         }
+        /// <summary>
+        /// This will assign the subscription to the mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <param name="subscription"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task AssignSubscription(MobileDTO mobile, SubscriptionDTO subscription)
         {
             AssignMobileSubscriptionRequest request = new()
@@ -208,7 +310,12 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-
+        /// <summary>
+        /// This will return the subscription with the given id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns><see cref="SubscriptionDTO"/></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task<SubscriptionDTO> GetSubribtion(int id)
         {
             BaseUrl = Url + $"api/Subscription/{id}";
@@ -221,7 +328,12 @@ namespace CMDB.Services
             else
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
-
+        /// <summary>
+        /// This will release the subscription from the mobile
+        /// </summary>
+        /// <param name="mobile"></param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode"></exception>
         public async Task ReleaseSubscription(MobileDTO mobile)
         {
             AssignMobileSubscriptionRequest request = new()
