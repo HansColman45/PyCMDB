@@ -408,6 +408,11 @@ namespace CMDB.Controllers
                     await _PDFservice.SetDeviceInfo(desktop);
                     await _PDFservice.GenratePDFFile(Table, desktop.AssetTag);
                     await _PDFservice.GenratePDFFile("identity", desktop.Identity.IdenId);
+                    if (desktop.Kensington is not null)
+                    {
+                        await _PDFservice.SetKeyInfo(desktop.Kensington);
+                        await _PDFservice.GenratePDFFile("kensington", desktop.Kensington.KeyID);
+                    }
                     return RedirectToAction(nameof(Index));
                 }
             }

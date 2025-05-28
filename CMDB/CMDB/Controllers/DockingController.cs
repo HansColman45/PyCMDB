@@ -354,6 +354,11 @@ namespace CMDB.Controllers
                     await _PDFservice.SetDeviceInfo(docking);
                     await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
                     await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
+                    if (docking.Kensington is not null)
+                    {
+                        await _PDFservice.SetKeyInfo(docking.Kensington);
+                        await _PDFservice.GenratePDFFile("kensington", docking.Kensington.KeyID);
+                    }
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -403,6 +408,99 @@ namespace CMDB.Controllers
                     await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
                     await _PDFservice.GenratePDFFile("identity", docking.Identity.IdenId);
                     await service.ReleaseIdenity(docking);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(docking);
+        }
+        /// <summary>
+        /// This is the assign Kensington page for the docking station
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
+        {
+            log.Debug("Using Assign Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
+                return NotFound();
+            ViewData["Title"] = "Assign Kensington to Docking";
+            ViewData["backUrl"] = "Docking";
+            ViewData["Controller"] = @$"\Docking\AssignKensington\{id}";
+            ViewData["AssignKeyAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "AssignKensington");
+            ViewBag.Keys = await service.ListFreeKeys();
+            await BuildMenu();
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                int keyId = Int32.Parse(values["Kensington"]);
+                var key = await service.GetKensingtonById(keyId);
+                if (ModelState.IsValid)
+                {
+                    try
+                    {
+                        await service.AssignKensington2Device(key, docking);
+                        return RedirectToAction("AssignForm", "Docking", new { id });
+                    }
+                    catch (Exception ex)
+                    {
+                        log.Error("Database exception {0}", ex.ToString());
+                        ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
+                            "see your system administrator.");
+                    }
+                }
+            }
+            return View(docking);
+        }
+        /// <summary>
+        /// This is the release Kensington page for the docking station
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
+        {
+            log.Debug("Using Assign Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(id))
+                return NotFound();
+            var docking = await service.GetDeviceById(SitePart, id);
+            if (docking == null)
+                return NotFound();
+            ViewData["Title"] = "Release Kensington from Desktop";
+            ViewData["backUrl"] = "Docking";
+            ViewData["Action"] = "ReleaseKensington";
+            ViewData["Controller"] = @$"\Docking\ReleaseKensington\{id}";
+            ViewData["ReleaseKensington"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "ReleaseKensington");
+            await BuildMenu();
+            var identity = docking.Identity;
+            ViewData["Name"] = identity.Name;
+            var admin = await service.Admin();
+            var key = docking.Kensington;
+            ViewData["AdminName"] = admin.Account.UserID;
+            string FormSubmit = values["form-submitted"];
+            if (!String.IsNullOrEmpty(FormSubmit))
+            {
+                string Employee = values["Employee"];
+                string ITPerson = values["ITEmp"];
+                if (ModelState.IsValid)
+                {
+                    await _PDFservice.SetUserinfo(
+                        UserId: docking.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: docking.Identity.Name,
+                        FirstName: docking.Identity.FirstName,
+                        LastName: docking.Identity.LastName,
+                        Language: docking.Identity.Language.Code,
+                        Receiver: docking.Identity.Name);
+                    await service.ReleaseKensington(docking);
+                    await _PDFservice.SetDeviceInfo(docking);
+                    await _PDFservice.SetKeyInfo(key);
+                    await _PDFservice.GenratePDFFile(Table, docking.AssetTag);
+                    await _PDFservice.GenratePDFFile("kensington", key.KeyID);
+                    await _PDFservice.GenratePDFFile("identity", identity.IdenId);
                     return RedirectToAction(nameof(Index));
                 }
             }

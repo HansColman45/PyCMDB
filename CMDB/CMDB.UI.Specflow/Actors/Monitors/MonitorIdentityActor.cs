@@ -86,7 +86,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
             string keyinfo = $"Kensington with serial number: {key.SerialNumber}";
             string deviceinfo = $"{screen.Category.Category} with {screen.AssetTag}";
             ExpectedLog = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, admin.Account.UserID, Table);
-            var page = Perform(new OpenTheDockingAssignKensingtonPage());
+            var page = Perform(new OpenTheMonitorAssignKensingtonPage());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignKensingtonPage");
             page.SelectKensington(key);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedKensington");

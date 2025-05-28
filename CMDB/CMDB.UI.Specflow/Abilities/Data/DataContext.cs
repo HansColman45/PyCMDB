@@ -19,12 +19,17 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 .Options;
             context = new CMDBContext(options);
         }
+        public async Task<Admin> CreateNewAdmin(Account account, int level = 9, bool active = false)
+        {
+            var admin = await AdminHelper.CreateSimpleAdmin(context, account, Admin, level, active);
+            return admin;
+        }
         /// <summary>
         /// This will create a new Admin
         /// </summary>
         /// <param name="level">The level you wan to have the admin to have by default 9</param>
         /// <returns>Admin</returns>
-        public async Task<Admin> CreateNewAdmin(int level = 9)
+        public async Task<Admin> CreateNewCMDBAdmin(int level = 9)
         {
             Admin = await AdminHelper.CreateCMDBAdmin(context, level);
             return Admin;

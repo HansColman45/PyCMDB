@@ -27,7 +27,7 @@ namespace CMDB.API.Services
         /// </summary>
         /// <param name="admin"><see cref="AdminDTO"/></param>
         /// <returns><see cref="Admin"/></returns>
-        Task<Admin> Update(AdminDTO admin);
+        Task<AdminDTO> Update(AdminDTO admin);
         /// <summary>
         /// Will Authenticate the admin to the API
         /// </summary>

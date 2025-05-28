@@ -169,7 +169,13 @@ namespace CMDB.UI.Specflow.StepDefinitions
             dockingIdentityActor.ExpectedLog.Should().BeEquivalentTo(lastLog);
         }
         #endregion
+
         #region Assign and release Key
+        [Given(@"The Identity to assign to my docking is existing")]
+        public async Task GivenTheIdentityToAssignToMyDockingIsExisting()
+        {
+            Identity = await dockingIdentityActor.CreateNewIdentity();
+        }
         [Given(@"A Key to assign to my Docking is existing in the system")]
         public async Task GivenAKeyToAssignToMyDockingIsExistingInTheSystem()
         {

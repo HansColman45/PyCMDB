@@ -4,6 +4,9 @@ namespace CMDB.UI.Specflow.StepDefinitions
 {
     public class TestBase
     {
+        private TestBase()
+        {
+        }
         /// <summary>
         /// The Nlog logger
         /// </summary>

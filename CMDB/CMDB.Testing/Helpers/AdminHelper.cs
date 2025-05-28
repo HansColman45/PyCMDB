@@ -12,6 +12,35 @@ namespace CMDB.Testing.Helpers
 {
     public class AdminHelper
     {
+        public static async Task<Admin> CreateSimpleAdmin(CMDBContext context, Account account, Admin admin,int level = 9, bool active = true)
+        {
+            Admin newAdmin = new AdminBuilder()
+                .With(x => x.Level, level)
+                .With(x => x.AccountId, account.AccID)
+                .With(x => x.LastModifiedAdminId, admin.AccountId)
+                .Build();
+
+            newAdmin.Logs.Add(new LogBuilder()
+                    .With(x => x.Admin, newAdmin)
+                    .With(x => x.LogText, $"Admin created with userid: {account.UserID}")
+                    .Build()
+            );
+
+            context.Admins.Add(newAdmin);
+            await context.SaveChangesAsync();
+            if (!active)
+            {
+                newAdmin.active = 0;
+                await context.SaveChangesAsync();
+            }
+            return newAdmin;
+        }
+        public static async Task Delete(CMDBContext context, Admin admin)
+        {
+            context.RemoveRange(admin.Logs);
+            context.Remove<Admin>(admin);
+            await context.SaveChangesAsync();
+        }
         public static async Task<Admin> CreateCMDBAdmin(CMDBContext context, int level = 9)
         {
             try
@@ -46,10 +75,6 @@ namespace CMDB.Testing.Helpers
                 );
 
                 context.Admins.Add(admin);
-                await context.SaveChangesAsync();
-
-                Account.LastModifiedAdminId = admin.AdminId;
-                context.Accounts.Update(Account);
                 await context.SaveChangesAsync();
 
                 var identity = new IdentityBuilder()
@@ -212,11 +237,21 @@ namespace CMDB.Testing.Helpers
                     Data.Add($"Identity{identity.IdenId}", identity);
                     await IdentityHelper.Delete(context, identity);
                 }
+                //Admin
+                var admins = context.Admins
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AdminId != admin.AdminId)
+                    .ToList();
+                foreach (var adm in admins)
+                {
+                    Data.Add($"Admin{adm.AdminId}", adm);
+                    await Delete(context,adm);
+                }
                 //Account
                 var accounts = context.Accounts
-                    .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AccID != admin.Account.AccID)
-                    .ToList();
+                .Include(x => x.Logs)
+                .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AccID != admin.Account.AccID)
+                .ToList();
                 foreach (var account in accounts)
                 {
                     Data.Add($"Account{account.AccID}", account);

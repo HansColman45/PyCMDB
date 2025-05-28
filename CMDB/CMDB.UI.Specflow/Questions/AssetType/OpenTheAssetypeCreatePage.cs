@@ -10,7 +10,7 @@ namespace CMDB.UI.Specflow.Questions.AssetType
         public override CreateAssetTypePage PerformAs(IPerformer actor)
         {
             var page = actor.GetAbility<AssetTypeOverviewPage>();
-            page.ClickElementByXpath(AssetTypeOverviewPage.NewXpath);
+            page.ClickElementByXpath(MainPage.NewXpath);
             CreateAssetTypePage createAssetTypePage = WebPageFactory.Create<CreateAssetTypePage>(page.WebDriver);
             return createAssetTypePage;
         }

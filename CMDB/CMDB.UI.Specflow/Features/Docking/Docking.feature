@@ -46,7 +46,7 @@ Scenario: I want to release an assigned identity from my Docking
 
 Scenario: I want to assign an existing Key to my Docking
 	Given There is an active Docking existing
-	And the Identity exist as well
+	And The Identity to assign to my docking is existing
 	And that Identity is assigned to my Docking
 	And A Key to assign to my Docking is existing in the system
 	When I assign the Key to the Docking
@@ -55,7 +55,7 @@ Scenario: I want to assign an existing Key to my Docking
 
 Scenario: I want to relase an assigned Key from my Docking
 	Given There is an active Docking existing
-	And the Identity exist as well
+	And The Identity to assign to my docking is existing
 	And that Identity is assigned to my Docking
 	And A Key to assign to my Docking is existing in the system
 	And that Key is assigned to my Docking

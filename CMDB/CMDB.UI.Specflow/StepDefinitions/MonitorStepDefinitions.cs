@@ -1,7 +1,6 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.Monitors;
 using CMDB.UI.Specflow.Questions;
-using System.Threading.Tasks;
 using TechTalk.SpecFlow.Assist;
 
 namespace CMDB.UI.Specflow.StepDefinitions

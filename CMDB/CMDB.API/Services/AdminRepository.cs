@@ -54,7 +54,7 @@ namespace CMDB.API.Services
             admin.Password = new PasswordHasher().EncryptPassword("Br!ght1CmDb");
             string value = "Admin with UserID: " + entity.Account.UserID + " and level: " + entity.Level.ToString();
             var logLine = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, "admin");
-            entity.Logs.Add(new()
+            admin.Logs.Add(new()
             {
                 LogText = logLine,
                 LogDate = DateTime.Now,
@@ -63,30 +63,29 @@ namespace CMDB.API.Services
             return entity;
         }
         ///inheritdoc />
-        public async Task<Admin> Update(AdminDTO admin)
+        public async Task<AdminDTO> Update(AdminDTO admin)
         {
             var _admin = await GetAdminByID(admin.AdminId);
             if (admin.Level != _admin.Level)
             {
+                var logLine = GenericLogLineCreator.UpdateLogLine("Level", $"{_admin.Level}", $"{admin.Level}", TokenStore.Admin.Account.UserID, "admin");
                 _admin.Level = admin.Level;
                 _admin.LastModifiedAdmin = TokenStore.Admin;
-                var logLine = GenericLogLineCreator.UpdateLogLine("Level", $"{_admin.Level}", $"{admin.Level}", TokenStore.Admin.Account.UserID, "admin");
                 _admin.Logs.Add(new()
                 {
                     LogText = logLine,
                     LogDate = DateTime.Now
                 });
                 _context.Admins.Update(_admin);
-                return _admin;
             }
-            return _admin;
+            return admin;
         }
         ///inheritdoc />
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
-            var admin = await _context.Admins.AsNoTracking()
+            var admin = await _context.Admins
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Application).AsNoTracking()
+                .ThenInclude(x => x.Application)
                 .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == model.Username).AsNoTracking()
                 .FirstOrDefaultAsync();
             if (admin == null)
@@ -107,15 +106,15 @@ namespace CMDB.API.Services
             else
                 return null;
         }
-        ///inheritdoc />
+        /// inheritdoc />
         public async Task<bool> HasAdminAccess(HasAdminAccessRequest request)
         {
-            var admin = await GetAdminByID(request.AdminId);
+            var admin = await _context.Admins.Where(x => x.AdminId == request.AdminId).AsNoTracking().FirstOrDefaultAsync();
             if (admin is null) return false;
 
-            var perm = _context.RolePerms.AsNoTracking()
-                .Include(x => x.Menu).AsNoTracking()
-                .Include(x => x.Permission).AsNoTracking()
+            var perm = _context.RolePerms
+                .Include(x => x.Menu)
+                .Include(x => x.Permission)
                 .Where(x => x.Level == admin.Level || x.Menu.Label == request.Site || x.Permission.Rights == request.Action).AsNoTracking()
                 .ToList();
             if (perm.Count > 0)
@@ -216,7 +215,7 @@ namespace CMDB.API.Services
             _admin.active = 1;
             _admin.DeactivateReason = null;
             _admin.LastModifiedAdmin = TokenStore.Admin;
-            var logLine = GenericLogLineCreator.ActivateLogLine($"Admin with {admin.Account.UserID}", TokenStore.Admin.Account.UserID, "admin");
+            var logLine = GenericLogLineCreator.ActivateLogLine($"Admin with UserID: {admin.Account.UserID}", TokenStore.Admin.Account.UserID, "admin");
             _admin.Logs.Add(new()
             {
                 LogText = logLine,
@@ -232,7 +231,7 @@ namespace CMDB.API.Services
             _admin.active = 0;
             _admin.DeactivateReason = reason;
             _admin.LastModifiedAdmin = TokenStore.Admin;
-            var logLine = GenericLogLineCreator.DeleteLogLine($"Admin with {admin.Account.UserID}", TokenStore.Admin.Account.UserID,reason, "admin");
+            var logLine = GenericLogLineCreator.DeleteLogLine($"Admin with UserID: {admin.Account.UserID}", TokenStore.Admin.Account.UserID,reason, "admin");
             _admin.Logs.Add(new()
             {
                 LogText = logLine,

@@ -33,7 +33,7 @@
                         }
                         else if ((bool)ViewData["ActiveAccess"])
                         {
-                            <a class="btn btn-glyphicon" asp-action="Activate" asp-route-id="@item.AdminId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
+                            <a class="btn btn-glyphicon" href="\Admin\Activate\@item.AdminId" data-toggle="tooltip" data-placement="top" title="Activate"><span class="@ViewBag.ActivateIcon"></span></a>
                         }
                     }
                     @if ((bool)ViewData["InfoAccess"])

@@ -43,7 +43,7 @@
                         }
                         @if (item.Active == 1 && item.Identity.IdenId > 1 && (bool)ViewData["AssignKeyAccess"] && item.Kensington is null)
                         {
-                            <a class="btn btn-success" href="\Laptop\AssignKensington\@item.AssetTag" data-toggle="tooltip" data-placement="top" title="Assign Kensington"><span class="@ViewBag.KeyIcon"></span></a>
+                            <a class="btn btn-success" href="\Monitor\AssignKensington\@item.AssetTag" data-toggle="tooltip" data-placement="top" title="Assign Kensington"><span class="@ViewBag.KeyIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

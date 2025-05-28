@@ -5,7 +5,7 @@ namespace CMDB.UI.Specflow.Abilities.Pages
 {
     public class MainPage : OpenAWebPage
     {
-        public MainPage()
+        private MainPage()
         {
         }
         public MainPage(IWebDriver webDriver) : base(webDriver) { }

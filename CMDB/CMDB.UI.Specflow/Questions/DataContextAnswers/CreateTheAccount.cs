@@ -8,7 +8,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create an active account
     /// </summary>
-    public class CreateTheAccount : Question<Task<CMDB.Domain.Entities.Account>>
+    public class CreateTheAccount : Question<Task<Domain.Entities.Account>>
     {
         public override async Task<Domain.Entities.Account> PerformAs(IPerformer actor)
         {

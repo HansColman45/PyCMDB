@@ -436,7 +436,7 @@ namespace CMDB.Controllers
                     try
                     {
                         await service.AssignKensington2Device(key, monitor);
-                        return RedirectToAction("AssignForm", "Laptop", new { id });
+                        return RedirectToAction("AssignForm", "Monitor", new { id });
                     }
                     catch (Exception ex)
                     {
@@ -467,6 +467,11 @@ namespace CMDB.Controllers
             ViewData["backUrl"] = "Monitor";
             ViewData["Controller"] = @$"\Monitor\ReleaseKensington\{id}";
             await BuildMenu();
+            var identity = monitor.Identity;
+            ViewData["Name"] = identity.Name;
+            var admin = await service.Admin();
+            var key = monitor.Kensington;
+            ViewData["AdminName"] = admin.Account.UserID;
             string FormSubmit = values["form-submitted"];
             if (!string.IsNullOrEmpty(FormSubmit))
             {
@@ -474,7 +479,20 @@ namespace CMDB.Controllers
                 {
                     if (ModelState.IsValid)
                     {
+                        await _PDFservice.SetUserinfo(
+                        UserId: monitor.Identity.UserID,
+                        ITEmployee: admin.Account.UserID,
+                        Singer: monitor.Identity.Name,
+                        FirstName: monitor.Identity.FirstName,
+                        LastName: monitor.Identity.LastName,
+                        Language: monitor.Identity.Language.Code,
+                        Receiver: monitor.Identity.Name);
                         await service.ReleaseKensington(monitor);
+                        await _PDFservice.SetDeviceInfo(monitor);
+                        await _PDFservice.SetKeyInfo(key);
+                        await _PDFservice.GenratePDFFile(Table, monitor.AssetTag);
+                        await _PDFservice.GenratePDFFile("kensington", key.KeyID);
+                        await _PDFservice.GenratePDFFile("identity", identity.IdenId);
                         return RedirectToAction(nameof(Index));
                     }
                 }
