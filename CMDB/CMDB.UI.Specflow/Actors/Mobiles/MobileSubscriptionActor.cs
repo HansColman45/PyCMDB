@@ -6,6 +6,7 @@ using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Mobile;
 using CMDB.UI.Specflow.Questions.Subscription;
 using CMDB.UI.Specflow.Tasks;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Mobiles
 {
@@ -37,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
         public void FillInAssignForm()
         {
             var assignForm = OpenAssignFom();
-            Perform<ClickTheGeneratePDFOnAssignForm>();
+            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
 

@@ -4,6 +4,7 @@ using CMDB.UI.Specflow.Questions.Account;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Tasks;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.AccountAcctors
 {
@@ -41,7 +42,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         {
             var page = Perform(new OpenTheAccountAssignFormPage());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignFormPage");
-            Perform<ClickTheGeneratePDFOnAssignForm>();
+            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
         public void ReleaseIdentity(Account account, Identity identity)

@@ -4,6 +4,7 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Subscription;
 using CMDB.UI.Specflow.Tasks;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Subscriptions
 {
@@ -61,7 +62,7 @@ namespace CMDB.UI.Specflow.Actors.Subscriptions
         {
             var page = OpenAssignFom();
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
-            Perform(new ClickTheGeneratePDFOnAssignForm());
+            AttemptsTo(new ClickTheGeneratePDFOnAssignForm());
         }
 
         public void DoReleaseIdenity(Subscription subscription, Identity identity)

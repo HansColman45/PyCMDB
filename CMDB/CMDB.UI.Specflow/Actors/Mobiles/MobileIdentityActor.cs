@@ -5,6 +5,7 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Mobile;
 using CMDB.UI.Specflow.Tasks;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Mobiles
 {
@@ -36,7 +37,7 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
             var assignForm = OpenAssignFom();
             assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            Perform<ClickTheGeneratePDFOnAssignForm>();
+            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
 

@@ -5,6 +5,7 @@ using CMDB.UI.Specflow.Abilities.Data;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Identity;
 using CMDB.UI.Specflow.Tasks;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.IdentityActors
 {
@@ -37,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         {
             var page = OpenAssignFom();
             page.ITEmployee.Should().Be(admin.Account.UserID);
-            Perform(new ClickTheGeneratePDFOnAssignForm());
+            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
         }
 
         public void ReleaseSubscription(Identity identity, Subscription subscription)
@@ -52,7 +53,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.Title.Should().BeEquivalentTo("Release subscription from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            Perform(new ClickTheGeneratePDFOnReleaseSubscriptionForm());
+            AttemptsTo<ClickTheGeneratePDFOnReleaseSubscriptionForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Released");
         }
     }

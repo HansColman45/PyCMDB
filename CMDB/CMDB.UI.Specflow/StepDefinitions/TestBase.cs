@@ -1,4 +1,5 @@
-﻿using Admin = CMDB.Domain.Entities.Admin;
+﻿using Reqnroll;
+using Admin = CMDB.Domain.Entities.Admin;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

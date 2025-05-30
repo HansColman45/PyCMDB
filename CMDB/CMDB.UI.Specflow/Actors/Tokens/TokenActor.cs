@@ -1,6 +1,5 @@
-﻿
-using CMDB.UI.Specflow.Questions.Laptop;
-using CMDB.UI.Specflow.Questions.Token;
+﻿using CMDB.UI.Specflow.Questions.Token;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Tokens
 {

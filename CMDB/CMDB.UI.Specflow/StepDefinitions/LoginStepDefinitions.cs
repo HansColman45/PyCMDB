@@ -1,6 +1,7 @@
 using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors;
 using CMDB.UI.Specflow.Questions;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

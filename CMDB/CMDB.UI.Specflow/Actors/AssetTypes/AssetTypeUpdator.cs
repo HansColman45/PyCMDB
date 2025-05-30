@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Pages.AssetTypes;
 using CMDB.UI.Specflow.Questions.AssetType;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.AssetTypes
 {

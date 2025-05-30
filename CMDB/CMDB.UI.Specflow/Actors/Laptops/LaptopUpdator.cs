@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Laptop;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Laptops
 {

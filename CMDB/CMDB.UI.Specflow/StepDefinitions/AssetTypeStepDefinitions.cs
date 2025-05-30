@@ -2,6 +2,7 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.AssetTypes;
 using CMDB.UI.Specflow.Questions;
 using AssetType = CMDB.UI.Specflow.Helpers.AssetType;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

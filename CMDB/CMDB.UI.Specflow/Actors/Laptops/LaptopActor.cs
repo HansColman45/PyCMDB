@@ -1,4 +1,5 @@
 ﻿using CMDB.UI.Specflow.Questions.Laptop;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Laptops
 {

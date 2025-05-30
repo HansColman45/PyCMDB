@@ -2,6 +2,7 @@
 using CMDB.UI.Specflow.Abilities.Pages;
 using CMDB.UI.Specflow.Helpers;
 using CMDB.UI.Specflow.Questions.AssetType;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.AssetTypes
 {

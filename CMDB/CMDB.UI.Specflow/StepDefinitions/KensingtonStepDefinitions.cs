@@ -2,7 +2,7 @@ using CMDB.Domain.Entities;
 using CMDB.UI.Specflow.Actors.Kensingtons;
 using CMDB.UI.Specflow.Questions;
 using System.Threading.Tasks;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

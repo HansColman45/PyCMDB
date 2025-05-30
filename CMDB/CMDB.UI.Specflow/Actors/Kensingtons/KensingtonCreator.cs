@@ -3,6 +3,7 @@ using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 using CMDB.UI.Specflow.Helpers;
 using CMDB.UI.Specflow.Questions.Keys;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Kensingtons
 {

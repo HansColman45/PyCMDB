@@ -24,6 +24,7 @@ using CMDB.UI.Specflow.Questions.Account;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Main;
 using OpenQA.Selenium;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors
 {

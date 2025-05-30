@@ -1,4 +1,5 @@
 ﻿using CMDB.UI.Specflow.Questions.Subscription;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.Subscriptions
 {

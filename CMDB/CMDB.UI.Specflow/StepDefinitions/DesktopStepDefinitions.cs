@@ -1,6 +1,6 @@
 using CMDB.UI.Specflow.Actors.Desktops;
 using CMDB.UI.Specflow.Questions;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {

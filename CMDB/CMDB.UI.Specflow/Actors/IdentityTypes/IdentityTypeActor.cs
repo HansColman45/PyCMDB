@@ -1,5 +1,6 @@
 ﻿using CMDB.UI.Specflow.Questions.Main;
 using CMDB.UI.Specflow.Questions.Types;
+using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors.IdentityTypes
 {

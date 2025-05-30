@@ -3,9 +3,8 @@ using CMDB.UI.Specflow.Abilities.Pages.Identity;
 using CMDB.UI.Specflow.Actors.IdentityActors;
 using CMDB.UI.Specflow.Questions;
 using CMDB.UI.Specflow.Tasks;
-using TechTalk.SpecFlow.Assist;
+using Reqnroll;
 using Identity = CMDB.Domain.Entities.Identity;
-using Table = TechTalk.SpecFlow.Table;
 
 namespace CMDB.UI.Specflow.StepDefinitions
 {
@@ -216,7 +215,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I fill in the release form for my Identity")]
         public void WhenIFillInTheReleaseFormForMyIdentity()
         {
-            identityDeviceActor.Perform<ClickTheGeneratePDFOnReleaseForm>();
+            identityDeviceActor.AttemptsTo<ClickTheGeneratePDFOnReleaseForm>();
         }
         [Then(@"The (.*) is released from the Identity")]
         public void ThenTheDeviceIsReleasedFromTheIdentity(string device)
