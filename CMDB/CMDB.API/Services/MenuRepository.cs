@@ -5,30 +5,6 @@ using Microsoft.EntityFrameworkCore;
 namespace CMDB.API.Services
 {
     /// <summary>
-    /// The interface for menu
-    /// </summary>
-    public interface IMenuRepository
-    {
-        /// <summary>
-        /// This will return a list of Menus
-        /// </summary>
-        /// <returns>List of <see cref="Menu"/></returns>
-        Task<IEnumerable<Menu>> GetFirstLevel();
-        /// <summary>
-        /// This will return the 2nd level menu
-        /// </summary>
-        /// <param name="id">The Id of the parent Menu</param>
-        /// <returns>List of <see cref="Menu"/></returns>
-        Task<IEnumerable<Menu>> GetSecondLevel(int id);
-        /// <summary>
-        /// This returns the personal menu
-        /// </summary>
-        /// <param name="menuId">The Id of the parent Menu</param>
-        /// <param name="level">The level of the Admin</param>
-        /// <returns>List of <see cref="Menu"/></returns>
-        Task<IEnumerable<Menu>> GetPestonalMenu(int menuId, int level);
-    }
-    /// <summary>
     /// Class for Menu Repository
     /// </summary>
     public class MenuRepository : GenericRepository, IMenuRepository
@@ -63,12 +39,18 @@ namespace CMDB.API.Services
         /// <inheritdoc/>
         public async Task<IEnumerable<Menu>> GetPestonalMenu(int menuId, int level)
         {
-            return await _context.RolePerms.AsNoTracking()
+            return await _context.RolePerms
                 .Include(x => x.Menu)
-                .ThenInclude(x => x.Children).AsNoTracking()
-                .Include(x => x.Permission).AsNoTracking()
-                .Where(x => x.Permission.Rights == "Read" && x.Level == level && x.Menu.MenuId == menuId)
+                .ThenInclude(x => x.Children)
+                .Include(x => x.Permission)
+                .Where(x => x.Permission.Rights == "Read" && x.Level == level && x.Menu.MenuId == menuId).AsNoTracking()
                 .SelectMany(x => x.Menu.Children).ToListAsync();
+        }
+        /// <inheritdoc/>
+        public Task<Menu> GetById(int id)
+        {
+            return _context.Menus.AsNoTracking()
+                .FirstOrDefaultAsync(x => x.MenuId == id);
         }
     }
 }

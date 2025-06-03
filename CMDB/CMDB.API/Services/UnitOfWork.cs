@@ -40,6 +40,7 @@ namespace CMDB.API.Services
             SubscriptionRepository = new SubscriptionRepository(_context, _logger);
             SubscriptionTypeRepository = new SubscriptionTypeRepository(_context, _logger);
             KensingtonRepository = new KensingtonRepository(_context, _logger);
+            RolePermissionRepository = new RolePermissionRepository(_context, _logger);
         }
         /// <inheritdoc/>
         public IAccountRepository AccountRepository { get; private set; }
@@ -75,6 +76,8 @@ namespace CMDB.API.Services
         public ISubscriptionTypeRepository SubscriptionTypeRepository { get; private set; }
         /// <inheritdoc/>
         public IKensingtonRepository KensingtonRepository { get; private set; }
+        /// inheritdoc/>
+        public IRolePermissionRepository RolePermissionRepository { get; private set; }
         /// <inheritdoc/>
         public async Task SaveChangesAsync()
         {

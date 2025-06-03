@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CMDB.API.Models.PermissionDTO>
+﻿@model IEnumerable<CMDB.API.Models.RolePermissionDTO>
 @{
     Layout = "_Layout";
 }
@@ -9,8 +9,9 @@
     <table class="table table-striped table-bordered">
         <thead>
             <tr>
-                <th>@Html.DisplayNameFor(model => model.Right)</th>
-                <th>@Html.DisplayNameFor(model => model.Description)</th>
+                <th>@Html.DisplayNameFor(model => model.Level)</th>
+                <th>@Html.DisplayNameFor(model => model.Menu)</th>
+                <th>@Html.DisplayNameFor(model => model.Permission.Right)</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -18,8 +19,9 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@Html.DisplayFor(modelItem => item.Right)</td>
-                    <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Level)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Menu.Label)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Permission.Right)</td>
                     <td>
                         @if ((bool)ViewData["UpdateAccess"])
                         {
@@ -41,5 +43,5 @@
 }
 else
 {
-    <div class="alert alert-danger">No rows found, please add a new record</div>
+    <div class="alert alert-danger">No rows returned with the search criteria: "@ViewData["search"]"</div>
 }

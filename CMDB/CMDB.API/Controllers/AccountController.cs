@@ -14,6 +14,9 @@ namespace CMDB.API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
+        private AccountController()
+        {
+        }
         private readonly IUnitOfWork _uow;
         private readonly string site = "Account";
         private readonly ILogger<AccountController> _logger;

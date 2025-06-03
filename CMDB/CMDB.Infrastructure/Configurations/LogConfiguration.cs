@@ -109,6 +109,18 @@ namespace CMDB.Infrastructure.Configurations
                 .HasForeignKey(e => e.AssetTag)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Device_Asset");
+            
+            builder.HasOne(e => e.Permission)
+                .WithMany(d => d.Logs)
+                .HasForeignKey(e => e.PermissionId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Log_Permission");
+
+            builder.HasOne(e => e.RolePerm)
+                .WithMany(d => d.Logs)
+                .HasForeignKey(e => e.RoleId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("FK_Log_RolePerm");
         }
     }
 }

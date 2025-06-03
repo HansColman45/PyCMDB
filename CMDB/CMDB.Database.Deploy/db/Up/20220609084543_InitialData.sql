@@ -126,7 +126,9 @@ INSERT INTO menu (label, URL, ParentId) VALUES
 ('Admin','#',46),--47
 ('Overview','Admin',47),--48
 ('Permissions','#',46),--49
-('Overview','Permission',49);--50
+('Overview','Permission',49),--50
+('Role permission','#',46),--51
+('Overview','RolePermission',51);--52
 -- permisions
 INSERT INTO Permission (Rights,description) VALUES
 ('Read',NULL),
@@ -389,3 +391,9 @@ INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 2, 49, 1),
 (9, 3, 49, 1),
 (9, 5, 49, 1);
+-- RolePermission = 51
+INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
+(9, 1, 51, 1),
+(9, 2, 51, 1),
+(9, 3, 51, 1),
+(9, 5, 51, 1);

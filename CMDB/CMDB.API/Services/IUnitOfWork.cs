@@ -74,6 +74,10 @@
         /// </summary>
         public IKensingtonRepository KensingtonRepository { get; }
         /// <summary>
+        /// The permission repository
+        /// </summary>
+        public IRolePermissionRepository RolePermissionRepository { get; }
+        /// <summary>
         /// This will save the changes to the database
         /// </summary>
         /// <returns></returns>

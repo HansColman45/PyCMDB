@@ -61,7 +61,29 @@ namespace CMDB.API.Controllers
             if (userIdClaim == null)
                 return Unauthorized();
             int level = Int32.Parse(User.Claims.First(x => x.Type == ClaimTypes.Name).Value);
-            return Ok(await _uow.MenuRepository.GetPestonalMenu(menuId,level));
+            return Ok(await _uow.MenuRepository.GetPestonalMenu(menuId, level));
+        }
+        /// <summary>
+        /// Retrieves a menu item by its unique identifier.
+        /// </summary>
+        /// <remarks>This method requires the caller to be authenticated and authorized. The user's
+        /// identity is determined from the claims provided in the HTTP context.</remarks>
+        /// <param name="id">The unique identifier of the menu item to retrieve. Must be a positive integer.</param>
+        /// <returns>An <see cref="IActionResult"/> containing the menu item if found, or an appropriate HTTP response: 
+        /// <list type="bullet"> <item><description><see langword="Unauthorized"/> if the user is not
+        /// authenticated.</description></item> <item><description><see langword="NotFound"/> if no menu item exists
+        /// with the specified identifier.</description></item> <item><description><see langword="Ok"/> with the menu
+        /// item if retrieval is successful.</description></item> </list></returns>
+        [HttpGet("{id:int}"), Authorize]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            var menu = await _uow.MenuRepository.GetById(id);
+            if (menu == null)
+                return NotFound();
+            return Ok(menu);
         }
     }
 }

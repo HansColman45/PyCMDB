@@ -38,5 +38,8 @@ namespace CMDB.Domain.Entities
         public int? SubscriptionTypeId { get; set; }
         public Role Role { get; set; }
         public int? RoleId { get; set; }
+        public RolePerm RolePerm { get; set; }
+        public int? RolePermId { get; set; }
+
     }
 }

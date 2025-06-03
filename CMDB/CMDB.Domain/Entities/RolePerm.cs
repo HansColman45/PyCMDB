@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CMDB.Domain.Entities
@@ -6,6 +7,10 @@ namespace CMDB.Domain.Entities
     [Table("role_perm")]
     public class RolePerm
     {
+        public RolePerm()
+        {
+            Logs = new List<Log>();
+        }
         [Key]
         public int Id { get; set; }
         [Required(ErrorMessage = "Please select a level")]
@@ -19,5 +24,6 @@ namespace CMDB.Domain.Entities
 
         public int? MenuId { get; set; }
         public int? PermissionId { get; set; }
+        public virtual ICollection<Log> Logs { get; set; }
     }
 }
