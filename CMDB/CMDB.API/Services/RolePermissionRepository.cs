@@ -1,4 +1,5 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.API.Interfaces;
+using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ namespace CMDB.API.Services
     /// <summary>
     /// The permission repository implementation.
     /// </summary>
-    public class RolePermissionRepository: GenericRepository, IRolePermissionRepository
+    public class RolePermissionRepository : GenericRepository, IRolePermissionRepository
     {
         private RolePermissionRepository()
         {
@@ -53,7 +54,7 @@ namespace CMDB.API.Services
                 .Where(x => x.Id == id).AsNoTracking()
                 .Select(x => Convert2DTO(x))
                 .FirstOrDefaultAsync();
-            if(rolper is not null)
+            if (rolper is not null)
             {
                 await GetLogs(rolper);
             }
@@ -69,7 +70,7 @@ namespace CMDB.API.Services
                 PermissionId = permission.Permission.Id,
                 MenuId = permission.Menu.MenuId,
             };
-            string value = $"permission {permission.Permission.Right} has been granted for level {permission.Level} for menu {permission.Menu.Label}";
+            string value = $"permission {permission.Permission.Right} that has been granted for level {permission.Level} and menu {permission.Menu.Label}";
             rolePerm.Logs.Add(new Log()
             {
                 LogText = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, table),
@@ -79,14 +80,25 @@ namespace CMDB.API.Services
             return permission;
         }
         /// inheritdoc/>
-        public Task<Permission> Delete(RolePermissionDTO permission)
+        public void Delete(RolePermissionDTO permission)
         {
-            throw new NotImplementedException();
+            var rolePerm = TrackedRolePerm(permission.Id);
+            _context.RolePerms.Remove(rolePerm);
         }
         /// inheritdoc/>
-        public Task<Permission> Update(RolePermissionDTO permission)
+        public void Update(RolePermissionDTO permission)
         {
-            throw new NotImplementedException();
+            var rolePerm = TrackedRolePerm(permission.Id);
+            if (rolePerm.Level != permission.Level)
+            {
+                rolePerm.Level = permission.Level;
+                rolePerm.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.UpdateLogLine("Level", rolePerm.Level.ToString(), permission.Level.ToString(), TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.Now,
+                });
+                _context.RolePerms.Update(rolePerm);
+            }
         }
         /// inheritdoc/>
         public Task<bool> IsExisitng(RolePermissionDTO permission)
@@ -121,10 +133,15 @@ namespace CMDB.API.Services
         }
         private async Task GetLogs(RolePermissionDTO permission)
         {
-            permission.Logs = await _context.Logs.AsNoTracking()
-                .Include(x => x.RolePerm).Where(x => x.Permission.Id == permission.Id)
+            permission.Logs = await _context.Logs
+                .Include(x => x.RolePerm)
+                .Where(x => x.RolePermId == permission.Id).AsNoTracking()
                 .OrderByDescending(x => x.LogDate)
                 .Select(x => Convert2DTO(x)).ToListAsync();
+        }
+        private RolePerm TrackedRolePerm(int id)
+        {
+            return _context.RolePerms.Where(x => x.Id == id).First();
         }
     }
 }

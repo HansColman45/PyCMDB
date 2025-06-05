@@ -1,7 +1,7 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Repository interface for <see cref="RolePerm"/>.
@@ -36,13 +36,13 @@ namespace CMDB.API.Services
         /// </summary>
         /// <param name="permission"><see cref="Permission"/></param>
         /// <returns></returns>
-        Task<Permission> Delete(RolePermissionDTO permission);
+        void Delete(RolePermissionDTO permission);
         /// <summary>
         /// This will update a Permission.
         /// </summary>
         /// <param name="permission"><see cref="RolePermissionDTO"/></param>
         /// <returns></returns>
-        Task<Permission> Update(RolePermissionDTO permission);
+        void Update(RolePermissionDTO permission);
         /// <summary>
         /// This will check if a Permission already exists.
         /// </summary>

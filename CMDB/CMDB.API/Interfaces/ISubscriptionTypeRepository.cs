@@ -1,6 +1,6 @@
 ﻿using CMDB.API.Models;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Repository interface for SubscriptionType

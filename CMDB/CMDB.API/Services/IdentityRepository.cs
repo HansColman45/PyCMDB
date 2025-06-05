@@ -1,4 +1,5 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.API.Interfaces;
+using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;

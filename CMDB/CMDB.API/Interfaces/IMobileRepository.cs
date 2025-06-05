@@ -1,7 +1,7 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.Requests;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// The interface for the Mobile repository

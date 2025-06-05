@@ -1,4 +1,5 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.API.Interfaces;
+using CMDB.API.Models;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -45,7 +46,8 @@ namespace CMDB.API.Services
         public async Task<PermissionDTO> GetById(int id)
         {
             var perm = await _context.Permissions.AsNoTracking()
-                .Select(x => Convert2DTO(x)).FirstOrDefaultAsync(x => x.Id == id);
+                .Where(x => x.Id == id)
+                .Select(x => Convert2DTO(x)).FirstOrDefaultAsync();
             if (perm is not null)
             {
                 await GetLogs(perm);

@@ -1,4 +1,6 @@
-﻿namespace CMDB.API.Services
+﻿using CMDB.API.Services;
+
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Unit of Work interface
@@ -75,6 +77,10 @@
         public IKensingtonRepository KensingtonRepository { get; }
         /// <summary>
         /// The permission repository
+        /// </summary>
+        public IPermissionRepository PermissionRepository { get; }
+        /// <summary>
+        /// The RolePermission repository
         /// </summary>
         public IRolePermissionRepository RolePermissionRepository { get; }
         /// <summary>

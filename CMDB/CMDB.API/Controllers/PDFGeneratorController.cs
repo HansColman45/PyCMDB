@@ -6,6 +6,7 @@ using CMDB.Domain.Requests;
 using CMDB.API.Services;
 using QuestPDF.Fluent;
 using CMDB.API.Models;
+using CMDB.API.Interfaces;
 
 namespace CMDB.API.Controllers
 {

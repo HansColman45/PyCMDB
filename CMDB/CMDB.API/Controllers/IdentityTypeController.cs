@@ -1,5 +1,5 @@
-﻿using CMDB.API.Models;
-using CMDB.API.Services;
+﻿using CMDB.API.Interfaces;
+using CMDB.API.Models;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Interface for transaction management.

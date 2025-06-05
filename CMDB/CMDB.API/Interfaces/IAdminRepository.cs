@@ -3,7 +3,7 @@ using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Admin repository interface

@@ -1,7 +1,7 @@
 ﻿using CMDB.API.Models;
 using CMDB.Domain.Entities;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// Defines a contract for managing and retrieving permissions within a system.

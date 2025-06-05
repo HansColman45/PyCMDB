@@ -1,3 +1,4 @@
+using CMDB.API.Interfaces;
 using CMDB.API.Services;
 using CMDB.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

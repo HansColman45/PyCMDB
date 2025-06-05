@@ -1,12 +1,17 @@
 ﻿using CMDB.Domain.Entities;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>
     /// The interface for menu
     /// </summary>
     public interface IMenuRepository
     {
+        /// <summary>
+        /// Retrieves all menu items asynchronously.
+        /// </summary>
+        /// <returns>A list of <see cref="Menu"/></returns>
+        Task<IEnumerable<Menu>> GetAll();
         /// <summary>
         /// This will return a list of Menus
         /// </summary>

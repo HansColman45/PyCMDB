@@ -1,4 +1,4 @@
-﻿using CMDB.API.Services;
+﻿using CMDB.API.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -23,6 +23,22 @@ namespace CMDB.API.Controllers
         public MenuController(IUnitOfWork uow)
         {
             _uow = uow;
+        }
+        /// <summary>
+        /// Retrieves all menu items associated with the current user.
+        /// </summary>
+        /// <remarks>This method requires the caller to be authenticated and authorized.</remarks>
+        /// <returns>An <see cref="IActionResult"/> containing a collection of menu items if the user is authorized;  otherwise,
+        /// an unauthorized response.</returns>
+        [HttpGet("GetAll"), Authorize]
+        public async Task<IActionResult> GetAll()
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            var accounts = await _uow.MenuRepository.GetAll();
+            return Ok(accounts);
         }
         /// <summary>
         /// Get first level menu

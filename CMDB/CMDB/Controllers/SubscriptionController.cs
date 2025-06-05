@@ -169,11 +169,11 @@ namespace CMDB.Controllers
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
-            ViewData["Controller"] = @"\Subscription\Create";
             if (subscription is null)
                 return NotFound();
             log.Debug("Using details in {0}", Table);
             ViewData["Title"] = $"{subscription.SubscriptionType.AssetCategory.Category} Details";
+            ViewData["Controller"] = @"\Subscription\Create";
             await BuildMenu();
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -197,12 +197,12 @@ namespace CMDB.Controllers
         {
             if (id is null)
                 return NotFound();
-            ViewData["Controller"] = @$"\Subscription\Delete\{id}";
             var subscription = await service.GetByID((int)id);
             if (subscription is null)
                 return NotFound();
             log.Debug("Using Delete in {0}", Table);
             await BuildMenu();
+            ViewData["Controller"] = @$"\Subscription\Delete\{id}";
             ViewData["Title"] = $"Deactivate {subscription.SubscriptionType.AssetCategory.Category}";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             string FormSubmit = values["form-submitted"];

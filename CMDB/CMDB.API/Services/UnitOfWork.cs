@@ -1,4 +1,5 @@
-﻿using CMDB.Infrastructure;
+﻿using CMDB.API.Interfaces;
+using CMDB.Infrastructure;
 
 namespace CMDB.API.Services
 {
@@ -41,6 +42,7 @@ namespace CMDB.API.Services
             SubscriptionTypeRepository = new SubscriptionTypeRepository(_context, _logger);
             KensingtonRepository = new KensingtonRepository(_context, _logger);
             RolePermissionRepository = new RolePermissionRepository(_context, _logger);
+            PermissionRepository = new PermissionRepository(_context, _logger);
         }
         /// <inheritdoc/>
         public IAccountRepository AccountRepository { get; private set; }
@@ -78,6 +80,9 @@ namespace CMDB.API.Services
         public IKensingtonRepository KensingtonRepository { get; private set; }
         /// inheritdoc/>
         public IRolePermissionRepository RolePermissionRepository { get; private set; }
+        /// inheritdoc/>
+        public IPermissionRepository PermissionRepository { get; private set; }
+
         /// <inheritdoc/>
         public async Task SaveChangesAsync()
         {

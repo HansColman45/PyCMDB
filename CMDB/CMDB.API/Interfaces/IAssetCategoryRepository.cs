@@ -1,6 +1,6 @@
 ﻿using CMDB.API.Models;
 
-namespace CMDB.API.Services
+namespace CMDB.API.Interfaces
 {
     /// <summary>  
     /// Interface for managing asset categories in the system.  

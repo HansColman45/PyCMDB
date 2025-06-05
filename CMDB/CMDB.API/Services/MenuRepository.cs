@@ -1,4 +1,5 @@
-﻿using CMDB.Domain.Entities;
+﻿using CMDB.API.Interfaces;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,11 @@ namespace CMDB.API.Services
         /// <param name="logger"></param>
         public MenuRepository(CMDBContext context, ILogger logger) : base(context, logger)
         {
+        }
+        /// <inheritdoc/>
+        public async Task<IEnumerable<Menu>> GetAll()
+        {
+            return await _context.Menus.AsNoTracking().ToListAsync();
         }
         /// <inheritdoc/>
         public async Task<IEnumerable<Menu>> GetFirstLevel()

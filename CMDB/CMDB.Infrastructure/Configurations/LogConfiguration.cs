@@ -118,7 +118,7 @@ namespace CMDB.Infrastructure.Configurations
 
             builder.HasOne(e => e.RolePerm)
                 .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.RoleId)
+                .HasForeignKey(e => e.RolePermId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_RolePerm");
         }
