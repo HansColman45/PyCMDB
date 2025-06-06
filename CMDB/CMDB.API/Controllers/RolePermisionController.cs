@@ -3,7 +3,6 @@ using CMDB.API.Models;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using System.Security.Claims;
 
 namespace CMDB.API.Controllers
@@ -49,7 +48,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -75,7 +74,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -104,7 +103,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -132,7 +131,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Add"
+                Permission = Permission.Add
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -163,12 +162,43 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Update"
+                Permission = Permission.Update
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
                 return Unauthorized();
             _uow.RolePermissionRepository.Update(rolePermission);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        /// <summary>
+        /// Deletes the specified role permission.
+        /// </summary>
+        /// <remarks>This method requires the user to be authenticated and authorized as an administrator
+        /// with appropriate access rights. The user's administrative access is verified based on their claims and
+        /// site-specific permissions.</remarks>
+        /// <param name="rolePermission">The role permission to delete. This must contain valid data identifying the role and its associated
+        /// permissions.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns <see langword="Ok"/> if the
+        /// deletion is successful,  <see langword="Unauthorized"/> if the user does not have the necessary permissions,
+        /// or <see langword="Unauthorized"/> if the user is not authenticated.</returns>
+        [HttpDelete, Authorize]
+        public async Task<IActionResult> Delete(RolePermissionDTO rolePermission)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.Delete
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            _uow.RolePermissionRepository.Delete(rolePermission);
             await _uow.SaveChangesAsync();
             return Ok();
         }

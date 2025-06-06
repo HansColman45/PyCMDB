@@ -45,7 +45,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -68,7 +68,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -92,7 +92,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -116,7 +116,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -140,7 +140,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Add"
+                Permission = Permission.Add,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -166,7 +166,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Edit"
+                Permission = Permission.Update
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -193,7 +193,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Deactivate"
+                Permission = Permission.Delete,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -219,7 +219,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Edit"
+                Permission = Permission.Activate,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -245,7 +245,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Action = "Read"
+                Permission = Permission.Read,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)

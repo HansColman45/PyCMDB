@@ -77,11 +77,11 @@ namespace CMDB.Controllers
         /// <param name="id">The unique identifier of the entity to retrieve. Must be a positive integer.</param>
         /// <returns>An <see cref="IActionResult"/> containing the details of the entity if found;  otherwise, an appropriate
         /// error response, such as a 404 Not Found result.</returns>
-        public async Task<IActionResult> Details(int id)
+        public async Task<IActionResult> Details(int?id)
         {
-            if (id <= 0)
+            if (id is null)
                 return NotFound();
-            var roleper = await service.GetById(id);
+            var roleper = await service.GetById((int)id);
             if (roleper is null)
                 return NotFound();
             log.Debug("Using details for {0} with id {1}", SitePart, id);
@@ -144,7 +144,7 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values,int? id)
         {
             log.Debug("Using edit for {0} with id {1}", SitePart, id);
-            if (id is not null)
+            if (id is null)
                 return NotFound();
             var roleper = await service.GetById((int)id);
             if (roleper is null)

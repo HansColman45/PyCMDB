@@ -298,11 +298,12 @@ namespace CMDB.Services
         {
             BaseUrl = Url + $"api/Admin/HasAdminAccess";
             _Client.SetBearerToken(TokenStore.Token);
+            var perm = EnumExtensions.ParseEnum<CMDB.Domain.Requests.Permission>(action);
             HasAdminAccessRequest request = new()
             {
                 AdminId = adminId,
                 Site = site,
-                Action = action
+                Permission = perm
             };
             var response = await _Client.PostAsJsonAsync(BaseUrl, request);
             if (response.IsSuccessStatusCode)

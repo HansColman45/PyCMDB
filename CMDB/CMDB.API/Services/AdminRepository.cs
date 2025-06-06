@@ -112,11 +112,11 @@ namespace CMDB.API.Services
         {
             var admin = await _context.Admins.Where(x => x.AdminId == request.AdminId).AsNoTracking().FirstOrDefaultAsync();
             if (admin is null) return false;
-
+            var permission = request.Permission;
             var perm = _context.RolePerms
                 .Include(x => x.Menu)
                 .Include(x => x.Permission)
-                .Where(x => x.Level == admin.Level || x.Menu.Label == request.Site || x.Permission.Rights == request.Action).AsNoTracking()
+                .Where(x => x.Level == admin.Level && x.Menu.Label == request.Site && x.Permission.Id == (int)permission).AsNoTracking()
                 .ToList();
             if (perm.Count > 0)
                 return true;

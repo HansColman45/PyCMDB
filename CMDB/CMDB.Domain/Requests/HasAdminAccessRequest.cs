@@ -8,14 +8,55 @@
         /// <summary>
         /// The admin ID
         /// </summary>
-        public int AdminId { get; set; }
+        public required int AdminId { get; set; }
         /// <summary>
         /// The part of the site requesting acces to
         /// </summary>
-        public string Site { get; set; }
+        public required string Site { get; set; }
         /// <summary>
-        /// The action the admin is trying to perform
+        /// The permission the admin is trying to perform
         /// </summary>
-        public string Action { get; set; }
+        public required Permission Permission { get; set; }
+    }
+    public enum Permission
+    {
+        Read = 1,
+        Update = 2,
+        Delete = 3,
+        Activate = 4,
+        Add = 5,
+        AssignAccount = 6,
+        AccountOverview = 7,
+        AssignDevice = 8,
+        DeviceOverview = 9,
+        AssignMobile = 10,
+        MobileOverview = 11,
+        AssignSubscription = 12,
+        SubscriptionOverview = 13,
+        AssignIdentity = 14,
+        IdentityOverview = 15,
+        AssignAppRole = 16,
+        AppRoleOverview = 17,
+        AssignSysRole = 18,
+        SysRoleOverview = 19,
+        AssignApplication = 20,
+        ApplicationOverview = 21,
+        AssignSystem = 22,
+        SystemOverview = 23,
+        AssignKensington = 24,
+        KeyOverview = 25,
+        ReleaseDevice = 26,
+        ReleaseAccount = 27,
+        ReleaseMobile = 28,
+        ReleaseSubscription = 29,
+        ReleaseIdentity = 30,
+        ReleaseAppRole = 31,
+        ReleaseSysRole = 32,
+        ReleaseApplication = 33,
+        ReleaseSystem = 34,
+        ReleaseKensington = 35,
+        AssignLevel = 36,
+        PermissionOverview = 37,
+        MenuOverview = 38
     }
 }

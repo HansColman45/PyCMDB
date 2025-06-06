@@ -44,7 +44,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = category.ToLower(),
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -68,7 +68,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = category.ToLower(),
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -92,7 +92,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = category.ToLower(),
-                Action = "Read"
+                Permission = Permission.Read
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -130,7 +130,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "Create"
+                Permission = Permission.Add,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -155,7 +155,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "Edit"
+                Permission = Permission.Update,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -181,7 +181,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "Deactivate"
+                Permission = Permission.Delete,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -206,7 +206,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "Activate"
+                Permission = Permission.Activate,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -244,7 +244,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "AssignIdentity"
+                Permission = Permission.AssignIdentity,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -269,7 +269,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "ReleaseIdentity"
+                Permission = Permission.ReleaseIdentity,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -298,7 +298,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "AssignKensington"
+                Permission = Permission.AssignKensington,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -327,7 +327,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "ReleaseKensington"
+                Permission = Permission.ReleaseKensington,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -352,7 +352,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = device.Category.Category.ToLower(),
-                Action = "Read"
+                Permission = Permission.Read,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)
@@ -383,6 +383,15 @@ namespace CMDB.API.Controllers
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = sitePart,
+                Permission = Permission.Read
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
                 return Unauthorized();
             return Ok(await _uow.DeviceRepository.ListAllFreeDevices(sitePart));
         }

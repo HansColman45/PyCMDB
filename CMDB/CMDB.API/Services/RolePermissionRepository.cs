@@ -89,12 +89,13 @@ namespace CMDB.API.Services
         public void Update(RolePermissionDTO permission)
         {
             var rolePerm = TrackedRolePerm(permission.Id);
+            string logline = GenericLogLineCreator.UpdateLogLine("Level", rolePerm.Level.ToString(), permission.Level.ToString(), TokenStore.Admin.Account.UserID, table);
             if (rolePerm.Level != permission.Level)
             {
                 rolePerm.Level = permission.Level;
                 rolePerm.Logs.Add(new()
                 {
-                    LogText = GenericLogLineCreator.UpdateLogLine("Level", rolePerm.Level.ToString(), permission.Level.ToString(), TokenStore.Admin.Account.UserID, table),
+                    LogText = logline,
                     LogDate = DateTime.Now,
                 });
                 _context.RolePerms.Update(rolePerm);
