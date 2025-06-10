@@ -1,6 +1,6 @@
 ﻿using OpenQA.Selenium;
 
-namespace CMDB.UI.Specflow.Abilities.Pages.Admin
+namespace CMDB.UI.Specflow.Abilities.Pages.Permissions
 {
     public class PermissionOverviewPage : MainPage
     {

@@ -13,13 +13,14 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) =>
 {
     configuration.WriteTo.Console().MinimumLevel.Information();
+    configuration.WriteTo.File("Logs/API-exection.log", rollingInterval: RollingInterval.Day)
+        .MinimumLevel.Information();
 });
 
 string connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
 // configure strongly typed settings object
 builder.Services.AddDbContext<CMDBContext>(options => {
         options.UseSqlServer(connectionString);
-        options.EnableSensitiveDataLogging();
     }
 );
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();

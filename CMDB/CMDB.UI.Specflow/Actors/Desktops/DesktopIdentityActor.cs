@@ -56,7 +56,7 @@ namespace CMDB.UI.Specflow.Actors.Desktops
                 var assignForm = OpenAssignFom();
                 assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
                 assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-                AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+                Perform<ClickTheGeneratePDFOnAssignForm>();
                 assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
             }
             else

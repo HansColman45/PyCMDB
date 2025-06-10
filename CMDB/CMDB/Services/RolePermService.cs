@@ -4,8 +4,6 @@ using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Graph.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -197,6 +195,20 @@ namespace CMDB.Services
             BaseUrl = Url + $"api/RolePermission";
             _Client.SetBearerToken(TokenStore.Token);
             var response = await _Client.PutAsJsonAsync(BaseUrl, roleper);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
+        }
+        /// <summary>
+        /// Deletes the specified role permission from the system.
+        /// </summary>
+        /// <param name="roleper">The role permission to delete, represented as a <see cref="RolePermissionDTO"/> object.</param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode">Thrown if the server responds with a non-success HTTP status code.</exception>
+        public async Task Delete(RolePermissionDTO roleper)
+        {
+            BaseUrl = Url + $"api/RolePermission";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, roleper);
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }

@@ -38,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.Mobiles
         public void FillInAssignForm()
         {
             var assignForm = OpenAssignFom();
-            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+            Perform<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
 

@@ -38,7 +38,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
         {
             var page = OpenAssignFom();
             page.ITEmployee.Should().Be(admin.Account.UserID);
-            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+            Perform<ClickTheGeneratePDFOnAssignForm>();
         }
 
         public void ReleaseSubscription(Identity identity, Subscription subscription)
@@ -53,7 +53,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.Title.Should().BeEquivalentTo("Release subscription from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            AttemptsTo<ClickTheGeneratePDFOnReleaseSubscriptionForm>();
+            Perform<ClickTheGeneratePDFOnReleaseSubscriptionForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Released");
         }
     }

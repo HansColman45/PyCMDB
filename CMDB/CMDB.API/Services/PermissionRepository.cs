@@ -11,6 +11,7 @@ namespace CMDB.API.Services
     /// </summary>
     public class PermissionRepository : GenericRepository, IPermissionRepository
     {
+        private static string Table => "permission";
         private PermissionRepository()
         {
         }
@@ -24,9 +25,20 @@ namespace CMDB.API.Services
             
         }
         /// inheritdoc/>
-        public Task Create(PermissionDTO permission)
+        public void Create(PermissionDTO permission)
         {
-            throw new NotImplementedException();
+            Permission per = new()
+            {
+                LastModifiedAdminId = TokenStore.AdminId,
+                Rights = permission.Right,
+                Description = permission.Description
+            };
+            per.Logs.Add(new()
+            {
+                LogText = GenericLogLineCreator.CreateLogLine($"permission {permission.Right} with {permission.Description}",TokenStore.Admin.Account.UserID,Table),
+                LogDate = DateTime.Now,
+            });
+            _context.Permissions.Add(per);
         }
         /// inheritdoc/>
         public async Task<IEnumerable<PermissionDTO>> GetAll()
@@ -55,9 +67,31 @@ namespace CMDB.API.Services
             return perm;
         }
         /// inheritdoc/>
-        public Task Update(PermissionDTO permission)
+        public void Update(PermissionDTO permission)
         {
-            throw new NotImplementedException();
+            var oldPerm = TrackedPermission(permission.Id);
+            if (string.Compare(oldPerm.Rights, permission.Right) != 0)
+            {
+                string logstring = GenericLogLineCreator.UpdateLogLine("Right", oldPerm.Rights, permission.Right, TokenStore.Admin.Account.UserID, Table);
+                oldPerm.Rights = permission.Right;
+                oldPerm.Logs.Add(new Log
+                {
+                    LogText = logstring,
+                    LogDate = DateTime.Now,
+                });
+                
+            }
+            if(string.Compare(oldPerm.Description, permission.Description) != 0)
+            {
+                string logstring = GenericLogLineCreator.UpdateLogLine("Description", oldPerm.Description, permission.Description, TokenStore.Admin.Account.UserID, Table);
+                oldPerm.Description = permission.Description;
+                oldPerm.Logs.Add(new Log
+                {
+                    LogText = logstring,
+                    LogDate = DateTime.Now,
+                });
+            }
+            _context.Permissions.Update(oldPerm);
         }
         /// <summary>
         /// Converts a <see cref="Permission"/> to a <see cref="PermissionDTO"/>.
@@ -80,6 +114,10 @@ namespace CMDB.API.Services
                 .Include(x => x.RolePerm).Where(x => x.Permission.Id == permission.Id)
                 .OrderByDescending(x => x.LogDate)
                 .Select(x => Convert2DTO(x)).ToListAsync();
+        }
+        private Permission TrackedPermission(int id)
+        {
+            return _context.Permissions.Where(x => x.Id == id).First();
         }
     }
 }

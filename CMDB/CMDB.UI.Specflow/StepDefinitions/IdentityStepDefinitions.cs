@@ -215,7 +215,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I fill in the release form for my Identity")]
         public void WhenIFillInTheReleaseFormForMyIdentity()
         {
-            identityDeviceActor.AttemptsTo<ClickTheGeneratePDFOnReleaseForm>();
+            identityDeviceActor.Perform<ClickTheGeneratePDFOnReleaseForm>();
         }
         [Then(@"The (.*) is released from the Identity")]
         public void ThenTheDeviceIsReleasedFromTheIdentity(string device)

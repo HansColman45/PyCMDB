@@ -94,7 +94,7 @@ namespace CMDB.Controllers
                 return NotFound();
             ViewData["Title"] = "Delete Monitor";
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
-            ViewData["backUrl"] = "Admin";
+            ViewData["backUrl"] = "Monitor";
             ViewData["Controller"] = @$"\Monitor\Delete\{id}";
             await BuildMenu();
             string FormSubmit = values["form-submitted"];

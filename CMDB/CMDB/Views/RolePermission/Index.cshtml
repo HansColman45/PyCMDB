@@ -29,7 +29,7 @@
                         }
                         @if ((bool)ViewData["DeleteAccess"])
                         {
-                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Delete"><span class="@ViewBag.DeactivateIcon"></span></a>
+                            <a class="btn btn-danger" href="\RolePermission\Delete\@item.Id" data-toggle="tooltip" data-placement="top" title="Delete"><span class="@ViewBag.DeactivateIcon"></span></a>
                         }
                         @if ((bool)ViewData["InfoAccess"])
                         {

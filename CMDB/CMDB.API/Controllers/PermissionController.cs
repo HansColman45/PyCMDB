@@ -1,4 +1,5 @@
 ﻿using CMDB.API.Interfaces;
+using CMDB.API.Models;
 using CMDB.Domain.Requests;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -107,6 +108,34 @@ namespace CMDB.API.Controllers
             if (!hasAdminAcces)
                 return Unauthorized();
             return Ok(await _uow.PermissionRepository.GetById(id));
+        }
+        /// <summary>
+        /// Updates the specified permission in the system.
+        /// </summary>
+        /// <remarks>This method requires the user to be authorized and have administrative access.</remarks>
+        /// <param name="permission">The permission data to update, represented as a <see cref="PermissionDTO"/> object.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.  Returns <see
+        /// cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkResult"/> if the update is
+        /// successful.</returns>
+        [HttpPut,Authorize]
+        public async Task<IActionResult> Update(PermissionDTO permission)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.Update
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            _uow.PermissionRepository.Update(permission);
+            await _uow.SaveChangesAsync();
+            return Ok();
         }
     }
 }

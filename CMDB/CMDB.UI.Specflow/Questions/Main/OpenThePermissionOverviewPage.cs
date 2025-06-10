@@ -1,7 +1,7 @@
 ﻿using Bright.ScreenPlay.Actors;
 using CMDB.UI.Specflow.Abilities.Pages;
 using Bright.ScreenPlay.Questions;
-using CMDB.UI.Specflow.Abilities.Pages.Admin;
+using CMDB.UI.Specflow.Abilities.Pages.Permissions;
 
 namespace CMDB.UI.Specflow.Questions.Main
 {

@@ -18,7 +18,7 @@ namespace CMDB.API.Controllers
         {
         }
         private readonly IUnitOfWork _uow;
-        private readonly string site = "Permission";
+        private readonly string site = "Role permission";
         private readonly ILogger<RolePermissionController> _logger;
         private HasAdminAccessRequest request;
         /// <summary>

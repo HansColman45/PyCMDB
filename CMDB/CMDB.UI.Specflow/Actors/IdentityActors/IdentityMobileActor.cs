@@ -39,7 +39,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             var assignForm = OpenAssignFom();
             assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+            Perform<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
 
@@ -55,7 +55,7 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.Title.Should().BeEquivalentTo("Release mobile from identity", "Title should be correct");
             page.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             page.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            AttemptsTo<ClickTheGeneratePDFOnReleaseMobileForm>();
+            Perform<ClickTheGeneratePDFOnReleaseMobileForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Released");
         }
     }

@@ -1,5 +1,4 @@
 ﻿using CMDB.API.Models;
-using CMDB.Domain.Entities;
 
 namespace CMDB.API.Interfaces
 {
@@ -34,12 +33,12 @@ namespace CMDB.API.Interfaces
         /// </summary>
         /// <param name="permission">The permission to add.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Create(PermissionDTO permission);
+        void Create(PermissionDTO permission);
         /// <summary>
         /// Updates an existing permission.
         /// </summary>
         /// <param name="permission">The permission to update.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
-        Task Update(PermissionDTO permission);
+        void Update(PermissionDTO permission);
     }
 }

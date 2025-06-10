@@ -5,7 +5,6 @@ using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Graph.Models;
 using System;
 using System.Threading.Tasks;
 
@@ -23,7 +22,7 @@ namespace CMDB.Controllers
         /// <param name="env"></param>
         public RolePermissionController(IWebHostEnvironment env) : base(env)
         {
-            SitePart = "Permission";
+            SitePart = "Role permission";
             Table = "rolepermission";
             service = new RolePermService();
         }
@@ -133,11 +132,11 @@ namespace CMDB.Controllers
         /// Handles the editing of a role permission based on the provided form values and role ID.
         /// </summary>
         /// <remarks>This method retrieves the role permission by its ID and populates the necessary data
-        /// for the edit view,  including permissions, menus, and levels. If the form is submitted and the model state
-        /// is valid,  the role permission is updated and the user is redirected to the index page.</remarks>
+        /// for the edit view, including permissions, menus, and levels. If the form is submitted and the model state
+        /// is valid, the role permission is updated and the user is redirected to the index page.</remarks>
         /// <param name="values">The form collection containing submitted values for the role permission.</param>
         /// <param name="id">The ID of the role permission to edit. Must not be null.</param>
-        /// <returns>An <see cref="IActionResult"/> representing the result of the operation.  Returns <see
+        /// <returns>An <see cref="IActionResult"/> representing the result of the operation. Returns <see
         /// cref="NotFoundResult"/> if the role ID is null or the role permission is not found. Returns a view with the
         /// role permission details if the form is not submitted or validation fails. Redirects to the <see
         /// cref="Index"/> action upon successful editing.</returns>
@@ -153,6 +152,7 @@ namespace CMDB.Controllers
             ViewData["Title"] = "Edit Role Permission";
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["Controller"] = @$"\RolePermission\Edit\{id}";
+            ViewData["backUrl"] = "RolePermission";
             ViewBag.Permissions = await service.GetAllPermissions();
             ViewBag.Menus = await service.GetAllMenus();
             ViewBag.Levels = service.ListAllLevels();
@@ -164,6 +164,39 @@ namespace CMDB.Controllers
                 if (ModelState.IsValid)
                 {
                     await service.Edit(roleper);
+                    return RedirectToAction(nameof(Index));
+                }
+            }
+            return View(roleper);
+        }
+        /// <summary>
+        /// Handles the deletion of a role permission based on the provided ID and form submission.
+        /// </summary>
+        /// <param name="values">The form collection containing submitted data, including the form submission indicator.</param>
+        /// <param name="id">The ID of the role permission to delete. Must not be null.</param>
+        /// <returns>An <see cref="IActionResult"/> that represents the result of the operation.  Returns <see
+        /// cref="NotFoundResult"/> if the ID is null or the role permission is not found.  Returns a redirect to the
+        /// <c>Index</c> action upon successful deletion.  Otherwise, returns a view displaying the role permission to
+        /// be deleted.</returns>
+        public async Task<IActionResult> Delete(IFormCollection values, int? id)
+        {
+            log.Debug("Using delete for {0} with id {1}", SitePart, id);
+            if (id is null)
+                return NotFound();
+            var roleper = await service.GetById((int)id);
+            if (roleper is null)
+                return NotFound();
+            await BuildMenu();
+            ViewData["Title"] = "Delete Role Permission";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["Controller"] = @$"\RolePermission\Delete\{id}";
+            ViewData["backUrl"] = "RolePermission";
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit))
+            {
+                if (ModelState.IsValid)
+                {
+                    await service.Delete(roleper);
                     return RedirectToAction(nameof(Index));
                 }
             }

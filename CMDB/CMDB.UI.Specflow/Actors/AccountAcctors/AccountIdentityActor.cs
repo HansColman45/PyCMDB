@@ -42,7 +42,7 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
         {
             var page = Perform(new OpenTheAccountAssignFormPage());
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignFormPage");
-            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+            Perform<ClickTheGeneratePDFOnAssignForm>();
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
         public void ReleaseIdentity(Account account, Identity identity)

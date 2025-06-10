@@ -13,6 +13,7 @@ using CMDB.UI.Specflow.Abilities.Pages.Kensington;
 using CMDB.UI.Specflow.Abilities.Pages.Laptop;
 using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 using CMDB.UI.Specflow.Abilities.Pages.Monitor;
+using CMDB.UI.Specflow.Abilities.Pages.Permissions;
 using CMDB.UI.Specflow.Abilities.Pages.Role;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 using CMDB.UI.Specflow.Abilities.Pages.SubscriptionType;

@@ -63,7 +63,7 @@ namespace CMDB.API.Controllers
         /// <summary>
         /// Retrieves all subscriptions that match the specified search string.
         /// </summary>
-        /// <remarks>This method requires the caller to be authorized and have administrative access.  If
+        /// <remarks>This method requires the caller to be authorized and have administrative access. If
         /// the user does not have the necessary permissions, the method returns an unauthorized response.</remarks>
         /// <param name="searchstr">The search string used to filter subscriptions. Can be null or empty to retrieve all subscriptions.</param>
         /// <returns>An <see cref="OkResult"/> containing a collection of subscriptions that match the search criteria.
@@ -117,7 +117,7 @@ namespace CMDB.API.Controllers
         /// Creates a new subscription for the authenticated user.
         /// </summary>
         /// <param name="subscription">The subscription details to be created.</param>
-        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.  Returns <see
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns <see
         /// cref="UnauthorizedResult"/> if the user is not authenticated or lacks the necessary permissions.  Returns
         /// <see cref="OkResult"/> if the subscription is successfully created.</returns>
         [HttpPost, Authorize]
@@ -143,8 +143,7 @@ namespace CMDB.API.Controllers
         /// <summary>
         /// Deletes a subscription and deactivates it with the specified reason.
         /// </summary>
-        /// <remarks>This method requires the user to be authorized and have administrative access.  The
-        /// user ID is retrieved from the claims to verify permissions.</remarks>
+        /// <remarks>This method requires the user to be authorized and have administrative access.</remarks>
         /// <param name="subscription">The subscription to be deleted.</param>
         /// <param name="reason">The reason for deactivating the subscription.</param>
         /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.  Returns <see

@@ -158,7 +158,7 @@ namespace CMDB.UI.Specflow.StepDefinitions
         [When(@"I release the Identity")]
         public void WhenIReleaseTheIdentity()
         {
-            tokenIdentityActor.releaseIdentity(Token, Identity);
+            tokenIdentityActor.ReleaseIdentity(Token, Identity);
         }
         [Then(@"The Identity is released from the token")]
         public void ThenTheIdentityIsReleasedFromTheToken()

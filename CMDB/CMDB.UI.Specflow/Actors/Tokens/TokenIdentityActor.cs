@@ -37,11 +37,11 @@ namespace CMDB.UI.Specflow.Actors.Tokens
             var assignForm = OpenAssignFom();
             assignForm.ITEmployee.Should().BeEquivalentTo(admin.Account.UserID, "The IT employee should be the admin");
             assignForm.Employee.Should().BeEquivalentTo(identity.Name, "The employee should be the name of the identity");
-            AttemptsTo<ClickTheGeneratePDFOnAssignForm>();
+            Perform<ClickTheGeneratePDFOnAssignForm>();
             assignForm.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Assigned");
         }
 
-        public void releaseIdentity(Token token, Identity identity)
+        public void ReleaseIdentity(Token token, Identity identity)
         {
             ExpectedLog = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine($"Token with {token.AssetTag}",
                $"Identity with name: {identity.Name}", admin.Account.UserID, Table);
