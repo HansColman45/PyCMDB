@@ -2,7 +2,7 @@
 using Bright.ScreenPlay.Questions;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Admin
 {
     public class CreateTheAdmin : Question<Task<Domain.Entities.Admin>>
     {

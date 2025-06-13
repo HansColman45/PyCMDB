@@ -3,7 +3,7 @@ using Bright.ScreenPlay.Questions;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Account
 {
     /// <summary>
     /// This class is used to create an active account
@@ -20,7 +20,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create an inactive account
     /// </summary>
-    public class CreateTheIncativeAccount : Question<Task<CMDB.Domain.Entities.Account>>
+    public class CreateTheIncativeAccount : Question<Task<Domain.Entities.Account>>
     {
         public override async Task<Domain.Entities.Account> PerformAs(IPerformer actor)
         {

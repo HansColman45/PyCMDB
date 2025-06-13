@@ -5,12 +5,12 @@ using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
 using System;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.AssetType
 {
     /// <summary>
     /// This class is used to create an asset type
     /// </summary>
-    public class CreateTheAssetType : Question<Task<CMDB.Domain.Entities.AssetType>>
+    public class CreateTheAssetType : Question<Task<Domain.Entities.AssetType>>
     {
         public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
         {
@@ -22,7 +22,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create an inactive asset type
     /// </summary>
-    public class CreateTheInactiveAssetType : Question<Task<CMDB.Domain.Entities.AssetType>>
+    public class CreateTheInactiveAssetType : Question<Task<Domain.Entities.AssetType>>
     {
         public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
         {

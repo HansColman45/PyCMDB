@@ -3,7 +3,7 @@ using Bright.ScreenPlay.Questions;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Subscription
 {
     public class CreateTheMobileSubscription : Question<Task<Domain.Entities.Subscription>>
     {

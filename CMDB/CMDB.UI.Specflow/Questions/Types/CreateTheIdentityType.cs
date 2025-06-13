@@ -4,7 +4,7 @@ using CMDB.Domain.Entities;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Types
 {
     /// <summary>
     /// This class is used to create an identity type

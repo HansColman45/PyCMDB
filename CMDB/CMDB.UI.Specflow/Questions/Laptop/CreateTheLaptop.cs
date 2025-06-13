@@ -3,7 +3,7 @@ using Bright.ScreenPlay.Questions;
 using CMDB.Testing.Helpers.Devices;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Laptop
 {
     /// <summary>
     /// This class is used to create a laptop

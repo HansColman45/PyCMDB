@@ -3,7 +3,7 @@ using Bright.ScreenPlay.Questions;
 using CMDB.Testing.Helpers.Devices;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Token
 {
     /// <summary>
     /// This class is used to create a token
@@ -20,7 +20,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create an inactive token
     /// </summary>
-    public class CreateTheInactiveToken : Question<Task<CMDB.Domain.Entities.Token>>
+    public class CreateTheInactiveToken : Question<Task<Domain.Entities.Token>>
     {
         public override async Task<Domain.Entities.Token> PerformAs(IPerformer actor)
         {

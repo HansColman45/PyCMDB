@@ -4,12 +4,12 @@ using CMDB.Domain.Entities;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
 
-namespace CMDB.UI.Specflow.Questions.DataContextAnswers
+namespace CMDB.UI.Specflow.Questions.Types
 {
     /// <summary>
     /// This class is used to create an account type
     /// </summary>
-    public class CreateTheAccountType : Question<Task<CMDB.Domain.Entities.AccountType>>
+    public class CreateTheAccountType : Question<Task<AccountType>>
     {
         public override async Task<AccountType> PerformAs(IPerformer actor)
         {
@@ -20,7 +20,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
     /// <summary>
     /// This class is used to create an inactive account type
     /// </summary>
-    public class CreateTheInactiveAccountType : Question<Task<CMDB.Domain.Entities.AccountType>>
+    public class CreateTheInactiveAccountType : Question<Task<AccountType>>
     {
         public override async Task<AccountType> PerformAs(IPerformer actor)
         {
