@@ -68,6 +68,7 @@ Execution.*.txt
 *.feature.xlsx.*
 
 #spefic build:
+CMDB/bin/
 CMDB/.vs/
 CMDB/CMDB/obj/
 CMDB/obj/

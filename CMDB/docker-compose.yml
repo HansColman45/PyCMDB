@@ -1,0 +1,29 @@
+services:
+    cmdb-web:
+        build:
+            dockerfile: WebDockerfile
+        depends_on:
+            - cmdb-api
+        ports:
+            - 44313:80
+            - 44314:443
+        networks:
+            - my_net
+           
+    cmdb-api:
+        build: 
+            dockerfile: ApiDockerfile
+        ports:
+            - 7054:80
+            - 7055:443
+        networks:
+            - my_net
+        healthcheck:
+            test: ["CMD", "curl", "-f", "http://localhost:7055/swagger"]
+            interval: 2s
+            timeout: 5s
+            retries: 3
+
+networks:
+    my_net:
+        driver: bridge
