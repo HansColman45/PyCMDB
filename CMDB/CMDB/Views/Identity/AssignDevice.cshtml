@@ -1,9 +1,10 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
-    List<CMDB.API.Models.DeviceDTO> devices = (List<CMDB.API.Models.DeviceDTO>)ViewBag.Devices;
-    List<CMDB.API.Models.MobileDTO> mobiles = (List<CMDB.API.Models.MobileDTO>)ViewBag.Mobiles;
-    List<CMDB.API.Models.SubscriptionDTO> subscriptions = (List<CMDB.API.Models.SubscriptionDTO>)ViewBag.Subs;
+    List<DeviceDTO> devices = (List<DeviceDTO>)ViewBag.Devices;
+    List<MobileDTO> mobiles = (List<MobileDTO>)ViewBag.Mobiles;
+    List<SubscriptionDTO> subscriptions = (List<SubscriptionDTO>)ViewBag.Subs;
 }
 @if ((bool)ViewData["AssignDevice"])
 {

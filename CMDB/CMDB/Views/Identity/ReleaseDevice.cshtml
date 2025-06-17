@@ -1,7 +1,8 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
-    CMDB.API.Models.DeviceDTO device = (CMDB.API.Models.DeviceDTO)ViewBag.Device;
+            DeviceDTO device = (DeviceDTO)ViewBag.Device;
 }
 @if ((bool)ViewData["ReleaseDevice"])
 {

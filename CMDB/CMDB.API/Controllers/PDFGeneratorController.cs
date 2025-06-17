@@ -5,8 +5,8 @@ using System.Security.Claims;
 using CMDB.Domain.Requests;
 using CMDB.API.Services;
 using QuestPDF.Fluent;
-using CMDB.API.Models;
 using CMDB.API.Interfaces;
+using CMDB.Domain.DTOs;
 
 namespace CMDB.API.Controllers
 {

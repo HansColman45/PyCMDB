@@ -1,5 +1,5 @@
-﻿using CMDB.API.Models;
-using CMDB.Domain.CustomExeptions;
+﻿using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.DTOs;
 using CMDB.Domain.Requests;
 using CMDB.Infrastructure;
 using CMDB.Util;

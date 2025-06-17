@@ -1,6 +1,7 @@
-﻿@model CMDB.API.Models.IdenAccountDTO;
+﻿@using CMDB.Domain.DTOs
+@model IdenAccountDTO;
 @{
-    CMDB.API.Models.AccountDTO account = (CMDB.API.Models.AccountDTO)ViewBag.Account;
+    CMDB.Domain.DTOs.AccountDTO account = (AccountDTO)ViewBag.Account;
     Layout = "_Layout";
 }
 <h2>@ViewData["Title"]</h2>

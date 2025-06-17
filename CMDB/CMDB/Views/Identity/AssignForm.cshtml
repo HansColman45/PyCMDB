@@ -1,4 +1,5 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
 }
@@ -38,7 +39,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (CMDB.API.Models.IdenAccountDTO idenAccount in Model.Accounts)
+            @foreach (IdenAccountDTO idenAccount in Model.Accounts)
             {
                 <tr>
                     <td class="small">@idenAccount.Account.UserID</td>
@@ -63,7 +64,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (CMDB.API.Models.DeviceDTO device in Model.Devices)
+            @foreach (DeviceDTO device in Model.Devices)
             {
                 <tr>
                     <td class="small">@device.Category.Category</td>
@@ -86,7 +87,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (CMDB.API.Models.MobileDTO device in Model.Mobiles)
+            @foreach (MobileDTO device in Model.Mobiles)
             {
                 <tr>
                     <td class="small">@device.MobileType.Vendor @device.MobileType.Type</td>
@@ -106,7 +107,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach(CMDB.API.Models.SubscriptionDTO subscription in Model.Subscriptions)
+            @foreach(SubscriptionDTO subscription in Model.Subscriptions)
             {
                 <tr>
                     <td class="small">@subscription.SubscriptionType</td>

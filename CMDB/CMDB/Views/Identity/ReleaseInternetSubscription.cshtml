@@ -1,7 +1,8 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
-    CMDB.API.Models.SubscriptionDTO subscription = (CMDB.API.Models.SubscriptionDTO)ViewBag.Subsription;
+            SubscriptionDTO subscription = (SubscriptionDTO)ViewBag.Subsription;
 }
 @if ((bool)ViewData["ReleaseSubscription"])
 {

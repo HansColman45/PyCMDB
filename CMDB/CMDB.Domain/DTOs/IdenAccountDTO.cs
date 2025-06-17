@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The denAccountDTO class is used to represent the link between an Identity and an Account in the system.

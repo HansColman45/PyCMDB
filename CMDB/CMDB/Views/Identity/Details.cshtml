@@ -1,4 +1,5 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
 }
@@ -61,7 +62,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (CMDB.API.Models.IdenAccountDTO idenAccount in Model.Accounts)
+                    @foreach (IdenAccountDTO idenAccount in Model.Accounts)
                     {
                         <tr>
                             <td class="small">@idenAccount.Account.UserID</td>
@@ -108,7 +109,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (CMDB.API.Models.DeviceDTO device in Model.Devices)
+                    @foreach (DeviceDTO device in Model.Devices)
                     {
                         <tr>
                             <td class="small">@device.Category.Category</td>
@@ -150,7 +151,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (CMDB.API.Models.MobileDTO mobile in Model.Mobiles)
+                    @foreach (MobileDTO mobile in Model.Mobiles)
                     {
                         <tr>
                             <td class="small">@mobile.IMEI</td>
@@ -190,7 +191,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(CMDB.API.Models.SubscriptionDTO subscription in Model.Subscriptions){
+                    @foreach(SubscriptionDTO subscription in Model.Subscriptions){
                         <tr>
                             <td class="small">@subscription.PhoneNumber</td>
                             <td class="small">@subscription.SubscriptionType</td>
@@ -224,7 +225,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                @foreach (LogDTO log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

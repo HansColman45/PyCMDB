@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The AdminDTO class is used to represent an admin in the system.

@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The Languages know in the Db

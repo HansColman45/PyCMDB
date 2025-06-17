@@ -20,11 +20,13 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
       "environmentVariables": {
-        "ASPNETCORE_HTTPS_PORTS": "44314",
-        "ASPNETCORE_HTTP_PORTS": "44313"
+        "ASPNETCORE_HTTPS_PORTS": "8080",
+        "ASPNETCORE_HTTP_PORTS": "8081"
       },
       "publishAllPorts": true,
-      "useSSL": true
+      "useSSL": true,
+      "httpPort": 44313,
+      "sslPort": 44314
     }
   },
   "iisSettings": {

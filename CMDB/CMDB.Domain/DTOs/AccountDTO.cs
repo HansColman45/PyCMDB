@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The AccountDTO class is used to represent an account in the system.

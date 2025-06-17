@@ -1,4 +1,4 @@
-﻿namespace CMDB.API.Models
+﻿namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The DTO for AssetType

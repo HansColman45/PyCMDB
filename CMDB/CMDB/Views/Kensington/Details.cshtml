@@ -1,4 +1,5 @@
-﻿@model CMDB.API.Models.KensingtonDTO
+﻿@using CMDB.Domain.DTOs
+@model KensingtonDTO
 @{
     Layout = "_Layout";
 }
@@ -68,7 +69,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (CMDB.API.Models.LogDTO log in Model.Logs)
+                @foreach (LogDTO log in Model.Logs)
                 {
                     <tr>
                         <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>

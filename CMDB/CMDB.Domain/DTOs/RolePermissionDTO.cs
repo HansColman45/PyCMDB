@@ -1,29 +1,33 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using CMDB.Domain.Entities;
+using System.Collections.Generic;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
-    /// The DTO for the <see cref="Domain.Entities.Permission"/> model."/>
+    /// DTO for RolePermission model.
     /// </summary>
-    public class PermissionDTO
+    public class RolePermissionDTO
     {
         /// <summary>
-        /// The Id of the permission
+        /// The Id
         /// </summary>
         public int Id { get; set; }
         /// <summary>
-        /// The granted right of the permission
+        /// The level 
         /// </summary>
-        [Required(ErrorMessage = "Please fill in a permision")]
-        public string Right { get; set; }
+        public int Level { get; set; }
         /// <summary>
-        /// The description of the permission
+        /// The linked permission.
         /// </summary>
-        public string Description { get; set; }
+        public PermissionDTO Permission { get; set; }
+        /// <summary>
+        /// The linked menu item.
+        /// </summary>
+        public Menu Menu { get; set; }
         /// <summary>
         /// The AdminId that did the last modification of the model.
         /// </summary>
-        public int? LastModifiedAdminId { get; set; }
+        public int LastModifiedAdminId { get; set; }
         /// <summary>
         /// The linked logs of the model.
         /// </summary>
@@ -31,7 +35,7 @@ namespace CMDB.API.Models
         /// <summary>
         /// General constructor for the ModelDTO class.
         /// </summary>
-        public PermissionDTO()
+        public RolePermissionDTO()
         {
             Logs = new List<LogDTO>();
         }

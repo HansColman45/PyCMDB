@@ -44,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\CMDB.API\CMDB.API.csproj" />
     <ProjectReference Include="..\CMDB.Domain\CMDB.Domain.csproj" />
     <ProjectReference Include="..\CMDB.Infrastructure\CMDB.Infrastructure.csproj" />
   </ItemGroup>

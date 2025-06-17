@@ -1,4 +1,6 @@
-﻿namespace CMDB.API.Models
+﻿using System.Collections.Generic;
+
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// General ModelDTO class for all DTOs in the system.

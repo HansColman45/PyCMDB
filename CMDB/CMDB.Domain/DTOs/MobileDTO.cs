@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
-    /// The DTO file for Mobile <see cref="CMDB.Domain.Entities.Mobile"/>
+    /// The DTO file for Mobile <see cref="Entities.Mobile"/>
     /// </summary>
     public class MobileDTO : ModelDTO
     {

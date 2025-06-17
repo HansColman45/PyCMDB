@@ -1,4 +1,6 @@
-﻿namespace CMDB.API.Models
+﻿using System;
+
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The LogDTO class is used to represent a log entry in the system.

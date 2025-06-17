@@ -1,7 +1,8 @@
-﻿@model CMDB.API.Models.IdentityDTO
+﻿@using CMDB.Domain.DTOs
+@model IdentityDTO
 @{
     Layout = "_Layout";
-    CMDB.API.Models.MobileDTO mobile = (CMDB.API.Models.MobileDTO)ViewBag.Mobile;
+            MobileDTO mobile = (MobileDTO)ViewBag.Mobile;
 }
 @if ((bool)ViewData["ReleaseMobile"])
 {

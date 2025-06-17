@@ -22,6 +22,7 @@ using CMDB.UI.Specflow.Abilities.Pages.Token;
 using CMDB.UI.Specflow.Abilities.Pages.Types;
 using CMDB.UI.Specflow.Questions;
 using CMDB.UI.Specflow.Questions.Account;
+using CMDB.UI.Specflow.Questions.Admin;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Main;
 using OpenQA.Selenium;

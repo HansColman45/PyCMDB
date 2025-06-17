@@ -1,7 +1,8 @@
-﻿@{
+﻿@using CMDB.Domain.DTOs
+@{
     Layout = "_Layout";
-    CMDB.API.Models.IdentityDTO identity = (CMDB.API.Models.IdentityDTO)ViewBag.Identity;
-    CMDB.API.Models.AccountDTO account = (CMDB.API.Models.AccountDTO)ViewBag.Account;
+            IdentityDTO identity = (IdentityDTO)ViewBag.Identity;
+            AccountDTO account = (AccountDTO)ViewBag.Account;
 }
 @if ((bool)ViewData["ReleaseIdentity"])
 {

@@ -5,19 +5,20 @@ services:
         depends_on:
             - cmdb-api
         ports:
-            - 44313:80
-            - 44314:443
+            - 44313:8080
+            - 44314:8081
         networks:
             - my_net
-           
+
     cmdb-api:
         build: 
             dockerfile: ApiDockerfile
         ports:
-            - 7054:80
-            - 7055:443
+            - 7055:8080
+            - 7054:8081
         networks:
             - my_net
+        
         healthcheck:
             test: ["CMD", "curl", "-f", "http://localhost:7055/swagger"]
             interval: 2s

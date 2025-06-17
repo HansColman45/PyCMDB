@@ -1,8 +1,12 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.UI.Specflow.Abilities.Data;
-using CMDB.UI.Specflow.Questions.DataContextAnswers;
+using CMDB.UI.Specflow.Questions.Desktop;
+using CMDB.UI.Specflow.Questions.Docking;
 using CMDB.UI.Specflow.Questions.Identity;
+using CMDB.UI.Specflow.Questions.Laptop;
+using CMDB.UI.Specflow.Questions.Monitor;
+using CMDB.UI.Specflow.Questions.Token;
 using CMDB.UI.Specflow.Tasks;
 using Reqnroll;
 

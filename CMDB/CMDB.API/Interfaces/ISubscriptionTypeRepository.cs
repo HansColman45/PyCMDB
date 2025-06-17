@@ -1,4 +1,4 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.Domain.DTOs;
 
 namespace CMDB.API.Interfaces
 {

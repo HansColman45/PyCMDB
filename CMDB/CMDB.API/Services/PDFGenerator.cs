@@ -1,4 +1,4 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.Domain.DTOs;
 using CMDB.Domain.Entities;
 using QuestPDF.Fluent;
 using QuestPDF.Helpers;

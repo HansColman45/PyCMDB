@@ -1,5 +1,5 @@
 ﻿using CMDB.API.Interfaces;
-using CMDB.API.Models;
+using CMDB.Domain.DTOs;
 using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Infrastructure;

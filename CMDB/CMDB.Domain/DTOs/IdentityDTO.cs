@@ -1,8 +1,9 @@
 ﻿using CMDB.Domain.Entities;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace CMDB.API.Models
+namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The DTO file for Identity <see cref="Identity"/>"/>

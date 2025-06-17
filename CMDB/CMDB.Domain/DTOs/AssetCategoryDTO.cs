@@ -1,4 +1,4 @@
-﻿namespace CMDB.API.Models
+﻿namespace CMDB.Domain.DTOs
 {
     /// <summary>
     /// The AssetCategoryDTO class represents a Data Transfer Object (DTO) for asset categories.

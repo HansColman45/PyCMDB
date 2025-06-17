@@ -1,4 +1,4 @@
-﻿using CMDB.API.Models;
+﻿using CMDB.Domain.DTOs;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using CMDB.Util;

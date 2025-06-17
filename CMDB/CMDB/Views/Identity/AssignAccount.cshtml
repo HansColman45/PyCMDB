@@ -1,7 +1,8 @@
-﻿@model CMDB.API.Models.IdenAccountDTO;
+﻿@using CMDB.Domain.DTOs
+@model IdenAccountDTO;
 @{
     Layout = "_Layout";
-    CMDB.API.Models.IdentityDTO identity = (CMDB.API.Models.IdentityDTO)ViewBag.Identity;
+            IdentityDTO identity = (IdentityDTO)ViewBag.Identity;
 }
 @if ((bool)ViewData["AssignAccount"])
 {

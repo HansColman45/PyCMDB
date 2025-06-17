@@ -28,5 +28,15 @@
         "DebugTarget": "Container (Dockerfile)"
       }
     ]
+  },
+  {
+    "Name": "API Docker",
+    "Projects": [
+      {
+        "Path": "CMDB.API\\CMDB.API.csproj",
+        "Action": "Start",
+        "DebugTarget": "Container (Dockerfile)"
+      }
+    ]
   }
 ]
