@@ -6,6 +6,7 @@ export class MainPage {
   readonly editButton: Locator;
   readonly deleteButton: Locator;
   readonly detailsButton: Locator;
+  readonly searchInput: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -13,13 +14,14 @@ export class MainPage {
     this.editButton = page.getByRole('link', { name: 'Edit' });
     this.deleteButton = page.getByRole('link', { name: 'Deactivate' });
     this.detailsButton = page.getByRole('link', { name: 'Info' });
+    this.searchInput = page.getByRole('textbox', { name: 'Search' });
   }
 
   async goto() {
-    await this.page.goto('https://localhost:44314/');
+    await this.page.goto('http://localhost:44313/');
   }
 
   async IsLoggedIn(): Promise<boolean> {
-    return await this.page.isVisible('text=Welcome');
+    return await this.page.getByText('Welcome on the Central').isVisible();
   }
 }

@@ -84,6 +84,7 @@ namespace CMDB.API.Services
         ///inheritdoc />
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
+            _logger.LogInformation("DbContext: {0}",_context.Database.GetDbConnection().ConnectionString);
             var admin = await _context.Admins
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CMDB.Domain.Entities;
+using Microsoft.Extensions.Configuration;
 
 namespace CMDB.Infrastructure
 {
@@ -35,6 +36,6 @@ namespace CMDB.Infrastructure
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(CMDBContext).Assembly);
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False");
+        //protected override void OnConfiguring(DbContextOptionsBuilder options) => options.UseSqlServer("server=.;database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False");
     }
 }

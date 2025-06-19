@@ -1,7 +1,10 @@
 services:
     cmdb-web:
         build:
+            context: .
             dockerfile: WebDockerfile
+        environment:
+            - API__BaseUrl=http://cmdb-api:8080/
         depends_on:
             - cmdb-api
         ports:
@@ -12,18 +15,43 @@ services:
 
     cmdb-api:
         build: 
+            context: .
             dockerfile: ApiDockerfile
+        environment:
+            - ConnectionStrings__CMDBConnection=Server=cmdb-sql,1433;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Encrypt=False
+            - Jwt__Secret=109799de5567dae0b0f17deef5516a8b
+            - Jwt__Issuer=HelpHubAdminPanel
+            - Jwt__Audience=SecureApplicationUser
+            - Jwt__TokenExpiryInMinutes=30
+            - ASPNETCORE_URLS=http://+:8080
+        depends_on:
+            - cmdb-sql
         ports:
-            - 7055:8080
-            - 7054:8081
+            - 7054:8080
+            - 7055:8081
         networks:
             - my_net
         
         healthcheck:
-            test: ["CMD", "curl", "-f", "http://localhost:7055/swagger"]
+            test: ["CMD", "curl", "-f", "http://localhost:8080/swagger"]
             interval: 2s
             timeout: 5s
             retries: 3
+
+    cmdb-sql:
+        image: mcr.microsoft.com/mssql/server:2019-latest
+        environment:
+            - ACCEPT_EULA=Y
+            - SA_PASSWORD=Gr7k6VKW92dteZ5n
+        ports:
+            - 1433:1433
+        volumes:
+            - sql-2019-volume:/var/opt/mssql
+        networks:
+            - my_net
+volumes:
+    sql-2019-volume:
+        external: true
 
 networks:
     my_net:

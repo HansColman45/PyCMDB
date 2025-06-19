@@ -1,10 +1,10 @@
-﻿using CMDB.Domain.DTOs;
+﻿using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.DTOs;
 using CMDB.Domain.Entities;
 using CMDB.Domain.Requests;
 using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -23,7 +23,7 @@ namespace CMDB.Services
         /// <summary>
         /// The URL of the API
         /// </summary>
-        protected string Url => "https://localhost:7055/";
+        protected string Url { get; set; }
         /// <summary>
         /// The <see cref="HttpClient"/>
         /// </summary>
@@ -32,6 +32,10 @@ namespace CMDB.Services
         /// The BaseUrl
         /// </summary>
         protected string BaseUrl { get; set; }
+        /// <summary>
+        /// The logger for this service
+        /// </summary>
+        protected readonly NLog.Logger log = NLog.LogManager.GetCurrentClassLogger();
         /// <summary>
         /// The Admin we are working with
         /// </summary>
@@ -59,9 +63,18 @@ namespace CMDB.Services
         /// </summary>
         public CMDBServices()
         {
+            string baseUrl = Appsettings.BaseUrl;
+            if(string.IsNullOrEmpty(baseUrl))
+            {
+                Url = "https://localhost:7055/";
+            }
+            else
+                Url = baseUrl;
+            log.Info($"Using base URL: {Url}");
             HttpClientHandler clientHandler = new()
             {
-                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) => {
+                ServerCertificateCustomValidationCallback = (sender, cert, chain, sslPolicyErrors) =>
+                {
                     return true;
                     //return sslPolicyErrors == System.Net.Security.SslPolicyErrors.None;
                 }
@@ -87,7 +100,7 @@ namespace CMDB.Services
                 _Client.SetBearerToken(TokenStore.Token);
                 if (response.IsSuccessStatusCode)
                 {
-                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    var config = response.Content.ReadAsJsonAsync<Domain.Entities.Configuration>().Result;
                     format = config.CFN_Tekst;
                 }
                 else
@@ -112,7 +125,7 @@ namespace CMDB.Services
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    var config = response.Content.ReadAsJsonAsync<Domain.Entities.Configuration>().Result;
                     format = config.CFN_Tekst;
                 }
                 else
@@ -138,7 +151,7 @@ namespace CMDB.Services
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
+                    var config = response.Content.ReadAsJsonAsync<Domain.Entities.Configuration>().Result;
                     format = config.CFN_Tekst;
                 }
                 else
@@ -184,7 +197,7 @@ namespace CMDB.Services
                 return TokenStore.Token;
             }
             else if(response.StatusCode == HttpStatusCode.BadRequest)
-                throw new Exception($"The error is {response.StatusCode} and {response.Content}");
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
             else
                 return null;
         }
@@ -284,6 +297,8 @@ namespace CMDB.Services
                     assettypes.Add(new(type.ToString(), type.TypeID.ToString()));
                 }
             }
+            else
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
             return assettypes;
         }
         #region Admin stuff

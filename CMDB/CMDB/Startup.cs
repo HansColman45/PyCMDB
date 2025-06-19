@@ -22,7 +22,12 @@ namespace CMDB
         /// <param name="config"></param>
         public Startup(IConfiguration config)
         {
-            this.Configuration = config;
+            Configuration = config;
+            var baseUrl = Configuration.GetValue<string>("API:BaseUrl");
+            if (!string.IsNullOrEmpty(baseUrl))
+            {
+                Appsettings.BaseUrl = baseUrl;
+            }
         }
         /// <summary>
         /// This method gets called by the runtime. Use this method to add services to the container.

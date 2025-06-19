@@ -18,6 +18,7 @@ builder.Host.UseSerilog((context, configuration) =>
 });
 
 string connectionString = builder.Configuration.GetConnectionString("CMDBConnection");
+Console.WriteLine($"Connection String: {connectionString}");
 // configure strongly typed settings object
 builder.Services.AddDbContext<CMDBContext>(options => {
         options.UseSqlServer(connectionString);

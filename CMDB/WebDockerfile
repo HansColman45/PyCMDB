@@ -1,11 +1,9 @@
-# See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
-
-# This stage is used when running from VS in fast mode (Default for Debug configuration)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
 WORKDIR /app
+ENV ASPNETCORE_URLS="http://+:8080"
+ENV ASPNETCORE_HTTP_PORTS=8080
+ENV ASPNETCORE_ENVIRONMENT=Development
 EXPOSE 8080
-EXPOSE 8081
 
 
 # This stage is used to build the service project
@@ -17,7 +15,6 @@ COPY ["CMDB/Nlog.config", "CMDB/Nlog.config"]
 COPY ["CMDB.Domain/", "CMDB.Domain/"]
 COPY ["CMDB.Infrastructure/", "CMDB.Infrastructure/"]
 RUN --mount=type=cache,target=/root/.nuget/packages dotnet restore "./CMDB/CMDB.csproj"
-COPY . .
 WORKDIR "/src/CMDB"
 RUN dotnet build "./CMDB.csproj" -c "$BUILD_CONFIGURATION" -o /app/build
 
