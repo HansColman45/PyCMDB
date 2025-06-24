@@ -1,7 +1,7 @@
 import { type Locator, type Page } from '@playwright/test';
-
-export class MainPage {
-  readonly page: Page;
+import { IdentityOverviewPage } from './Identity/IdentityOverviewPage';
+import { LoginPage } from './LoginPage';
+export class MainPage extends LoginPage{ 
   readonly newButton: Locator;
   readonly editButton: Locator;
   readonly deleteButton: Locator;
@@ -9,7 +9,7 @@ export class MainPage {
   readonly searchInput: Locator;
 
   constructor(page: Page) {
-    this.page = page;
+    super(page);
     this.newButton = page.getByRole('link', { name: 'Add' });
     this.editButton = page.getByRole('link', { name: 'Edit' });
     this.deleteButton = page.getByRole('link', { name: 'Deactivate' });
@@ -17,11 +17,20 @@ export class MainPage {
     this.searchInput = page.getByRole('textbox', { name: 'Search' });
   }
 
-  async goto() {
-    await this.page.goto('http://localhost:44313/');
-  }
-
   async IsLoggedIn(): Promise<boolean> {
     return await this.page.getByText('Welcome on the Central').isVisible();
   }
+
+  async IdentityOverviewPage(): Promise<IdentityOverviewPage> {
+    await this.page.getByRole('button', { name: 'Identity' }).click();
+    await this.page.locator('#Identity2').click();
+    await this.page.getByRole('link', { name: 'Overview' }).click();
+    await this.newButton.isVisible();
+    return new IdentityOverviewPage(this.page);
+  }
+
+  async EnterTextInTextBox(xpath:string, text:string): Promise<void> {
+    await this.page.locator('xpath='+xpath).fill(text);
+  }
+
 }
