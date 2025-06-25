@@ -40,9 +40,9 @@ namespace CMDB.UI.Specflow.Actors.IdentityActors
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AssignAccountPage");
             page.SelectAccount(account);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_AccountSelected");
-            page.ValidFrom = DateTime.Now.AddDays(-1);
+            page.ValidFrom = DateTime.UtcNow.AddDays(-1);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_StartDateEntered");
-            page.ValidUntil = DateTime.Now.AddYears(+2);
+            page.ValidUntil = DateTime.UtcNow.AddYears(+2);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EndDateEntered");
         }
         public void FillInAssignForm(Identity identity) 

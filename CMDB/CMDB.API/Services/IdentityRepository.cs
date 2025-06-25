@@ -69,7 +69,7 @@ namespace CMDB.API.Services
             Identity iden = await TrackedIden(id);
             iden.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
             });
             _context.Identities.Update(iden);
@@ -112,7 +112,7 @@ namespace CMDB.API.Services
             string logLine = GenericLogLineCreator.CreateLogLine($"Identity with name: {identityDTO.Name}", TokenStore.Admin.Account.UserID, table);
             iden.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = logLine
             });
             _context.Identities.Add(iden);
@@ -128,7 +128,7 @@ namespace CMDB.API.Services
                     .Include(x => x.Type).AsNoTracking()
                     .Include(x => x.Language).AsNoTracking()
                     .Where(x => x.active == 1 && x.IdenId != 1).AsNoTracking()
-                    .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.Now && y.ValidUntil >= DateTime.Now)).AsNoTracking()
+                    .Where(x => !x.Accounts.Any(y => y.ValidFrom <= DateTime.UtcNow && y.ValidUntil >= DateTime.UtcNow)).AsNoTracking()
                     .Select(x => ConvertIdentity(x))
                     .ToListAsync(),
                 "laptop" => await _context.Identities
@@ -190,7 +190,7 @@ namespace CMDB.API.Services
                 oldIden.FirstName = dTO.FirstName;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline,
                 });
             }
@@ -200,7 +200,7 @@ namespace CMDB.API.Services
                 oldIden.LastName = dTO.LastName;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline,
                 });
             }
@@ -210,7 +210,7 @@ namespace CMDB.API.Services
                 oldIden.EMail = dTO.EMail;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline
                 });
             }
@@ -220,7 +220,7 @@ namespace CMDB.API.Services
                 oldIden.Company = dTO.Company;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline
                 });
             }
@@ -233,7 +233,7 @@ namespace CMDB.API.Services
                 oldIden.TypeId = dTO.Type.TypeId;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline,
                 });
             }
@@ -244,7 +244,7 @@ namespace CMDB.API.Services
                 oldIden.LanguageCode = dTO.Language.Code;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline,
                 });
             }
@@ -254,7 +254,7 @@ namespace CMDB.API.Services
                 oldIden.UserID = dTO.UserID;
                 oldIden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logline
                 });
             }
@@ -279,13 +279,13 @@ namespace CMDB.API.Services
                 device.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo,TokenStore.Admin.Account.UserID, $"{device.Category.Category.ToLower()}"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Devices.Update(device);
                 iden.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Identities.Update(iden);
@@ -308,13 +308,13 @@ namespace CMDB.API.Services
                 device.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, $"{device.Category.Category.ToLower()}"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Devices.Update(device);
                 iden.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Identities.Update(iden);
@@ -336,13 +336,13 @@ namespace CMDB.API.Services
                 mobile.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, ideninfo, TokenStore.Admin.Account.UserID, "mobile"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Mobiles.Update(mobile);
                 iden.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, mobileInfo, TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Identities.Update(iden);
             }
@@ -364,13 +364,13 @@ namespace CMDB.API.Services
                 mobile.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(mobileInfo, ideninfo, TokenStore.Admin.Account.UserID, "mobile"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Mobiles.Update(mobile);
                 iden.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, mobileInfo, TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Identities.Update(iden);
             }
@@ -392,13 +392,13 @@ namespace CMDB.API.Services
                 subscription.IdentityId = iden.IdenId;
                 subscription.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo,ideninfo, TokenStore.Admin.Account.UserID,"subscription")
                 });
                 _context.Subscriptions.Update(subscription);
                 iden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
                 });
                 _context.Identities.Update(iden);
@@ -420,13 +420,13 @@ namespace CMDB.API.Services
                 subscription.IdentityId = 1;
                 subscription.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, "subscription")
                 });
                 _context.Subscriptions.Update(subscription);
                 iden.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(ideninfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
                 });
                 _context.Identities.Update(iden);
@@ -452,14 +452,14 @@ namespace CMDB.API.Services
             acc.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Accounts.Update(acc);
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.AssingAccount2IdenityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
         }
@@ -467,7 +467,7 @@ namespace CMDB.API.Services
         public async Task ReleaseAccount(IdenAccountDTO idenAccount)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == idenAccount.Id).FirstAsync();
-            idenacc.ValidUntil = DateTime.Now.AddDays(-1);
+            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
             idenacc.LastModifiedAdminId = TokenStore.AdminId;
             _context.IdenAccounts.Update(idenacc);
             var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
@@ -478,14 +478,14 @@ namespace CMDB.API.Services
             acc.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Accounts.Update(acc);
             iden.LastModifiedAdminId = TokenStore.AdminId;
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
         }
@@ -532,7 +532,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"Identity with name: {identity.Name}", TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
             return identity;
@@ -547,7 +547,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ActivateLogLine($"Identity with name: {identity.Name}", TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
             return identity;

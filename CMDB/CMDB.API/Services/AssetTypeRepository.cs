@@ -57,7 +57,7 @@ namespace CMDB.API.Services
             };
             type.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.CreateLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {type.Vendor} and type {type.Type}",TokenStore.Admin.Account.UserID,table)
             });
             _context.AssetTypes.Add(type);
@@ -74,7 +74,7 @@ namespace CMDB.API.Services
                 oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
                 oldType.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logtext
                 });
             }
@@ -85,7 +85,7 @@ namespace CMDB.API.Services
                 oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
                 oldType.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logtext
                 });
             }
@@ -102,7 +102,7 @@ namespace CMDB.API.Services
             oldType.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {assetTypeDTO.Vendor} and type {assetTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.AssetTypes.Update(oldType);
             return assetTypeDTO;
@@ -116,7 +116,7 @@ namespace CMDB.API.Services
             oldType.LastModifiedAdminId = assetTypeDTO.LastModifiedAdminId;
             oldType.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ActivateLogLine($"{assetTypeDTO.AssetCategory.Category} type Vendor: {assetTypeDTO.Vendor} and type {assetTypeDTO.Type}", TokenStore.Admin.Account.UserID, table)
             });
             return assetTypeDTO;

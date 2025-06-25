@@ -1,6 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using CMDB.Domain.Entities;
-using Microsoft.Extensions.Configuration;
+﻿using CMDB.Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.Infrastructure
 {
@@ -28,7 +27,7 @@ namespace CMDB.Infrastructure
         public virtual DbSet<RolePerm> RolePerms { get; set; }
         public virtual DbSet<Subscription> Subscriptions { get; set; }
         public virtual DbSet<SubscriptionType> SubscriptionTypes { get; set; }
-        public virtual DbSet<Domain.Entities.Configuration> Configurations { get; set; }
+        public virtual DbSet<Configuration> Configurations { get; set; }
         public virtual DbSet<RAM> RAMs { get; set; }
         public virtual DbSet<IdentityAccountInfo> IdentityAccountInfos { get; set; }
 

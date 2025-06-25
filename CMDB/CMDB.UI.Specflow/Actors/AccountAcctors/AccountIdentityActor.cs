@@ -31,8 +31,8 @@ namespace CMDB.UI.Specflow.Actors.AccountAcctors
             page.SelectIdentity(identity);
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_SelectedIdentity");
             DateTime validFrom, validUntil;
-            validFrom = DateTime.Now.AddYears(-1);
-            validUntil = DateTime.Now.AddYears(1);
+            validFrom = DateTime.UtcNow.AddYears(-1);
+            validUntil = DateTime.UtcNow.AddYears(1);
             page.ValidFrom = validFrom;
             page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_ValidFrom");
             page.ValidUntil = validUntil;

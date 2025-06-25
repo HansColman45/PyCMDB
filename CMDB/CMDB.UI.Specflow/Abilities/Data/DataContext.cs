@@ -12,7 +12,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         public Admin Admin { get; private set; }
         public DataContext() 
         {
-            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;Trusted_Connection=True;TrustServerCertificate=True;encrypt=false;";
+            string connectionstring = "Server=.;Database=CMDB;User Id=sa;Password=Gr7k6VKW92dteZ5n;encrypt=false;";
             var options = new DbContextOptionsBuilder<CMDBContext>()
                 .UseSqlServer(connectionstring)
                 .EnableSensitiveDataLogging()
@@ -155,8 +155,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
             {
                 Identity = identity,
                 Account = account,
-                ValidFrom = DateTime.Now.AddDays(-1),
-                ValidUntil = DateTime.Now.AddYears(1),
+                ValidFrom = DateTime.UtcNow.AddDays(-1),
+                ValidUntil = DateTime.UtcNow.AddYears(1),
                 LastModifiedAdmin = admin
             });
 

@@ -421,7 +421,7 @@ namespace CMDB.API.Services
                     device.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.CreateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Add(device);
                     break;
@@ -442,7 +442,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.CreateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Add(desktop);
                     break;
@@ -460,7 +460,7 @@ namespace CMDB.API.Services
                     token.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.CreateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Add(token);
                     break;
@@ -480,7 +480,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.CreateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Add(screen);
                     break;
@@ -499,7 +499,7 @@ namespace CMDB.API.Services
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.CreateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Add(docking);
                     break;
@@ -547,7 +547,7 @@ namespace CMDB.API.Services
                     laptop.LastModifiedAdminId = TokenStore.AdminId;
                     laptop.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.DeleteLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}", 
                             TokenStore.Admin.Account.UserID, reason,table)
                     });
@@ -560,7 +560,7 @@ namespace CMDB.API.Services
                     desktop.LastModifiedAdminId = TokenStore.AdminId;
                     desktop.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.DeleteLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, reason, table)
                     });
@@ -572,7 +572,7 @@ namespace CMDB.API.Services
                     token.LastModifiedAdminId = TokenStore.AdminId;
                     token.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.DeleteLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, reason, table)
                     });
@@ -586,7 +586,7 @@ namespace CMDB.API.Services
                     screen.LastModifiedAdminId= TokenStore.AdminId;
                     screen.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.DeleteLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, reason, table)
                     });
@@ -599,7 +599,7 @@ namespace CMDB.API.Services
                     docking.DeactivateReason = reason;
                     docking.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.DeleteLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, reason, table)
                     });
@@ -622,7 +622,7 @@ namespace CMDB.API.Services
                     laptop.LastModifiedAdminId = TokenStore.AdminId;
                     laptop.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.ActivateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, table)
                     });
@@ -635,7 +635,7 @@ namespace CMDB.API.Services
                     desktop.LastModifiedAdminId = TokenStore.AdminId;
                     desktop.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.ActivateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, table)
                     });
@@ -647,7 +647,7 @@ namespace CMDB.API.Services
                     token.LastModifiedAdminId = TokenStore.AdminId;
                     token.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.ActivateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, table)
                     });
@@ -661,7 +661,7 @@ namespace CMDB.API.Services
                     screen.LastModifiedAdminId = TokenStore.AdminId;
                     screen.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.ActivateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, table)
                     });
@@ -674,7 +674,7 @@ namespace CMDB.API.Services
                     docking.DeactivateReason = "";
                     docking.Logs.Add(new()
                     {
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                         LogText = GenericLogLineCreator.ActivateLogLine($"{deviceDTO.Category.Category} with type {deviceDTO.AssetType}",
                             TokenStore.Admin.Account.UserID, table)
                     });
@@ -695,7 +695,7 @@ namespace CMDB.API.Services
             kensington.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo,deviceinfo, TokenStore.Admin.Account.UserID, "kensington"),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Kensingtons.Update(kensington);
             switch (device.Category.Category)
@@ -707,7 +707,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo,  TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -718,7 +718,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -731,7 +731,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -743,7 +743,7 @@ namespace CMDB.API.Services
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(docking);
                     break;
@@ -763,7 +763,7 @@ namespace CMDB.API.Services
             kensington.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Kensingtons.Update(kensington);
             switch (device.Category.Category)
@@ -774,7 +774,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -784,7 +784,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -796,7 +796,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -807,7 +807,7 @@ namespace CMDB.API.Services
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(docking);
                     break;
@@ -830,7 +830,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -841,7 +841,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now,
+                        LogDate = DateTime.UtcNow,
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -852,7 +852,7 @@ namespace CMDB.API.Services
                     token.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(token);
                     break;
@@ -865,7 +865,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -877,7 +877,7 @@ namespace CMDB.API.Services
                     doc.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(doc);
                     break;
@@ -889,7 +889,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine( ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, "identity"),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
             return device;
@@ -909,7 +909,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -920,7 +920,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -931,7 +931,7 @@ namespace CMDB.API.Services
                     token.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(token);
                     break;
@@ -944,7 +944,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -956,7 +956,7 @@ namespace CMDB.API.Services
                     doc.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, ideninfo, TokenStore.Admin.Account.UserID, table),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(doc);
                     break;
@@ -968,7 +968,7 @@ namespace CMDB.API.Services
             iden.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(ideninfo, deviceinfo, TokenStore.Admin.Account.UserID, "identity"),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Identities.Update(iden);
             return device;
@@ -1148,7 +1148,7 @@ namespace CMDB.API.Services
                     screen.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(screen);
                     break;
@@ -1157,7 +1157,7 @@ namespace CMDB.API.Services
                     token.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(token);
                     break;
@@ -1166,7 +1166,7 @@ namespace CMDB.API.Services
                     laptop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(laptop);
                     break;
@@ -1175,7 +1175,7 @@ namespace CMDB.API.Services
                     desktop.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(desktop);
                     break;
@@ -1185,7 +1185,7 @@ namespace CMDB.API.Services
                     docking.Logs.Add(new()
                     {
                         LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     });
                     _context.Devices.Update(docking);
                     break;
@@ -1242,7 +1242,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (string.Compare(desktop.MAC, device.MAC) != 0) 
@@ -1253,7 +1253,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (string.Compare(desktop.SerialNumber, device.SerialNumber) != 0) 
@@ -1264,7 +1264,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (desktop.TypeId != device.AssetType.TypeID) 
@@ -1275,7 +1275,7 @@ namespace CMDB.API.Services
                 desktop.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "desktop"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Devices.Update(desktop);
@@ -1291,7 +1291,7 @@ namespace CMDB.API.Services
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (string.Compare(laptop.MAC, device.MAC) != 0)
@@ -1302,7 +1302,7 @@ namespace CMDB.API.Services
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (string.Compare(laptop.SerialNumber, device.SerialNumber) != 0)
@@ -1313,7 +1313,7 @@ namespace CMDB.API.Services
                 laptop.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (laptop.TypeId != device.AssetType.TypeID)
@@ -1323,7 +1323,7 @@ namespace CMDB.API.Services
                 laptop.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "laptop"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Devices.Update(laptop);
@@ -1339,7 +1339,7 @@ namespace CMDB.API.Services
                 token.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (token.TypeId != device.AssetType.TypeID)
@@ -1350,7 +1350,7 @@ namespace CMDB.API.Services
                 token.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "token"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Devices.Update(token);
@@ -1366,7 +1366,7 @@ namespace CMDB.API.Services
                 screen.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (screen.TypeId != device.AssetType.TypeID)
@@ -1376,7 +1376,7 @@ namespace CMDB.API.Services
                 screen.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "screen"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Devices.Update(screen);
@@ -1392,7 +1392,7 @@ namespace CMDB.API.Services
                 doc.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             if (doc.TypeId != device.AssetType.TypeID)
@@ -1402,7 +1402,7 @@ namespace CMDB.API.Services
                 doc.Logs.Add(new()
                 {
                     LogText = GenericLogLineCreator.UpdateLogLine("Type", oldType.ToString(), device.AssetType.ToString(), TokenStore.Admin.Account.UserID, "docking"),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Devices.Update(doc);

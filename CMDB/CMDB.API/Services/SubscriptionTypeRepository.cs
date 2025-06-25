@@ -74,7 +74,7 @@ namespace CMDB.API.Services
             {
                 LogText = GenericLogLineCreator.CreateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}",
                     TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.SubscriptionTypes.Add(type);
             return subscriptionTypeDTO;
@@ -91,7 +91,7 @@ namespace CMDB.API.Services
                 type.Logs.Add(new()
                 {
                     LogText = logText,
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                 });
             }
             if (string.Compare(type.Provider, subscriptionTypeDTO.Provider) != 0)
@@ -102,7 +102,7 @@ namespace CMDB.API.Services
                 type.Logs.Add(new()
                 {
                     LogText = logText,
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                 });
             }
             if (string.Compare(type.Description, subscriptionTypeDTO.Description) != 0)
@@ -113,7 +113,7 @@ namespace CMDB.API.Services
                 type.Logs.Add(new()
                 {
                     LogText = logText,
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                 });
             }
             _context.SubscriptionTypes.Update(type);
@@ -129,7 +129,7 @@ namespace CMDB.API.Services
             type.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.DeleteLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, reason, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;
@@ -144,7 +144,7 @@ namespace CMDB.API.Services
             type.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.ActivateLogLine($"{subscriptionTypeDTO.AssetCategory.Category} with {subscriptionTypeDTO.Provider} and {subscriptionTypeDTO.Type}", TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.SubscriptionTypes.Update(type);
             return subscriptionTypeDTO;

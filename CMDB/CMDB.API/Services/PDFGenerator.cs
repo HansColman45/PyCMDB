@@ -123,7 +123,7 @@ namespace CMDB.API.Services
         public string GeneratePath(IWebHostEnvironment _env)
         {
             string path;
-            DateTime date = DateTime.Now;
+            DateTime date = DateTime.UtcNow;
             if (!string.IsNullOrEmpty(Type))
                 path = _env.ContentRootPath + @$"\..\CMDB\wwwroot\PDF-Files\release_{UserID}_{date:ddMMyyyy-HHmmss}.pdf";
             else

@@ -74,7 +74,7 @@ namespace CMDB.API.Services
             rolePerm.Logs.Add(new Log()
             {
                 LogText = GenericLogLineCreator.CreateLogLine(value, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
             });
             _context.RolePerms.Add(rolePerm);
             return permission;
@@ -96,7 +96,7 @@ namespace CMDB.API.Services
                 rolePerm.Logs.Add(new()
                 {
                     LogText = logline,
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                 });
                 _context.RolePerms.Update(rolePerm);
             }

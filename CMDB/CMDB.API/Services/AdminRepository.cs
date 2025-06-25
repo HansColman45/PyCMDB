@@ -49,7 +49,7 @@ namespace CMDB.API.Services
                 AccountId = entity.Account.AccID,
                 Level = entity.Level,
                 active = 1,
-                DateSet = DateTime.Now,
+                DateSet = DateTime.UtcNow,
                 LastModifiedAdminId = TokenStore.AdminId
             };
             admin.Password = new PasswordHasher().EncryptPassword("Br!ght1CmDb");
@@ -58,7 +58,7 @@ namespace CMDB.API.Services
             admin.Logs.Add(new()
             {
                 LogText = logLine,
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
             });
             _context.Admins.Add(admin);
             return entity;
@@ -75,7 +75,7 @@ namespace CMDB.API.Services
                 _admin.Logs.Add(new()
                 {
                     LogText = logLine,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
                 _context.Admins.Update(_admin);
             }
@@ -221,7 +221,7 @@ namespace CMDB.API.Services
             _admin.Logs.Add(new()
             {
                 LogText = logLine,
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Admins.Update(_admin);
             return admin;
@@ -237,7 +237,7 @@ namespace CMDB.API.Services
             _admin.Logs.Add(new()
             {
                 LogText = logLine,
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Admins.Update(_admin);
             return admin;

@@ -30,7 +30,7 @@ namespace CMDB.API.Services
             var identity = await GetTrackedKensington(id);
             identity.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile)
             });
         }
@@ -87,7 +87,7 @@ namespace CMDB.API.Services
                 new()
                 {
                     LogText = GenericLogLineCreator.CreateLogLine($"Kensington with serial number: {key.SerialNumber}", TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 }
             );
             _context.Kensingtons.Add(kensington);
@@ -106,7 +106,7 @@ namespace CMDB.API.Services
                     new()
                     {
                         LogText = logline,
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     }
                 );
             }
@@ -118,7 +118,7 @@ namespace CMDB.API.Services
                     new()
                     {
                         LogText = logline,
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     }
                 );
             }
@@ -130,7 +130,7 @@ namespace CMDB.API.Services
                     new()
                     {
                         LogText = logline,
-                        LogDate = DateTime.Now
+                        LogDate = DateTime.UtcNow
                     }
                 );
             }
@@ -149,7 +149,7 @@ namespace CMDB.API.Services
                 new()
                 {
                     LogText = GenericLogLineCreator.DeleteLogLine($"Kensington with serial number: {key.SerialNumber}", TokenStore.Admin.Account.UserID, reason, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 }
             );
             _context.Kensingtons.Update(identity);
@@ -166,7 +166,7 @@ namespace CMDB.API.Services
                 new()
                 {
                     LogText = GenericLogLineCreator.ActivateLogLine($"Kensington with serial number: {key.SerialNumber}", TokenStore.Admin.Account.UserID, table),
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 }
             );
             _context.Kensingtons.Update(identity);
@@ -185,13 +185,13 @@ namespace CMDB.API.Services
             kensington.AssetTag = key.Device.AssetTag;
             kensington.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID,table)
             });
             _context.Kensingtons.Update(kensington);
             device.LastModifiedAdminId = TokenStore.AdminId;
             device.Logs.Add(new() {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID,devicetable)
             });
             _context.Devices.Update(device);
@@ -209,14 +209,14 @@ namespace CMDB.API.Services
             kensington.AssetTag = null;
             kensington.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(keyinfo, deviceinfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Kensingtons.Update(kensington);
             device.LastModifiedAdminId = TokenStore.AdminId;
             device.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(deviceinfo, keyinfo, TokenStore.Admin.Account.UserID, devicetable)
             });
             _context.Devices.Update(device);

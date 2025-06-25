@@ -9,7 +9,7 @@ namespace CMDB.Testing.Builders.EntityBuilders
         {
             SetDefaultRules((f, l) =>
             {
-                l.LogDate = DateTime.Now;
+                l.LogDate = DateTime.UtcNow;
             });
         }
     }

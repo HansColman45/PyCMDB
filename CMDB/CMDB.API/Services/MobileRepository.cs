@@ -30,7 +30,7 @@ namespace CMDB.API.Services
             mobile.DeactivateReason = "";
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ActivateLogLine($"Mobile with type {mobileDTO.MobileType}", TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
@@ -70,7 +70,7 @@ namespace CMDB.API.Services
             };
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.CreateLogLine($"Mobile with type {mobileDTO.MobileType}", TokenStore.Admin.Account.UserID,table)
             });
             _context.Mobiles.Add(mobile);
@@ -85,7 +85,7 @@ namespace CMDB.API.Services
             mobile.DeactivateReason = reason;
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.DeleteLogLine($"Mobile with type {mobileDTO.MobileType}", TokenStore.Admin.Account.UserID,reason, table)
             });
             _context.Mobiles.Update(mobile);
@@ -105,7 +105,7 @@ namespace CMDB.API.Services
                 mobile.TypeId = mobileDTO.MobileType.TypeID;
                 mobile.Logs.Add(new()
                 {
-                    LogDate = DateTime.Now,
+                    LogDate = DateTime.UtcNow,
                     LogText = logtext
                 });
             }
@@ -116,7 +116,7 @@ namespace CMDB.API.Services
                 mobile.Logs.Add(new()
                 {
                     LogText = logtext,
-                    LogDate = DateTime.Now
+                    LogDate = DateTime.UtcNow
                 });
             }
             _context.Mobiles.Update(mobile);
@@ -217,14 +217,14 @@ namespace CMDB.API.Services
             string IdenInfo = $"Identity with name: {identity.Name}";
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, IdenInfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
             identity.LastModifiedAdminId = TokenStore.AdminId;
             identity.Logs.Add(new()
             {
-                LogDate= DateTime.Now,
+                LogDate= DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(IdenInfo, mobileInfo, TokenStore.Admin.Account.UserID, "identity")
             });
             _context.Identities.Update(identity);
@@ -242,14 +242,14 @@ namespace CMDB.API.Services
             string IdenInfo = $"Identity with name: {identity.Name}";
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(mobileInfo, IdenInfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
             identity.LastModifiedAdminId = TokenStore.AdminId;
             identity.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(IdenInfo, mobileInfo, TokenStore.Admin.Account.UserID, "identity")
             });
             _context.Identities.Update(identity);
@@ -269,14 +269,14 @@ namespace CMDB.API.Services
             subscription.MobileId = mobile.MobileId;
             subscription.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
             });
             _context.Subscriptions.Update(subscription);
             mobile.LastModifiedAdminId = TokenStore.AdminId;
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.AssingDevice2IdenityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
@@ -297,14 +297,14 @@ namespace CMDB.API.Services
             subscription.MobileId = null;
             subscription.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseIdentityFromDeviceLogLine(subscriptionInfo, mobileInfo, TokenStore.Admin.Account.UserID, "subscription")
             });
             _context.Subscriptions.Update(subscription);
             mobile.LastModifiedAdminId = TokenStore.AdminId;
             mobile.Logs.Add(new()
             {
-                LogDate = DateTime.Now,
+                LogDate = DateTime.UtcNow,
                 LogText = GenericLogLineCreator.ReleaseDeviceFromIdentityLogLine(mobileInfo, subscriptionInfo, TokenStore.Admin.Account.UserID, table)
             });
             _context.Mobiles.Update(mobile);
@@ -316,7 +316,7 @@ namespace CMDB.API.Services
             mobile.Logs.Add(new()
             {
                 LogText = GenericLogLineCreator.LogPDFFileLine(pdfFile),
-                LogDate = DateTime.Now
+                LogDate = DateTime.UtcNow
             });
             _context.Mobiles.Update(mobile);
         }

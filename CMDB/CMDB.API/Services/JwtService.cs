@@ -44,7 +44,7 @@ namespace CMDB.API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddMinutes(_jwtSettings.TokenExpiryInMinutes),
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.TokenExpiryInMinutes),
                 SigningCredentials = credentials,
                 Issuer = _jwtSettings.Issuer,
                 Audience = _jwtSettings.Audience

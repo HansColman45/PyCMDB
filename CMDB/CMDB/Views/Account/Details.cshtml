@@ -61,7 +61,7 @@
                             <td class="small">@idenAccount.ValidUntil.ToString(ViewData["DateFormat"].ToString())</td>
                             @if ((bool)ViewData["ReleaseIdentity"] && Model.AccID > 1)
                             {
-                                @if (idenAccount.ValidUntil >= DateTime.Now && (DateTime.Now - idenAccount.ValidFrom).TotalDays >= 1)
+                                @if (idenAccount.ValidUntil >= DateTime.UtcNow && (DateTime.UtcNow - idenAccount.ValidFrom).TotalDays >= 1)
                                 {
                                     <td class="small"><a class="btn btn-danger" href="\Account\ReleaseIdentity\@idenAccount.Id" id="ReleaseIdentity" data-toggle="tooltip" data-placement="top" title="Release Identity"><span class="@ViewBag.ReleaseIdenIcon"></span></a></td>
                                 }
