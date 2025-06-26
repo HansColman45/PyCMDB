@@ -1,4 +1,6 @@
 package be.hans.cmdb;
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
@@ -13,7 +15,13 @@ import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
 
+import be.cmdb.helpers.IdentityHelper;
+import be.cmdb.model.Identity;
 import be.cmdb.pages.LoginPage;
+import be.cmdb.pages.MainPage;
+import be.cmdb.pages.identity.CreateIdentityPage;
+import be.cmdb.pages.identity.IdentityDetailsPage;
+import be.cmdb.pages.identity.IdentiyOverviewPage;
 
 class BaseTest {
     static Playwright playwright;
@@ -54,6 +62,35 @@ class BaseTest {
         loginPage.navigate();
         loginPage.login("Root", "796724Md");
         boolean isLoggedIn = loginPage.isUserLogedIn();
-        assert isLoggedIn == true : "User should be logged in";
+        assertThat(isLoggedIn).isTrue();
     }
+
+    @Test
+    void canCreateNewIdentity() {
+        Identity identity = IdentityHelper.createRandomIdentity();
+        
+        LoginPage loginPage = new LoginPage(page);
+        loginPage.navigate();
+        MainPage mainPage = loginPage.login("Root", "796724Md");
+        boolean isLoggedIn = loginPage.isUserLogedIn();
+        assertThat(isLoggedIn).isTrue();
+        
+        IdentiyOverviewPage overviewPage = mainPage.openIdentityOverview();
+        CreateIdentityPage createPage = overviewPage.openCreateIdentity();
+        createPage.setfirstName(identity.getFirstName());
+        createPage.setLastName(identity.getLastName());
+        createPage.setEmail(identity.getEmail());
+        createPage.setCompany(identity.getCompany());
+        createPage.setUserId(identity.getUserId());
+        createPage.selectType("4");
+        createPage.selectLanguage("English");
+        createPage.create();
+
+        overviewPage.search(identity.getUserId());
+        IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();
+        String logLine = detailsPage.getLastLogline();
+        assertThat(logLine).contains(identity.getFirstName())
+                          .contains(identity.getLastName())
+                          .contains("table identity");
+    }   
 }

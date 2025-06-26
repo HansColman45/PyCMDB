@@ -280,7 +280,6 @@ namespace CMDB.Testing.Helpers
                 //Admin
                 context.RemoveRange(admin.Logs);
                 context.Remove<Admin>(admin);
-                await context.SaveChangesAsync();
                 //Account
                 accounts = context.Accounts
                     .Include(x => x.Logs)
@@ -291,6 +290,7 @@ namespace CMDB.Testing.Helpers
                     Data.Add($"Account{account.AccID}", account);
                     await AccountHelper.Delete(context, account);
                 }
+                await context.SaveChangesAsync();
             }
             catch (Exception)
             {

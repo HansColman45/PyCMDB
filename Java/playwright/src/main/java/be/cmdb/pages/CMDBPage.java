@@ -17,7 +17,7 @@ public class CMDBPage {
     public CMDBPage(Page page) {
         this.page = page;
         newButton = page.getByRole(AriaRole.LINK,
-            new Page.GetByRoleOptions().setName("New")
+            new Page.GetByRoleOptions().setName("Add")
         );
         editButton = page.getByRole(AriaRole.LINK,
             new Page.GetByRoleOptions().setName("Edit")
@@ -32,6 +32,13 @@ public class CMDBPage {
 
     public void navigate() {
         page.navigate("http://localhost:44313/");
-    } 
+    }
+    public void search(String searchString) {
+        searchInput = page.getByRole(AriaRole.TEXTBOX,
+            new Page.GetByRoleOptions().setName("Search")
+        );
+        searchInput.fill(searchString);
+        searchInput.press("Enter");
+    }
 
 }

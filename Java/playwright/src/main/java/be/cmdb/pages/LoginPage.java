@@ -10,10 +10,11 @@ public class LoginPage extends CMDBPage {
         super(page);
     }
 
-    public void login(String username, String password) {
+    public MainPage login(String username, String password) {
         page.locator("xpath=//input[@type='text']").fill(username);
         page.locator("xpath=//input[@type='password']").fill(password);
         page.getByRole(AriaRole.BUTTON).click();
+        return new MainPage(page);
     }
 
     public boolean isUserLogedIn() {

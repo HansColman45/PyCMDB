@@ -215,7 +215,7 @@ namespace CMDB.Services
             {
                 return await response.Content.ReadAsJsonAsync<List<Menu>>();
             }
-            if (response.StatusCode == HttpStatusCode.Unauthorized) 
+            else if (response.StatusCode == HttpStatusCode.Unauthorized) 
             { 
                 await ReAuthenticate();
                 response = await _Client.GetAsync(BaseUrl);
@@ -257,7 +257,7 @@ namespace CMDB.Services
                 var menus = await response.Content.ReadAsJsonAsync<List<Menu>>();
                 return menus;
             }
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 await ReAuthenticate();
                 response = await _Client.GetAsync(BaseUrl);
@@ -287,7 +287,7 @@ namespace CMDB.Services
                     assettypes.Add(new(type.ToString(), type.TypeID.ToString()));
                 }
             }
-            if (response.StatusCode == HttpStatusCode.Unauthorized)
+            else if (response.StatusCode == HttpStatusCode.Unauthorized)
             {
                 await ReAuthenticate();
                 response = await _Client.GetAsync(BaseUrl);
