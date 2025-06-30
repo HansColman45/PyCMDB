@@ -15,6 +15,7 @@ using CMDB.UI.Specflow.Abilities.Pages.Mobile;
 using CMDB.UI.Specflow.Abilities.Pages.Monitor;
 using CMDB.UI.Specflow.Abilities.Pages.Permissions;
 using CMDB.UI.Specflow.Abilities.Pages.Role;
+using CMDB.UI.Specflow.Abilities.Pages.RolePermission;
 using CMDB.UI.Specflow.Abilities.Pages.Subscription;
 using CMDB.UI.Specflow.Abilities.Pages.SubscriptionType;
 using CMDB.UI.Specflow.Abilities.Pages.System;
@@ -324,6 +325,16 @@ namespace CMDB.UI.Specflow.Actors
         public PermissionOverviewPage OpenPermissionOverviewPage()
         {
             var overviewPage = Perform(new OpenThePermissionOverviewPage());
+            overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
+            return overviewPage;
+        }
+        /// <summary>
+        /// This will open the RolePermission overview page
+        /// </summary>
+        /// <returns></returns>
+        public RolePermissionOverviewPage OpenRolePermissionOverviewPage()
+        {
+            var overviewPage = Perform(new OpenTheRolePermissionOverviewPage());
             overviewPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Overview");
             return overviewPage;
         }

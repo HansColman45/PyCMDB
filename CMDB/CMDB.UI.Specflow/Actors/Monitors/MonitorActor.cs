@@ -15,7 +15,7 @@ namespace CMDB.UI.Specflow.Actors.Monitors
             get
             {
                 var page = Perform(new OpenTheMonitorDetailPage());
-                return page.GetLastLog();
+                return page.LastLogLine;
             }
         }
     }

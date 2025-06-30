@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace CMDB.Testing.Helpers
 {
@@ -276,6 +277,26 @@ namespace CMDB.Testing.Helpers
                 {
                     Data.Add($"SubscriptionType{subtype.Id}",subtype);
                     await SubscriptionTypeHelper.Delete(context,subtype);
+                }
+                //RolePerm
+                var rolePerms = context.RolePerms
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .ToList();
+                foreach (var rolePerm in rolePerms)
+                {
+                    Data.Add($"RolePerm{rolePerm.Id}", rolePerm);
+                    await RolePermissionHelper.Delete(context,rolePerm);
+                }
+                //Menu
+                var menus = context.Menus
+                    .Include(x => x.Logs)
+                    .Where(x => x.Label == "Test Menu")
+                    .ToList();
+                foreach (var menu in menus)
+                {
+                    Data.Add($"Menu{menu.MenuId}", menu);
+                    await MenuHelper.Delete(context, menu);
                 }
                 //Admin
                 context.RemoveRange(admin.Logs);

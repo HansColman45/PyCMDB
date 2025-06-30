@@ -128,6 +128,25 @@ namespace CMDB.UI.Specflow.Abilities.Data
             else
                 return assetTypes.FirstOrDefault();
         }
+        public async Task<Menu> GetOrCreateMenu(string label, Admin admin)
+        {
+            var menus = context.Menus.Where(x => x.Label == label).ToList();
+            if (menus.Count > 0)
+            {
+                return menus.First();
+            }
+            else
+            {
+                return await MenuHelper.CreateSimpleMenu(context, admin);
+            }
+        }
+        public Permission GetPermission(string permission)
+        {
+            var permissions = context.Permissions
+                .Where(x => x.Rights == permission)
+                .FirstOrDefault();
+            return permissions;
+        }
         /// <summary>
         /// This will return a devivce using the Asset Tag
         /// </summary>

@@ -23,5 +23,14 @@ namespace CMDB.Testing.Helpers
             await context.SaveChangesAsync();
             return rolePerm;
         }
+        public static async Task Delete(CMDBContext context, RolePerm rolePerm)
+        {
+            foreach(var log in rolePerm.Logs)
+            {
+                context.Remove(log);
+            }
+            context.Remove(rolePerm);
+            await context.SaveChangesAsync();
+        }
     }
 }

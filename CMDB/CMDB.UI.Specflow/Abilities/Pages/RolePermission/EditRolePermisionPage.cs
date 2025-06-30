@@ -8,9 +8,9 @@ namespace CMDB.UI.Specflow.Abilities.Pages.RolePermission
         public EditRolePermisionPage(IWebDriver web) : base(web)
         {
         }
-        public void SelectMenu(Menu menu)
+        public void SelectLevel(string level)
         {
-            SelectValueInDropDownByXpath("//select[@id='Menu']", $"{menu.MenuId}");
+            SelectValueInDropDownByXpath("//select[@id='Level']", level);
         }
         public void Edit()
         {

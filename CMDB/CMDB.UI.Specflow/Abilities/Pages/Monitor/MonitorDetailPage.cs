@@ -12,10 +12,13 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Monitor
             ClickElementByXpath(ReleaseIdenityXpath);
             return new(WebDriver);
         }
-        public string GetLastLog()
+        public string LastLogLine
         {
-            ScrollToElement(By.XPath("//h3[.='Log overview']"));
-            return TekstFromElementByXpath("//td[contains(text(),'screen')]");
+            get
+            {
+                ScrollToElement(By.XPath("//h3[.='Log overview']"));
+                return TekstFromElementByXpath("//td[contains(text(),'screen')]");
+            }
         }
     }
 }

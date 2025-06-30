@@ -90,4 +90,10 @@
             HasLock = true;
         }
     }
+    public class RolePerm 
+    {
+        public string Menu { get; set; }
+        public string Permission { get; set; }
+        public string Level { get; set; }
+    }
 }

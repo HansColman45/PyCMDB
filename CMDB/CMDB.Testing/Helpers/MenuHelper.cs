@@ -1,5 +1,6 @@
 ﻿using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
+using System;
 using System.Threading.Tasks;
 
 namespace CMDB.Testing.Helpers
@@ -21,6 +22,16 @@ namespace CMDB.Testing.Helpers
             context.Menus.Add(menu);
             await context.SaveChangesAsync();
             return menu;
+        }
+
+        public static async Task Delete(CMDBContext context, Menu menu)
+        {
+            foreach(var log in menu.Logs)
+            {
+                context.Logs.Remove(log);
+            }
+            context.Menus.Remove(menu);
+            await context.SaveChangesAsync();
         }
     }
 }
