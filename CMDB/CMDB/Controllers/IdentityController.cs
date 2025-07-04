@@ -143,7 +143,7 @@ namespace CMDB.Controllers
                     string EMail = values["EMail"];
                     identity.EMail = EMail;
                     string Language = values["Language"];
-                    if (await service.IsExisting(identity))
+                    if (await service.IsExisting(identity, Convert.ToInt32(Type),Language))
                         ModelState.AddModelError("", "Idenity alreday existing");
                     if (ModelState.IsValid)
                     {
@@ -190,7 +190,7 @@ namespace CMDB.Controllers
                 string NewType = values["Type.TypeId"];
                 string NewLanguage = values["Language.Code"];
                 string NewEMail = values["EMail"];
-                if (await service.IsExisting(identity, NewUserID))
+                if (await service.IsExisting(identity, Convert.ToInt32(NewType), NewLanguage,NewUserID))
                     ModelState.AddModelError("", "Idenity alreday existing");
                 try
                 {

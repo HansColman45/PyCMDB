@@ -3,14 +3,10 @@
     "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <!-- http://www.apache.org/licenses/LICENSE-2.0 -->
 <module name="Checker">
-  <module name="FileTabCharacter"/>
   <module name="TreeWalker">
-
     <!-- Import Checks
     http://checkstyle.sourceforge.net/config_imports.html -->
-    <module name="ImportOrder">
-      <property name="groups" value="java,*"/>
-      <property name="ordered" value="false"/>
-    </module>
+    <module name="UnusedImports"/>
+    <module name="VisibilityModifier"/>
   </module>
 </module>

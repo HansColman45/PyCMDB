@@ -37,7 +37,7 @@ namespace CMDB.API.Services
             }
             else
             {
-                if(string.Compare(iden.UserID, iden.UserID) != 0)
+                if(string.Compare(iden.UserID, identity.UserID) != 0)
                 {
                     idens = _context.Identities.Where(x => x.UserID == identity.UserID).ToList();
                     if (idens.Count > 0)

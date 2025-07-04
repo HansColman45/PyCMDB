@@ -27,13 +27,4 @@ public class IdentityDetailsPage extends CMDBPage {
     public String getLastLogline() {
         return lastLogline.textContent();
     }
-
-    /**
-     * Opens the Edit Identity page from the Identity Details page.
-     * @return EditIdentityPage
-     */
-	public EditIdentityPage openEditIdentity() {
-        this.editButton().click();
-        return new EditIdentityPage(getPage());
-	}
 }

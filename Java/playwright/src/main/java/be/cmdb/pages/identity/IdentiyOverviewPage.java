@@ -34,4 +34,13 @@ public class IdentiyOverviewPage extends CMDBPage {
         this.detailsButton().click();
         return new IdentityDetailsPage(getPage());
     }
+
+    /**
+     * Opens the Edit Identity page from the Identity Details page.
+     * @return EditIdentityPage
+     */
+    public EditIdentityPage openEditIdentity() {
+        this.editButton().click();
+        return new EditIdentityPage(getPage());
+	}
 }

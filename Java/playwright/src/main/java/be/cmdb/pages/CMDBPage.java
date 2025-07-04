@@ -43,7 +43,7 @@ public class CMDBPage {
         searchInput.press("Enter");
     }
 
-	/**
+    /**
 	 * Gets the Locator for the new button.
 	 * @return Locator for the new button
 	 */

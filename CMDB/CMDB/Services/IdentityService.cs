@@ -249,10 +249,16 @@ namespace CMDB.Services
         /// This method checks if an identity already exists
         /// </summary>
         /// <param name="identity"><see cref="IdentityDTO"/></param>
+        /// <param name="Language"></param>
+        /// <param name="type"></param>
         /// <param name="UserID"></param>
         /// <returns></returns>
-        public async Task<bool> IsExisting(IdentityDTO identity, string UserID = "")
+        public async Task<bool> IsExisting(IdentityDTO identity, int type, string Language, string UserID = "")
         {
+            var typeDTO = await GetTypeById(type);
+            var langDTO = await GetLanguageByCode(Language);
+            identity.Type = typeDTO;
+            identity.Language = langDTO;
             bool result = false;
             BaseUrl = Url + "api/Identity/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);

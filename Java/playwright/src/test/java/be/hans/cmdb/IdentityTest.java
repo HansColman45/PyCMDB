@@ -1,7 +1,10 @@
 package be.hans.cmdb;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import be.cmdb.helpers.IdentityHelper;
 import be.cmdb.model.Identity;
@@ -47,8 +50,16 @@ class IdentityTest extends BaseTest {
                           .contains("table identity");
     }
 
-    @Test
-    void canUpdateIdentity() {
+    @DisplayName("Can update an identity for")
+    @ParameterizedTest(name="field:{0}, newValue:{1}")
+    @CsvSource({
+        "UserID,Test123",
+        "FirstName,TestFirstName",
+        "LastName,TestLastName",
+        "EMail,test.test@CMDB.be"
+    })
+    void canUpdateIdentity(String field, String newValue) {
+        String oldValue;
         Identity identity = IdentityHelper.createRandomIdentity(getSession());
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
@@ -57,8 +68,40 @@ class IdentityTest extends BaseTest {
         assertThat(isLoggedIn).isTrue();
         IdentiyOverviewPage overviewPage = mainPage.openIdentityOverview();
         overviewPage.search(identity.getUserId());
+        EditIdentityPage editPage = overviewPage.openEditIdentity();
+        switch (field) {
+            case "UserID":
+                oldValue = identity.getUserId();
+                editPage.setUserId(newValue);
+                break;
+            case "FirstName":
+                oldValue = identity.getFirstName();
+                editPage.setFirstName(newValue);
+                break;
+            case "LastName":
+                oldValue = identity.getLastName();
+                editPage.setLastName(newValue);
+                break;
+            case "EMail":
+                oldValue = identity.getEmail();
+                editPage.setEmail(newValue);
+                break;
+            default:
+                throw new IllegalArgumentException("Unknown field: " + field);
+        }
+        editPage.update();
+
+        // Verify that the update was successful
+        if (!field.equals("UserId")) {
+            overviewPage.search(identity.getUserId());
+        } else {
+            overviewPage.search(newValue);
+        }
         IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();
-        EditIdentityPage editPage = detailsPage.openEditIdentity();
-        editPage.setFirstName("UpdatedFirstName");
+        String logLine = detailsPage.getLastLogline();
+        assertThat(logLine).contains(newValue)
+            .contains("table identity")
+            .contains(field)
+            .contains(oldValue);
     }
 }
