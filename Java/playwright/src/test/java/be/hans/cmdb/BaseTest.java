@@ -1,6 +1,7 @@
 package be.hans.cmdb;
 
 import java.util.List;
+import java.util.Random;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import org.hibernate.Session;
@@ -29,6 +30,7 @@ class BaseTest {
     private BrowserContext context;
     private Page page;
     private Session session;
+    private Random random = new Random();
 
     /**
      * Launches the browser before all tests.
@@ -105,5 +107,14 @@ class BaseTest {
      */
     public Session getSession() {
         return session;
+    }
+
+    /**
+     * This will return a random integer.
+     * @return String
+     */
+    protected String getRandomInt(){
+        int rnd = random.nextInt(10000);
+        return String.valueOf(rnd);
     }
 }

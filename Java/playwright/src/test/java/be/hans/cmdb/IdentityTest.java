@@ -60,6 +60,7 @@ class IdentityTest extends BaseTest {
     })
     void canUpdateIdentity(String field, String newValue) {
         String oldValue;
+        newValue += getRandomInt(); // Ensure newValue is unique for the test
         Identity identity = IdentityHelper.createRandomIdentity(getSession());
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
@@ -92,7 +93,7 @@ class IdentityTest extends BaseTest {
         editPage.update();
 
         // Verify that the update was successful
-        if (!field.equals("UserId")) {
+        if (!field.equals("UserID")) {
             overviewPage.search(identity.getUserId());
         } else {
             overviewPage.search(newValue);
