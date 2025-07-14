@@ -1,16 +1,15 @@
 package be.cmdb.pages.identity;
 
+import be.cmdb.pages.CMDBPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-
-import be.cmdb.pages.CMDBPage;
 
 /**
  * Represents the Create Identity page of the CMDB application.
  */
 public class CreateIdentityPage extends CMDBPage {
-    private final Locator firtName;
+    private final Locator firstName;
     private final Locator lastName;
     private final Locator email;
     private final Locator company;
@@ -25,7 +24,7 @@ public class CreateIdentityPage extends CMDBPage {
      */
     public CreateIdentityPage(Page page) {
         super(page);
-        this.firtName = page.locator("//input[@id='FirstName']");
+        this.firstName = page.locator("//input[@id='FirstName']");
         this.lastName = page.locator("//input[@id='LastName']");
         this.email = page.locator("//input[@id='EMail']");
         this.company = page.locator("//input[@id='Company']");
@@ -37,15 +36,15 @@ public class CreateIdentityPage extends CMDBPage {
 
     /**
      * Sets the first name for the identity.
-     * @param firstName
+     * @param firstName the first name of the identity
      */
-    public void setfirstName(String firstName) {
-        this.firtName.fill(firstName);
+    public void setFirstName(String firstName) {
+        this.firstName.fill(firstName);
     }
 
     /**
      * Sets the last name for the identity.
-     * @param lastName
+     * @param lastName the last name of the identity
      */
     public void setLastName(String lastName) {
         this.lastName.fill(lastName);
@@ -53,7 +52,7 @@ public class CreateIdentityPage extends CMDBPage {
 
     /**
      * Sets the email for the identity.
-     * @param email
+     * @param email the email address of the identity
      */
     public void setEmail(String email) {
         this.email.fill(email);
@@ -61,7 +60,7 @@ public class CreateIdentityPage extends CMDBPage {
 
     /**
      * Sets the company for the identity.
-     * @param company
+     * @param company the company where the employee works for
      */
     public void setCompany(String company) {
         this.company.fill(company);
@@ -69,7 +68,7 @@ public class CreateIdentityPage extends CMDBPage {
 
     /**
      * Sets the user ID for the identity.
-     * @param userId
+     * @param userId the user ID of the identity
      */
     public void setUserId(String userId) {
         this.userId.fill(userId);
@@ -85,7 +84,7 @@ public class CreateIdentityPage extends CMDBPage {
 
     /**
      * Selects the language for the identity.
-     * @param language
+     * @param language the language of the identity
      */
     public void selectLanguage(String language) {
         this.languaLocator.selectOption(language);

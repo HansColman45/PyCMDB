@@ -1,71 +1,57 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <checkstyle version="8.45.1">
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\AccountTypeDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\BaseDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\DeviceDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\IdentityDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\IdentityTypeDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\LanguageDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\dao\LogDAO.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\helpers\AdminHelper.java">
+</file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\helpers\IdentityHelper.java">
-<error line="5" column="1" severity="error" message="Extra separation in import group before &apos;org.hibernate.Session&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="7" column="1" severity="error" message="Extra separation in import group before &apos;com.github.javafaker.Faker&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="7" column="1" severity="error" message="Wrong order for &apos;com.github.javafaker.Faker&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="9" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.model.Identity&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="9" column="1" severity="error" message="Wrong order for &apos;be.cmdb.model.Identity&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="35" column="28" severity="error" message="&apos;4&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Admin.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Application.java">
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\CMDBModel.java">
 </file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Device.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\GeneralType.java">
+</file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Identity.java">
 </file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Language.java">
+</file>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\model\Log.java">
+</file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\CMDBPage.java">
-<error line="47" column="1" severity="error" message="File contains tab characters (this is the first instance)." source="com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"/>
-<error line="51" column="17" severity="error" message="&apos;method def&apos; child has incorrect indentation level 16, expected level should be 8." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="52" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="54" column="9" severity="error" message="Block comment has incorrect indentation level 1, expected is 4, indentation should be the same level as line 58." source="com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"/>
-<error line="59" column="17" severity="error" message="&apos;method def&apos; child has incorrect indentation level 16, expected level should be 8." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="60" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="62" column="9" severity="error" message="Block comment has incorrect indentation level 1, expected is 4, indentation should be the same level as line 66." source="com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"/>
-<error line="67" column="17" severity="error" message="&apos;method def&apos; child has incorrect indentation level 16, expected level should be 8." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="68" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="70" column="9" severity="error" message="Block comment has incorrect indentation level 1, expected is 4, indentation should be the same level as line 74." source="com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"/>
-<error line="75" column="17" severity="error" message="&apos;method def&apos; child has incorrect indentation level 16, expected level should be 8." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="76" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="78" column="9" severity="error" message="Block comment has incorrect indentation level 1, expected is 4, indentation should be the same level as line 82." source="com.puppycrawl.tools.checkstyle.checks.indentation.CommentsIndentationCheck"/>
-<error line="83" column="17" severity="error" message="&apos;method def&apos; child has incorrect indentation level 16, expected level should be 8." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
-<error line="84" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\identity\CreateIdentityPage.java">
-<error line="7" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.CMDBPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="7" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.CMDBPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\identity\EditIdentityPage.java">
-<error line="7" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.CMDBPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="7" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.CMDBPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\identity\IdentityDetailsPage.java">
-<error line="6" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.CMDBPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="6" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.CMDBPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
 </file>
-<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\identity\IdentiyOverviewPage.java">
-<error line="5" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.CMDBPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="5" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.CMDBPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="45" column="1" severity="error" message="File contains tab characters (this is the first instance)." source="com.puppycrawl.tools.checkstyle.checks.whitespace.FileTabCharacterCheck"/>
-<error line="45" column="9" severity="error" message="&apos;method def rcurly&apos; has incorrect indentation level 8, expected level should be 4." source="com.puppycrawl.tools.checkstyle.checks.indentation.IndentationCheck"/>
+<file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\identity\IdentityOverviewPage.java">
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\LoginPage.java">
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\main\java\be\cmdb\pages\MainPage.java">
-<error line="7" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.identity.IdentiyOverviewPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="7" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.identity.IdentiyOverviewPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\test\java\be\hans\cmdb\BaseTest.java">
-<error line="6" column="1" severity="error" message="Wrong order for &apos;org.hibernate.Session&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="15" column="1" severity="error" message="Extra separation in import group before &apos;com.microsoft.playwright.Browser&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="15" column="1" severity="error" message="Wrong order for &apos;com.microsoft.playwright.Browser&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="21" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.pages.LoginPage&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="21" column="1" severity="error" message="Wrong order for &apos;be.cmdb.pages.LoginPage&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
+<error line="115" column="34" severity="error" message="&apos;1000&apos; is a magic number." source="com.puppycrawl.tools.checkstyle.checks.coding.MagicNumberCheck"/>
 </file>
 <file name="C:\software\PyCMDB\Java\playwright\src\test\java\be\hans\cmdb\IdentityTest.java">
-<error line="4" column="1" severity="error" message="Wrong order for &apos;org.junit.jupiter.api.DisplayName&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="9" column="1" severity="error" message="Extra separation in import group before &apos;be.cmdb.helpers.IdentityHelper&apos;" source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="9" column="1" severity="error" message="Wrong order for &apos;be.cmdb.helpers.IdentityHelper&apos; import." source="com.puppycrawl.tools.checkstyle.checks.imports.ImportOrderCheck"/>
-<error line="54" column="28" severity="error" message="&apos;=&apos; is not followed by whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"/>
-<error line="54" column="28" severity="error" message="&apos;=&apos; is not preceded with whitespace." source="com.puppycrawl.tools.checkstyle.checks.whitespace.WhitespaceAroundCheck"/>
-<error line="95" column="26" severity="error" message="String literal expressions should be on the left side of an equals comparison." source="com.puppycrawl.tools.checkstyle.checks.coding.EqualsAvoidNullCheck"/>
+<error line="63" column="18" severity="error" message="Assignment of parameter &apos;newValue&apos; is not allowed." source="com.puppycrawl.tools.checkstyle.checks.coding.ParameterAssignmentCheck"/>
 </file>
 </checkstyle>

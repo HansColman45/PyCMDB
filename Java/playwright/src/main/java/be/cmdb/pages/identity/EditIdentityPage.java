@@ -1,10 +1,9 @@
 package be.cmdb.pages.identity;
 
+import be.cmdb.pages.CMDBPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-
-import be.cmdb.pages.CMDBPage;
 
 /**
  * Represents the Edit Identity page of the CMDB application.

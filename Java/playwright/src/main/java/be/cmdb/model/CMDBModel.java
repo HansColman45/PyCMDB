@@ -11,11 +11,11 @@ public class CMDBModel {
     private int active;
     private int lastModifiedAdminId;
     @Column(name = "Deactivate_reason")
-    private String deactiveReason;
+    private String deactivateReason;
 
     /**
      * Gets the active status of the model.
-     * @return
+     * @return the active status, where 1 means active and 0 means inactive
      */
     public int getActive() {
         return active;
@@ -23,7 +23,7 @@ public class CMDBModel {
 
     /**
      * Sets the active status of the model.
-     * @param active
+     * @param active the active status to set, where 1 means active and 0 means inactive
      */
     public void setActive(int active) {
         this.active = active;
@@ -39,7 +39,7 @@ public class CMDBModel {
 
     /**
      * Sets the ID of the last admin who modified the model.
-     * @param lastModifiedAdminId
+     * @param lastModifiedAdminId The AdminID of the last modifier
      */
     public void setLastModifiedAdminId(int lastModifiedAdminId) {
         this.lastModifiedAdminId = lastModifiedAdminId;
@@ -47,17 +47,17 @@ public class CMDBModel {
 
     /**
      * Gets the reason for deactivation of the model.
-     * @return
+     * @return The reason for deactivation, if any
      */
-    public String getDeactiveReason() {
-        return deactiveReason;
+    public String getDeactivateReason() {
+        return deactivateReason;
     }
 
     /**
      * Sets the reason for deactivation of the model.
-     * @param deactiveReason
+     * @param deactivateReason The reason for deactivation
      */
-    public void setDeactiveReason(String deactiveReason) {
-        this.deactiveReason = deactiveReason;
+    public void setDeactivateReason(String deactivateReason) {
+        this.deactivateReason = deactivateReason;
     }
 }

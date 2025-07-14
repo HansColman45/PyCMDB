@@ -1,9 +1,8 @@
 package be.cmdb.pages.identity;
 
+import be.cmdb.pages.CMDBPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
-
-import be.cmdb.pages.CMDBPage;
 
 /**
  * Represents the Identity Details page of the CMDB application.
@@ -13,7 +12,7 @@ public class IdentityDetailsPage extends CMDBPage {
 
     /**
      * Constructor for IdentityDetailsPage.
-     * @param page
+     * @param page the Playwright Page object
      */
     public IdentityDetailsPage(Page page) {
         super(page);
@@ -22,7 +21,7 @@ public class IdentityDetailsPage extends CMDBPage {
 
     /**
      * Retrieves the last logline from the Identity Details page.
-     * @return
+     * @return The last logline.
      */
     public String getLastLogline() {
         return lastLogline.textContent();

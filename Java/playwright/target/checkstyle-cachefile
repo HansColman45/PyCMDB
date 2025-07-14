@@ -1,6 +1,27 @@
-#Tue Jul 08 08:30:19 CEST 2025
-C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\CMDBModel.java=1751876012872
+#Mon Jul 14 15:38:31 CEST 2025
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\AccountTypeDAO.java=1752497808180
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\BaseDAO.java=1752497833121
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\DeviceDAO.java=1752497925935
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\IdentityDAO.java=1752497949359
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\IdentityTypeDAO.java=1752497971363
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\LanguageDAO.java=1752497979774
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\dao\\LogDAO.java=1752498015118
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\helpers\\AdminHelper.java=1752499674788
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\helpers\\IdentityHelper.java=1752500261127
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Admin.java=1752499800361
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Application.java=1752498509672
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\CMDBModel.java=1752496365065
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Device.java=1752491474683
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\GeneralType.java=1752496194182
 C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Identity.java=1751876012872
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Language.java=1752496172578
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\model\\Log.java=1752496058351
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\CMDBPage.java=1752152220281
 C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\LoginPage.java=1751876012872
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\MainPage.java=1752495875941
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\identity\\CreateIdentityPage.java=1752495951999
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\identity\\EditIdentityPage.java=1752496059534
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\identity\\IdentityDetailsPage.java=1752495799989
+C\:\\software\\PyCMDB\\Java\\playwright\\src\\main\\java\\be\\cmdb\\pages\\identity\\IdentityOverviewPage.java=1752495885554
 configuration*?=15655673ED0B8F58570A09950A7F09DC33B0F7E2
 module-resource*?\:checkstyle/suppressions.xml=B32E890625C47D98E6ACC713AE2C41E659C5D3D7

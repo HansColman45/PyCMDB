@@ -2,6 +2,9 @@
 node_modules/
 # C extensions
 *.so
+# InteliJ
+.DS_Store
+.idea
 
 # Pyre type checker
 .pyre/

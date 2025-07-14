@@ -44,42 +44,42 @@ public class CMDBPage {
     }
 
     /**
-	 * Gets the Locator for the new button.
-	 * @return Locator for the new button
-	 */
+     * Gets the Locator for the new button.
+     * @return Locator for the new button
+     */
     protected Locator newButton() {
-		return newButton;
-	}
+        return newButton;
+    }
 
-	/**
-	 * Gets the Locator for the edit button.
-	 * @return Locator for the edit button
-	 */
+    /**
+     * Gets the Locator for the edit button.
+     * @return Locator for the edit button
+     */
     protected Locator editButton() {
-		return editButton;
-	}
+        return editButton;
+    }
 
-	/**
-	 * Gets the Locator for the delete button.
-	 * @return Locator for the delete button
-	 */
+    /**
+     * Gets the Locator for the delete button.
+     * @return Locator for the delete button
+     */
     protected Locator deleteButton() {
-		return deleteButton;
-	}
+        return deleteButton;
+    }
 
-	/**
-	 * Gets the Locator for the details button.
-	 * @return Locator for the details button
-	 */
+    /**
+     * Gets the Locator for the details button.
+     * @return Locator for the details button
+     */
     protected Locator detailsButton() {
-		return detailsButton;
-	}
+        return detailsButton;
+    }
 
-	/**
-	 * Gets the Playwright Page object associated with this CMDBPage.
-	 * @return Playwright Page object
-	 */
+    /**
+     * Gets the Playwright Page object associated with this CMDBPage.
+     * @return Playwright Page object
+     */
     protected Page getPage() {
-		return page;
-	}
+        return page;
+    }
 }

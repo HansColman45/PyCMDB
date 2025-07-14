@@ -1,9 +1,13 @@
 package be.hans.cmdb;
 
+import be.cmdb.pages.LoginPage;
+import com.microsoft.playwright.Browser;
+import com.microsoft.playwright.BrowserContext;
+import com.microsoft.playwright.BrowserType;
+import com.microsoft.playwright.Page;
+import com.microsoft.playwright.Playwright;
 import java.util.List;
 import java.util.Random;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -13,13 +17,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.microsoft.playwright.Browser;
-import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.BrowserType;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Playwright;
-
-import be.cmdb.pages.LoginPage;
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Base class for Playwright tests, providing setup and teardown methods.
@@ -87,7 +85,7 @@ class BaseTest {
 
     /**
      * Returns the current Playwright Page object.
-     * @return
+     * @return Current Playwright Page
      */
     public Page getPage() {
         return page;
@@ -111,10 +109,10 @@ class BaseTest {
 
     /**
      * This will return a random integer.
-     * @return String
+     * @return String representation of a random integer
      */
-    protected String getRandomInt(){
-        int rnd = random.nextInt(10000);
+    protected String getRandomInt() {
+        int rnd = random.nextInt(1000);
         return String.valueOf(rnd);
     }
 }

@@ -1,11 +1,5 @@
 package be.hans.cmdb;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
 import be.cmdb.helpers.IdentityHelper;
 import be.cmdb.model.Identity;
 import be.cmdb.pages.LoginPage;
@@ -13,7 +7,13 @@ import be.cmdb.pages.MainPage;
 import be.cmdb.pages.identity.CreateIdentityPage;
 import be.cmdb.pages.identity.EditIdentityPage;
 import be.cmdb.pages.identity.IdentityDetailsPage;
-import be.cmdb.pages.identity.IdentiyOverviewPage;
+import be.cmdb.pages.identity.IdentityOverviewPage;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for Identity operations in the CMDB application.
@@ -31,9 +31,9 @@ class IdentityTest extends BaseTest {
         MainPage mainPage = loginPage.login("Root", "796724Md");
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
-        IdentiyOverviewPage overviewPage = mainPage.openIdentityOverview();
+        IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
         CreateIdentityPage createPage = overviewPage.openCreateIdentity();
-        createPage.setfirstName(identity.getFirstName());
+        createPage.setFirstName(identity.getFirstName());
         createPage.setLastName(identity.getLastName());
         createPage.setEmail(identity.getEmail());
         createPage.setCompany(identity.getCompany());
@@ -51,7 +51,7 @@ class IdentityTest extends BaseTest {
     }
 
     @DisplayName("Can update an identity for")
-    @ParameterizedTest(name="field:{0}, newValue:{1}")
+    @ParameterizedTest(name = "field:{0}, newValue:{1}")
     @CsvSource({
         "UserID,Test123",
         "FirstName,TestFirstName",
@@ -67,7 +67,7 @@ class IdentityTest extends BaseTest {
         MainPage mainPage = loginPage.login("Root", "796724Md");
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
-        IdentiyOverviewPage overviewPage = mainPage.openIdentityOverview();
+        IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
         overviewPage.search(identity.getUserId());
         EditIdentityPage editPage = overviewPage.openEditIdentity();
         switch (field) {
@@ -93,7 +93,7 @@ class IdentityTest extends BaseTest {
         editPage.update();
 
         // Verify that the update was successful
-        if (!field.equals("UserID")) {
+        if (!"UserID".equals(field)) {
             overviewPage.search(identity.getUserId());
         } else {
             overviewPage.search(newValue);

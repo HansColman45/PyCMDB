@@ -1,19 +1,18 @@
 package be.cmdb.pages.identity;
 
-import com.microsoft.playwright.Page;
-
 import be.cmdb.pages.CMDBPage;
+import com.microsoft.playwright.Page;
 
 /**
  * Represents the Identity Overview page of the CMDB application.
  */
-public class IdentiyOverviewPage extends CMDBPage {
+public class IdentityOverviewPage extends CMDBPage {
 
     /**
      * Constructor for IdentiyOverviewPage.
      * @param page
      */
-    public IdentiyOverviewPage(Page page) {
+    public IdentityOverviewPage(Page page) {
         super(page);
     }
 
@@ -42,5 +41,5 @@ public class IdentiyOverviewPage extends CMDBPage {
     public EditIdentityPage openEditIdentity() {
         this.editButton().click();
         return new EditIdentityPage(getPage());
-	}
+    }
 }

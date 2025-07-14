@@ -1,10 +1,9 @@
 package be.cmdb.pages;
 
+import be.cmdb.pages.identity.IdentityOverviewPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
-
-import be.cmdb.pages.identity.IdentiyOverviewPage;
 
 /**
  * Represents the main page of the CMDB application.
@@ -16,7 +15,7 @@ public class MainPage extends CMDBPage {
 
     /**
      * Constructor for MainPage.
-     * @param page
+     * @param page The Playwright Page object
      */
     public MainPage(Page page) {
         super(page);
@@ -27,13 +26,13 @@ public class MainPage extends CMDBPage {
 
     /**
      * Opens the Identity Overview page.
-     * @return IdentiyOverviewPage
+     * @return IdentityOverviewPage
      */
-    public IdentiyOverviewPage openIdentityOverview() {
+    public IdentityOverviewPage openIdentityOverview() {
         this.identityMenu.click();
         this.identitySubMenu.click();
         this.identityOverview.click();
         this.newButton().waitFor();
-        return new IdentiyOverviewPage(getPage());
+        return new IdentityOverviewPage(getPage());
     }
 }
