@@ -2,6 +2,7 @@ package be.cmdb.helpers;
 
 import be.cmdb.dao.AccountTypeDAO;
 import be.cmdb.dao.IdentityTypeDAO;
+import be.cmdb.model.Account;
 import be.cmdb.model.Admin;
 import be.cmdb.model.GeneralType;
 import be.cmdb.model.Identity;
@@ -19,7 +20,8 @@ public final class AdminHelper {
 
     /**
     * Creates a new Admin that will be used for the test.
-    * returns the created Admin object.
+    * @param session the Hibernate session
+    * @return a new Admin entity persisted in the database
     */
     public static Admin createNewCMDBAdmin(Session session) {
         Transaction transaction = session.beginTransaction();
@@ -35,5 +37,9 @@ public final class AdminHelper {
 
         Admin admin = new Admin();
         return admin;
+    }
+
+    public static Admin CreateSimpleAdmin(Session session, Account account, Admin admin, int level, boolean active) {
+        Admin = new Ad
     }
 }

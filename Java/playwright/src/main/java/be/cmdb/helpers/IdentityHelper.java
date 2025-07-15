@@ -1,14 +1,14 @@
 package be.cmdb.helpers;
 
+import be.cmdb.builders.IdentityBuilder;
+import be.cmdb.builders.LogBuilder;
 import be.cmdb.dao.IdentityDAO;
 import be.cmdb.dao.IdentityTypeDAO;
 import be.cmdb.dao.LogDAO;
 import be.cmdb.model.GeneralType;
 import be.cmdb.model.Identity;
 import be.cmdb.model.Log;
-import com.github.javafaker.Faker;
 import java.util.List;
-import java.util.Locale;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -18,33 +18,26 @@ import org.hibernate.Transaction;
 public final class IdentityHelper {
 
     /**
-     * Creates a random Identity object with fake data.
-     * @return a new Identity object populated with random data
-     */
-    public static Identity createRandomIdentity() {
-        Faker faker = new Faker(Locale.UK);
-        Identity identity = new Identity();
-        identity.setName(faker.name().firstName() + ", " + faker.name().lastName());
-        identity.setEmail(faker.internet().emailAddress());
-        identity.setCompany(faker.company().name());
-        identity.setUserId(faker.name().username());
-        identity.setActive(1);
-        identity.setLanguageCode("EN");
-        return identity;
-    }
-
-    /**
      * This function will create a random Identity.
      * @param session The current hibernate session
      * @param typeId The TypeId of the Identity
      * @return The persisted Identity
      */
     public static Identity createRandomIdentity(Session session, Integer typeId) {
-        Identity identity = createRandomIdentity();
-        identity.setTypeId(typeId);
+        Identity identity = new IdentityBuilder()
+            .withTypeId(typeId)
+            .build();
         IdentityDAO identityDAO = new IdentityDAO();
         Transaction transaction = session.beginTransaction();
-        identityDAO.save(session, identity);
+        identity = identityDAO.save(session, identity);
+        String logText = "The Identity with Name: " + identity.getName()
+            + " is created by Automation in table identity";
+        Log log = new LogBuilder()
+            .withIdentityId(identity.getIdenId())
+            .withLogText(logText)
+            .build();
+        LogDAO logDAO = new LogDAO();
+        logDAO.save(session, log);
         transaction.commit();
         return identity;
     }
@@ -55,13 +48,22 @@ public final class IdentityHelper {
      * @return Identity object that has been persisted to the database
      */
     public static Identity createRandomIdentity(Session session) {
-        Identity identity = createRandomIdentity();
+        Identity identity = new IdentityBuilder().build();
         IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
         GeneralType identityType = identityTypeDAO.findByType(session, "Werknemer");
-        identity.setTypeId(identityType.GetTypeId());
+        identity.setTypeId(identityType.getTypeId());
         IdentityDAO identityDAO = new IdentityDAO();
         Transaction transaction = session.beginTransaction();
-        identityDAO.save(session, identity);
+        identity = identityDAO.save(session, identity);
+        // Log the creation of the Identity
+        String logText = "The Identity with Name: " + identity.getName()
+            + " is created by Automation in table identity";
+        Log log = new LogBuilder()
+            .withIdentityId(identity.getIdenId())
+            .withLogText(logText)
+                .build();
+        LogDAO logDAO = new LogDAO();
+        logDAO.save(session, log);
         transaction.commit();
         return identity;
     }

@@ -44,7 +44,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the identifier for the identity.
-     * @param idenId
+     * @param idenId the identifier for the identity
      */
     public void setIdenId(int idenId) {
         this.idenId = idenId;
@@ -52,7 +52,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the first name of the identity.
-     * @return
+     * @return the first name of the identity
      */
     public String getFirstName() {
         if ("Stock".equals(this.name)) {
@@ -64,7 +64,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the first name of the identity.
-     * @param firstName
+     * @param firstName the first name of the identity
      */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
@@ -73,7 +73,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the last name of the identity.
-     * @return
+     * @return the last name of the identity
      */
     public String getLastName() {
         if ("Stock".equals(this.name)) {
@@ -85,7 +85,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the last name of the identity.
-     * @param lastName
+     * @param lastName the last name of the identity
      */
     public void setLastName(String lastName) {
         this.lastName = lastName;
@@ -94,7 +94,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the email address of the identity.
-     * @return
+     * @return the email address of the identity
      */
     public String getEmail() {
         return email;
@@ -102,7 +102,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the email address of the identity.
-     * @param email
+     * @param email the email address of the identity
      */
     public void setEmail(String email) {
         this.email = email;
@@ -110,7 +110,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the company name associated with the identity.
-     * @return
+     * @return the company name associated with the identity
      */
     public String getCompany() {
         return company;
@@ -118,7 +118,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the company name associated with the identity.
-     * @param company
+     * @param company the company name associated with the identity
      */
     public void setCompany(String company) {
         this.company = company;
@@ -134,7 +134,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the user ID of the identity.
-     * @param userId
+     * @param userId the user ID of the identity
      */
     public void setUserId(String userId) {
         this.userId = userId;
@@ -142,7 +142,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the name of the identity.
-     * @return
+     * @return the name of the identity
      */
     public String getName() {
         return name;
@@ -150,7 +150,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the name of the identity.
-     * @param name
+     * @param name the name of the identity
      */
     public void setName(String name) {
         this.name = name;
@@ -166,7 +166,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the type ID of the identity.
-     * @param typeId
+     * @param typeId the type ID of the identity
      */
     public void setTypeId(int typeId) {
         this.typeId = typeId;
@@ -174,7 +174,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Gets the language code of the identity.
-     * @return
+     * @return the language code of the identity
      */
     public String getLanguageCode() {
         return languageCode;
@@ -182,7 +182,7 @@ public class Identity extends CMDBModel {
 
     /**
      * Sets the language code of the identity.
-     * @param languageCode
+     * @param languageCode the language code of the identity
      */
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;

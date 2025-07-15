@@ -131,6 +131,23 @@ public class LogDAO implements BaseDAO<Log, Integer> {
     }
 
     /**
+     * Finds log entries by account ID using the provided session.
+     * @param session the Hibernate session to use
+     * @param accountId the account ID to search for
+     * @return list of Log entities associated with the account
+     */
+    public List<Log> findByAccountId(Session session, int accountId) {
+        try {
+            Query<Log> query = session.createQuery(
+                "FROM Log WHERE accountId = :accountId ORDER BY logDate DESC", Log.class);
+            query.setParameter("accountId", accountId);
+            return query.getResultList();
+        } catch (JDBCException e) {
+            throw new RuntimeException("Error finding logs by account ID: " + e.getMessage(), e);
+        }
+    }
+
+    /**
      * Finds log entries within a date range using the provided session.
      * @param session the Hibernate session to use
      * @param startDate the start date (inclusive)

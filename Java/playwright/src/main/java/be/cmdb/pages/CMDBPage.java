@@ -17,7 +17,7 @@ public class CMDBPage {
 
     /**
      * The constructor for the CMDBPage class.
-     * @param page
+     * @param page the Playwright Page object
      */
     public CMDBPage(Page page) {
         this.page = page;
@@ -36,7 +36,8 @@ public class CMDBPage {
     }
 
     /**
-     * Generc search method to search for a string in the CMDB application.
+     * Global search method to search for a string in the CMDB application.
+     * @param searchString the string to search for
      */
     public void search(String searchString) {
         searchInput.fill(searchString);

@@ -30,7 +30,7 @@ public class IdentityTypeDAO implements BaseDAO<GeneralType, Integer> {
 
     @Override
     public List<GeneralType> findAll(Session session) {
-        String hql = "FROM IdentityType WHERE discriminator = 'identitytype'";
+        String hql = "FROM type WHERE discriminator = 'identitytype'";
         Query<GeneralType> query = session.createQuery(hql, GeneralType.class);
         return query.getResultList();
     }
@@ -59,7 +59,7 @@ public class IdentityTypeDAO implements BaseDAO<GeneralType, Integer> {
      * @return the IdentityType matching the type, or null if not found
      */
     public GeneralType findByType(Session session, String type) {
-        String hql = "FROM IdentityType WHERE discriminator = 'identitytype' and type = :type";
+        String hql = "FROM type WHERE discriminator = 'identitytype' and type = :type";
         Query<GeneralType> query = session.createQuery(hql, GeneralType.class);
         query.setParameter("type", type);
         List<GeneralType> results = query.getResultList();

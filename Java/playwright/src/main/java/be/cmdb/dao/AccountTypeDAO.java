@@ -59,7 +59,7 @@ public class AccountTypeDAO implements BaseDAO<GeneralType, Integer> {
      * @return the IdentityType matching the type, or null if not found
      */
     public GeneralType findByType(Session session, String type) {
-        String hql = "FROM IdentityType WHERE discriminator = 'accounttype' and type = :type";
+        String hql = "FROM type WHERE discriminator = 'accounttype' and type = :type";
         Query<GeneralType> query = session.createQuery(hql, GeneralType.class);
         query.setParameter("type", type);
         List<GeneralType> results = query.getResultList();

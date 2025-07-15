@@ -6,7 +6,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * Represents a log entry in the system.
@@ -20,7 +20,7 @@ public class Log {
     @NotNull
     private String logText;
     @NotNull
-    private Date logDate;
+    private LocalDateTime logDate;
     private int accountId;
     private int typeId;
     private int adminId;
@@ -31,7 +31,7 @@ public class Log {
     private int identityId;
     private int kensingtonId;
     private int menuId;
-    private int mobilekId;
+    private int mobileId;
     private int permissionId;
     private int subscriptionId;
     private int subscriptionTypeId;
@@ -74,7 +74,7 @@ public class Log {
      * Gets the date and time when the log entry was created.
      * @return the date of the log entry
      */
-    public Date getLogDate() {
+    public LocalDateTime getLogDate() {
         return logDate;
     }
 
@@ -82,7 +82,7 @@ public class Log {
      * sets the date and time when the log entry was created.
      * @param logDate the date to set for the log entry
      */
-    public void setLogDate(Date logDate) {
+    public void setLogDate(LocalDateTime logDate) {
         this.logDate = logDate;
     }
 
@@ -250,16 +250,16 @@ public class Log {
      * Gets the mobile ID associated with the log entry.
      * @return the mobile ID of the log entry
      */
-    public int getMobilekId() {
-        return mobilekId;
+    public int getMobileId() {
+        return mobileId;
     }
 
     /**
      * Sets the mobile ID associated with the log entry.
-     * @param mobilekId the mobile ID to set for the log entry
+     * @param mobileId the mobile ID to set for the log entry
      */
-    public void setMobilekId(int mobilekId) {
-        this.mobilekId = mobilekId;
+    public void setMobileId(int mobileId) {
+        this.mobileId = mobileId;
     }
 
     /**
