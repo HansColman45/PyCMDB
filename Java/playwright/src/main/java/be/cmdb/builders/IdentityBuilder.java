@@ -64,6 +64,16 @@ public class IdentityBuilder extends GenericBuilder {
     }
 
     /**
+     * Sets the userId for the {@link Identity}.
+     * @param userId the userId to set
+     * @return this builder instance
+     */
+    public IdentityBuilder withUserId(String userId) {
+        identity.setUserId(userId);
+        return this;
+    }
+
+    /**
      * Builds and returns the configured {@link Identity} object.
      * @return the built {@link Identity}
      */

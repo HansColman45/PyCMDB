@@ -28,7 +28,7 @@ class BaseTest {
     private BrowserContext context;
     private Page page;
     private Session session;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     /**
      * Launches the browser before all tests.

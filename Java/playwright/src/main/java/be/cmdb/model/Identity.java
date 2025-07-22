@@ -1,9 +1,13 @@
 package be.cmdb.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +37,9 @@ public class Identity extends CMDBModel {
     private int typeId;
     @NotNull
     private String languageCode;
+    @OneToMany
+    @JoinColumn(name = "identityId", nullable = true)
+    private List<Log> logs;
 
     /**
      * Gets the identifier for the identity.
@@ -186,5 +193,13 @@ public class Identity extends CMDBModel {
      */
     public void setLanguageCode(String languageCode) {
         this.languageCode = languageCode;
+    }
+
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<Log> logs) {
+        this.logs = logs;
     }
 }

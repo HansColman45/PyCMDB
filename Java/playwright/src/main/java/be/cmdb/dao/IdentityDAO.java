@@ -266,4 +266,11 @@ public class IdentityDAO implements BaseDAO<Identity, Integer> {
         query.setParameter("userId", userId);
         return query.getSingleResult() > 0;
     }
+
+    public List<Identity> findByLastModifiedAdminId(Session session, int adminId) {
+        Query<Identity> query = session.createQuery(
+            "FROM Identity WHERE lastModifiedAdminId = :adminId", Identity.class);
+        query.setParameter("adminId", adminId);
+        return query.getResultList();
+    }
 }

@@ -25,7 +25,7 @@ namespace CMDB.Testing.Helpers
             }
 
             subscription.Logs.Add(new LogBuilder()
-                .With(x => x.SubsriptionId, subscription.SubscriptionId)
+                .With(x => x.SubscriptionId, subscription.SubscriptionId)
                 .With(x => x.LogText, $"The subscription with: {subscriptionType.Category.Category} and type {subscriptionType} on {subscription.PhoneNumber} is created by {admin.Account.UserID} in table subscription")
                 .Build()
                 );

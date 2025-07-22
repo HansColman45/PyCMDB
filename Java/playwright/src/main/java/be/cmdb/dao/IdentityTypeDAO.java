@@ -1,42 +1,44 @@
 package be.cmdb.dao;
 
-import be.cmdb.model.GeneralType;
 import java.util.List;
+
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+
+import be.cmdb.model.Type;
 
 /**
 * Data Access Object for IdentityType entities.
 */
-public class IdentityTypeDAO implements BaseDAO<GeneralType, Integer> {
+public class IdentityTypeDAO implements BaseDAO<Type, Integer> {
 
     @Override
-    public GeneralType save(Session session, GeneralType entity) {
+    public Type save(Session session, Type entity) {
         entity.setDiscriminator("identitytype");
         session.persist(entity);
         return entity;
     }
 
     @Override
-    public GeneralType update(Session session, GeneralType entity) {
+    public Type update(Session session, Type entity) {
         session.merge(entity);
         return entity;
     }
 
     @Override
-    public GeneralType findById(Session session, Integer id) {
-        return session.find(GeneralType.class, id);
+    public Type findById(Session session, Integer id) {
+        return session.find(Type.class, id);
     }
 
     @Override
-    public List<GeneralType> findAll(Session session) {
-        String hql = "FROM type WHERE discriminator = 'identitytype'";
-        Query<GeneralType> query = session.createQuery(hql, GeneralType.class);
+    public List<Type> findAll(Session session) {
+        String hql = "FROM Type WHERE discriminator = 'identitytype'";
+        Query<Type> query = session.createQuery(hql, Type.class);
         return query.getResultList();
     }
 
     @Override
-    public void delete(Session session, GeneralType entity) {
+    public void delete(Session session, Type entity) {
         session.remove(entity);
     }
 
@@ -47,7 +49,7 @@ public class IdentityTypeDAO implements BaseDAO<GeneralType, Integer> {
 
     @Override
     public long count(Session session) {
-        String hql = "select count(*) from type where discriminator = 'identitytype'";
+        String hql = "select count(*) from Type where discriminator = 'identitytype'";
         Query<Long> query = session.createQuery(hql, Long.class);
         return query.getSingleResult();
     }
@@ -58,11 +60,11 @@ public class IdentityTypeDAO implements BaseDAO<GeneralType, Integer> {
      * @param type the type to filter by
      * @return the IdentityType matching the type, or null if not found
      */
-    public GeneralType findByType(Session session, String type) {
-        String hql = "FROM type WHERE discriminator = 'identitytype' and type = :type";
-        Query<GeneralType> query = session.createQuery(hql, GeneralType.class);
+    public Type findByType(Session session, String type) {
+        String hql = "from Type where discriminator = 'identitytype' and type = :type";
+        Query<Type> query = session.createQuery(hql, Type.class);
         query.setParameter("type", type);
-        List<GeneralType> results = query.getResultList();
+        List<Type> results = query.getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
 }

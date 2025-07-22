@@ -1,14 +1,17 @@
 package be.cmdb.model;
 
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 
 /**
  * The Device class represents an asset in the CMDB.
  */
-@Entity
+@Entity(name = "asset")
 @Table(name = "asset")
 public class Device extends CMDBModel {
 
@@ -21,6 +24,8 @@ public class Device extends CMDBModel {
     private int typeId;
     private int identityId;
     private int categoryId;
+    @OneToMany(mappedBy = "assetTag")
+    private final List<Log> logs  = new java.util.ArrayList<>();
 
     /**
      * Returns the asset tag of the device.
@@ -118,4 +123,12 @@ public class Device extends CMDBModel {
         this.discriminator = discriminator;
     }
 
+    public List<Log> getLogs() {
+        return logs;
+    }
+
+    public void addLog(Log log) {
+        log.setAssetTag(this);
+        logs.add(log);
+    }
 }

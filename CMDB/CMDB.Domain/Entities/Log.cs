@@ -33,7 +33,7 @@ namespace CMDB.Domain.Entities
         public Permission Permission { get; set; }
         public int? PermissionId { get; set; }
         public Subscription Subscription { get; set; }
-        public int? SubsriptionId { get; set; }
+        public int? SubscriptionId { get; set; }
         public SubscriptionType SubscriptionType { get; set; }
         public int? SubscriptionTypeId { get; set; }
         public Role Role { get; set; }

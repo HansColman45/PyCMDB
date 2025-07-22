@@ -1,5 +1,11 @@
 package be.hans.cmdb;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
 import be.cmdb.helpers.IdentityHelper;
 import be.cmdb.model.Identity;
 import be.cmdb.pages.LoginPage;
@@ -8,17 +14,12 @@ import be.cmdb.pages.identity.CreateIdentityPage;
 import be.cmdb.pages.identity.EditIdentityPage;
 import be.cmdb.pages.identity.IdentityDetailsPage;
 import be.cmdb.pages.identity.IdentityOverviewPage;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * Test class for Identity operations in the CMDB application.
  */
 class IdentityTest extends BaseTest {
+    
     /**
      * Tests the creation of a new identity in the CMDB application.
      * And check if we can find it back

@@ -94,7 +94,7 @@ namespace CMDB.Infrastructure.Configurations
 
             builder.HasOne(e => e.Subscription)
                 .WithMany(d => d.Logs)
-                .HasForeignKey(e => e.SubsriptionId)
+                .HasForeignKey(e => e.SubscriptionId)
                 .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Log_Subscription");
 

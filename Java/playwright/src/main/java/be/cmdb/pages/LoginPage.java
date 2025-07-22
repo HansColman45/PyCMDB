@@ -27,6 +27,7 @@ public class LoginPage extends CMDBPage {
         getPage().locator("xpath=//input[@type='text']").fill(username);
         getPage().locator("xpath=//input[@type='password']").fill(password);
         getPage().getByRole(AriaRole.BUTTON).click();
+        getPage().waitForLoadState();
         return new MainPage(getPage());
     }
 

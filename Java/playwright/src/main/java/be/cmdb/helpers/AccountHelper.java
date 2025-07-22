@@ -1,16 +1,21 @@
 package be.cmdb.helpers;
 
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
 import be.cmdb.builders.AccountBuilder;
 import be.cmdb.builders.LogBuilder;
 import be.cmdb.dao.AccountDAO;
 import be.cmdb.dao.AccountTypeDAO;
 import be.cmdb.dao.ApplicationDAO;
 import be.cmdb.dao.LogDAO;
-import be.cmdb.model.*;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-
-import java.util.List;
+import be.cmdb.model.Account;
+import be.cmdb.model.Admin;
+import be.cmdb.model.Application;
+import be.cmdb.model.Log;
+import be.cmdb.model.Type;
 
 /**
  * Helper class for creating and managing Account entities.
@@ -26,7 +31,7 @@ public final class AccountHelper {
      */
     public Account createSimpleAccount(Session session, Admin admin, boolean active) {
         AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
-        GeneralType accountType = accountTypeDAO.findByType(session,"Normal User");
+        Type accountType = accountTypeDAO.findByType(session,"Normal User");
 
         ApplicationDAO applicationDAO = new ApplicationDAO();
         Application application = applicationDAO.findByName(session, "CMDB").get(0);
@@ -45,7 +50,7 @@ public final class AccountHelper {
             +" for application "+ application.getName()+ " is created by Automation in table account";
         LogDAO logDAO = new LogDAO();
         Log log = new LogBuilder()
-            .withAccountId(account.getAccId())
+            .withAccount(account)
             .withLogText(LogText)
             .build();
         logDAO.save(session, log);

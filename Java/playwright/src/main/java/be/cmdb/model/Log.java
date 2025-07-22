@@ -1,12 +1,16 @@
 package be.cmdb.model;
 
+import java.time.LocalDateTime;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
-import java.time.LocalDateTime;
 
 /**
  * Represents a log entry in the system.
@@ -21,22 +25,57 @@ public class Log {
     private String logText;
     @NotNull
     private LocalDateTime logDate;
-    private int accountId;
-    private int typeId;
-    private int adminId;
-    private int applicationId;
-    private int assetCategoryId;
-    private int assetTypeId;
-    private String assetTag;
-    private int identityId;
-    private int kensingtonId;
-    private int menuId;
-    private int mobileId;
-    private int permissionId;
-    private int subscriptionId;
-    private int subscriptionTypeId;
-    private int roleId;
-    private int rolePermId;
+    /**
+     * Foreign key relationships to other entities.
+     */
+    @JoinColumn(name = "accountId", referencedColumnName="accId")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Account accountId;
+    @JoinColumn(name = "adminId", referencedColumnName="Admin_id")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Admin adminId;
+    @JoinColumn(name = "applicationId", referencedColumnName="appId")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Application applicationId;
+    @JoinColumn(name = "assetTypeId", referencedColumnName="typeId")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private AssetType assetTypeId;
+    @JoinColumn(name = "assetCategoryId", referencedColumnName="id")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Category assetCategoryId;
+    @JoinColumn(name = "assetTag", referencedColumnName="assetTag")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Device assetTag;
+    @JoinColumn(name = "identityId", referencedColumnName="idenId")
+    @ManyToOne(cascade= CascadeType.PERSIST)
+    private Identity identityId;
+    @JoinColumn(name = "kensingtonId", referencedColumnName="keyId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Key kensingtonId;
+    @JoinColumn(name = "menuId", referencedColumnName="menuId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Menu menuId;
+    @JoinColumn(name = "mobileId", referencedColumnName="mobileId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Mobile mobileId;
+    @JoinColumn(name = "permissionId", referencedColumnName="id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Permission permissionId;
+    @JoinColumn(name = "roleId", referencedColumnName="roleId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Role roleId;
+    @JoinColumn(name = "rolePermId", referencedColumnName="id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private RolePermission rolePermId;
+    @JoinColumn(name = "subscriptionId", referencedColumnName="subscriptionId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Subscription subscriptionId;
+    @JoinColumn(name = "subscriptionTypeId", referencedColumnName="id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private SubscriptionType subscriptionTypeId;
+    @JoinColumn(name = "typeId", referencedColumnName="typeId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Type typeId;
 
     /**
      * Gets the unique identifier of the log entry.
@@ -86,259 +125,134 @@ public class Log {
         this.logDate = logDate;
     }
 
-    /**
-     * Gets the account ID associated with the log entry.
-     * @return the account ID of the log entry
-     */
-    public int getAccountId() {
+    public Account getAccountId() {
         return accountId;
     }
 
-    /**
-     * Sets the account ID associated with the log entry.
-     * @param accountId the account ID to set for the log entry
-     */
-    public void setAccountId(int accountId) {
-        this.accountId = accountId;
+    public void setAccountId(Account account) {
+        this.accountId = account;
     }
 
-    /**
-     * Gets the type ID associated with the log entry.
-     * @return the type ID of the log entry
-     */
-    public int getTypeId() {
-        return typeId;
-    }
-
-    /**
-     * Sets the type ID associated with the log entry.
-     * @param typeId the type ID to set for the log entry
-     */
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
-    }
-
-    /**
-     * Gets the admin ID associated with the log entry.
-     * @return the admin ID of the log entry
-     */
-    public int getAdminId() {
+    public Admin getAdminId() {
         return adminId;
     }
 
-    /**
-     * Sets the admin ID associated with the log entry.
-     * @param adminId the admin ID to set for the log entry
-     */
-    public void setAdminId(int adminId) {
-        this.adminId = adminId;
+    public void setAdminId(Admin admin) {
+        this.adminId = admin;
     }
 
-    /**
-     * Gets the application ID associated with the log entry.
-     * @return the application ID of the log entry
-     */
-    public int getApplicationId() {
+    public Application getApplicationId() {
         return applicationId;
     }
 
-    /**
-     * Sets the application ID associated with the log entry.
-     * @param applicationId the application ID to set for the log entry
-     */
-    public void setApplicationId(int applicationId) {
-        this.applicationId = applicationId;
+    public void setApplicationId(Application application) {
+        this.applicationId = application;
     }
 
-    /**
-     * Gets the asset category ID associated with the log entry.
-     * @return the asset category ID of the log entry
-     */
-    public int getAssetCategoryId() {
-        return assetCategoryId;
-    }
-
-    /**
-     * Sets the asset category ID associated with the log entry.
-     * @param assetCategoryId the asset category ID to set for the log entry
-     */
-    public void setAssetCategoryId(int assetCategoryId) {
-        this.assetCategoryId = assetCategoryId;
-    }
-
-    /**
-     * Gets the asset type ID associated with the log entry.
-     * @return the asset type ID of the log entry
-     */
-    public int getAssetTypeId() {
+    public AssetType getAssetTypeId() {
         return assetTypeId;
     }
 
-    /**
-     * Sets the asset type ID associated with the log entry.
-     * @param assetTypeId the asset type ID to set for the log entry
-     */
-    public void setAssetTypeId(int assetTypeId) {
-        this.assetTypeId = assetTypeId;
+    public void setAssetTypeId(AssetType assetType) {
+        this.assetTypeId = assetType;
     }
 
-    /**
-     * Gets the asset tag associated with the log entry.
-     * @return the asset tag of the log entry
-     */
-    public String getAssetTag() {
+    public Category getAssetCategoryId() {
+        return assetCategoryId;
+    }
+
+    public void setAssetCategoryId(Category category) {
+        this.assetCategoryId = category;
+    }
+
+    public Device getAssetTag() {
         return assetTag;
     }
 
-    /**
-     * Sets the asset tag associated with the log entry.
-     * @param assetTag the asset tag to set for the log entry
-     */
-    public void setAssetTag(String assetTag) {
-        this.assetTag = assetTag;
+    public void setAssetTag(Device device) {
+        this.assetTag = device;
     }
 
-    /**
-     * Gets the identity ID associated with the log entry.
-     * @return the identity ID of the log entry
-     */
-    public int getIdentityId() {
+    public Identity getIdentityId() {
         return identityId;
     }
 
-    /**
-     * Sets the identity ID associated with the log entry.
-     * @param identityId the identity ID to set for the log entry
-     */
-    public void setIdentityId(int identityId) {
-        this.identityId = identityId;
+    public void setIdentityId(Identity identity) {
+        this.identityId = identity;
     }
 
-    /**
-     * Gets the Kensington ID associated with the log entry.
-     * @return the Kensington ID of the log entry
-     */
-    public int getKensingtonId() {
+    public Key getKensingtonId() {
         return kensingtonId;
     }
 
-    /**
-     * Sets the Kensington ID associated with the log entry.
-     * @param kensingtonId the Kensington ID to set for the log entry
-     */
-    public void setKensingtonId(int kensingtonId) {
-        this.kensingtonId = kensingtonId;
+    public void setKensingtonId(Key kensington) {
+        this.kensingtonId = kensington;
     }
 
-    /**
-     * Gets the menu ID associated with the log entry.
-     * @return the menu ID of the log entry
-     */
-    public int getMenuId() {
+    public Menu getMenuId() {
         return menuId;
     }
 
-    /**
-     * Sets the menu ID associated with the log entry.
-     * @param menuId the menu ID to set for the log entry
-     */
-    public void setMenuId(int menuId) {
-        this.menuId = menuId;
+    public void setMenuId(Menu menu) {
+        this.menuId = menu;
     }
 
-    /**
-     * Gets the mobile ID associated with the log entry.
-     * @return the mobile ID of the log entry
-     */
-    public int getMobileId() {
+    public Mobile getMobileId() {
         return mobileId;
     }
 
-    /**
-     * Sets the mobile ID associated with the log entry.
-     * @param mobileId the mobile ID to set for the log entry
-     */
-    public void setMobileId(int mobileId) {
-        this.mobileId = mobileId;
+    public void setMobileId(Mobile mobile) {
+        this.mobileId = mobile;
     }
 
-    /**
-     * Gets the permission ID associated with the log entry.
-     * @return the permission ID of the log entry
-     */
-    public int getPermissionId() {
+    public Permission getPermissionId() {
         return permissionId;
     }
 
-    /**
-     * sets the permission ID associated with the log entry.
-     * @param permissionId the permission ID to set for the log entry
-     */
-    public void setPermissionId(int permissionId) {
-        this.permissionId = permissionId;
+    public void setPermissionId(Permission permission) {
+        this.permissionId = permission;
     }
 
-    /**
-     * Gets the subscription ID associated with the log entry.
-     * @return the subscription ID of the log entry
-     */
-    public int getSubscriptionId() {
-        return subscriptionId;
-    }
-
-    /**
-     * Sets the subscription ID associated with the log entry.
-     * @param subscriptionId the subscription ID to set for the log entry
-     */
-    public void setSubscriptionId(int subscriptionId) {
-        this.subscriptionId = subscriptionId;
-    }
-
-    /**
-     * Gets the subscription type ID associated with the log entry.
-     * @return the subscription type ID of the log entry
-     */
-    public int getSubscriptionTypeId() {
-        return subscriptionTypeId;
-    }
-
-    /**
-     * Sets the subscription type ID associated with the log entry.
-     * @param subscriptionTypeId the subscription type ID to set for the log entry
-     */
-    public void setSubscriptionTypeId(int subscriptionTypeId) {
-        this.subscriptionTypeId = subscriptionTypeId;
-    }
-
-    /**
-     * Gets the role ID associated with the log entry.
-     * @return the role ID of the log entry
-     */
-    public int getRoleId() {
+    public Role getRoleId() {
         return roleId;
     }
 
-    /**
-     * Sets the role ID associated with the log entry.
-     * @param roleId the role ID to set for the log entry
-     */
-    public void setRoleId(int roleId) {
+    public void setRoleId(Role roleId) {
         this.roleId = roleId;
     }
 
-    /**
-     * Gets the role permission ID associated with the log entry.
-     * @return the role permission ID of the log entry
-     */
-    public int getRolePermId() {
+    public RolePermission getRolePermId() {
         return rolePermId;
     }
 
-    /**
-     * Sets the role permission ID associated with the log entry.
-     * @param rolePermId the role permission ID to set for the log entry
-     */
-    public void setRolePermId(int rolePermId) {
-        this.rolePermId = rolePermId;
+    public void setRolePermId(RolePermission rolePermission) {
+        this.rolePermId = rolePermission;
     }
+
+    public Subscription getSubsriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubsriptionId(Subscription subsription) {
+        this.subscriptionId = subsription;
+    }
+
+    public SubscriptionType getSubscriptionTypId() {
+        return subscriptionTypeId;
+    }
+
+    public void setSubscriptionTypeId(SubscriptionType subscriptionType) {
+        this.subscriptionTypeId = subscriptionType;
+    }
+
+    public Type getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Type type) {
+        this.typeId = type;
+    }
+
+
+
 }
