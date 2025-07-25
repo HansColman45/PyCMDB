@@ -2,6 +2,7 @@ package be.cmdb.helpers;
 
 import java.util.List;
 
+import be.cmdb.model.Admin;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -53,8 +54,10 @@ public final class IdentityHelper {
      * @param session The current hibernate session
      * @return Identity object that has been persisted to the database
      */
-    public static Identity createRandomIdentity(Session session) {
-        Identity identity = new IdentityBuilder().build();
+    public static Identity createRandomIdentity(Session session, Admin admin) {
+        Identity identity = new IdentityBuilder()
+            .withLastModifiedAdminId(admin.getAdminId())
+            .build();
         IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
         Type identityType = identityTypeDAO.findByType(session, "Werknemer");
         identity.setTypeId(identityType.getTypeId());

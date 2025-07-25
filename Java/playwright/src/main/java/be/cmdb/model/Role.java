@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Role {
+public class Role extends CMDBModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int roleId;

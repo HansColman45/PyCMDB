@@ -53,4 +53,16 @@ public class AccountDAO implements BaseDAO<Account,Integer> {
         Query<Long> query = session.createQuery("SELECT COUNT(*) FROM Account", Long.class);
         return query.getSingleResult();
     }
+
+    /**
+     * Finds accounts by the last modified admin ID.
+     * @param session the Hibernate session
+     * @param lastModifiedAdminId the ID of the admin who last modified the account
+     * @return a list of accounts modified by the specified admin
+     */
+    public List<Account> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
+        Query<Account> query = session.createQuery("FROM Account WHERE lastModifiedAdminId = :lastModifiedAdminId", Account.class);
+        query.setParameter("lastModifiedAdminId", lastModifiedAdminId);
+        return query.getResultList();
+    }
 }

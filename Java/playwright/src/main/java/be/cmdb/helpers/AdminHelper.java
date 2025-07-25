@@ -2,6 +2,8 @@ package be.cmdb.helpers;
 
 import java.util.List;
 
+import be.cmdb.dao.*;
+import be.cmdb.model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -9,19 +11,6 @@ import be.cmdb.builders.AccountBuilder;
 import be.cmdb.builders.AdminBuilder;
 import be.cmdb.builders.IdentityBuilder;
 import be.cmdb.builders.LogBuilder;
-import be.cmdb.dao.AccountDAO;
-import be.cmdb.dao.AccountTypeDAO;
-import be.cmdb.dao.AdminDAO;
-import be.cmdb.dao.ApplicationDAO;
-import be.cmdb.dao.IdentityDAO;
-import be.cmdb.dao.IdentityTypeDAO;
-import be.cmdb.dao.LogDAO;
-import be.cmdb.model.Account;
-import be.cmdb.model.Admin;
-import be.cmdb.model.Application;
-import be.cmdb.model.Identity;
-import be.cmdb.model.Log;
-import be.cmdb.model.Type;
 
 /**
  * Helper class for Admin operations in the CMDB application.
@@ -69,7 +58,7 @@ public final class AdminHelper {
         // Now create the admin
         Admin admin = new AdminBuilder()
             .withLastModifiedAdminId(1)
-            .withLevel(9)
+            .withAccountId(account.getAccId())
             .build();
         AdminDAO adminDAO = new AdminDAO();
         admin = adminDAO.save(session, admin);
@@ -123,8 +112,38 @@ public final class AdminHelper {
         return newAdmin;
     }
 
-    public void deleteAllObjectsCreatedByAdmin(Session session, Admin admin) {
+    public static void deleteAllObjectsCreatedByAdmin(Session session, Admin admin) {
         Transaction transaction = session.beginTransaction();
+        //Keys
+        KeyDAO keyDAO = new KeyDAO();
+        List<Key> keys = keyDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Key key : keys) {
+            KeyHelper.deleteKey(session, key);
+        }
+        //Mobiles
+        MobileDAO mobileDAO = new MobileDAO();
+        List<Mobile> mobiles = mobileDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Mobile mobile : mobiles) {
+            MobileHelper.deleteMobile(session, mobile);
+        }
+        //AccountTypes
+        AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
+        List<Type> accountTypes = accountTypeDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Type accountType : accountTypes) {
+            AccountTypeHelper.deleteAccountType(session, accountType);
+        }
+        //AssetTypes
+        AssetTypeDAO assetTypeDAO = new AssetTypeDAO();
+        List<AssetType> assetTypes = assetTypeDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (AssetType assetType : assetTypes) {
+            AssetTypeHelper.deleteAssetType(session,assetType);
+        }
+        //IdentitiyTypes
+        IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
+        List<Type> identityTypes = identityTypeDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Type identityType : identityTypes) {
+            IdentityTypeHelper.deleteType(session, identityType);
+        }
         //Delete all Identities created by this admin
         IdentityDAO identityDAO = new IdentityDAO();
         List<Identity> idens = identityDAO.findByLastModifiedAdminId(session, admin.getAdminId());

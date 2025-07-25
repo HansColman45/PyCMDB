@@ -84,7 +84,6 @@ namespace CMDB.API.Services
         ///inheritdoc />
         public async Task<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
-            _logger.LogInformation("DbContext: {0}",_context.Database.GetDbConnection().ConnectionString);
             var admin = await _context.Admins
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Application)
@@ -94,19 +93,18 @@ namespace CMDB.API.Services
                 return null;
             TokenStore.AdminId = admin.AdminId;
             TokenStore.Admin = admin;
-            if (string.Equals(admin.Password, new PasswordHasher().EncryptPassword(model.Password)))
-            {
-                var token = _jwtService.GenerateToken(admin);
-                return new AuthenticateResponse()
-                {
-                    Id = admin.AdminId,
-                    UserId = admin.Account.UserID,
-                    Level = admin.Level,
-                    Token = token
-                };
-            }
-            else
+            PasswordHasher passwordHasher = new();
+            if (!string.Equals(admin.Password, passwordHasher.EncryptPassword(model.Password)))
                 return null;
+
+            var token = _jwtService.GenerateToken(admin);
+            return new AuthenticateResponse()
+            {
+                Id = admin.AdminId,
+                UserId = admin.Account.UserID,
+                Level = admin.Level,
+                Token = token
+            };
         }
         /// inheritdoc />
         public async Task<bool> HasAdminAccess(HasAdminAccessRequest request)

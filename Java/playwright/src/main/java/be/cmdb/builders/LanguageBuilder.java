@@ -6,7 +6,7 @@ import be.cmdb.model.Language;
  * Builder class for creating and configuring {@link Language} objects.
  * Provides fluent methods to set properties of the Language.
  */
-public class LanguageBuilder {
+public class LanguageBuilder extends GenericBuilder<Language> {
     private final Language language;
 
     /**

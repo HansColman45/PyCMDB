@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class Mobile {
+public class Mobile extends CMDBModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mobileId;

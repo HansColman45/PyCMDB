@@ -1,7 +1,6 @@
 package be.cmdb.dao;
 
 import be.cmdb.model.Log;
-import java.util.Date;
 import java.util.List;
 import org.hibernate.JDBCException;
 import org.hibernate.Session;
@@ -148,59 +147,6 @@ public class LogDAO implements BaseDAO<Log, Integer> {
     }
 
     /**
-     * Finds log entries within a date range using the provided session.
-     * @param session the Hibernate session to use
-     * @param startDate the start date (inclusive)
-     * @param endDate the end date (inclusive)
-     * @return list of Log entities within the date range
-     */
-    public List<Log> findByDateRange(Session session, Date startDate, Date endDate) {
-        try {
-            Query<Log> query = session.createQuery(
-                "FROM Log WHERE logDate BETWEEN :startDate AND :endDate ORDER BY logDate DESC", Log.class);
-            query.setParameter("startDate", startDate);
-            query.setParameter("endDate", endDate);
-            return query.getResultList();
-        } catch (JDBCException e) {
-            throw new RuntimeException("Error finding logs by date range: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Finds log entries by log text containing the specified search term using the provided session.
-     * @param session the Hibernate session to use
-     * @param searchTerm the term to search for in log text
-     * @return list of Log entities containing the search term
-     */
-    public List<Log> findByLogText(Session session, String searchTerm) {
-        try {
-            Query<Log> query = session.createQuery(
-                "FROM Log WHERE logText LIKE :searchTerm ORDER BY logDate DESC", Log.class);
-            query.setParameter("searchTerm", "%" + searchTerm + "%");
-            return query.getResultList();
-        } catch (JDBCException e) {
-            throw new RuntimeException("Error finding logs by text: " + e.getMessage(), e);
-        }
-    }
-
-    /**
-     * Finds the most recent log entries with a limit using the provided session.
-     * @param session the Hibernate session to use
-     * @param limit the maximum number of entries to return
-     * @return list of the most recent Log entities
-     */
-    public List<Log> findRecentLogs(Session session, int limit) {
-        try {
-            Query<Log> query = session.createQuery(
-                "FROM Log ORDER BY logDate DESC", Log.class);
-            query.setMaxResults(limit);
-            return query.getResultList();
-        } catch (JDBCException e) {
-            throw new RuntimeException("Error finding recent logs: " + e.getMessage(), e);
-        }
-    }
-
-    /**
      * Counts the total number of log entries using the provided session.
      * @param session the Hibernate session to use
      * @return the total count of log entries
@@ -216,19 +162,54 @@ public class LogDAO implements BaseDAO<Log, Integer> {
     }
 
     /**
-     * Counts log entries by identity ID using the provided session.
+     * Finds log entries by key ID using the provided session.
      * @param session the Hibernate session to use
-     * @param identityId the identity ID to count logs for
-     * @return the count of log entries for the specified identity
+     * @param keyId the key ID to search for
+     * @return list of Log entities associated with the key
      */
-    public long countByIdentityId(Session session, int identityId) {
-        try {
-            Query<Long> query = session.createQuery(
-                "SELECT COUNT(*) FROM Log WHERE identityId = :identityId", Long.class);
-            query.setParameter("identityId", identityId);
-            return query.getSingleResult();
-        } catch (JDBCException e) {
-            throw new RuntimeException("Error counting logs by identity ID: " + e.getMessage(), e);
-        }
+    public List<Log> findByKeyId(Session session, int keyId) {
+        Query<Log> query = session.createQuery(
+            "FROM Log WHERE kensingtonId = :keyId", Log.class);
+        query.setParameter("keyId", keyId);
+        return query.getResultList();
+    }
+
+    /**
+     * Finds log entries by mobile ID using the provided session.
+     * @param session the Hibernate session to use
+     * @param mobileId the mobile ID to search for
+     * @return list of Log entities associated with the mobile
+     */
+    public List<Log> findByMobileId(Session session, int mobileId) {
+        Query<Log> query = session.createQuery(
+            "FROM Log WHERE mobileId = :mobileId", Log.class);
+        query.setParameter("mobileId", mobileId);
+        return query.getResultList();
+    }
+
+    /**
+     * Finds log entries by type ID using the provided session.
+     * @param session the Hibernate session to use
+     * @param typeId the type ID to search for
+     * @return list of Log entities associated with the type
+     */
+    public List<Log> findByTypeId(Session session, int typeId) {
+        Query<Log> query = session.createQuery(
+            "FROM Log WHERE typeId = :typeId", Log.class);
+        query.setParameter("typeId", typeId);
+        return query.getResultList();
+    }
+
+    /**
+     * Finds log entries by asset type ID using the provided session.
+     * @param session the Hibernate session to use
+     * @param typeId the asset type ID to search for
+     * @return list of Log entities associated with the asset type
+     */
+    public List<Log> findbyAssetTypeId(Session session, int typeId) {
+        Query<Log> query = session.createQuery(
+            "FROM Log WHERE assetTypeId = :typeId", Log.class);
+        query.setParameter("typeId", typeId);
+        return query.getResultList();
     }
 }

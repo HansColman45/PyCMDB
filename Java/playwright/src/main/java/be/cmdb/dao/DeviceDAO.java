@@ -51,25 +51,37 @@ public class DeviceDAO implements BaseDAO<Device, String> {
 
     /**
      * Finds devices by their type ID.
-     * @param session
-     * @param typeId
+     * @param session the Hibernate session
+     * @param typeId the ID of the device type
      * @return List of devices matching the type ID
      */
     public List<Device> findByTypeId(Session session, int typeId) {
-        Query<Device> devices = session.createQuery("from assset where type.id = :typeId", Device.class);
+        Query<Device> devices = session.createQuery("from assset where typeId = :typeId", Device.class);
         devices.setParameter("typeId", typeId);
         return devices.getResultList();
     }
 
     /**
      * Finds devices by their category ID.
-     * @param session
-     * @param categoryId
+     * @param session the Hibernate session
+     * @param categoryId the ID of the device category
      * @return List of devices matching the category ID
      */
     public List<Device> findByCategiryId(Session session, int categoryId) {
-        Query<Device> devices = session.createQuery("from asset where category.id = :categoryId", Device.class);
+        Query<Device> devices = session.createQuery("from asset where categoryId = :categoryId", Device.class);
         devices.setParameter("categoryId", categoryId);
         return devices.getResultList();
+    }
+
+    /**
+     * Finds devices by the last modified admin ID.
+     * @param session the Hibernate session
+     * @param lastModifiedAdminId the ID of the admin who last modified the device
+     * @return List of devices that were last modified by the specified admin
+     */
+    public List<Device> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
+        Query<Device> query = session.createQuery("from asset where lastModifiedAdminId = :lastModifiedAdminId", Device.class);
+        query.setParameter("lastModifiedAdminId", lastModifiedAdminId);
+        return query.getResultList();
     }
 }

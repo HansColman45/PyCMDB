@@ -67,4 +67,11 @@ public class IdentityTypeDAO implements BaseDAO<Type, Integer> {
         List<Type> results = query.getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
+
+    public List<Type> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
+        String hql = "FROM Type WHERE discriminator = 'identitytype' and lastModifiedAdminId = :lastModifiedAdminId";
+        Query<Type> query = session.createQuery(hql, Type.class);
+        query.setParameter("lastModifiedAdminId", lastModifiedAdminId);
+        return query.getResultList();
+    }
 }

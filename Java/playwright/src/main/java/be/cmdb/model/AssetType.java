@@ -9,10 +9,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
 @Entity
-public class AssetType {
+public class AssetType extends CMDBModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int typeId;
+    private String vendor;
+    private String type;
+    private int categoryId;
+
     @OneToMany(mappedBy = "assetTypeId")
     private final List<Log> logs = new java.util.ArrayList<>();
 
@@ -31,5 +35,29 @@ public class AssetType {
     public void addLog(Log log) {
         log.setAssetTypeId(this);
         logs.add(log);
+    }
+
+    public String getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(String vendor) {
+        this.vendor = vendor;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

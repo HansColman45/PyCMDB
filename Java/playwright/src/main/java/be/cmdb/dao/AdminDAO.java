@@ -48,4 +48,17 @@ public class AdminDAO implements BaseDAO<Admin,Integer> {
         String hql = "SELECT COUNT(*) FROM Admin";
         return session.createQuery(hql, Long.class).getSingleResult();
     }
+
+    /**
+     * Finds admins by the last modified admin ID.
+     * @param session the Hibernate session
+     * @param lastModifiedAdminId the ID of the admin who last modified the admin
+     * @return a list of Admin entities that match the last modified admin ID
+     */
+    public List<Admin> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
+        String hql = "FROM Admin WHERE lastModifiedAdminId = :lastModifiedAdminId";
+        return session.createQuery(hql, Admin.class)
+                      .setParameter("lastModifiedAdminId", lastModifiedAdminId)
+                      .getResultList();
+    }
 }

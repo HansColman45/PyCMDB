@@ -20,10 +20,14 @@ public class Device extends CMDBModel {
     private String assetTag;
     @NotNull
     private String serialNumber;
+    @NotNull
     private String discriminator;
     private int typeId;
     private int identityId;
     private int categoryId;
+    private String MAC;
+    private String RAM;
+
     @OneToMany(mappedBy = "assetTag")
     private final List<Log> logs  = new java.util.ArrayList<>();
 
@@ -123,10 +127,50 @@ public class Device extends CMDBModel {
         this.discriminator = discriminator;
     }
 
+    /**
+     * Sets the MAC address for the device.
+     * @param MAC The MAC address of the device
+     */
+    public void setMAC(String MAC) {
+        this.MAC = MAC;
+    }
+
+    /**
+     * Returns the MAC address of the device.
+     * @return string representing the MAC address
+     */
+    public String getMAC() {
+        return this.MAC;
+    }
+
+    /**
+     * Sets the RAM for the device.
+     * @param RAM The RAM of the device
+     */
+    public void setRAM(String RAM) {
+        this.RAM = RAM;
+    }
+
+    /**
+     * Returns the RAM of the device.
+     * @return string representing the RAM
+     */
+    public String getRAM() {
+        return this.RAM;
+    }
+
+    /**
+     * Returns the list of logs associated with the device.
+     * @return a list of Log objects
+     */
     public List<Log> getLogs() {
         return logs;
     }
 
+    /**
+     * Adds a log entry to the device.
+     * @param log the Log object to be added
+     */
     public void addLog(Log log) {
         log.setAssetTag(this);
         logs.add(log);

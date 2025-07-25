@@ -42,6 +42,9 @@ public class LanguageDAO implements BaseDAO<Language, String> {
         Language language = findById(session, id);
         if (language != null) {
             delete(session, language);
+        } else {
+            // Optionally handle the case where the mobile is not found
+            System.out.println("Mobile with ID " + id + " not found.");
         }
     }
 
@@ -61,7 +64,6 @@ public class LanguageDAO implements BaseDAO<Language, String> {
         String hql = "FROM Language WHERE code = :code";
         Query<Language> query = session.createQuery(hql, Language.class);
         query.setParameter("code", code);
-        List<Language> results = query.getResultList();
-        return results.isEmpty() ? null : results.get(0);
+        return query.getSingleResult();
     }
 }

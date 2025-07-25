@@ -19,7 +19,7 @@ import be.cmdb.pages.identity.IdentityOverviewPage;
  * Test class for Identity operations in the CMDB application.
  */
 class IdentityTest extends BaseTest {
-    
+
     /**
      * Tests the creation of a new identity in the CMDB application.
      * And check if we can find it back
@@ -62,7 +62,7 @@ class IdentityTest extends BaseTest {
     void canUpdateIdentity(String field, String newValue) {
         String oldValue;
         newValue += getRandomInt(); // Ensure newValue is unique for the test
-        Identity identity = IdentityHelper.createRandomIdentity(getSession());
+        Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin());
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
         MainPage mainPage = loginPage.login("Root", "796724Md");

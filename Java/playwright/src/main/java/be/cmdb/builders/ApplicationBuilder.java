@@ -6,7 +6,7 @@ import be.cmdb.model.Application;
  * Builder class for creating and configuring {@link Application} objects.
  * Provides fluent methods to set properties of the Application.
  */
-public class ApplicationBuilder {
+public class ApplicationBuilder extends GenericBuilder<Application> {
     private final Application application;
 
     /**
@@ -33,6 +33,11 @@ public class ApplicationBuilder {
      */
     public ApplicationBuilder withName(String name) {
         application.setName(name);
+        return this;
+    }
+
+    public ApplicationBuilder withLastModifiedAdminId(int lastModifiedAdminId){
+        application.setLastModifiedAdminId(lastModifiedAdminId);
         return this;
     }
 

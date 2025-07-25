@@ -1,6 +1,6 @@
 package be.cmdb.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import jakarta.persistence.Column;
@@ -22,7 +22,7 @@ public class Admin extends CMDBModel {
     private int accountId;
     private int level;
     private String password;
-    private Date dateSet;
+    private LocalDateTime dateSet;
     @OneToMany(mappedBy = "adminId")
     private final List<Log> logs = new java.util.ArrayList<>();
 
@@ -58,11 +58,11 @@ public class Admin extends CMDBModel {
         this.password = password;
     }
 
-    public Date getDateSet() {
+    public LocalDateTime getDateSet() {
         return dateSet;
     }
 
-    public void setDateSet(Date dateSet) {
+    public void setDateSet(LocalDateTime dateSet) {
         this.dateSet = dateSet;
     }
 

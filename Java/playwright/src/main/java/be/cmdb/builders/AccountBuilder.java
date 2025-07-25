@@ -5,7 +5,7 @@ import be.cmdb.model.Account;
 /**
  * Builder for creating Account entities with default values.
  */
-public class AccountBuilder extends GenericBuilder{
+public class AccountBuilder extends GenericBuilder<Account> {
     private final Account account;
 
     /**
@@ -15,6 +15,7 @@ public class AccountBuilder extends GenericBuilder{
         super();
         account = new Account();
         account.setUserId(getFaker().name().username());
+        account.setActive(1); // Default to active
     }
 
     /**
@@ -58,7 +59,7 @@ public class AccountBuilder extends GenericBuilder{
     }
 
     /**
-     * Sets the userId for the account.
+     * Returns the built Account instance.
      * @return Account instance
      */
     public Account build() {

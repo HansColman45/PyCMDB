@@ -67,4 +67,17 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
         List<Type> results = query.getResultList();
         return results.isEmpty() ? null : results.get(0);
     }
+
+    /**
+     * Finds AccountTypes by the last modified admin ID.
+     * @param session the Hibernate session
+     * @param lastModifiedAdminId the ID of the admin who last modified the account type
+     * @return a list of account types modified by the specified admin
+     */
+    public List<Type> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
+        String hql = "FROM Type WHERE discriminator = 'accounttype' and lastModifiedAdminId = :lastModifiedAdminId";
+        Query<Type> query = session.createQuery(hql, Type.class);
+        query.setParameter("lastModifiedAdminId", lastModifiedAdminId);
+        return query.getResultList();
+    }
 }

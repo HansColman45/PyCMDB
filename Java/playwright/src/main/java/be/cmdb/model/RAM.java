@@ -1,22 +1,17 @@
 package be.cmdb.model;
 
-import java.util.List;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
 
 @Entity
-public class SubscriptionType extends CMDBModel{
+public class RAM {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToMany
-    @JoinColumn(name = "subscriptionTypeId", nullable = true)
-    private List<Log> logs;
+    private int value;
+    private String display;
 
     public int getId() {
         return id;
@@ -26,11 +21,19 @@ public class SubscriptionType extends CMDBModel{
         this.id = id;
     }
 
-    public List<Log> getLogs() {
-        return logs;
+    public int getValue() {
+        return value;
     }
 
-    public void setLogs(List<Log> logs) {
-        this.logs = logs;
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public String getDisplay() {
+        return display;
+    }
+
+    public void setDisplay(String display) {
+        this.display = display;
     }
 }

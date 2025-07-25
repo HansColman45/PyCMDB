@@ -2,7 +2,7 @@ package be.cmdb.builders;
 
 import com.github.javafaker.Faker;
 
-public class GenericBuilder {
+public abstract class GenericBuilder<T> {
     private final Faker faker;
 
     public GenericBuilder() {
@@ -12,4 +12,6 @@ public class GenericBuilder {
     public Faker getFaker() {
         return faker;
     }
+
+    public abstract T build();
 }

@@ -62,4 +62,16 @@ public class ApplicationDAO implements BaseDAO<Application,Integer> {
         query.setParameter("name", name);
         return query.getResultList();
     }
+
+    /**
+     * Finds applications by the ID of the admin who last modified them.
+     * @param session the Hibernate session
+     * @param adminId the ID of the admin who last modified the application
+     * @return a list of applications that were last modified by the specified admin
+     */
+    public List<Application> findByLastModifiedAdminId(Session session, int adminId) {
+        Query<Application> query = session.createQuery("FROM Application WHERE lastModifiedAdminId = :adminId", Application.class);
+        query.setParameter("adminId", adminId);
+        return query.getResultList();
+    }
 }

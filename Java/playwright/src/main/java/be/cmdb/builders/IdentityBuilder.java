@@ -6,7 +6,7 @@ import be.cmdb.model.Identity;
  * Builder class for creating and configuring {@link Identity} objects.
  * Provides fluent methods to set properties of the Identity.
  */
-public class IdentityBuilder extends GenericBuilder {
+public class IdentityBuilder extends GenericBuilder<Identity> {
     private final Identity identity;
 
     /**
@@ -70,6 +70,11 @@ public class IdentityBuilder extends GenericBuilder {
      */
     public IdentityBuilder withUserId(String userId) {
         identity.setUserId(userId);
+        return this;
+    }
+
+    public IdentityBuilder withLastModifiedAdminId(Integer adminId) {
+        identity.setLastModifiedAdminId(adminId);
         return this;
     }
 

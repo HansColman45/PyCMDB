@@ -23,7 +23,7 @@ import be.cmdb.model.Type;
 /**
  * Builder for creating Log entities with default values.
  */
-public class LogBuilder extends GenericBuilder {
+public class LogBuilder extends GenericBuilder<Log> {
     private final Log log;
 
     /**

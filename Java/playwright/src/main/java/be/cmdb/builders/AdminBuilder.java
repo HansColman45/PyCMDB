@@ -5,11 +5,14 @@ import be.cmdb.model.Admin;
 import javax.xml.bind.DatatypeConverter;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+
 /**
  * Builder class for creating and configuring {@link Admin} objects.
  * Provides fluent methods to set properties of the Admin.
  */
-public class AdminBuilder extends GenericBuilder {
+public class AdminBuilder extends GenericBuilder<Admin> {
     private final Admin admin;
 
     /**
@@ -21,12 +24,13 @@ public class AdminBuilder extends GenericBuilder {
         admin = new Admin();
         admin.setLevel(9);
         admin.setActive(1);
+        admin.setDateSet(LocalDateTime.now(ZoneOffset.UTC));
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update("1234".getBytes());
             byte[] digest = md.digest();
             admin.setPassword(DatatypeConverter
-                .printHexBinary(digest).toUpperCase());
+                .printHexBinary(digest).toLowerCase());
         }
         catch (NoSuchAlgorithmException ex)
         {

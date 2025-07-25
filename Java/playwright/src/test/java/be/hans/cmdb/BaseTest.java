@@ -1,12 +1,17 @@
 package be.hans.cmdb;
 
+import be.cmdb.dao.AccountDAO;
+import be.cmdb.helpers.AdminHelper;
+import be.cmdb.model.Account;
+import be.cmdb.model.Admin;
 import be.cmdb.pages.LoginPage;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.Playwright;
-import java.util.List;
+
+import java.util.Arrays;
 import java.util.Random;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -29,6 +34,7 @@ class BaseTest {
     private Page page;
     private Session session;
     private final Random random = new Random();
+    private Admin admin;
 
     /**
      * Launches the browser before all tests.
@@ -38,7 +44,7 @@ class BaseTest {
         playwright = Playwright.create();
         browser = playwright.chromium().launch(new BrowserType.LaunchOptions()
             .setHeadless(false)
-            .setArgs(List.of("--start-maximized"))
+            .setArgs(Arrays.asList("--start-maximized"))
         );
     }
 
@@ -60,6 +66,7 @@ class BaseTest {
         page = context.newPage();
         SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
         session = sessionFactory.openSession();
+        admin = AdminHelper.createNewCMDBAdmin(session);
     }
 
     /**
@@ -67,6 +74,7 @@ class BaseTest {
      */
     @AfterEach
     void closeContext() {
+        AdminHelper.deleteAllObjectsCreatedByAdmin(session, admin);
         context.close();
         session.close();
     }
@@ -76,9 +84,11 @@ class BaseTest {
      */
     @Test
     void canLogin() {
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(session, admin.getAccountId());
         LoginPage loginPage = new LoginPage(page);
         loginPage.navigate();
-        loginPage.login("Root", "796724Md");
+        loginPage.login(account.getUserId(), "1234");
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
     }
@@ -87,23 +97,15 @@ class BaseTest {
      * Returns the current Playwright Page object.
      * @return Current Playwright Page
      */
-    public Page getPage() {
+    protected Page getPage() {
         return page;
-    }
-
-    /**
-     * Sets the current Playwright Page object.
-     * @param page
-     */
-    public void setPage(Page page) {
-        this.page = page;
     }
 
     /**
      * Returns the current Hibernate Session object.
      * @return Current Hibernate Session
      */
-    public Session getSession() {
+    protected Session getSession() {
         return session;
     }
 
@@ -114,5 +116,13 @@ class BaseTest {
     protected String getRandomInt() {
         int rnd = random.nextInt(1000);
         return String.valueOf(rnd);
+    }
+
+    /**
+     * Returns the current Admin object.
+     * @return Current Admin
+     */
+    protected Admin getAdmin() {
+        return admin;
     }
 }
