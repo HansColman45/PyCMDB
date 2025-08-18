@@ -19,6 +19,7 @@ public class Account extends CMDBModel {
     private int typeId;
     private int applicationId;
     private String userId;
+
     @OneToMany(mappedBy = "accountId")
     private final List<Log> logs = new java.util.ArrayList<>();
 

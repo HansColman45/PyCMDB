@@ -89,6 +89,15 @@ public final class AdminHelper {
         return admin;
     }
 
+    /**
+     * Creates a simple Admin with the specified level and active status.
+     * @param session the Hibernate session
+     * @param account the Account associated with the Admin
+     * @param admin the Admin who is creating this new Admin
+     * @param level the level of the new Admin
+     * @param active whether the new Admin is active
+     * @return a new Admin entity persisted in the database
+     */
     public static Admin createSimpleAdmin(Session session, Account account, Admin admin, int level, boolean active) {
         Transaction transaction = session.beginTransaction();
         Admin newAdmin = new AdminBuilder()
@@ -138,7 +147,7 @@ public final class AdminHelper {
         for (AssetType assetType : assetTypes) {
             AssetTypeHelper.deleteAssetType(session,assetType);
         }
-        //IdentitiyTypes
+        //IdentityTypes
         IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
         List<Type> identityTypes = identityTypeDAO.findByLastModifiedAdminId(session, admin.getAdminId());
         for (Type identityType : identityTypes) {

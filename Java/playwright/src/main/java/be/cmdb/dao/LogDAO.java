@@ -212,4 +212,17 @@ public class LogDAO implements BaseDAO<Log, Integer> {
         query.setParameter("typeId", typeId);
         return query.getResultList();
     }
+
+    /**
+     * Finds log entries by assetTag using the provided session.
+     * @param session the Hibernate session to use
+     * @param assetTag the asset tag to search for
+     * @return list of Log entities associated with the asset tag
+     */
+    public List<Log> findByAssetTag(Session session, String assetTag) {
+        Query<Log> query = session.createQuery(
+            "FROM Log WHERE assetTag = :assetTag", Log.class);
+        query.setParameter("assetTag", assetTag);
+        return query.getResultList();
+    }
 }

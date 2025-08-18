@@ -23,6 +23,7 @@ public class Admin extends CMDBModel {
     private int level;
     private String password;
     private LocalDateTime dateSet;
+
     @OneToMany(mappedBy = "adminId")
     private final List<Log> logs = new java.util.ArrayList<>();
 

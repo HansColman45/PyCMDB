@@ -14,6 +14,11 @@ public class Mobile extends CMDBModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int mobileId;
+    private long imei;
+    private int typeId;
+    private int identityId;
+    private int categoryId;
+
     @OneToMany
     @JoinColumn(name = "mobileId", nullable = true)
     private List<Log> logs;
@@ -32,5 +37,37 @@ public class Mobile extends CMDBModel{
 
     public void setLogs(List<Log> logs) {
         this.logs = logs;
+    }
+
+    public long getImei() {
+        return imei;
+    }
+
+    public void setImei(long imei) {
+        this.imei = imei;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getIdentityId() {
+        return identityId;
+    }
+
+    public void setIdentityId(int identityId) {
+        this.identityId = identityId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 }

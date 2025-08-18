@@ -1,6 +1,9 @@
 package be.hans.cmdb;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import be.cmdb.dao.AccountDAO;
+import be.cmdb.model.Account;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -29,7 +32,9 @@ class IdentityTest extends BaseTest {
         Identity identity = IdentityHelper.createRandomIdentity();
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
-        MainPage mainPage = loginPage.login("Root", "796724Md");
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(getSession(), getAdmin().getAccountId());
+        MainPage mainPage = loginPage.login(account.getUserId(), defaultPassword());
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
         IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
@@ -65,7 +70,9 @@ class IdentityTest extends BaseTest {
         Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin());
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
-        MainPage mainPage = loginPage.login("Root", "796724Md");
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(getSession(), getAdmin().getAccountId());
+        MainPage mainPage = loginPage.login(account.getUserId(), defaultPassword());
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
         IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();

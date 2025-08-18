@@ -14,6 +14,12 @@ public class Key extends CMDBModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int keyId;
+    private int amountOfKeys;
+    private boolean hasLock;
+    private int typeId;
+    private int categoryId;
+    private String assetTag;
+
     @OneToMany
     @JoinColumn(name = "kensingtonId", nullable = true)
     private List<Log> logs;
@@ -24,6 +30,46 @@ public class Key extends CMDBModel{
 
     public void setKeyId(int keyId) {
         this.keyId = keyId;
+    }
+
+    public int getAmountOfKeys() {
+        return amountOfKeys;
+    }
+
+    public void setAmountOfKeys(int amountOfKeys) {
+        this.amountOfKeys = amountOfKeys;
+    }
+
+    public boolean isHasLock() {
+        return hasLock;
+    }
+
+    public void setHasLock(boolean hasLock) {
+        this.hasLock = hasLock;
+    }
+
+    public int getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId = typeId;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getAssetTag() {
+        return assetTag;
+    }
+
+    public void setAssetTag(String assetTag) {
+        this.assetTag = assetTag;
     }
 
     public List<Log> getLogs() {

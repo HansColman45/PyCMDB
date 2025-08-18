@@ -1,5 +1,7 @@
 package be.cmdb.helpers;
 
+import be.cmdb.builders.IdentityTypeBuilder;
+import be.cmdb.builders.LogBuilder;
 import be.cmdb.dao.IdentityTypeDAO;
 import be.cmdb.dao.LogDAO;
 import be.cmdb.model.Admin;
@@ -11,10 +13,38 @@ import java.util.List;
 
 public class IdentityTypeHelper {
 
-    public static Type createIdentityType(Session session, Admin admin){
-        return new Type();
+    /**
+     * Creates a new identity type with default values for testing purposes.
+     * @param session the Hibernate session to use
+     * @param admin the Admin who will create the identity type
+     * @return a new Type entity persisted in the database
+     */
+    public static Type createIdentityType(Session session, Admin admin, boolean active) {
+        Type type = new IdentityTypeBuilder()
+            .withActive(active ? 1 : 0)
+            .withLastModifiedAdminId(admin.getAdminId())
+            .build();
+
+        Transaction transaction = session.beginTransaction();
+        IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
+        type = identityTypeDAO.save(session, type);
+
+        Log log = new LogBuilder()
+            .withType(type)
+            .withLogText("IdentityType with ID: " + type.getTypeId() + " created by Admin ID: " + admin.getAdminId())
+            .build();
+        LogDAO logDAO = new LogDAO();
+        logDAO.save(session, log);
+        transaction.commit();
+
+        return type;
     }
 
+    /**
+     * Deletes an IdentityType and all associated logs from the database.
+     * @param session the Hibernate session to use for the transaction
+     * @param type the IdentityType to delete
+     */
     public static void deleteType(Session session, Type type){
         Transaction transaction = session.beginTransaction();
         LogDAO logDAO = new LogDAO();

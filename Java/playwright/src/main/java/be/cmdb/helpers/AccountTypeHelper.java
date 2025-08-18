@@ -1,7 +1,9 @@
 package be.cmdb.helpers;
 
+import be.cmdb.builders.AccountTypeBuilder;
 import be.cmdb.dao.AccountTypeDAO;
 import be.cmdb.dao.LogDAO;
+import be.cmdb.model.Admin;
 import be.cmdb.model.Log;
 import be.cmdb.model.Type;
 import org.hibernate.Session;
@@ -10,6 +12,18 @@ import org.hibernate.Transaction;
 import java.util.List;
 
 public class AccountTypeHelper {
+
+    public Type createDefaultAccountType(Session session, Admin admin, boolean active) {
+        Transaction transaction = session.beginTransaction();
+        AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
+        Type type = new AccountTypeBuilder()
+            .withLastModifiedAdminId(admin.getAdminId())
+            .withActive(active ? 1 : 0)
+            .build();
+
+        accountTypeDAO.save(session, type);
+        return type;
+    }
 
     public static void deleteAccountType(Session session, Type type){
         Transaction transaction = session.beginTransaction();

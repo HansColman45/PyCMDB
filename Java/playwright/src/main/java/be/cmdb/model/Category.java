@@ -13,6 +13,9 @@ public class Category extends CMDBModel{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    private String category;
+    private String prefix;
+
     @OneToMany(mappedBy = "assetCategoryId")
     private final List<Log> logs = new java.util.ArrayList<>();
 
@@ -22,6 +25,22 @@ public class Category extends CMDBModel{
 
     public void setId(int Id) {
         this.id = Id;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public String getPrefix() {
+        return prefix;
+    }
+
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
     }
 
     public List<Log> getLogs() {

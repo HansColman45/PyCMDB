@@ -88,7 +88,7 @@ class BaseTest {
         Account account = accountDAO.findById(session, admin.getAccountId());
         LoginPage loginPage = new LoginPage(page);
         loginPage.navigate();
-        loginPage.login(account.getUserId(), "1234");
+        loginPage.login(account.getUserId(), defaultPassword());
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
     }
@@ -124,5 +124,9 @@ class BaseTest {
      */
     protected Admin getAdmin() {
         return admin;
+    }
+
+    protected String defaultPassword() {
+        return "1234";
     }
 }
