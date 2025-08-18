@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class Identity extends CMDBModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idenId;
+    private Integer idenId;
     @Transient
     private String firstName;
     @Transient
@@ -34,7 +34,7 @@ public class Identity extends CMDBModel {
     @NotNull
     private String name;
     @NotNull
-    private int typeId;
+    private Integer typeId;
     @NotNull
     private String languageCode;
     @OneToMany
@@ -45,7 +45,7 @@ public class Identity extends CMDBModel {
      * Gets the identifier for the identity.
      * @return the identifier for the identity
      */
-    public int getIdenId() {
+    public Integer getIdenId() {
         return this.idenId;
     }
 
@@ -53,7 +53,7 @@ public class Identity extends CMDBModel {
      * Sets the identifier for the identity.
      * @param idenId the identifier for the identity
      */
-    public void setIdenId(int idenId) {
+    public void setIdenId(Integer idenId) {
         this.idenId = idenId;
     }
 
@@ -167,7 +167,7 @@ public class Identity extends CMDBModel {
      * Gets the type ID of the identity.
      * @return The type ID of the identity
      */
-    public int getTypeId() {
+    public Integer getTypeId() {
         return typeId;
     }
 
@@ -175,7 +175,7 @@ public class Identity extends CMDBModel {
      * Sets the type ID of the identity.
      * @param typeId the type ID of the identity
      */
-    public void setTypeId(int typeId) {
+    public void setTypeId(Integer typeId) {
         this.typeId = typeId;
     }
 

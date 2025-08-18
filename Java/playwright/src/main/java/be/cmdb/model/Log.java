@@ -20,7 +20,7 @@ import jakarta.validation.constraints.NotNull;
 public class Log {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @NotNull
     private String logText;
     @NotNull
@@ -51,7 +51,7 @@ public class Log {
     private Identity identityId;
     @JoinColumn(name = "kensingtonId", referencedColumnName="keyId")
     @ManyToOne(cascade = CascadeType.PERSIST)
-    private Key kensingtonId;
+    private Kensington kensingtonId;
     @JoinColumn(name = "menuId", referencedColumnName="menuId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Menu menuId;
@@ -81,7 +81,7 @@ public class Log {
      * Gets the unique identifier of the log entry.
      * @return the ID of the log entry
     */
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
@@ -89,7 +89,7 @@ public class Log {
      * Sets the unique identifier of the log entry.
      * @param id the ID to set for the log entry
      */
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -181,11 +181,11 @@ public class Log {
         this.identityId = identity;
     }
 
-    public Key getKensingtonId() {
+    public Kensington getKensingtonId() {
         return kensingtonId;
     }
 
-    public void setKensingtonId(Key kensington) {
+    public void setKensingtonId(Kensington kensington) {
         this.kensingtonId = kensington;
     }
 

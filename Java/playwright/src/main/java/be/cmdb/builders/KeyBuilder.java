@@ -1,20 +1,20 @@
 package be.cmdb.builders;
 
-import be.cmdb.model.Key;
+import be.cmdb.model.Kensington;
 
-public class KeyBuilder extends GenericBuilder<Key> {
-    private final Key key;
+public class KeyBuilder extends GenericBuilder<Kensington> {
+    private final Kensington kensington;
 
     public KeyBuilder() {
-        this.key = new Key();
+        this.kensington = new Kensington();
     }
 
     public KeyBuilder withLastModifiedAdminId(int lastModifiedAdminId){
-        key.setLastModifiedAdminId(lastModifiedAdminId);
+        kensington.setLastModifiedAdminId(lastModifiedAdminId);
         return this;
     }
 
-    public Key build() {
-        return this.key;
+    public Kensington build() {
+        return this.kensington;
     }
 }

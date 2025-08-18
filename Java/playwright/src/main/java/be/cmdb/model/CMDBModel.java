@@ -1,23 +1,26 @@
 package be.cmdb.model;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import jakarta.validation.constraints.NotNull;
 
 /**
  * Base model class for CMDB entities, providing common fields.
  */
+@MappedSuperclass
 public class CMDBModel {
     @NotNull
-    private int active;
-    private int lastModifiedAdminId;
-    @Column(name = "Deactivate_reason")
-    private String deactivateReason;
+    private Integer active;
+    @Column(nullable = false)
+    private Integer lastModifiedAdminId;
+    @Column(name = "Deactivate_reason", nullable = false)
+    private String deactivateReason = null;
 
     /**
      * Gets the active status of the model.
      * @return the active status, where 1 means active and 0 means inactive
      */
-    public int getActive() {
+    public Integer getActive() {
         return active;
     }
 
@@ -25,7 +28,7 @@ public class CMDBModel {
      * Sets the active status of the model.
      * @param active the active status to set, where 1 means active and 0 means inactive
      */
-    public void setActive(int active) {
+    public void setActive(Integer active) {
         this.active = active;
     }
 
@@ -33,7 +36,7 @@ public class CMDBModel {
      * Gets the ID of the last admin who modified the model.
      * @return the ID of the last admin
      */
-    public int getLastModifiedAdminId() {
+    public Integer getLastModifiedAdminId() {
         return lastModifiedAdminId;
     }
 
@@ -41,7 +44,7 @@ public class CMDBModel {
      * Sets the ID of the last admin who modified the model.
      * @param lastModifiedAdminId The AdminID of the last modifier
      */
-    public void setLastModifiedAdminId(int lastModifiedAdminId) {
+    public void setLastModifiedAdminId(Integer lastModifiedAdminId) {
         this.lastModifiedAdminId = lastModifiedAdminId;
     }
 

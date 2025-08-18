@@ -40,7 +40,7 @@ public class LaptopHelper {
 
         Log log = new LogBuilder()
             .withDevice(laptop)
-            .withLogText("The Laptop with type "+ + "is created by Automation in table laptop")
+            .withLogText("The Laptop with type  is created by Automation in table laptop")
             .build();
 
         LogDAO logDAO = new LogDAO();

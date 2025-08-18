@@ -10,7 +10,7 @@ import be.cmdb.model.AssetType;
 import be.cmdb.model.Category;
 import be.cmdb.model.Device;
 import be.cmdb.model.Identity;
-import be.cmdb.model.Key;
+import be.cmdb.model.Kensington;
 import be.cmdb.model.Menu;
 import be.cmdb.model.Mobile;
 import be.cmdb.model.Permission;
@@ -119,7 +119,7 @@ public class LogBuilder extends GenericBuilder<Log> {
      * @param kensington Key instance to associate with the log entry
      * @return LogBuilder instance for method chaining
      */
-    public LogBuilder withKensington(Key kensington) {
+    public LogBuilder withKensington(Kensington kensington) {
         log.setKensingtonId(kensington);
         return this;
     }

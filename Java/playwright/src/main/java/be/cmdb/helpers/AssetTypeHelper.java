@@ -64,7 +64,7 @@ public class AssetTypeHelper {
         LogDAO logDAO = new LogDAO();
 
         // Delete all logs associated with the type
-        List<Log> logs = logDAO.findbyAssetTypeId(session, type.getTypeId());
+        List<Log> logs = logDAO.findByAssetTypeId(session, type.getTypeId());
         for (Log log : logs) {
             logDAO.delete(session, log);
         }

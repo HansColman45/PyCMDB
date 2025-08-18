@@ -14,7 +14,7 @@
         <mapping class="be.cmdb.model.Category"/>
         <mapping class="be.cmdb.model.Device"/>
         <mapping class="be.cmdb.model.Identity"/>
-        <mapping class="be.cmdb.model.Key"/>
+        <mapping class="be.cmdb.model.Kensington"/>
         <mapping class="be.cmdb.model.Language"/>
         <mapping class="be.cmdb.model.Log"/>
         <mapping class="be.cmdb.model.Menu"/>

@@ -9,8 +9,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 
-@Entity(name = "key")
-public class Key extends CMDBModel{
+@Entity(name = "Kensington")
+public class Kensington extends CMDBModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int keyId;

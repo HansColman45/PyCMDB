@@ -85,6 +85,7 @@ public final class IdentityHelper {
     public static void deleteIdentity(Session session, Identity identity) {
         Transaction transaction = session.beginTransaction();
         IdentityDAO identityDAO = new IdentityDAO();
+
         LogDAO logDAO = new LogDAO();
         List<Log> logs = logDAO.findByIdentityId(session, identity.getIdenId());
         for (Log log : logs) {

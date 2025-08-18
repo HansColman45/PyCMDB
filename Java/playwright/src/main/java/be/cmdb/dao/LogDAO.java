@@ -1,5 +1,6 @@
 package be.cmdb.dao;
 
+import be.cmdb.model.Identity;
 import be.cmdb.model.Log;
 import java.util.List;
 import org.hibernate.JDBCException;
@@ -118,15 +119,16 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @param identityId the identity ID to search for
      * @return list of Log entities associated with the identity
      */
-    public List<Log> findByIdentityId(Session session, int identityId) {
-        try {
-            Query<Log> query = session.createQuery(
-                "FROM Log WHERE identityId = :identityId ORDER BY logDate DESC", Log.class);
-            query.setParameter("identityId", identityId);
-            return query.getResultList();
-        } catch (JDBCException e) {
-            throw new RuntimeException("Error finding logs by identity ID: " + e.getMessage(), e);
-        }
+    public List<Log> findByIdentityId(Session session, Integer identityId) {
+        String hql = "select {l.*}, {i.*} FROM Log l join \"Identity\" i on i.idenId = l.identityId " +
+            " where l.identityId = :identityId";
+        //Query<Log> query = session.createQuery("FROM Log WHERE identityId = :identityId ORDER BY logDate DESC", Log.class);
+        Query<Log> query = session.createNativeQuery(hql, Log.class)
+            .setParameter("identityId", identityId)
+            .addEntity("l",Log.class)
+            .addJoin("i", "l.identityId");
+
+        return query.getResultList();
     }
 
     /**
@@ -206,7 +208,7 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @param typeId the asset type ID to search for
      * @return list of Log entities associated with the asset type
      */
-    public List<Log> findbyAssetTypeId(Session session, int typeId) {
+    public List<Log> findByAssetTypeId(Session session, int typeId) {
         Query<Log> query = session.createQuery(
             "FROM Log WHERE assetTypeId = :typeId", Log.class);
         query.setParameter("typeId", typeId);

@@ -122,12 +122,11 @@ public final class AdminHelper {
     }
 
     public static void deleteAllObjectsCreatedByAdmin(Session session, Admin admin) {
-        Transaction transaction = session.beginTransaction();
         //Keys
-        KeyDAO keyDAO = new KeyDAO();
-        List<Key> keys = keyDAO.findByLastModifiedAdminId(session, admin.getAdminId());
-        for (Key key : keys) {
-            KeyHelper.deleteKey(session, key);
+        KensingtonDAO kensingtonDAO = new KensingtonDAO();
+        List<Kensington> kensingtons = kensingtonDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Kensington kensington : kensingtons) {
+            KeyHelper.deleteKey(session, kensington);
         }
         //Mobiles
         MobileDAO mobileDAO = new MobileDAO();
@@ -160,6 +159,10 @@ public final class AdminHelper {
             IdentityHelper.deleteIdentity(session, identity);
         }
 
+        Transaction transaction = session.beginTransaction();
+        //Delete the Admin itself
+        AdminDAO adminDAO = new AdminDAO();
+        adminDAO.delete(session, admin);
         transaction.commit();
     }
 }
