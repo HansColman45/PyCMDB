@@ -17,6 +17,7 @@ public class IdentityTypeHelper {
      * Creates a new identity type with default values for testing purposes.
      * @param session the Hibernate session to use
      * @param admin the Admin who will create the identity type
+     * @param active whether the identity type should be active (1) or not (0)
      * @return a new Type entity persisted in the database
      */
     public static Type createIdentityType(Session session, Admin admin, boolean active) {

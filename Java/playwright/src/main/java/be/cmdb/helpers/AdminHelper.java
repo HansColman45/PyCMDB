@@ -2,8 +2,27 @@ package be.cmdb.helpers;
 
 import java.util.List;
 
-import be.cmdb.dao.*;
-import be.cmdb.model.*;
+import be.cmdb.dao.AccountDAO;
+import be.cmdb.dao.AccountTypeDAO;
+import be.cmdb.dao.AdminDAO;
+import be.cmdb.dao.ApplicationDAO;
+import be.cmdb.dao.AssetTypeDAO;
+import be.cmdb.dao.IdentityDAO;
+import be.cmdb.dao.IdentityTypeDAO;
+import be.cmdb.dao.KensingtonDAO;
+import be.cmdb.dao.LogDAO;
+import be.cmdb.dao.LaptopDAO;
+import be.cmdb.dao.MobileDAO;
+import be.cmdb.model.Account;
+import be.cmdb.model.Admin;
+import be.cmdb.model.Application;
+import be.cmdb.model.AssetType;
+import be.cmdb.model.Device;
+import be.cmdb.model.Identity;
+import be.cmdb.model.Kensington;
+import be.cmdb.model.Log;
+import be.cmdb.model.Type;
+import be.cmdb.model.Mobile;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

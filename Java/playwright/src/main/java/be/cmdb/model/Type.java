@@ -13,7 +13,7 @@ import jakarta.validation.constraints.NotNull;
 /**
  * Represents a general type in the CMDB system.
  */
-@Entity(name="Type")
+@Entity(name = "Type")
 public class Type extends CMDBModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

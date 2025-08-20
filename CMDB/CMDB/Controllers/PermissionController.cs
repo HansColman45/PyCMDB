@@ -19,7 +19,7 @@ namespace CMDB.Controllers
         public PermissionController(IWebHostEnvironment env) : base(env)
         {
             service = new();
-            SitePart = "Permission";
+            SitePart = "Permissions";
             Table = "permission";
         }
         /// <summary>
@@ -30,31 +30,33 @@ namespace CMDB.Controllers
         {
             log.Debug("Using list all for {0}", SitePart);
             await BuildMenu();
-            ViewData["Title"] = "Permissiont overview";
+            ViewData["Title"] = "Permission overview";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\Permission\Search";
+            ViewData["Controller"] = @"\Permission\Create";
             var permissions = await service.ListAll();
             return View(permissions);
         }
         /// <summary>
         /// The searrch page
         /// </summary>
-        /// <param name="searchStr"></param>
+        /// <param name="search"></param>
         /// <returns></returns>
-        public async Task<IActionResult> Search(string searchStr)
+        public async Task<IActionResult> Search(string search)
         {
-            log.Debug("Searching for {0} in {1}", searchStr, SitePart);
+            log.Debug("Searching for {0} in {1}", search, SitePart);
             await BuildMenu();
-            ViewData["Title"] = "Permissiont overview";
+            ViewData["Title"] = "Permission overview";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             ViewData["InfoAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Read");
             ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
             ViewData["UpdateAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
             ViewData["actionUrl"] = @"\Permission\Search";
-            var permissions = await service.ListAll(searchStr);
+            ViewData["Controller"] = @"\Permission\Create";
+            var permissions = await service.ListAll(search);
             return View("Index", permissions);
         }
     }

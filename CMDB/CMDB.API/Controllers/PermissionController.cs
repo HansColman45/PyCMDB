@@ -15,7 +15,7 @@ namespace CMDB.API.Controllers
     public class PermissionController: ControllerBase
     {
         private readonly IUnitOfWork _uow;
-        private readonly string site = "Account";
+        private readonly string site = "Permissions";
         private readonly ILogger<PermissionController> _logger;
         private HasAdminAccessRequest request;
 

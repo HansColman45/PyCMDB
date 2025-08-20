@@ -52,6 +52,8 @@ public final class IdentityHelper {
     /**
      * Creates a random Identity object and persists it to the database using the provided session.
      * @param session The current hibernate session
+     * @param admin The Admin who is creating this Identity
+     * @param active Whether the Identity should be active (1) or not (0)
      * @return Identity object that has been persisted to the database
      */
     public static Identity createRandomIdentity(Session session, Admin admin, boolean active) {

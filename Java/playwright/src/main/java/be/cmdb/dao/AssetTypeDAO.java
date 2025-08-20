@@ -26,7 +26,7 @@ public class AssetTypeDAO implements BaseDAO<AssetType, Integer>{
 
     @Override
     public List<AssetType> findAll(Session session) {
-        Query<AssetType> query= session.createQuery("FROM AssetType", AssetType.class);
+        Query<AssetType> query = session.createQuery("FROM AssetType", AssetType.class);
         return query.getResultList();
     }
 

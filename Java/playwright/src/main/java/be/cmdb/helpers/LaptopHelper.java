@@ -5,7 +5,11 @@ import be.cmdb.builders.LogBuilder;
 import be.cmdb.dao.CategoryDAO;
 import be.cmdb.dao.LaptopDAO;
 import be.cmdb.dao.LogDAO;
-import be.cmdb.model.*;
+import be.cmdb.model.Admin;
+import be.cmdb.model.AssetType;
+import be.cmdb.model.Category;
+import be.cmdb.model.Device;
+import be.cmdb.model.Log;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

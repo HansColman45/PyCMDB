@@ -16,7 +16,7 @@ public class TypeOverviewPage extends CMDBPage {
     /**
      * Activates the selected Type.
      */
-    public void Activate(){
+    public void activate(){
         this.activateButton().click();
     }
 }

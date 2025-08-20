@@ -1,7 +1,6 @@
 package be.cmdb.dao;
 
 import be.cmdb.model.Category;
-import be.cmdb.model.Log;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 

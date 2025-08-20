@@ -4,7 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import be.cmdb.dao.AccountDAO;
 import be.cmdb.model.Account;
-import be.cmdb.pages.identity.*;
+import be.cmdb.pages.identity.CreateIdentityPage;
+import be.cmdb.pages.identity.DeleteIdentityPage;
+import be.cmdb.pages.identity.EditIdentityPage;
+import be.cmdb.pages.identity.IdentityDetailsPage;
+import be.cmdb.pages.identity.IdentityOverviewPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -147,7 +151,7 @@ class IdentityTest extends BaseTest {
         assertThat(isLoggedIn).isTrue();
         IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
         overviewPage.search(identity.getUserId());
-        overviewPage.Activate();
+        overviewPage.activate();
         // Verify that the identity is activated
         overviewPage.search(identity.getUserId());
         IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();

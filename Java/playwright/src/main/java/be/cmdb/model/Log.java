@@ -28,52 +28,52 @@ public class Log {
     /**
      * Foreign key relationships to other entities.
      */
-    @JoinColumn(name = "accountId", referencedColumnName="accId")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "accountId", referencedColumnName = "accId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Account accountId;
-    @JoinColumn(name = "adminId", referencedColumnName="Admin_id")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "adminId", referencedColumnName = "Admin_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Admin adminId;
-    @JoinColumn(name = "applicationId", referencedColumnName="appId")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "applicationId", referencedColumnName = "appId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Application applicationId;
-    @JoinColumn(name = "assetTypeId", referencedColumnName="typeId")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "assetTypeId", referencedColumnName = "typeId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private AssetType assetTypeId;
-    @JoinColumn(name = "assetCategoryId", referencedColumnName="id")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "assetCategoryId", referencedColumnName = "id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Category assetCategoryId;
-    @JoinColumn(name = "assetTag", referencedColumnName="assetTag")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "assetTag", referencedColumnName = "assetTag")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Device assetTag;
-    @JoinColumn(name = "identityId", referencedColumnName="idenId")
-    @ManyToOne(cascade= CascadeType.PERSIST)
+    @JoinColumn(name = "identityId", referencedColumnName = "idenId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Identity identityId;
-    @JoinColumn(name = "kensingtonId", referencedColumnName="keyId")
+    @JoinColumn(name = "kensingtonId", referencedColumnName = "keyId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Kensington kensingtonId;
-    @JoinColumn(name = "menuId", referencedColumnName="menuId")
+    @JoinColumn(name = "menuId", referencedColumnName = "menuId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Menu menuId;
-    @JoinColumn(name = "mobileId", referencedColumnName="mobileId")
+    @JoinColumn(name = "mobileId", referencedColumnName = "mobileId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Mobile mobileId;
-    @JoinColumn(name = "permissionId", referencedColumnName="id")
+    @JoinColumn(name = "permissionId", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Permission permissionId;
-    @JoinColumn(name = "roleId", referencedColumnName="roleId")
+    @JoinColumn(name = "roleId", referencedColumnName = "roleId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Role roleId;
-    @JoinColumn(name = "rolePermId", referencedColumnName="id")
+    @JoinColumn(name = "rolePermId", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private RolePermission rolePermId;
-    @JoinColumn(name = "subscriptionId", referencedColumnName="subscriptionId")
+    @JoinColumn(name = "subscriptionId", referencedColumnName = "subscriptionId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Subscription subscriptionId;
-    @JoinColumn(name = "subscriptionTypeId", referencedColumnName="id")
+    @JoinColumn(name = "subscriptionTypeId", referencedColumnName = "id")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private SubscriptionType subscriptionTypeId;
-    @JoinColumn(name = "typeId", referencedColumnName="typeId")
+    @JoinColumn(name = "typeId", referencedColumnName = "typeId")
     @ManyToOne(cascade = CascadeType.PERSIST)
     private Type typeId;
 
