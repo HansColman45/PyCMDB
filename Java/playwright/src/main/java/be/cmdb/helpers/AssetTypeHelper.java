@@ -32,19 +32,15 @@ public class AssetTypeHelper {
         AssetType assetType = new AssetTypeBuilder()
             .withLastModifiedAdminId(admin.getAdminId())
             .withCategoryId(category.getId())
+            .withActive(active ? 1 : 0)
             .build();
         AssetTypeDAO assetTypeDAO = new AssetTypeDAO();
         assetType = assetTypeDAO.save(session, assetType);
 
-        if(!active) {
-            assetType.setActive(0);
-            assetType = assetTypeDAO.update(session, assetType);
-        }
-
         Log log = new LogBuilder()
             .withAssetType(assetType)
             .withLogText("The " + category.getCategory() + "type Vendor: " + assetType.getVendor() +
-                " and type: " + assetType.getType() + " is created by Automation in table asset_type")
+                " and type: " + assetType.getType() + " is created by Automation in table assettype")
             .build();
         LogDAO  logDAO = new LogDAO();
         logDAO.save(session, log);

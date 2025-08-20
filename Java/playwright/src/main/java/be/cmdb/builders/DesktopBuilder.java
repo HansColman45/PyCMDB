@@ -29,6 +29,11 @@ public class DesktopBuilder extends GenericBuilder<Device> {
         return this;
     }
 
+    public DesktopBuilder withActive(int active) {
+        desktop.setActive(active);
+        return this;
+    }
+
     @Override
     public Device build() {
         return this.desktop;

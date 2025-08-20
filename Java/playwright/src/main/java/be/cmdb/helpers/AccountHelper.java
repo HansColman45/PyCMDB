@@ -63,7 +63,7 @@ public final class AccountHelper {
      * @param session the Hibernate session
      * @param account the account to be deleted
      */
-    public void delete(Session session, Account account) {
+    public static void delete(Session session, Account account) {
         Transaction transaction = session.beginTransaction();
         AccountDAO accountDAO = new AccountDAO();
         LogDAO logDAO = new LogDAO();

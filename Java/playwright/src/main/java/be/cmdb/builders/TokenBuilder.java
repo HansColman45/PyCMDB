@@ -28,6 +28,11 @@ public class TokenBuilder extends GenericBuilder<Device> {
         return this;
     }
 
+    public TokenBuilder withActive(int active) {
+        token.setActive(active);
+        return this;
+    }
+
     @Override
     public Device build() {
         return token;

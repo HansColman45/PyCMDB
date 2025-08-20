@@ -73,8 +73,23 @@ public class IdentityBuilder extends GenericBuilder<Identity> {
         return this;
     }
 
+    /**
+     * Sets the lastModifiedAdminId for the {@link Identity}.
+     * @param adminId the last modified admin ID to set
+     * @return this builder instance
+     */
     public IdentityBuilder withLastModifiedAdminId(Integer adminId) {
         identity.setLastModifiedAdminId(adminId);
+        return this;
+    }
+
+    /**
+     * Sets the active state for the {@link Identity}.
+     * @param active the company to set
+     * @return this builder instance
+     */
+    public IdentityBuilder withActive(Integer active) {
+        identity.setActive(active);
         return this;
     }
 

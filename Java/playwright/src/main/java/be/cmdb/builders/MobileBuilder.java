@@ -14,6 +14,11 @@ public class MobileBuilder extends GenericBuilder<Mobile> {
         return this;
     }
 
+    public MobileBuilder withActive(int active) {
+        this.mobile.setActive(active);
+        return this;
+    }
+
     @Override
     public Mobile build() {
         return this.mobile;

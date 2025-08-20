@@ -29,6 +29,16 @@ public class LaptopBuilder extends GenericBuilder<Device> {
         return this;
     }
 
+    public LaptopBuilder withActive(int active) {
+        laptop.setActive(active);
+        return this;
+    }
+
+    public LaptopBuilder withIdentityId(int identityId) {
+        laptop.setIdentityId(identityId);
+        return this;
+    }
+
     @Override
     public Device build() {
         return this.laptop;

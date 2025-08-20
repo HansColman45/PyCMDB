@@ -13,6 +13,7 @@ public class CMDBPage {
     private final Locator deleteButton;
     private final Locator detailsButton;
     private final Locator searchInput;
+    private final Locator activateButton;
     private final Page page;
 
     /**
@@ -26,6 +27,7 @@ public class CMDBPage {
         detailsButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Info"));
         deleteButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Deactivate"));
         searchInput = page.getByRole(AriaRole.TEXTBOX, new Page.GetByRoleOptions().setName("Search"));
+        activateButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Activate"));
     }
 
     /**
@@ -82,5 +84,13 @@ public class CMDBPage {
      */
     protected Page getPage() {
         return page;
+    }
+
+    /**
+     * Gets the Locator for the activate button.
+     * @return Locator for the activate button
+     */
+    protected Locator activateButton(){
+        return activateButton;
     }
 }

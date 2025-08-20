@@ -54,9 +54,10 @@ public final class IdentityHelper {
      * @param session The current hibernate session
      * @return Identity object that has been persisted to the database
      */
-    public static Identity createRandomIdentity(Session session, Admin admin) {
+    public static Identity createRandomIdentity(Session session, Admin admin, boolean active) {
         Identity identity = new IdentityBuilder()
             .withLastModifiedAdminId(admin.getAdminId())
+            .withActive(active ? 1 : 0)
             .build();
         IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
         Type identityType = identityTypeDAO.findByType(session, "Werknemer");
@@ -91,7 +92,7 @@ public final class IdentityHelper {
         for (Log log : logs) {
             logDAO.delete(session, log);
         }
-        identityDAO.delete(session, identity);
+        identityDAO.deleteById(session, identity.getIdenId());
         transaction.commit();
     }
 }

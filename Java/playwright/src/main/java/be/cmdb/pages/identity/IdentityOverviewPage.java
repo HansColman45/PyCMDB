@@ -42,4 +42,13 @@ public class IdentityOverviewPage extends CMDBPage {
         this.editButton().click();
         return new EditIdentityPage(getPage());
     }
+
+    public DeleteIdentityPage openDeleteIdentity() {
+        this.deleteButton().click();
+        return new DeleteIdentityPage(getPage());
+    }
+
+    public void Activate(){
+        this.activateButton().click();
+    }
 }

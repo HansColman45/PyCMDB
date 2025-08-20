@@ -22,6 +22,11 @@ public class AssetTypeBuilder extends GenericBuilder<AssetType> {
         return this;
     }
 
+    public AssetTypeBuilder withActive(int active) {
+        type.setActive(active);
+        return this;
+    }
+
     @Override
     public AssetType build() {
         return type;

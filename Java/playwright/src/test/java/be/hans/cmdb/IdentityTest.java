@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import be.cmdb.dao.AccountDAO;
 import be.cmdb.model.Account;
+import be.cmdb.pages.identity.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,10 +14,6 @@ import be.cmdb.helpers.IdentityHelper;
 import be.cmdb.model.Identity;
 import be.cmdb.pages.LoginPage;
 import be.cmdb.pages.MainPage;
-import be.cmdb.pages.identity.CreateIdentityPage;
-import be.cmdb.pages.identity.EditIdentityPage;
-import be.cmdb.pages.identity.IdentityDetailsPage;
-import be.cmdb.pages.identity.IdentityOverviewPage;
 
 /**
  * Test class for Identity operations in the CMDB application.
@@ -67,7 +64,7 @@ class IdentityTest extends BaseTest {
     void canUpdateIdentity(String field, String newValue) {
         String oldValue;
         newValue += getRandomInt(); // Ensure newValue is unique for the test
-        Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin());
+        Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin(), true);
         LoginPage loginPage = new LoginPage(getPage());
         loginPage.navigate();
         AccountDAO accountDAO = new AccountDAO();
@@ -112,5 +109,50 @@ class IdentityTest extends BaseTest {
             .contains("table identity")
             .contains(field)
             .contains(oldValue);
+    }
+
+    @Test
+    void canDeactivateIdentity() {
+        Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin(), true);
+        LoginPage loginPage = new LoginPage(getPage());
+        loginPage.navigate();
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(getSession(), getAdmin().getAccountId());
+        MainPage mainPage = loginPage.login(account.getUserId(), defaultPassword());
+        boolean isLoggedIn = loginPage.isUserLogedIn();
+        assertThat(isLoggedIn).isTrue();
+        IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
+        overviewPage.search(identity.getUserId());
+        DeleteIdentityPage deletePage = overviewPage.openDeleteIdentity();
+        deletePage.setReason("Test");
+        deletePage.deActivate();
+        // Verify that the identity is deactivated
+        overviewPage.search(identity.getUserId());
+        IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();
+        String logLine = detailsPage.getLastLogline();
+        assertThat(logLine).contains("table identity")
+            .contains("deleted due to Test")
+            .contains("by "+account.getUserId());
+    }
+
+    @Test
+    void canActivateIdentity() {
+        Identity identity = IdentityHelper.createRandomIdentity(getSession(), getAdmin(), false);
+        LoginPage loginPage = new LoginPage(getPage());
+        loginPage.navigate();
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(getSession(), getAdmin().getAccountId());
+        MainPage mainPage = loginPage.login(account.getUserId(), defaultPassword());
+        boolean isLoggedIn = loginPage.isUserLogedIn();
+        assertThat(isLoggedIn).isTrue();
+        IdentityOverviewPage overviewPage = mainPage.openIdentityOverview();
+        overviewPage.search(identity.getUserId());
+        overviewPage.Activate();
+        // Verify that the identity is activated
+        overviewPage.search(identity.getUserId());
+        IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();
+        String logLine = detailsPage.getLastLogline();
+        assertThat(logLine).contains("table identity")
+            .contains("activated by " + account.getUserId());
     }
 }

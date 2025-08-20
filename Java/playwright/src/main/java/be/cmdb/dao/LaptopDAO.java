@@ -8,7 +8,8 @@ import org.hibernate.query.Query;
 /**
  * Data Access Object for Device entities.
  */
-public class DeviceDAO implements BaseDAO<Device, String> {
+public class LaptopDAO implements BaseDAO<Device, String> {
+    private final String discriminator = "Laptop";
 
     @Override
     public Device save(Session session, Device entity) {
@@ -28,7 +29,7 @@ public class DeviceDAO implements BaseDAO<Device, String> {
 
     @Override
     public List<Device> findAll(Session session) {
-        return session.createQuery("from asset", Device.class).list();
+        return session.createQuery("from asset where discriminator = "+discriminator, Device.class).list();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class DeviceDAO implements BaseDAO<Device, String> {
 
     @Override
     public long count(Session session) {
-        return session.createQuery("select count(d) from asset d", Long.class).uniqueResult();
+        return session.createQuery("select count(d) from asset d where discriminator = "+discriminator, Long.class).uniqueResult();
     }
 
     /**
@@ -56,7 +57,7 @@ public class DeviceDAO implements BaseDAO<Device, String> {
      * @return List of devices matching the type ID
      */
     public List<Device> findByTypeId(Session session, int typeId) {
-        Query<Device> devices = session.createQuery("from assset where typeId = :typeId", Device.class);
+        Query<Device> devices = session.createQuery("from asset where typeId = :typeId", Device.class);
         devices.setParameter("typeId", typeId);
         return devices.getResultList();
     }

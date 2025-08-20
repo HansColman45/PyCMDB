@@ -28,6 +28,11 @@ public class ScreenBuilder extends GenericBuilder<Device> {
         return this;
     }
 
+    public ScreenBuilder withActive(int active) {
+        screen.setActive(active);
+        return this;
+    }
+
     @Override
     public Device build() {
         return this.screen;

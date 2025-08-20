@@ -74,6 +74,7 @@ public final class AdminHelper {
         Identity identity = new IdentityBuilder()
             .withTypeId(identityType.getTypeId())
             .withUserId(account.getUserId())
+            .withLastModifiedAdminId(admin.getAdminId())
             .build();
         IdentityDAO identityDAO = new IdentityDAO();
         identity = identityDAO.save(session, identity);
@@ -152,6 +153,13 @@ public final class AdminHelper {
         for (Type identityType : identityTypes) {
             IdentityTypeHelper.deleteType(session, identityType);
         }
+        //Delete all Laptop created by this admin
+        LaptopDAO laptopDAO = new LaptopDAO();
+        List<Device> laptops = laptopDAO.findByLastModifiedAdminId(session, admin.getAdminId());
+        for (Device laptop : laptops) {
+            LaptopHelper.deleteLaptop(session, laptop);
+        }
+
         //Delete all Identities created by this admin
         IdentityDAO identityDAO = new IdentityDAO();
         List<Identity> idens = identityDAO.findByLastModifiedAdminId(session, admin.getAdminId());
@@ -160,9 +168,18 @@ public final class AdminHelper {
         }
 
         Transaction transaction = session.beginTransaction();
+        List<Log> logs = new LogDAO().findByAdminId(session, admin.getAdminId());
+        for( Log log : logs) {
+            //Delete the log
+            new LogDAO().delete(session, log);
+        }
         //Delete the Admin itself
         AdminDAO adminDAO = new AdminDAO();
         adminDAO.delete(session, admin);
         transaction.commit();
+        //Delete the Account associated with the Admin
+        AccountDAO accountDAO = new AccountDAO();
+        Account account = accountDAO.findById(session, admin.getAccountId());
+        AccountHelper.delete(session, account);
     }
 }

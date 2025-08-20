@@ -16,7 +16,7 @@ public class IdentityDetailsPage extends CMDBPage {
      */
     public IdentityDetailsPage(Page page) {
         super(page);
-        lastLogline = page.locator("//td[contains(text(),'identity')]");
+        lastLogline = page.locator("//td[contains(text(),'identity')]").first();
     }
 
     /**

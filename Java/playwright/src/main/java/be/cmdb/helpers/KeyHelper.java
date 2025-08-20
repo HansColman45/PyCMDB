@@ -15,7 +15,7 @@ public class KeyHelper {
         Transaction transaction = session.beginTransaction();
         KensingtonDAO kensingtonDAO = new KensingtonDAO();
         LogDAO logDAO = new LogDAO();
-        List<Log> logs = logDAO.findByKeyId(session, kensington.getKeyId());
+        List<Log> logs = logDAO.findByKensingtonId(session, kensington.getKeyId());
         for (Log log : logs) {
             logDAO.delete(session, log);
         }

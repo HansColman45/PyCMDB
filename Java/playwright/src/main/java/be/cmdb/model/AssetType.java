@@ -60,4 +60,9 @@ public class AssetType extends CMDBModel{
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
+
+    @Override
+    public String toString() {
+        return getVendor() + " " + getType();
+    }
 }

@@ -2,15 +2,20 @@ package be.cmdb.builders;
 
 import be.cmdb.model.Kensington;
 
-public class KeyBuilder extends GenericBuilder<Kensington> {
+public class KensingtonBuilder extends GenericBuilder<Kensington> {
     private final Kensington kensington;
 
-    public KeyBuilder() {
+    public KensingtonBuilder() {
         this.kensington = new Kensington();
     }
 
-    public KeyBuilder withLastModifiedAdminId(int lastModifiedAdminId){
+    public KensingtonBuilder withLastModifiedAdminId(int lastModifiedAdminId){
         kensington.setLastModifiedAdminId(lastModifiedAdminId);
+        return this;
+    }
+
+    public KensingtonBuilder withActive(int active) {
+        kensington.setActive(active);
         return this;
     }
 

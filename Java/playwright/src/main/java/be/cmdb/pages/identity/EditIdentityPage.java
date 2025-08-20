@@ -20,7 +20,7 @@ public class EditIdentityPage extends CMDBPage {
 
     /**
      * Constructor for EditIdentityPage.
-     * @param page
+     * @param page the Playwright Page object
      */
     public EditIdentityPage(Page page) {
         super(page);
