@@ -13,6 +13,13 @@ import java.util.List;
 
 public class AccountTypeHelper {
 
+    /**
+     * Creates a default AccountType object and persists it to the database using the provided session.
+     * @param session The current Hibernate session
+     * @param admin The Admin who is creating this AccountType
+     * @param active Whether the AccountType should be active (1) or not (0)
+     * @return Type object that has been persisted to the database
+     */
     public Type createDefaultAccountType(Session session, Admin admin, boolean active) {
         Transaction transaction = session.beginTransaction();
         AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
@@ -25,6 +32,19 @@ public class AccountTypeHelper {
         return type;
     }
 
+    /**
+     * Creates a random AccountType object and persists it to the database using the provided session.
+     * @return Type object
+     */
+    public static Type createRandomAccountType() {
+        return new AccountTypeBuilder().build();
+    }
+
+    /**
+     * Deletes an AccountType and all associated logs from the database.
+     * @param session The current Hibernate session
+     * @param type The Type object to be deleted
+     */
     public static void deleteAccountType(Session session, Type type){
         Transaction transaction = session.beginTransaction();
         LogDAO logDAO = new LogDAO();

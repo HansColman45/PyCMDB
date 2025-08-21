@@ -115,7 +115,6 @@ namespace CMDB.API.Services
                 if (disposing)
                 {
                     _context.Dispose();
-                    _logger.LogInformation($"Dispossed context for {GetType().FullName}");
                 }
                 _disposed = true;
             }

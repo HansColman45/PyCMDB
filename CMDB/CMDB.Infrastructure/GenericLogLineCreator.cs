@@ -13,6 +13,10 @@
         /// <returns></returns>
         public static string UpdateLogLine(string field, string oldValue, string newValue, string updator, string table)
         {
+            if (string.IsNullOrEmpty(oldValue))
+                oldValue = "empty";
+            if (string.IsNullOrEmpty(newValue))
+                newValue = "empty";
             return $"The {field} has been changed from {oldValue} to {newValue} by {updator} in table {table}";
         }
         /// <summary>

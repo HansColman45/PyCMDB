@@ -1,5 +1,6 @@
 package be.cmdb.pages;
 
+import be.cmdb.pages.Type.TypeOverviewPage;
 import be.cmdb.pages.identity.IdentityOverviewPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
@@ -34,5 +35,41 @@ public class MainPage extends CMDBPage {
         this.identityOverview.click();
         this.newButton().waitFor();
         return new IdentityOverviewPage(getPage());
+    }
+
+    /**
+     * Opens the AccountType Overview page.
+     * @return TypeOverviewPage
+     */
+    public TypeOverviewPage OpenAccountTypeOverview(){
+        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
+        getPage().locator("xpath=//a[@id='Identity Type32']").click();
+        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
+        this.newButton().waitFor();
+        return new TypeOverviewPage(getPage());
+    }
+
+    /**
+     * Opens the IdentityType Overview page.
+     * @return TypeOverviewPage
+     */
+    public TypeOverviewPage OpenIdentityTypeOverviewPage(){
+        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
+        getPage().locator("#Identity Type32").click();
+        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
+        this.newButton().waitFor();
+        return new TypeOverviewPage(getPage());
+    }
+
+    /**
+     * Opens the RoleType Overview page.
+     * @return TypeOverviewPage
+     */
+    public TypeOverviewPage OpenRoleTypeOverviewPage() {
+        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
+        getPage().locator("#Role Type36").click();
+        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
+        this.newButton().waitFor();
+        return new TypeOverviewPage(getPage());
     }
 }

@@ -1,0 +1,82 @@
+﻿@using CMDB.Domain.DTOs
+@model PermissionDTO
+@{
+    List<CMDB.Domain.DTOs.RolePermissionDTO> rolePerms = ViewBag.RolePerms;
+    Layout = "_Layout";
+}
+@if ((bool)ViewData["InfoAccess"])
+{
+    <h2>@ViewData["Title"] <a class="btn btn-default float-right" asp-area="" asp-controller="Permission" asp-action="Index"><i class="@ViewBag.BackIcon"></i> Back</a></h2>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Right)</th>
+                <th>@Html.DisplayNameFor(model => model.Description)</th>
+            </tr>
+        </thead>
+        <tbody>
+           <tr>
+                <td id="Level">@Html.DisplayFor(model => model.Right)</td>
+                <td id="Menu">@Html.DisplayFor(model => model.Description)</td>
+            </tr>
+        </tbody>
+    </table>
+    <partial name="_AddNew" />
+    @if ((bool)ViewData["RorePermOverview"])
+    {
+        <H3>RolePermission overview</H3>
+        @if(rolePerms.Count > 0)
+        {
+            <table class="table table-striped table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Menu</th>
+                        <th>Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (CMDB.Domain.DTOs.RolePermissionDTO rolePerm in rolePerms)
+                    {
+                        <tr>
+                            <td>@rolePerm.Menu.Label</td>
+                            <td>@rolePerm.Level</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>There are no RolePerm linked to this Permission</p>
+        }
+    }
+    <H3>Log overview</H3>
+    @if (Model.Logs.Count > 0)
+    {
+        <table class="table table-striped table-bordered">
+            <thead class="thead-light">
+                <tr>
+                    <th>Date</th>
+                    <th>Text</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (LogDTO log in Model.Logs)
+                {
+                    <tr>
+                        <td>@log.LogDate.ToString(ViewData["LogDateFormat"].ToString())</td>
+                        <td>@(new Microsoft.AspNetCore.Html.HtmlString(log.LogText))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+    else
+    {
+        <p>No logs for to this Permission</p>
+    }
+}
+else
+{
+    <p>You do not access to this page</p>
+}

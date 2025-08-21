@@ -40,5 +40,11 @@ namespace CMDB.API.Interfaces
         /// <param name="permission">The permission to update.</param>
         /// <returns>A task that represents the asynchronous operation.</returns>
         void Update(PermissionDTO permission);
+        /// <summary>
+        /// This method will return a list of RolePermissions for a specific Persmission
+        /// </summary>
+        /// <param name="id">The Id of the permission</param>
+        /// <returns>List of <see cref="RolePermissionDTO"/></returns>
+        Task<List<RolePermissionDTO>> GetRolePermissionInfo(int id);
     }
 }

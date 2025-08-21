@@ -19,4 +19,14 @@ public class TypeOverviewPage extends CMDBPage {
     public void activate(){
         this.activateButton().click();
     }
+
+    public CreateTypePage openCreateTypePage() {
+        this.newButton().click();
+        return new CreateTypePage(getPage());
+    }
+
+    public TypeDetailPage openTypeDetailPage() {
+        this.detailsButton().click();
+        return new TypeDetailPage(getPage());
+    }
 }

@@ -30,6 +30,7 @@ namespace CMDB.API.Controllers
         {
             _uow = uow;
             _logger = logger;
+            _logger.LogInformation($"Using the {nameof(AccountController)}");
         }
         /// <summary>
         /// This will return all the accounts
@@ -39,7 +40,7 @@ namespace CMDB.API.Controllers
         [HttpGet("GetAll"), Authorize]
         public async Task<IActionResult> GetAll() 
         {
-            _logger.LogInformation($"Using the GetAll {nameof(AccountController)}");
+            _logger.LogDebug($"Using the GetAll {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -65,6 +66,7 @@ namespace CMDB.API.Controllers
         [HttpGet("GetAll/{searchstr}"), Authorize]
         public async Task<IActionResult> GetAll(string searchstr)
         {
+            _logger.LogDebug($"Using the Search in {nameof(AccountController)} using {searchstr}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -90,6 +92,7 @@ namespace CMDB.API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
+            _logger.LogDebug($"Using the GetId {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -115,6 +118,7 @@ namespace CMDB.API.Controllers
         [HttpPost, Authorize]
         public async Task<IActionResult> Create(AccountDTO account)
         {
+            _logger.LogDebug($"Using the Create in {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -154,6 +158,7 @@ namespace CMDB.API.Controllers
         [HttpDelete("{reason}"), Authorize]
         public async Task<IActionResult> Delete(AccountDTO account,string reason)
         {
+            _logger.LogDebug($"Using the Delete in {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -188,6 +193,7 @@ namespace CMDB.API.Controllers
         [HttpPost("Activate"), Authorize]
         public async Task<IActionResult> Activate(AccountDTO account)
         {
+            _logger.LogDebug($"Using the Activate in {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -221,6 +227,7 @@ namespace CMDB.API.Controllers
         [HttpPost("IsExisting"), Authorize]
         public async Task<IActionResult> IsExisting(AccountDTO account)
         {
+            _logger.LogDebug($"Using the IsExising in {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -245,6 +252,7 @@ namespace CMDB.API.Controllers
         [HttpPost("AssingIdentity"), Authorize]
         public async Task<IActionResult> AssignIdentity(IdenAccountDTO idenAccount)
         {
+            _logger.LogDebug($"Using the AssignIdentity in {nameof(AccountController)}");
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)

@@ -45,6 +45,10 @@ public final class IdentityHelper {
         return identity;
     }
 
+    /**
+     * Creates a random Identity object with fake data.
+     * @return Identity object
+     */
     public static Identity createRandomIdentity(){
         return new IdentityBuilder().build();
     }

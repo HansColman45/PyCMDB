@@ -71,4 +71,5 @@ insert into log (PermissionId, LogText, LogDate) values
 (35,'The permission Release kensington Created by SQL Import','2012-01-01 00:00:00'),
 (36,'The permission Assign Level Created by SQL Import','2012-01-01 00:00:00'),
 (37,'The permission Permission overview Created by SQL Import','2012-01-01 00:00:00'),
-(38,'The permission Menu overview Created by SQL Import','2012-01-01 00:00:00');
+(38,'The permission Menu overview Created by SQL Import','2012-01-01 00:00:00'),
+(39,'The permission RolePerm overview Created by SQL Import','2012-01-01 00:00:00');

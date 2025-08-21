@@ -12,7 +12,7 @@ namespace CMDB.API.Controllers
     /// </summary>
     [Route("api/[controller]")]
     [ApiController]
-    public class PermissionController: ControllerBase
+    public class PermissionController : ControllerBase
     {
         private readonly IUnitOfWork _uow;
         private readonly string site = "Permissions";
@@ -31,6 +31,7 @@ namespace CMDB.API.Controllers
         {
             _uow = unitOfWork;
             _logger = logger;
+            _logger.LogInformation("PermissionController initialized");
         }
         /// <summary>
         /// This will return a list of all permissions.
@@ -94,6 +95,7 @@ namespace CMDB.API.Controllers
         [HttpGet("{id:int}"), Authorize]
         public async Task<IActionResult> GetById(int id)
         {
+            _logger.LogInformation("Using GetID in PermissionController using Id: {0}", id);
             // Retrieve userId from the claims
             var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
             if (userIdClaim == null)
@@ -110,14 +112,39 @@ namespace CMDB.API.Controllers
             return Ok(await _uow.PermissionRepository.GetById(id));
         }
         /// <summary>
+        /// This method creates a new permission in the system.
+        /// </summary>
+        /// <param name="permission"></param>
+        /// <returns></returns>
+        [HttpPost, Authorize]
+        public async Task<IActionResult> Create(PermissionDTO permission)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.Add
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            _uow.PermissionRepository.Create(permission);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
+        /// <summary>
         /// Updates the specified permission in the system.
         /// </summary>
         /// <remarks>This method requires the user to be authorized and have administrative access.</remarks>
         /// <param name="permission">The permission data to update, represented as a <see cref="PermissionDTO"/> object.</param>
-        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.  Returns <see
-        /// cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkResult"/> if the update is
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. 
+        /// Returns <see cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkResult"/> if the update is
         /// successful.</returns>
-        [HttpPut,Authorize]
+        [HttpPut, Authorize]
         public async Task<IActionResult> Update(PermissionDTO permission)
         {
             // Retrieve userId from the claims
@@ -136,6 +163,30 @@ namespace CMDB.API.Controllers
             _uow.PermissionRepository.Update(permission);
             await _uow.SaveChangesAsync();
             return Ok();
+        }
+        /// <summary>
+        /// This method will return a list of RolePermissions for a specific Permission.
+        /// </summary>
+        /// <param name="id">The Id of the permission</param>
+        /// <returns></returns>
+        [HttpGet("RorePermOverview/{id:int}"), Authorize]
+        public async Task<IActionResult> RolePermOverview(int id)
+        {
+            _logger.LogInformation("Using RolePermOverview in PermissionController using Id: {0}", id);
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.RorePermOverview
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            return Ok(await _uow.PermissionRepository.GetRolePermissionInfo(id));
         }
     }
 }

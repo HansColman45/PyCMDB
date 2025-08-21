@@ -168,7 +168,8 @@ INSERT INTO Permission (Rights,description) VALUES
 ('ReleaseKensington','This Permission is to release Kensington'),
 ('AssignLevel','This Permission is to Assign a Level'),
 ('PermissionOverview','This Permission is to see the Permissions'),
-('MenuOverview','This Permission is to see the Menu');
+('MenuOverview','This Permission is to see the Menu'),
+('RorePermOverview','This Permission is to see the RolePermission overview');
 -- role permision
 -- Identity =2
 INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
@@ -390,7 +391,8 @@ INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 1, 49, 1),
 (9, 2, 49, 1),
 (9, 3, 49, 1),
-(9, 5, 49, 1);
+(9, 5, 49, 1),
+(9, 39, 49, 1);
 -- RolePermission = 51
 INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 1, 51, 1),

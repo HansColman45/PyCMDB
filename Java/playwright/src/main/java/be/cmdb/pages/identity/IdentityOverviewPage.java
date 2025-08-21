@@ -9,8 +9,8 @@ import com.microsoft.playwright.Page;
 public class IdentityOverviewPage extends CMDBPage {
 
     /**
-     * Constructor for IdentiyOverviewPage.
-     * @param page
+     * Constructor for IdentityOverviewPage.
+     * @param page the Playwright Page object
      */
     public IdentityOverviewPage(Page page) {
         super(page);

@@ -93,6 +93,17 @@ namespace CMDB.API.Services
             }
             _context.Permissions.Update(oldPerm);
         }
+        ///inheritdoc/>
+        public async Task<List<RolePermissionDTO>> GetRolePermissionInfo(int id)
+        {
+            return await _context.RolePerms
+                .Include(x => x.Permission)
+                .Include(x => x.Menu)
+                .Where(x => x.Permission.Id == id).AsNoTracking()
+                .Select(x => RolePermissionRepository.Convert2DTO(x))
+                .ToListAsync();
+
+        }
         /// <summary>
         /// Converts a <see cref="Permission"/> to a <see cref="PermissionDTO"/>.
         /// </summary>
@@ -111,7 +122,7 @@ namespace CMDB.API.Services
         private async Task GetLogs(PermissionDTO permission)
         {
             permission.Logs = await _context.Logs.AsNoTracking()
-                .Include(x => x.RolePerm).Where(x => x.Permission.Id == permission.Id)
+                .Include(x => x.Permission).Where(x => x.Permission.Id == permission.Id)
                 .OrderByDescending(x => x.LogDate)
                 .Select(x => Convert2DTO(x)).ToListAsync();
         }

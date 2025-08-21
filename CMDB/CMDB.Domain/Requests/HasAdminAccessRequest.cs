@@ -57,6 +57,7 @@
         ReleaseKensington = 35,
         AssignLevel = 36,
         PermissionOverview = 37,
-        MenuOverview = 38
+        MenuOverview = 38,
+        RorePermOverview = 39
     }
 }
