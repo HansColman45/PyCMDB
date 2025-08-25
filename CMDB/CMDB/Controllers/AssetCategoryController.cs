@@ -32,6 +32,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             ViewData["Title"] = "Category overview";
             ViewData["Controller"] = @"\AssetCategory\Create";
@@ -52,9 +58,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            await BuildMenu();
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!String.IsNullOrEmpty(search))
             {
+                await BuildMenu();
                 ViewData["search"] = search;
                 ViewData["Title"] = "Category overview";
                 ViewData["Controller"] = @"\AssetCategory\Create";
@@ -78,6 +90,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Create category";
             ViewData["Controller"] = @"\AssetCategory\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Update");
@@ -116,6 +134,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             var category = await service.GetByID((int)id); ;
@@ -158,6 +182,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             var category = await service.GetByID((int)id);
@@ -181,6 +211,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             var category = await service.GetByID((int)id);
@@ -220,6 +256,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             var category = await service.GetByID((int)id);

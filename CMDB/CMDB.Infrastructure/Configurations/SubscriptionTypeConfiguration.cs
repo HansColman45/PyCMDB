@@ -22,7 +22,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.SubscriptionTypes)
                 .HasForeignKey(e => e.AssetCategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_AssetType_Category")
                 .IsRequired();
 

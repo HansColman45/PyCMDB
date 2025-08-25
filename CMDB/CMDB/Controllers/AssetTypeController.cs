@@ -34,6 +34,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             var accounts = await service.ListAllAssetTypes();
             ViewData["Title"] = "Assettype overview";
@@ -54,9 +60,15 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
-            await BuildMenu();
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!String.IsNullOrEmpty(search))
             {
+                await BuildMenu();
                 ViewData["search"] = search;
                 var accounts = await service.ListAllAssetTypes(search);
                 ViewData["Title"] = "Assettype overview";
@@ -80,6 +92,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Create assettype";
             ViewData["Controller"] = @"\AssetType\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -125,6 +143,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             AssetTypeDTO assetType = await service.GetById((int)id);
@@ -169,6 +193,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Details(int? id)
         {
             log.Debug("Using details in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             AssetTypeDTO assetType = await service.GetById((int)id);
@@ -192,6 +222,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using Delete in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             AssetTypeDTO assetType = await service.GetById((int)id);
@@ -231,6 +267,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Activate(int? id)
         {
             log.Debug("Using Activate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             var assetType = await service.GetById((int)id);

@@ -11,7 +11,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
         public override Task<Menu> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return MenuHelper.CreateSimpleMenu(context.context,context.Admin);
+            return MenuHelper.CreateSimpleMenu(context.DBcontext,context.Admin);
         }
     }
 }

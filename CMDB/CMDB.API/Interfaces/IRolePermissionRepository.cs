@@ -48,6 +48,6 @@ namespace CMDB.API.Interfaces
         /// </summary>
         /// <param name="permission"><see cref="RolePermissionDTO"/></param>
         /// <returns></returns>
-        Task<bool> IsExisitng(RolePermissionDTO permission);
+        bool IsExisting(RolePermissionDTO permission);
     }
 }

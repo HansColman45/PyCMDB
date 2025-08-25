@@ -11,8 +11,8 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         {
             var context = actor.GetAbility<DataContext>();
             var assetCategory = context.GetAssetCategory("Mobile Subscription");
-            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory,context.Admin);
-            return await SubscriptionHelper.CreateSimpleSubscription(context.context,type,context.Admin);
+            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory,context.Admin);
+            return await SubscriptionHelper.CreateSimpleSubscription(context.DBcontext,type,context.Admin);
         }
     }
     public class CreateTheInactiveMobileSubscription : Question<Task<Domain.Entities.Subscription>>
@@ -21,8 +21,8 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         {
             var context = actor.GetAbility<DataContext>();
             var assetCategory = context.GetAssetCategory("Mobile Subscription");
-            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory, context.Admin);
-            return await SubscriptionHelper.CreateSimpleSubscription(context.context, type, context.Admin, false);
+            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory, context.Admin);
+            return await SubscriptionHelper.CreateSimpleSubscription(context.DBcontext, type, context.Admin, false);
         }
     }
     public class CreateTheInternetSubscription : Question<Task<Domain.Entities.Subscription>>
@@ -31,8 +31,8 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         {
             var context = actor.GetAbility<DataContext>();
             var assetCategory = context.GetAssetCategory("Internet Subscription");
-            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory, context.Admin);
-            return await SubscriptionHelper.CreateSimpleSubscription(context.context, type, context.Admin);
+            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory, context.Admin);
+            return await SubscriptionHelper.CreateSimpleSubscription(context.DBcontext, type, context.Admin);
         }
     }
     public class CreateTheInactiveInternetSubscription : Question<Task<Domain.Entities.Subscription>>
@@ -41,8 +41,8 @@ namespace CMDB.UI.Specflow.Questions.Subscription
         {
             var context = actor.GetAbility<DataContext>();
             var assetCategory = context.GetAssetCategory("Internet Subscription");
-            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory, context.Admin);
-            return await SubscriptionHelper.CreateSimpleSubscription(context.context, type, context.Admin, false);
+            var type = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory, context.Admin);
+            return await SubscriptionHelper.CreateSimpleSubscription(context.DBcontext, type, context.Admin, false);
         }
     }
 }

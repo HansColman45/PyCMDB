@@ -1,4 +1,5 @@
 ﻿using Bright.ScreenPlay.Abilities;
+using Bright.ScreenPlay.Questions;
 using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
@@ -6,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CMDB.UI.Specflow.Abilities.Data
 {
-    public class DataContext: Ability
+    public class DataContext : Ability
     {
-        public readonly CMDBContext context;
+        public readonly CMDBContext DBcontext;
         public Admin Admin { get; private set; }
         public DataContext() 
         {
@@ -17,11 +18,11 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 .UseSqlServer(connectionstring)
                 .EnableSensitiveDataLogging()
                 .Options;
-            context = new CMDBContext(options);
+            DBcontext = new CMDBContext(options);
         }
         public async Task<Admin> CreateNewAdmin(Account account, int level = 9, bool active = false)
         {
-            var admin = await AdminHelper.CreateSimpleAdmin(context, account, Admin, level, active);
+            var admin = await AdminHelper.CreateSimpleAdmin(DBcontext, account, Admin, level, active);
             return admin;
         }
         /// <summary>
@@ -31,7 +32,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>Admin</returns>
         public async Task<Admin> CreateNewCMDBAdmin(int level = 9)
         {
-            Admin = await AdminHelper.CreateCMDBAdmin(context, level);
+            Admin = await AdminHelper.CreateCMDBAdmin(DBcontext, level);
             return Admin;
         }
         /// <summary>
@@ -41,7 +42,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>Identity</returns>
         public Identity GetIdentity(int IdenId)
         {
-            var iden = context.Identities
+            var iden = DBcontext.Identities
                 .Include(x => x.Type)
                 .Include(x => x.Language)
                 .Where(x => x.IdenId == IdenId)
@@ -55,7 +56,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns></returns>
         public AssetType GetAssetType(int AssetTypeID)
         {
-            var assetType = context.AssetTypes
+            var assetType = DBcontext.AssetTypes
                 .Include(x => x.Category)
                 .Where(x => x.TypeID == AssetTypeID)
                 .FirstOrDefault();
@@ -68,7 +69,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>Account</returns>
         public Account GetAccount(int AccountId)
         {
-            var account = context.Accounts
+            var account = DBcontext.Accounts
                 .Include(x => x.Application)
                 .Include(x => x.Type)
                 .Where(x => x.AccID == AccountId)
@@ -82,7 +83,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>AssetCategory</returns>
         public AssetCategory GetAssetCategory(string category)
         {
-            var Category = context.AssetCategories
+            var Category = DBcontext.AssetCategories
                 .Where(x => x.Category == category)
                 .FirstOrDefault();
             return Category;
@@ -94,7 +95,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>AssetCategory</returns>
         public AssetCategory GetAssetCategory(int CatId)
         {
-            var Category = context.AssetCategories
+            var Category = DBcontext.AssetCategories
                 .Where(x => x.Id == CatId)
                 .FirstOrDefault();
             return Category;
@@ -108,7 +109,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>AssetType</returns>
         public async Task<AssetType> GetOrCreateAssetType(string vendor, string type, AssetCategory category, Admin admin)
         {
-            var assetTypes = context.AssetTypes
+            var assetTypes = DBcontext.AssetTypes
                 .Include(x => x.Category)
                 .Where(x => x.Vendor == vendor && x.Type == type && x.CategoryId == category.Id).ToList();
             if (assetTypes.Count == 0)
@@ -121,8 +122,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
                     Category = category,
                     LastModifiedAdmin = admin
                 };
-                context.AssetTypes.Add(assetType);
-                await context.SaveChangesAsync();
+                DBcontext.AssetTypes.Add(assetType);
+                await DBcontext.SaveChangesAsync();
                 return assetType;
             }
             else
@@ -130,19 +131,19 @@ namespace CMDB.UI.Specflow.Abilities.Data
         }
         public async Task<Menu> GetOrCreateMenu(string label, Admin admin)
         {
-            var menus = context.Menus.Where(x => x.Label == label).ToList();
+            var menus = DBcontext.Menus.Where(x => x.Label == label).ToList();
             if (menus.Count > 0)
             {
                 return menus.First();
             }
             else
             {
-                return await MenuHelper.CreateSimpleMenu(context, admin);
+                return await MenuHelper.CreateSimpleMenu(DBcontext, admin);
             }
         }
         public Permission GetPermission(string permission)
         {
-            var permissions = context.Permissions
+            var permissions = DBcontext.Permissions
                 .Where(x => x.Rights == permission)
                 .FirstOrDefault();
             return permissions;
@@ -154,7 +155,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns>Device</returns>
         public Device GetDevice(string AssetTag)
         {
-            var Laptop = context.Devices
+            var Laptop = DBcontext.Devices
                 .Include(x => x.Type)
                 .Include(x => x.Category)
                 .Where(x => x.AssetTag == AssetTag).FirstOrDefault();
@@ -170,7 +171,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         {
             identity.LastModifiedAdmin = admin;
             account.LastModifiedAdmin = admin;
-            context.IdenAccounts.Add(new()
+            DBcontext.IdenAccounts.Add(new()
             {
                 Identity = identity,
                 Account = account,
@@ -179,7 +180,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
                 LastModifiedAdmin = admin
             });
 
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         /// <summary>
         /// This function will assign a given Identity to a given device
@@ -192,7 +193,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
             identity.LastModifiedAdmin = admin;
             device.LastModifiedAdmin = admin;
             identity.Devices.Add(device);
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         /// <summary>
         /// This function will assign a givan Identity to a given Mobile
@@ -206,7 +207,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
             identity.LastModifiedAdmin = admin;
             mobile.LastModifiedAdmin = admin;
             identity.Mobiles.Add(mobile);
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         /// <summary>
         /// This function will check if there is a subscriptionType and if not create on
@@ -216,7 +217,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns></returns>
         public async Task<SubscriptionType> GetOrCreateSubscriptionType(Admin admin, string type)
         {
-            SubscriptionType subscriptionType = context.SubscriptionTypes
+            SubscriptionType subscriptionType = DBcontext.SubscriptionTypes
                 .Include(x => x.Category)
                 .Where(x => x.Type == type).FirstOrDefault();
             subscriptionType ??= await CreateSubscriptionType(admin);
@@ -235,7 +236,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
             identity.LastModifiedAdmin = admin;
             subscription.LastModifiedAdmin = admin;
             identity.Subscriptions.Add(subscription);
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         /// <summary>
         /// This function will assign a subscription to my mobile
@@ -249,7 +250,7 @@ namespace CMDB.UI.Specflow.Abilities.Data
             mobile.LastModifiedAdmin= admin;
             subscription.LastModifiedAdmin= admin;
             subscription.Mobile = mobile;
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         /// <summary>
         /// This function will assign a device 2 a key
@@ -263,11 +264,11 @@ namespace CMDB.UI.Specflow.Abilities.Data
             device.LastModifiedAdmin = admin;
             kensington.LastModifiedAdmin = admin;
             kensington.AssetTag = device.AssetTag;
-            await context.SaveChangesAsync();
+            await DBcontext.SaveChangesAsync();
         }
         public new void Dispose()
         {
-            context.Dispose();
+            DBcontext.Dispose();
         }
         /// <summary>
         /// This function will create a subscription type
@@ -277,8 +278,8 @@ namespace CMDB.UI.Specflow.Abilities.Data
         /// <returns></returns>
         private async Task<SubscriptionType> CreateSubscriptionType(Admin admin, bool actice = true)
         {
-            AssetCategory assetCategory = context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
-            SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context, assetCategory, admin, actice);
+            AssetCategory assetCategory = DBcontext.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
+            SubscriptionType subscriptionType = await SubscriptionTypeHelper.CreateSimpleSubscriptionType(DBcontext, assetCategory, admin, actice);
             return subscriptionType;
         }
     }

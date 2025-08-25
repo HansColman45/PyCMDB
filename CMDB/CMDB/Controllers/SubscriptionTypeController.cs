@@ -32,6 +32,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Subscription overview";
             await BuildMenu();
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -54,6 +60,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
@@ -81,6 +93,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Create Subscription";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
             await BuildMenu();
@@ -120,6 +138,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
+            log.Debug("Using Edit in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
@@ -161,6 +186,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
+            log.Debug("Using Details in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
@@ -184,6 +216,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
+            log.Debug("Using Delete in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);
@@ -222,6 +261,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
+            log.Debug("Using Activate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id == null)
                 return NotFound();
             SubscriptionTypeDTO subscriptionType = await service.GetById((int)id);

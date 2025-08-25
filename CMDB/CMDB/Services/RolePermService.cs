@@ -212,5 +212,21 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// Determines whether a role-permission mapping already exists in the system.
+        /// </summary>
+        /// <param name="roleper">The role-permission data to check for existence.</param>
+        /// <returns><see langword="true"/> if the specified role-permission mapping exists; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="NotAValidSuccessCode">Thrown if the server response indicates an unsuccessful status code.</exception>
+        public async Task<bool> IsExisting(RolePermissionDTO roleper)
+        {
+            BaseUrl = Url + $"api/RolePermission/IsExisting";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, roleper);
+            if (response.IsSuccessStatusCode)
+                return await response.Content.ReadAsJsonAsync<bool>();
+            else
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
+        }
     }
 }

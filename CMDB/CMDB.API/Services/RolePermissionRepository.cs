@@ -83,6 +83,8 @@ namespace CMDB.API.Services
         public void Delete(RolePermissionDTO permission)
         {
             var rolePerm = TrackedRolePerm(permission.Id);
+            rolePerm.LastModifiedAdminId = null;
+            _context.SaveChanges();
             _context.RolePerms.Remove(rolePerm);
         }
         /// inheritdoc/>
@@ -102,9 +104,36 @@ namespace CMDB.API.Services
             }
         }
         /// inheritdoc/>
-        public Task<bool> IsExisitng(RolePermissionDTO permission)
+        public bool IsExisting(RolePermissionDTO permission)
         {
-            throw new NotImplementedException();
+            if(permission.Id == 0)
+            {
+                var roleperms = _context.RolePerms
+                    .Where(x => x.MenuId == permission.Menu.MenuId 
+                    && x.Level == permission.Level 
+                    && x.PermissionId == permission.Permission.Id).ToList();
+                if (roleperms.Count > 0)
+                    return true;
+                return false;
+            }
+            var rolePerm = TrackedRolePerm(permission.Id);
+            bool changed = false;
+            if (rolePerm.PermissionId != permission.Permission.Id)
+                changed = true;
+            if (rolePerm.MenuId != permission.Menu.MenuId)
+                changed = true;
+            if (rolePerm.Level != permission.Level)
+                changed = true;
+            if (changed)
+            {
+                var roleperms = _context.RolePerms
+                    .Where(x => x.MenuId == permission.Menu.MenuId 
+                    && x.Level == permission.Level 
+                    && x.PermissionId == permission.Permission.Id).ToList();
+                if (roleperms.Count > 0)
+                    return true;
+            }
+            return false;
         }
         /// <summary>
         /// This function will convert the RolePerm entity to a RolePermissionDTO.
@@ -117,7 +146,7 @@ namespace CMDB.API.Services
             {
                 Id = rolePerm.Id,
                 Level = rolePerm.Level,
-                LastModifiedAdminId = rolePerm.LastModifiedAdminId,
+                LastModifiedAdminId = (int)rolePerm.LastModifiedAdminId,
                 Permission = new PermissionDTO
                 {
                     Id = rolePerm.Permission.Id,

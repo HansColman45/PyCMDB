@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         public override async Task<Domain.Entities.Mobile> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await MobileHelper.CreateSimpleMobile(context.context, context.Admin);
+            return await MobileHelper.CreateSimpleMobile(context.DBcontext, context.Admin);
         }
     }
     /// <summary>
@@ -24,7 +24,7 @@ namespace CMDB.UI.Specflow.Questions.Mobile
         public override async Task<Domain.Entities.Mobile> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await MobileHelper.CreateSimpleMobile(context.context, context.Admin,false);
+            return await MobileHelper.CreateSimpleMobile(context.DBcontext, context.Admin,false);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Desktop
         public override async Task<Domain.Entities.Desktop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var desktop = await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin);
+            var desktop = await DesktopHelper.CreateSimpleDesktop(context.DBcontext, context.Admin);
             return (Domain.Entities.Desktop)context.GetDevice(desktop.AssetTag);
         }
     }
@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.Desktop
         public override async Task<Domain.Entities.Desktop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var desktop = await DesktopHelper.CreateSimpleDesktop(context.context, context.Admin, false);
+            var desktop = await DesktopHelper.CreateSimpleDesktop(context.DBcontext, context.Admin, false);
             return (Domain.Entities.Desktop)context.GetDevice(desktop.AssetTag);
         }
     }

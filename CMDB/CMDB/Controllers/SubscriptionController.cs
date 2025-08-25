@@ -34,6 +34,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Subscription overview";
             await BuildMenu();
             var list = await service.ListAll();
@@ -57,6 +63,12 @@ namespace CMDB.Controllers
         {
 
             log.Debug("Using search in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!String.IsNullOrEmpty(search))
             {
                 ViewData["search"] = search;
@@ -86,6 +98,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using Create in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Create Subscription";
             ViewData["Controller"] = @"\Subscription\Create";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -125,6 +143,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Edit(IFormCollection values, int? id)
         {
+            log.Debug("Using edit in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -166,6 +191,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Details(int? id)
         {
+            log.Debug("Using details in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -195,6 +227,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
+            log.Debug("Using deactivate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -249,6 +288,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Activate(int? id)
         {
+            log.Debug("Using activate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -284,6 +330,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> AssignIdentity(IFormCollection values, int? id)
         {
+            log.Debug("Using assignIdentity in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -325,6 +378,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> AssignMobile(IFormCollection values, int? id)
         {
+            log.Debug("Using assignMobile in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);
@@ -366,6 +426,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> AssignForm(IFormCollection values, int? id)
         {
+            log.Debug("Using AssignForm in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var subscription = await service.GetByID((int)id);

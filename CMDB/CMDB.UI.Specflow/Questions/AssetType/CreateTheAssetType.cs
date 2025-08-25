@@ -15,8 +15,8 @@ namespace CMDB.UI.Specflow.Questions.AssetType
         public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            AssetCategory category = context.context.AssetCategories.FirstOrDefault();
-            return await AssetTypeHelper.CreateSimpleAssetType(context.context, category, context.Admin);
+            AssetCategory category = context.DBcontext.AssetCategories.FirstOrDefault();
+            return await AssetTypeHelper.CreateSimpleAssetType(context.DBcontext, category, context.Admin);
         }
     }
     /// <summary>
@@ -27,8 +27,8 @@ namespace CMDB.UI.Specflow.Questions.AssetType
         public override async Task<Domain.Entities.AssetType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            AssetCategory category = context.context.AssetCategories.FirstOrDefault();
-            return await AssetTypeHelper.CreateSimpleAssetType(context.context, category, context.Admin,false);
+            AssetCategory category = context.DBcontext.AssetCategories.FirstOrDefault();
+            return await AssetTypeHelper.CreateSimpleAssetType(context.DBcontext, category, context.Admin,false);
         }
     }
 }

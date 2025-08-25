@@ -33,6 +33,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using list all for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             ViewData["Title"] = "Role Permission overview";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -52,9 +58,16 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!string.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Role Permission overview";
+                ViewData["search"] = search;
                 await BuildMenu();
                 var Desktops = await service.ListAll(search);
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -78,6 +91,13 @@ namespace CMDB.Controllers
         /// error response, such as a 404 Not Found result.</returns>
         public async Task<IActionResult> Details(int?id)
         {
+            log.Debug("Using details in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var roleper = await service.GetById((int)id);
@@ -101,6 +121,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug("Using create for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             ViewData["Title"] = "Create Role Permission";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -120,6 +146,9 @@ namespace CMDB.Controllers
                 rolePermission.Level = level;
                 rolePermission.Menu = menu;
                 rolePermission.Permission = permissionDTO;
+                bool isExising = await service.IsExisting(rolePermission);
+                if (isExising)
+                    ModelState.AddModelError(string.Empty, "This role permission combination already exists");
                 if (ModelState.IsValid)
                 {
                     await service.Create(rolePermission);
@@ -143,6 +172,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(IFormCollection values,int? id)
         {
             log.Debug("Using edit for {0} with id {1}", SitePart, id);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var roleper = await service.GetById((int)id);
@@ -161,6 +196,9 @@ namespace CMDB.Controllers
             {
                 var level = Int32.Parse(values["Level"]);
                 roleper.Level = level;
+                bool isExising = await service.IsExisting(roleper);
+                if (isExising)
+                    ModelState.AddModelError(string.Empty, "This role permission combination already exists");
                 if (ModelState.IsValid)
                 {
                     await service.Edit(roleper);
@@ -181,6 +219,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, int? id)
         {
             log.Debug("Using delete for {0} with id {1}", SitePart, id);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (id is null)
                 return NotFound();
             var roleper = await service.GetById((int)id);

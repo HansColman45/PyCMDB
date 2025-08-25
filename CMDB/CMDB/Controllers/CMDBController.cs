@@ -54,7 +54,7 @@ namespace CMDB.Controllers
         /// <returns></returns>
         protected async Task BuildMenu()
         {
-            Token ??= TokenStore.Token;
+            Token = TokenStore.Token;
             List<Menu> menul1 = (List<Menu>)await service.ListFirstMenuLevel();
             foreach (Menu m in menul1)
             {

@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace CMDB.Testing.Helpers
 {
@@ -108,15 +107,19 @@ namespace CMDB.Testing.Helpers
                 throw;
             }
         }
-        public static async Task<Dictionary<string, Object>> DeleteCascading(CMDBContext context, Admin admin)
+        public static async Task<Dictionary<string, Object>> DeleteCascading(CMDBContext context, int adminId)
         {
             Dictionary<string, Object> Data = new();
             try
             {
+                Admin a = context.Admins
+                    .Include(x => x.Account)
+                    .Include(x => x.Logs)
+                    .Where(x => x.AdminId == adminId).FirstOrDefault();
                 //Kensington
                 var kensingtons = context.Kensingtons
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var kensington in kensingtons)
                 {
@@ -126,7 +129,7 @@ namespace CMDB.Testing.Helpers
                 //mobiles
                 var mobiles = context.Mobiles
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var mobile in mobiles)
                 {
@@ -137,7 +140,7 @@ namespace CMDB.Testing.Helpers
                 var accountType = context.Types
                     .OfType<AccountType>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var type in accountType)
                 {
@@ -146,7 +149,7 @@ namespace CMDB.Testing.Helpers
                 }
                 //AssetType
                 var assetType = context.AssetTypes
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var type in assetType)
                 {
@@ -157,7 +160,7 @@ namespace CMDB.Testing.Helpers
                 var identypes = context.Types
                     .OfType<IdentityType>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var type in identypes)
                 {
@@ -168,7 +171,7 @@ namespace CMDB.Testing.Helpers
                 var laptops = context.Devices
                     .OfType<Laptop>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var laptop in laptops)
                 {
@@ -179,7 +182,7 @@ namespace CMDB.Testing.Helpers
                 var desktops = context.Devices
                     .OfType<Desktop>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var desktop in desktops)
                 {
@@ -190,7 +193,7 @@ namespace CMDB.Testing.Helpers
                 var screens = context.Devices
                     .OfType<Screen>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var screen in screens)
                 {
@@ -201,7 +204,7 @@ namespace CMDB.Testing.Helpers
                 var dockings = context.Devices
                     .OfType<Docking>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var docking in dockings)
                 {
@@ -212,7 +215,7 @@ namespace CMDB.Testing.Helpers
                 var tokens = context.Devices
                     .OfType<Token>()
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var token in tokens)
                 {
@@ -221,7 +224,7 @@ namespace CMDB.Testing.Helpers
                 }
                 //IdenAccount
                 var idenAccs = context.IdenAccounts
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var idenacc in idenAccs)
                 {
@@ -231,7 +234,7 @@ namespace CMDB.Testing.Helpers
                 //Identity
                 var identities = context.Identities
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var identity in identities)
                 {
@@ -241,7 +244,7 @@ namespace CMDB.Testing.Helpers
                 //Admin
                 var admins = context.Admins
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AdminId != admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId && x.AdminId != a.AdminId)
                     .ToList();
                 foreach (var adm in admins)
                 {
@@ -251,7 +254,7 @@ namespace CMDB.Testing.Helpers
                 //Account
                 var accounts = context.Accounts
                 .Include(x => x.Logs)
-                .Where(x => x.LastModifiedAdminId == admin.AdminId && x.AccID != admin.Account.AccID)
+                .Where(x => x.LastModifiedAdminId == a.AdminId && x.AccID != a.Account.AccID)
                 .ToList();
                 foreach (var account in accounts)
                 {
@@ -261,7 +264,7 @@ namespace CMDB.Testing.Helpers
                 //Subscription
                 var subs = context.Subscriptions
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var sub in subs)
                 {
@@ -271,22 +274,38 @@ namespace CMDB.Testing.Helpers
                 //SubscriptionTypes
                 var subtypes = context.SubscriptionTypes
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach(var subtype in subtypes)
                 {
                     Data.Add($"SubscriptionType{subtype.Id}",subtype);
                     await SubscriptionTypeHelper.Delete(context,subtype);
                 }
-                //RolePerm
                 var rolePerms = context.RolePerms
+                //RolePerm
                     .Include(x => x.Logs)
-                    .Where(x => x.LastModifiedAdminId == admin.AdminId)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var rolePerm in rolePerms)
                 {
                     Data.Add($"RolePerm{rolePerm.Id}", rolePerm);
                     await RolePermissionHelper.Delete(context,rolePerm);
+                }
+                int accId = a.Account.AccID;
+                //Admin
+                context.Entry(a).Reload();
+                context.RemoveRange(a.Logs);
+                context.Remove(a);
+                await context.SaveChangesAsync();
+                //Account
+                accounts = context.Accounts
+                    .Include(x => x.Logs)
+                    .Where(x => x.AccID == accId)
+                    .ToList();
+                foreach (var account in accounts)
+                {
+                    Data.Add($"Account{account.AccID}", account);
+                    await AccountHelper.Delete(context, account);
                 }
                 //Menu
                 var menus = context.Menus
@@ -298,23 +317,11 @@ namespace CMDB.Testing.Helpers
                     Data.Add($"Menu{menu.MenuId}", menu);
                     await MenuHelper.Delete(context, menu);
                 }
-                //Admin
-                context.RemoveRange(admin.Logs);
-                context.Remove<Admin>(admin);
-                //Account
-                accounts = context.Accounts
-                    .Include(x => x.Logs)
-                    .Where(x => x.AccID == admin.Account.AccID)
-                    .ToList();
-                foreach (var account in accounts)
-                {
-                    Data.Add($"Account{account.AccID}", account);
-                    await AccountHelper.Delete(context, account);
-                }
                 await context.SaveChangesAsync();
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Console.WriteLine(e);
                 throw;
             }
             return Data;

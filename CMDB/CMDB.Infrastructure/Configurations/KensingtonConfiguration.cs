@@ -19,7 +19,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Kensingtons)
                 .HasForeignKey(e => e.TypeId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Kensington_Type")
                 .IsRequired();
 
@@ -33,7 +33,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Kensingtons)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Kensington_Category")
                 .IsRequired();
 

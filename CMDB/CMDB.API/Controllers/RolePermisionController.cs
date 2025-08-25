@@ -174,9 +174,7 @@ namespace CMDB.API.Controllers
         /// <summary>
         /// Deletes the specified role permission.
         /// </summary>
-        /// <remarks>This method requires the user to be authenticated and authorized as an administrator
-        /// with appropriate access rights. The user's administrative access is verified based on their claims and
-        /// site-specific permissions.</remarks>
+        /// <remarks>This method requires the user to be authenticated.</remarks>
         /// <param name="rolePermission">The role permission to delete. This must contain valid data identifying the role and its associated
         /// permissions.</param>
         /// <returns>An <see cref="IActionResult"/> indicating the result of the operation. Returns <see langword="Ok"/> if the
@@ -201,6 +199,32 @@ namespace CMDB.API.Controllers
             _uow.RolePermissionRepository.Delete(rolePermission);
             await _uow.SaveChangesAsync();
             return Ok();
+        }
+        /// <summary>
+        /// Determines whether a role-permission combination already exists in the system.
+        /// </summary>
+        /// <remarks>This method requires the caller to be authorized.</remarks>
+        /// <param name="rolePermission">The role-permission data to check for existence.</param>
+        /// <returns>An <see cref="IActionResult"/> containing a boolean value indicating whether the specified role-permission
+        /// combination exists. Returns <see cref="UnauthorizedResult"/> if the user is not authorized.</returns>
+        [HttpPost("IsExisting"), Authorize]
+        public async Task<IActionResult> IsExisting(RolePermissionDTO rolePermission)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.Read
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            var result = _uow.RolePermissionRepository.IsExisting(rolePermission);
+            return Ok(result);
         }
     }
 }

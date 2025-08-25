@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Questions.Types
         public override async Task<AccountType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await AccountTypeHelper.CreateSimpleAccountType(context.context, context.Admin);
+            return await AccountTypeHelper.CreateSimpleAccountType(context.DBcontext, context.Admin);
         }
     }
     /// <summary>
@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.Types
         public override async Task<AccountType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await AccountTypeHelper.CreateSimpleAccountType(context.context, context.Admin,false);
+            return await AccountTypeHelper.CreateSimpleAccountType(context.DBcontext, context.Admin,false);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Keys
             var context = actor.GetAbility<DataContext>();
             try
             {
-                return await KensingtonHelper.CreateKensington(context.context, context.Admin);
+                return await KensingtonHelper.CreateKensington(context.DBcontext, context.Admin);
             }
             catch (Exception)
             {
@@ -26,7 +26,7 @@ namespace CMDB.UI.Specflow.Questions.Keys
         public override async Task<Kensington> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await KensingtonHelper.CreateKensington(context.context, context.Admin, false);
+            return await KensingtonHelper.CreateKensington(context.DBcontext, context.Admin, false);
         }
     }
 }

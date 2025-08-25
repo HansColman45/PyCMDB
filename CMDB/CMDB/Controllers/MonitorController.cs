@@ -35,6 +35,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Index()
         {
             log.Debug("Using List all in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             ViewData["Title"] = "Monitor overview";
             await BuildMenu();
             var Desktops = await service.ListAll("Monitor");
@@ -57,9 +63,16 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Search(string search)
         {
             log.Debug("Using search for {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (!string.IsNullOrEmpty(search))
             {
                 ViewData["Title"] = "Monitor overview";
+                ViewData["search"] = search;
                 await BuildMenu();
                 var Desktops = await service.ListAll(SitePart, search);
                 ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -87,6 +100,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Delete(IFormCollection values, string id)
         {
             log.Debug("Using Delete in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);
@@ -147,6 +166,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Activate(string id)
         {
+            log.Debug("Using activate in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var moniror = await service.GetDeviceById(SitePart, id);
@@ -175,6 +201,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Create(IFormCollection values)
         {
             log.Debug($"Using Create in {SitePart}");
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             ViewData["Title"] = "Create monitor";
             ViewData["AddAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Add");
@@ -218,6 +250,13 @@ namespace CMDB.Controllers
         /// <returns></returns>
         public async Task<IActionResult> Details(string id)
         {
+            log.Debug("Using details in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var screen = await service.GetDeviceById(SitePart, id);
@@ -247,6 +286,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> Edit(string id, IFormCollection values)
         {
             log.Debug("Using Edit in {0}", SitePart);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var screen = await service.GetDeviceById(SitePart, id);
@@ -281,6 +326,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Assign identity in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var moniror = await service.GetDeviceById(SitePart, id);
@@ -324,6 +375,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignForm(IFormCollection values, string id)
         {
             log.Debug("Using Assign form in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);
@@ -367,6 +424,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseIdentity(IFormCollection values, string id)
         {
             log.Debug("Using Release identity in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             await BuildMenu();
             if (string.IsNullOrEmpty(id))
                 return NotFound();
@@ -415,6 +478,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> AssignKensington(string id, IFormCollection values)
         {
             log.Debug("Using Assign Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);
@@ -457,6 +526,12 @@ namespace CMDB.Controllers
         public async Task<IActionResult> ReleaseKensington(IFormCollection values, string id)
         {
             log.Debug("Using Release Kensington in {0}", Table);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
             if (string.IsNullOrEmpty(id))
                 return NotFound();
             var monitor = await service.GetDeviceById(SitePart, id);

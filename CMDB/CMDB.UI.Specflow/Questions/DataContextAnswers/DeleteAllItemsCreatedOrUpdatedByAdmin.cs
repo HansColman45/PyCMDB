@@ -18,7 +18,8 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
             var admin = context.Admin;
             try
             {
-                var tuchedobjects = await AdminHelper.DeleteCascading(context.context, admin);
+                context.DBcontext.ChangeTracker.Clear();
+                var tuchedobjects = await AdminHelper.DeleteCascading(context.DBcontext, admin.AdminId);
                 foreach (var item in tuchedobjects)
                 {
                     objects.Add(item.Value);

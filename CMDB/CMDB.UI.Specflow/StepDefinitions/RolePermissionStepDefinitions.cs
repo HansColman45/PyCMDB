@@ -70,5 +70,19 @@ namespace CMDB.UI.Specflow.StepDefinitions
             rolePermissionUpdator.ExpectedLog.Should().BeEquivalentTo(lastlog);
         }
         #endregion
+        #region delete
+        [When("I delete the RolePermission")]
+        public void WhenIDeleteTheRolePermission()
+        {
+            rolePermissionUpdator.DoDelete();
+        }
+        [Then("I should not be able to find the deleted RolePermission in the system")]
+        public void ThenIShouldNotBeAbleToFindTheDeletedRolePermissionInTheSystem()
+        {
+            rolePermissionUpdator.Search(menu.Label);
+            int result = rolePermissionUpdator.CountSearchedElements();
+            result.Should().Be(1);
+        }
+        #endregion
     }
 }

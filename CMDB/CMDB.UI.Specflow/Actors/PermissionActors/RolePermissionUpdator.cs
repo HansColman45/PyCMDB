@@ -1,7 +1,9 @@
-﻿using CMDB.Domain.Entities;
+﻿using Bright.ScreenPlay.Actors;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Testing.Helpers;
 using CMDB.UI.Specflow.Abilities.Data;
+using CMDB.UI.Specflow.Abilities.Pages.RolePermission;
 using CMDB.UI.Specflow.Questions.RolePermissions;
 using Reqnroll;
 
@@ -17,7 +19,7 @@ namespace CMDB.UI.Specflow.Actors.PermissionActors
         {
             var context = GetAbility<DataContext>();
             var permission = GetOrCreatePermission("Read");
-            return await RolePermissionHelper.CreateDefaultRolePermission(context.context, menu,permission, admin);
+            return await RolePermissionHelper.CreateDefaultRolePermission(context.DBcontext, menu,permission, admin);
         }
 
         public void DoUpdate(RolePerm rolePerm, string level)
@@ -29,6 +31,20 @@ namespace CMDB.UI.Specflow.Actors.PermissionActors
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_level_selected");
             editPage.Edit();
             editPage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_edited");
+        }
+
+        public void DoDelete()
+        {
+            var deletePage = Perform(new OpenTheDeleteRolePermissionPage());
+            deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_delete");
+            deletePage.Delete();
+            deletePage.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_deleted");
+        }
+
+        public int CountSearchedElements()
+        {
+            var detailsPage = GetAbility<RolePermissionOverviewPage>();
+            return detailsPage.CountElementsByXPath("//div[@class='alert alert-danger']");
         }
     }
 }

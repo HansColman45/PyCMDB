@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Laptop
         public override async Task<Domain.Entities.Laptop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var laptop =  await LaptopHelper.CreateSimpleLaptop(context.context, context.Admin);     
+            var laptop =  await LaptopHelper.CreateSimpleLaptop(context.DBcontext, context.Admin);     
             return (Domain.Entities.Laptop) context.GetDevice(laptop.AssetTag);
         }
     }
@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.Laptop
         public override async Task<Domain.Entities.Laptop> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var laptop = await LaptopHelper.CreateSimpleLaptop(context.context, context.Admin, false);
+            var laptop = await LaptopHelper.CreateSimpleLaptop(context.DBcontext, context.Admin, false);
             return (Domain.Entities.Laptop)context.GetDevice(laptop.AssetTag);
         }
     }

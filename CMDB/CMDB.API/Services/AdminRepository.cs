@@ -106,6 +106,26 @@ namespace CMDB.API.Services
                 Token = token
             };
         }
+        ///inheritdoc />
+        public async Task<AuthenticateResponse> LogOut(AuthenticateRequest model)
+        {
+            var admin = await _context.Admins
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Application)
+                .Where(x => x.Account.Application.Name == "CMDB" && x.Account.UserID == model.Username).AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (admin == null)
+                return null;
+            TokenStore.AdminId = admin.AdminId;
+            TokenStore.Admin = admin;
+            return new AuthenticateResponse()
+            {
+                Id = admin.AdminId,
+                UserId = admin.Account.UserID,
+                Level = admin.Level,
+                Token = null
+            };
+        }
         /// inheritdoc />
         public async Task<bool> HasAdminAccess(HasAdminAccessRequest request)
         {

@@ -25,14 +25,14 @@ namespace CMDB.Infrastructure.Configurations
                 .WithMany(d => d.Identities)
                 .HasForeignKey(e => e.TypeId)
                 .HasConstraintName("FK_Identity_Type")
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .IsRequired();
 
             builder.HasOne(e => e.Language)
                 .WithMany(d => d.Identities)
                 .HasConstraintName("FK_Identity_Language")
                 .HasForeignKey(e => e.LanguageCode)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .IsRequired();
 
             builder.Property(e => e.EMail)

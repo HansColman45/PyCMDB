@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Identity
         public override async Task<Domain.Entities.Identity> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await IdentityHelper.CreateSimpleIdentity(context.context, context.Admin);
+            return await IdentityHelper.CreateSimpleIdentity(context.DBcontext, context.Admin);
         }
     }
     /// <summary>
@@ -24,7 +24,7 @@ namespace CMDB.UI.Specflow.Questions.Identity
         public override async Task<Domain.Entities.Identity> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return await IdentityHelper.CreateSimpleIdentity(context.context, context.Admin,false);
+            return await IdentityHelper.CreateSimpleIdentity(context.DBcontext, context.Admin,false);
         }
     }
 }

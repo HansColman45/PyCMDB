@@ -6,7 +6,6 @@ using CMDB.Domain.Responses;
 using CMDB.Infrastructure;
 using CMDB.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -80,6 +79,30 @@ namespace CMDB.Services
                 }
             };
             _Client = new HttpClient(clientHandler);
+        }
+        /// <summary>
+        /// This will log the admin out
+        /// </summary>
+        /// <returns></returns>
+        public async Task<string> Logout(Admin admin)
+        {
+            AuthenticateRequest request = new()
+            {
+                Username = admin.Account.UserID,
+                Password = admin.Password
+            };
+            BaseUrl = Url + "api/Admin/Logout";
+            var response = await _Client.PostAsJsonAsync(BaseUrl, request);
+            if (response.IsSuccessStatusCode)
+            {
+                AuthenticateResponse authenticateResponse = await response.Content.ReadAsJsonAsync<AuthenticateResponse>();
+                TokenStore.AdminId = authenticateResponse.Id;
+                TokenStore.Token = authenticateResponse.Token;
+                TokenStore.UserName = admin.Account.UserID;
+                TokenStore.Password = "";
+                return TokenStore.Token;
+            }
+            else return null;
         }
         #region generic app things
         /// <summary>

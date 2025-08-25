@@ -14,3 +14,8 @@ Scenario: I want to edit a RolePermission
 	Given There is a RolePermission existing in the system
 	When I change the Level to 1 and update the RolePermission
 	Then I should be able to find the updated RolePermission in the system
+
+Scenario: I want to delete a RolePermission
+	Given There is a RolePermission existing in the system
+	When I delete the RolePermission
+	Then I should not be able to find the deleted RolePermission in the system

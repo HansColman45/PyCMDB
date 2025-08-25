@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Account
         public override async Task<Domain.Entities.Account> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var account = await AccountHelper.CreateSimpleAccountAsync(context.context, context.Admin);
+            var account = await AccountHelper.CreateSimpleAccountAsync(context.DBcontext, context.Admin);
             return context.GetAccount(account.AccID);
         }
     }
@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.Account
         public override async Task<Domain.Entities.Account> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var account =  await AccountHelper.CreateSimpleAccountAsync(context.context, context.Admin, false);
+            var account =  await AccountHelper.CreateSimpleAccountAsync(context.DBcontext, context.Admin, false);
             return context.GetAccount(account.AccID);
         }
     }

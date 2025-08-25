@@ -26,7 +26,6 @@ using CMDB.UI.Specflow.Questions.Account;
 using CMDB.UI.Specflow.Questions.Admin;
 using CMDB.UI.Specflow.Questions.DataContextAnswers;
 using CMDB.UI.Specflow.Questions.Main;
-using OpenQA.Selenium;
 using Reqnroll;
 
 namespace CMDB.UI.Specflow.Actors
@@ -57,10 +56,6 @@ namespace CMDB.UI.Specflow.Actors
         /// The random number
         /// </summary>
         protected int rndNr;
-        /// <summary>
-        /// The WebDriver
-        /// </summary>
-        private IWebDriver Driver { get; set; }
         /// <summary>
         /// The expected log
         /// </summary>
@@ -103,7 +98,6 @@ namespace CMDB.UI.Specflow.Actors
             try
             {
                 var page = Perform(new OpenTheLoginPage());
-                //Driver = page.WebDriver;
                 page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_Login");
                 page.UserId = userName;
                 page.TakeScreenShot($"{ScenarioContext.ScenarioInfo.Title}_{ScenarioContext.CurrentScenarioBlock}_EnterUserId");
@@ -367,7 +361,7 @@ namespace CMDB.UI.Specflow.Actors
             if(main.WebDriver != null)
                 main.Dispose();
             var db = GetAbility<DataContext>();
-            if(db.context != null)
+            if(db.DBcontext != null)
                 db.Dispose();
         }
         /// <summary>

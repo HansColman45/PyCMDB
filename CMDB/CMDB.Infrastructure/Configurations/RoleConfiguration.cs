@@ -26,7 +26,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Type)
                 .WithMany(d => d.Roles)
                 .HasConstraintName("FK_Role_Type")
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .IsRequired();
 
             builder.HasOne(e => e.LastModifiedAdmin)

@@ -4,6 +4,7 @@ using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMDB.Infrastructure.Migrations
 {
     [DbContext(typeof(CMDBContext))]
-    partial class CMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250822133055_updateroleperm")]
+    partial class UpdateRolePerm
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -463,7 +466,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("IdentityAccountInfos", (string)null);
+                    b.ToTable("IdentityAccountInfos");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Kensington", b =>
@@ -961,7 +964,7 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("RAM");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Desktop");
                 });
@@ -970,7 +973,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Docking");
                 });
@@ -990,7 +993,7 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("RAM");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Laptop");
                 });
@@ -999,7 +1002,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Screen");
                 });
@@ -1008,7 +1011,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Token");
                 });

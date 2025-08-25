@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Questions.Docking
         public override async Task<Domain.Entities.Docking> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var doc =  await DockingHelpers.CreateSimpleDocking(context.context, context.Admin);
+            var doc =  await DockingHelpers.CreateSimpleDocking(context.DBcontext, context.Admin);
             return (Domain.Entities.Docking)context.GetDevice(doc.AssetTag);
         }
     }
@@ -26,7 +26,7 @@ namespace CMDB.UI.Specflow.Questions.Docking
         public override async Task<Domain.Entities.Docking> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var doc = await DockingHelpers.CreateSimpleDocking(context.context, context.Admin, false);
+            var doc = await DockingHelpers.CreateSimpleDocking(context.DBcontext, context.Admin, false);
             return (Domain.Entities.Docking)context.GetDevice(doc.AssetTag);
         }
     }

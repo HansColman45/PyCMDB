@@ -175,6 +175,20 @@ namespace CMDB.API.Controllers
             return Ok(response);
         }
         /// <summary>
+        /// Logs out the user by invalidating their authentication session.
+        /// </summary>
+        /// <remarks>This method allows anonymous access and does not require prior authentication. 
+        /// Ensure that the <paramref name="request"/> contains valid session details for the logout to
+        /// succeed.</remarks>
+        /// <param name="request">The authentication request containing the user's credentials or session details to be invalidated.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the logout operation.  Typically, this will be an
+        /// HTTP 200 OK response if the operation succeeds.</returns>
+        [HttpPost("Logout"), AllowAnonymous]
+        public async Task<IActionResult> Logout(AuthenticateRequest request)
+        {
+            return Ok(await _uow.AdminRepository.LogOut(request));
+        }
+        /// <summary>
         /// Checks if the admin has access to a site
         /// </summary>
         /// <param name="request"></param>

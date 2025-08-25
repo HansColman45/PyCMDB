@@ -35,6 +35,12 @@ namespace CMDB.API.Interfaces
         /// <returns><see cref="AuthenticateResponse"/></returns>
         Task<AuthenticateResponse> Authenticate(AuthenticateRequest model);
         /// <summary>
+        /// This will log out the admin
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        Task<AuthenticateResponse> LogOut(AuthenticateRequest model);
+        /// <summary>
         /// Will check if the admin has access to the requested part of the site
         /// </summary>
         /// <param name="request"><see cref="HasAdminAccessRequest"/></param>

@@ -13,7 +13,7 @@ namespace CMDB.UI.Specflow.Questions.Token
         public override async Task<Domain.Entities.Token> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var token = await TokenHelper.CreateNewToken(context.context, context.Admin);
+            var token = await TokenHelper.CreateNewToken(context.DBcontext, context.Admin);
             return (Domain.Entities.Token)context.GetDevice(token.AssetTag);
         }
     }
@@ -25,7 +25,7 @@ namespace CMDB.UI.Specflow.Questions.Token
         public override async Task<Domain.Entities.Token> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var token = await TokenHelper.CreateNewToken(context.context, context.Admin, false);
+            var token = await TokenHelper.CreateNewToken(context.DBcontext, context.Admin, false);
             return (Domain.Entities.Token)context.GetDevice(token.AssetTag);
         }
     }

@@ -20,7 +20,7 @@ namespace CMDB.Domain.Entities
         [Required(ErrorMessage = "Please select a Menu item")]
         public Menu Menu { get; set; }
         public Admin LastModifiedAdmin { get; set; }
-        public int LastModifiedAdminId { get; set; }
+        public int? LastModifiedAdminId { get; set; }
 
         public int? MenuId { get; set; }
         public int? PermissionId { get; set; }

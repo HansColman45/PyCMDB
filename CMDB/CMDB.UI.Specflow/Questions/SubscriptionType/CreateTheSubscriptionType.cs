@@ -14,8 +14,8 @@ namespace CMDB.UI.Specflow.Questions.SubscriptionType
         public override async Task<Domain.Entities.SubscriptionType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            AssetCategory assetCategory = context.context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
-            return await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory, context.Admin);
+            AssetCategory assetCategory = context.DBcontext.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
+            return await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory, context.Admin);
         }
     }
     /// <summary>
@@ -26,8 +26,8 @@ namespace CMDB.UI.Specflow.Questions.SubscriptionType
         public override async Task<Domain.Entities.SubscriptionType> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            AssetCategory assetCategory = context.context.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
-            return await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.context, assetCategory, context.Admin, false);
+            AssetCategory assetCategory = context.DBcontext.AssetCategories.Where(x => x.Category == "Internet Subscription").First();
+            return await SubscriptionTypeHelper.CreateSimpleSubscriptionType(context.DBcontext, assetCategory, context.Admin, false);
         }
     }
 }

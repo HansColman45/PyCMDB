@@ -21,14 +21,14 @@ namespace CMDB.Infrastructure.Configurations
                 .WithMany(d => d.Permissions)
                 .HasForeignKey(e => e.MenuId)
                 .HasConstraintName("FK_RolePerm_Menu")
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .IsRequired();
 
             builder.HasOne(e => e.Permission)
                 .WithMany(d => d.Roles)
                 .HasForeignKey(e => e.PermissionId)
                 .HasConstraintName("FK_RolePerm_Permission")
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .IsRequired();
 
             builder.HasOne(e => e.LastModifiedAdmin)

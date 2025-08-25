@@ -84,9 +84,22 @@ namespace CMDB.UI.Specflow.Abilities.Pages
             EnterInTextboxByXPath("//input[@name='search']", searchstring);
             ClickElementByXpath("//button[@type='submit']");
         }
+        /// <summary>
+        /// Waits until the element specified by the <see cref="NewXpath"/> is visible on the page.
+        /// </summary>
         public void WaitOnAddNew()
         {
             WaitUntilElmentVisableByXpath(NewXpath);
+        }
+        /// <summary>
+        /// Counts the number of elements that match the specified XPath expression.
+        /// </summary>
+        /// <param name="xpath">The XPath expression used to locate elements in the DOM. Cannot be null or empty.</param>
+        /// <returns>The number of elements that match the specified XPath expression.</returns>
+        public int CountElementsByXPath(string xpath)
+        {
+            var elements = WebDriver.FindElements(By.XPath(xpath));
+            return elements.Count;
         }
     }
 }

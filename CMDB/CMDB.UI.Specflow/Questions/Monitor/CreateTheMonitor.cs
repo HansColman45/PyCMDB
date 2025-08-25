@@ -14,7 +14,7 @@ namespace CMDB.UI.Specflow.Questions.Monitor
         public override async Task<Screen> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var screen = await ScreenHelper.CreateScreen(context.context, context.Admin);
+            var screen = await ScreenHelper.CreateScreen(context.DBcontext, context.Admin);
             return (Screen)context.GetDevice(screen.AssetTag);
         }
     }
@@ -26,7 +26,7 @@ namespace CMDB.UI.Specflow.Questions.Monitor
         public override async Task<Screen> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            var screen = await ScreenHelper.CreateScreen(context.context, context.Admin, false);
+            var screen = await ScreenHelper.CreateScreen(context.DBcontext, context.Admin, false);
             return (Screen)context.GetDevice(screen.AssetTag);
         }
     }

@@ -10,7 +10,7 @@ namespace CMDB.UI.Specflow.Questions.DataContextAnswers
         public override List<RAM> PerformAs(IPerformer actor)
         {
             var context = actor.GetAbility<DataContext>();
-            return context.context.RAMs.ToList();
+            return context.DBcontext.RAMs.ToList();
         }
     }
 }

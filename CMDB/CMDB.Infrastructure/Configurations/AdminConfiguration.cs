@@ -25,7 +25,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.Account)
                 .WithMany(d => d.Admins)
                 .HasForeignKey(e => e.AccountId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.SetNull)
                 .HasConstraintName("FK_Admin_Account")
                 .IsRequired();
 
@@ -36,7 +36,7 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.LastModifiedAdmin)
                 .WithMany(p => p.Admins)
                 .HasForeignKey(e => e.LastModifiedAdminId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Admin_LastModiefiedAdmin");
 
             builder.Property(e => e.active)

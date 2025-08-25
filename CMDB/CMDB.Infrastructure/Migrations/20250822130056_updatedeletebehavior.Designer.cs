@@ -4,6 +4,7 @@ using CMDB.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CMDB.Infrastructure.Migrations
 {
     [DbContext(typeof(CMDBContext))]
-    partial class CMDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250822130056_updatedeletebehavior")]
+    partial class UpdateDeletebehavior
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -463,7 +466,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.Property<string>("UserId")
                         .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("IdentityAccountInfos", (string)null);
+                    b.ToTable("IdentityAccountInfos");
                 });
 
             modelBuilder.Entity("CMDB.Domain.Entities.Kensington", b =>
@@ -819,7 +822,7 @@ namespace CMDB.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("LastModifiedAdminId")
+                    b.Property<int>("LastModifiedAdminId")
                         .HasColumnType("int");
 
                     b.Property<int>("Level")
@@ -961,7 +964,7 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("RAM");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Desktop");
                 });
@@ -970,7 +973,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Docking");
                 });
@@ -990,7 +993,7 @@ namespace CMDB.Infrastructure.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("RAM");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Laptop");
                 });
@@ -999,7 +1002,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Screen");
                 });
@@ -1008,7 +1011,7 @@ namespace CMDB.Infrastructure.Migrations
                 {
                     b.HasBaseType("CMDB.Domain.Entities.Device");
 
-                    b.ToTable("asset", (string)null);
+                    b.ToTable("asset");
 
                     b.HasDiscriminator().HasValue("Token");
                 });
@@ -1490,14 +1493,14 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.Menu", "Menu")
                         .WithMany("Permissions")
                         .HasForeignKey("MenuId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_RolePerm_Menu");
 
                     b.HasOne("CMDB.Domain.Entities.Permission", "Permission")
                         .WithMany("Roles")
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_RolePerm_Permission");
 
@@ -1513,7 +1516,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("Subscriptions")
                         .HasForeignKey("AssetCategoryId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Subscription_Category");
 
@@ -1538,7 +1541,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.SubscriptionType", "SubscriptionType")
                         .WithMany("Subscriptions")
                         .HasForeignKey("SubsctiptionTypeId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_Subscription_Type");
 
@@ -1558,7 +1561,7 @@ namespace CMDB.Infrastructure.Migrations
                     b.HasOne("CMDB.Domain.Entities.AssetCategory", "Category")
                         .WithMany("SubscriptionTypes")
                         .HasForeignKey("AssetCategoryId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired()
                         .HasConstraintName("FK_AssetType_Category");
 

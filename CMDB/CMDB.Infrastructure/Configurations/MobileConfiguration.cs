@@ -27,14 +27,14 @@ namespace CMDB.Infrastructure.Configurations
             builder.HasOne(e => e.MobileType)
                 .WithMany(d => d.Mobiles)
                 .HasForeignKey(e => e.TypeId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Mobile_Type")
                 .IsRequired();
 
             builder.HasOne(e => e.Category)
                 .WithMany(d => d.Mobiles)
                 .HasForeignKey(e => e.CategoryId)
-                .OnDelete(DeleteBehavior.Restrict)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Mobile_Category")
                 .IsRequired();
 
