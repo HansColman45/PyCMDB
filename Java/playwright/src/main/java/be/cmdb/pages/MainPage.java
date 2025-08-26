@@ -43,7 +43,7 @@ public class MainPage extends CMDBPage {
      */
     public TypeOverviewPage openAccountTypeOverview(){
         getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
-        getPage().locator("xpath=//a[@id='Identity Type32']").click();
+        getPage().locator("xpath=//a[@id='Account Type34']").click();
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
         this.newButton().waitFor();
         return new TypeOverviewPage(getPage());

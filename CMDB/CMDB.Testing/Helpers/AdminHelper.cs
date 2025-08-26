@@ -157,6 +157,7 @@ namespace CMDB.Testing.Helpers
                 }
                 //AssetType
                 var assetType = context.AssetTypes
+                    .Include(x => x.Logs)
                     .Where(x => x.LastModifiedAdminId == a.AdminId)
                     .ToList();
                 foreach (var type in assetType)
