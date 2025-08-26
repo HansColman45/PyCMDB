@@ -467,27 +467,30 @@ namespace CMDB.API.Services
         public async Task ReleaseAccount(IdenAccountDTO idenAccount)
         {
             var idenacc = await _context.IdenAccounts.Where(x => x.ID == idenAccount.Id).FirstAsync();
-            idenacc.ValidUntil = DateTime.UtcNow.AddDays(-1);
-            idenacc.LastModifiedAdminId = TokenStore.AdminId;
-            _context.IdenAccounts.Update(idenacc);
-            var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
-            var iden = await TrackedIden(idenAccount.Identity.IdenId);
-            string ideninfo = $"Identity with name: {iden.Name}";
-            string accountinfo = $"Account with UserID: {acc.UserID}";
-            acc.LastModifiedAdminId = TokenStore.AdminId;
-            acc.Logs.Add(new()
+            if (idenacc.ValidUntil.ToUniversalTime() >= DateTime.UtcNow && idenacc.ValidFrom.ToUniversalTime() < DateTime.UtcNow)
             {
-                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
-                LogDate = DateTime.UtcNow
-            });
-            _context.Accounts.Update(acc);
-            iden.LastModifiedAdminId = TokenStore.AdminId;
-            iden.Logs.Add(new()
-            {
-                LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
-                LogDate = DateTime.UtcNow
-            });
-            _context.Identities.Update(iden);
+                idenacc.ValidUntil = DateTime.UtcNow.AddHours(-1);
+                idenacc.LastModifiedAdminId = TokenStore.AdminId;
+                _context.IdenAccounts.Update(idenacc);
+                var acc = await _context.Accounts.Where(x => x.AccID == idenAccount.Account.AccID).FirstAsync();
+                var iden = await TrackedIden(idenAccount.Identity.IdenId);
+                string ideninfo = $"Identity with name: {iden.Name}";
+                string accountinfo = $"Account with UserID: {acc.UserID}";
+                acc.LastModifiedAdminId = TokenStore.AdminId;
+                acc.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(accountinfo, ideninfo, TokenStore.Admin.Account.UserID, "account"),
+                    LogDate = DateTime.UtcNow
+                });
+                _context.Accounts.Update(acc);
+                iden.LastModifiedAdminId = TokenStore.AdminId;
+                iden.Logs.Add(new()
+                {
+                    LogText = GenericLogLineCreator.ReleaseAccountFromIdentityLogLine(ideninfo, accountinfo, TokenStore.Admin.Account.UserID, table),
+                    LogDate = DateTime.UtcNow
+                });
+                _context.Identities.Update(iden); 
+            }
         }
         /// <summary>
         /// This will convert the identity to a DTO

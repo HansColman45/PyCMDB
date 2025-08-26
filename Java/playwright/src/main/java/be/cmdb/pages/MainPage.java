@@ -41,7 +41,7 @@ public class MainPage extends CMDBPage {
      * Opens the AccountType Overview page.
      * @return TypeOverviewPage
      */
-    public TypeOverviewPage OpenAccountTypeOverview(){
+    public TypeOverviewPage openAccountTypeOverview(){
         getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
         getPage().locator("xpath=//a[@id='Identity Type32']").click();
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
@@ -53,7 +53,7 @@ public class MainPage extends CMDBPage {
      * Opens the IdentityType Overview page.
      * @return TypeOverviewPage
      */
-    public TypeOverviewPage OpenIdentityTypeOverviewPage(){
+    public TypeOverviewPage openIdentityTypeOverviewPage(){
         getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
         getPage().locator("#Identity Type32").click();
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
@@ -65,7 +65,7 @@ public class MainPage extends CMDBPage {
      * Opens the RoleType Overview page.
      * @return TypeOverviewPage
      */
-    public TypeOverviewPage OpenRoleTypeOverviewPage() {
+    public TypeOverviewPage openRoleTypeOverviewPage() {
         getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
         getPage().locator("#Role Type36").click();
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();

@@ -34,7 +34,7 @@
                         <td>Asset tag</td>
                         <td>Serial number</td>
                         <td>Asset type</td>
-                        @if ((bool)ViewData["ReleseDevice"])
+                        @if ((bool)ViewData["ReleaseDevice"])
                         {
                             <td>Action</td>
                         }
@@ -45,7 +45,7 @@
                         <td class="small">@Model.Device.AssetTag</td>
                         <td class="small">@Model.Device.SerialNumber</td>
                         <td class="small">@Model.Device.AssetType.Vendor @Model.Device.AssetType.Type</td>
-                        @if ((bool)ViewData["ReleseDevice"])
+                        @if ((bool)ViewData["ReleaseDevice"])
                         {
                             <td><a class="btn btn-danger" href="\Kensington\ReleaseDevice\@Model.KeyID\@Model.AssetTag" id="ReleaseDevice" data-toggle="tooltip" data-placement="top" title="Release Device"><span class="@ViewBag.AddDeviceIcon"></span></a></td>
                         }

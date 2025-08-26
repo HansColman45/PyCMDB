@@ -112,7 +112,7 @@ namespace CMDB.API.Controllers
             {
                 AdminId = Int32.Parse(userIdClaim),
                 Site = site,
-                Permission = Permission.AssignKensington,
+                Permission = Permission.AssignAccount,
             };
             var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
             if (!hasAdminAcces)

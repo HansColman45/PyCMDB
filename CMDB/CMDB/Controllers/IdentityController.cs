@@ -1,4 +1,6 @@
-﻿using CMDB.Domain.DTOs;
+﻿using CMDB.Domain.CustomExeptions;
+using CMDB.Domain.DTOs;
+using CMDB.Domain.Entities;
 using CMDB.Infrastructure;
 using CMDB.Services;
 using Microsoft.AspNetCore.Hosting;
@@ -177,6 +179,11 @@ namespace CMDB.Controllers
                     }
                 }
             }
+            catch (NotAValidSuccessCode ex)
+            {
+                ModelState.AddModelError("API error", $"The api returned with an error {ex.Message}");
+                log.Error(ex.ToString());
+            }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Unable to save changes. " + "Try again, and if the problem persists " +
@@ -273,7 +280,7 @@ namespace CMDB.Controllers
                 ViewData["reason"] = values["reason"];
                 try
                 {
-                    if(identity.Devices.Count > 0)
+                    if(identity.Devices.Count > 0 || identity.Accounts.Count > 0 || identity.Subscriptions.Count > 0)
                     {
                         var admin = await service.Admin();
                         await _PDFservice.SetUserinfo(identity.UserID,
@@ -283,16 +290,45 @@ namespace CMDB.Controllers
                         identity.LastName,
                         identity.Name,
                         identity.Language.Code);
-                        foreach (var device in identity.Devices)
-                        {
-                            await _PDFservice.SetDeviceInfo(device);
-                            if(device.Kensington is not null)
+                        //Check if there are devices
+                        if(identity.Devices.Count > 0) { 
+                            foreach (var device in identity.Devices)
                             {
-                                await _PDFservice.SetKeyInfo(device.Kensington);
-                                await service.ReleaseKensington(device);
+                                await _PDFservice.SetDeviceInfo(device);
+                                if(device.Kensington is not null)
+                                {
+                                    await _PDFservice.SetKeyInfo(device.Kensington);
+                                    await service.ReleaseKensington(device);
+                                }
+                            }
+                            await service.ReleaseDevices(identity, identity.Devices.ToList());
+                        }
+                        //Check if there are accounts
+                        if (identity.Accounts.Count > 0)
+                        {
+                            foreach (var account in identity.Accounts) { 
+                                await _PDFservice.SetAccontInfo(account);
+                                await service.ReleaseAccount4Identity(account);
                             }
                         }
-                        await service.ReleaseDevices(identity, identity.Devices.ToList());
+                        //Check if there are mobiles
+                        if (identity.Mobiles.Count > 0)
+                        {
+                            foreach (var mobile in identity.Mobiles)
+                            {
+                                await _PDFservice.SetMobileInfo(mobile);
+                            }
+                            await service.ReleaseMobile(identity, identity.Mobiles.ToList());
+                        }
+                        //Check if there are subscriptions
+                        if (identity.Subscriptions.Count > 0)
+                        {
+                            foreach (var sub in identity.Subscriptions)
+                            {
+                                await _PDFservice.SetSubscriptionInfo(sub);
+                            }
+                            await service.ReleaseSubscription(identity, identity.Subscriptions.ToList());
+                        }
                         await _PDFservice.GenratePDFFile(Table, identity.IdenId);
                     }
                     await service.Deactivate(identity, ViewData["reason"].ToString());
@@ -448,17 +484,26 @@ namespace CMDB.Controllers
             if (!string.IsNullOrEmpty(FormSubmit))
             {
                 int AccId = Convert.ToInt32(values["Account"]);
-                DateTime from = DateTime.Parse(values["ValidFrom"]);
-                DateTime until = DateTime.Parse(values["ValidUntil"]);
+                if (!DateTime.TryParse(values["ValidFrom"], out DateTime from))
+                    ModelState.AddModelError("", "ValidFrom date is invalid.");
+                if (!DateTime.TryParse(values["ValidUntil"], out DateTime until))
+                    ModelState.AddModelError("", "ValidUntil date is invalid.");
                 try
                 {
-                    if (await service.IsPeriodOverlapping((int)id, from, until))
+                    if (until < from)
+                        ModelState.AddModelError("", "Please make sure that the valid until date is after the valid from date");
+                    if (await service.IsPeriodOverlapping((int)id,AccId, from, until))
                         ModelState.AddModelError("", "Periods are overlapping please choose other dates");
                     if (ModelState.IsValid)
                     {
                         await service.AssignAccount2Idenity(identity, AccId, from, until);
                         return RedirectToAction("AssignForm", "Identity", new { id });
                     }
+                }
+                catch(NotAValidSuccessCode ex)
+                {
+                    log.Error("API error: {0}", ex.ToString());
+                    ModelState.AddModelError("", $"The api returned with an error {ex.Message}");
                 }
                 catch (Exception ex)
                 {

@@ -123,7 +123,7 @@ namespace CMDB.Services
                 _Client.SetBearerToken(TokenStore.Token);
                 if (response.IsSuccessStatusCode)
                 {
-                    var config = response.Content.ReadAsJsonAsync<Domain.Entities.Configuration>().Result;
+                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
                     format = config.CFN_Tekst;
                 }
                 else
@@ -148,7 +148,7 @@ namespace CMDB.Services
                 var response = _Client.PostAsJsonAsync(BaseUrl, request).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var config = response.Content.ReadAsJsonAsync<Domain.Entities.Configuration>().Result;
+                    var config = response.Content.ReadAsJsonAsync<Configuration>().Result;
                     format = config.CFN_Tekst;
                 }
                 else

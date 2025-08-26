@@ -14,26 +14,34 @@ namespace CMDB.Testing.Helpers
     {
         public static async Task<Admin> CreateSimpleAdmin(CMDBContext context, Account account, Admin admin,int level = 9, bool active = true)
         {
-            Admin newAdmin = new AdminBuilder()
-                .With(x => x.Level, level)
-                .With(x => x.AccountId, account.AccID)
-                .With(x => x.LastModifiedAdminId, admin.AccountId)
-                .Build();
-
-            newAdmin.Logs.Add(new LogBuilder()
-                    .With(x => x.Admin, newAdmin)
-                    .With(x => x.LogText, $"Admin created with userid: {account.UserID}")
-                    .Build()
-            );
-
-            context.Admins.Add(newAdmin);
-            await context.SaveChangesAsync();
-            if (!active)
+            try
             {
-                newAdmin.active = 0;
+                Admin newAdmin = new AdminBuilder()
+                        .With(x => x.Level, level)
+                        .With(x => x.AccountId, account.AccID)
+                        .With(x => x.LastModifiedAdminId, admin.AdminId)
+                        .Build();
+
+                newAdmin.Logs.Add(new LogBuilder()
+                        .With(x => x.Admin, newAdmin)
+                        .With(x => x.LogText, $"Admin created with userid: {account.UserID}")
+                        .Build()
+                );
+
+                context.Admins.Add(newAdmin);
                 await context.SaveChangesAsync();
+                if (!active)
+                {
+                    newAdmin.active = 0;
+                    await context.SaveChangesAsync();
+                }
+                return newAdmin;
             }
-            return newAdmin;
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                throw;
+            }
         }
         public static async Task Delete(CMDBContext context, Admin admin)
         {

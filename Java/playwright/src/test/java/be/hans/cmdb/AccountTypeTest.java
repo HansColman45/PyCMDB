@@ -25,8 +25,8 @@ public class AccountTypeTest extends BaseTest{
         MainPage mainPage = loginPage.login(account.getUserId(), defaultPassword());
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
-        TypeOverviewPage typeOverviewPage = mainPage.OpenAccountTypeOverview();
-        CreateTypePage createTypePage= typeOverviewPage.openCreateTypePage();
+        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
+        CreateTypePage createTypePage = typeOverviewPage.openCreateTypePage();
         createTypePage.setType(type.getType());
         createTypePage.setDescription(type.getDescription());
         createTypePage.clickCreateButton();

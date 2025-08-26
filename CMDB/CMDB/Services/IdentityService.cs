@@ -367,16 +367,18 @@ namespace CMDB.Services
         /// <summary>
         /// This method checks if a period is overlapping with an existing identity
         /// </summary>
-        /// <param name="IdenID">The Id of the Identity</param>
+        /// <param name="idenID">The Id of the Identity</param>
+        /// <param name="accId">The Id of the account</param>
         /// <param name="ValidFrom"></param>
         /// <param name="ValidUntil"></param>
         /// <returns></returns>
-        public async Task<bool> IsPeriodOverlapping(int IdenID, DateTime ValidFrom, DateTime ValidUntil)
+        public async Task<bool> IsPeriodOverlapping(int idenID, int accId,DateTime ValidFrom, DateTime ValidUntil)
         {
             bool result = false;
             IsPeriodOverlappingRequest request = new()
             {
-                IdentityId = IdenID,
+                IdentityId = idenID,
+                AccountId = accId,
                 StartDate = ValidFrom,
                 EndDate = ValidUntil,
             };

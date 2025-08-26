@@ -64,15 +64,16 @@ namespace CMDB.API.Services
         /// <inheritdoc/>
         public async Task<IdenAccount> GetIdenAccountById(int id)
         {
-            var iden = await _context.IdenAccounts.AsNoTracking()
+            var iden = await _context.IdenAccounts
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Application).AsNoTracking()
+                .ThenInclude(x => x.Application)
                 .Include(x => x.Account)
-                .ThenInclude(x => x.Type).AsNoTracking()
+                .ThenInclude(x => x.Type)
                 .Include(x => x.Identity)
-                .ThenInclude(x => x.Type).AsNoTracking()
+                .ThenInclude(x => x.Type)
                 .Include(x => x.Identity)
-                .ThenInclude(x => x.Language).AsNoTracking()
+                .ThenInclude(x => x.Language)
+                .Where(x => x.ID == id).AsNoTracking()
                 .FirstAsync();
             return iden;
         }
@@ -81,7 +82,11 @@ namespace CMDB.API.Services
         {
             var Identity = await _context.IdenAccounts
                         .Include(x => x.Identity)
-                        .Where(x => x.Identity.IdenId == request.IdentityId && request.StartDate <= x.ValidFrom && x.ValidUntil >= request.EndDate).AsNoTracking()
+                        .Where(x => x.Identity.IdenId == request.IdentityId 
+                            && x.AccountId == request.AccountId
+                            && x.ValidFrom <= request.EndDate 
+                            && x.ValidUntil >= request.StartDate)
+                        .AsNoTracking()
                         .ToListAsync();
             if (Identity.Count > 0)
                 return true;

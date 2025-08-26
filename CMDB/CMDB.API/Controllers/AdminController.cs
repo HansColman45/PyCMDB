@@ -18,14 +18,17 @@ namespace CMDB.API.Controllers
         private readonly IUnitOfWork _uow;
         private HasAdminAccessRequest request;
         private readonly string site = "Admin";
+        private readonly ILogger<AdminController> _logger;
         private AdminController(){}
         /// <summary>
         /// Constructor for the AdminController
         /// </summary>
         /// <param name="unitOfWork"></param>
-        public AdminController(IUnitOfWork unitOfWork)
+        /// <param name="logger"></param>
+        public AdminController(IUnitOfWork unitOfWork, ILogger<AdminController> logger)
         {
             _uow = unitOfWork;
+            _logger = logger;
         }
         /// <summary>
         /// Gets all admin accounts

@@ -17,7 +17,7 @@ namespace CMDB.UI.Specflow.Actors.Admins
         public async Task<Admin> CreateAdminForAccount(Account account, bool active = true)
         {
             var datacontext = GetAbility<DataContext>();
-            Admin admin = await datacontext.CreateNewAdmin(account, active: active);
+            Admin admin = await datacontext.CreateNewAdmin(account, active:active);
             return admin;
         }
         public void DoUpdateAdmin(Admin newAdmin, string level)

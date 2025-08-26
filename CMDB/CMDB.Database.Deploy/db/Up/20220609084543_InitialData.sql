@@ -187,7 +187,9 @@ INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 12, 2, 1),
 (9, 13, 2, 1),
 (9, 26, 2, 1),
-(9, 27, 2, 1);
+(9, 27, 2, 1),
+(9, 28, 2, 1),
+(9, 29, 2, 1);
 -- IdentityType =30
 INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 1, 30, 1),
@@ -264,8 +266,8 @@ INSERT INTO roleperm (level, PermissionId, menuId, LastModifiedAdminId) VALUES
 (9, 5, 17, 1),
 (9, 14, 17, 1),
 (9, 15, 17, 1),
-(9, 24, 15, 1),
-(9, 25, 15, 1),
+(9, 24, 17, 1),
+(9, 25, 17, 1),
 (9, 30, 17, 1),
 (9, 35, 17, 1);
 -- Token = 19

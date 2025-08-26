@@ -129,6 +129,7 @@ namespace CMDB.API.Services
         /// inheritdoc />
         public async Task<bool> HasAdminAccess(HasAdminAccessRequest request)
         {
+            _logger.LogTrace($"Checking access for admin ID: {request.AdminId} to site: {request.Site} with permission: {request.Permission}");
             var admin = await _context.Admins.Where(x => x.AdminId == request.AdminId).AsNoTracking().FirstOrDefaultAsync();
             if (admin is null) return false;
             var permission = request.Permission;

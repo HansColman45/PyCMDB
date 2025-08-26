@@ -15,6 +15,7 @@ public class TypeDetailPage extends CMDBPage {
 
     /**
      * Retrieves the last logline from the Identity Details page.
+     * @param type The type of logline to retrieve (e.g., "accounttype").
      * @return The last logline.
      */
     public String getLastLogline(String type) {
