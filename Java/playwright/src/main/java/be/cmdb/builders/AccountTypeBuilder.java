@@ -7,7 +7,7 @@ public class AccountTypeBuilder extends GenericBuilder<Type> {
 
     public AccountTypeBuilder(){
         this.type = new Type();
-        type.setDiscriminator("accounttype");
+        type.setDiscriminator("AccountType");
         type.setActive(1); // Default to active
         type.setType(getFaker().commerce().productName());
         type.setDescription(getFaker().lorem().sentence());

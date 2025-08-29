@@ -1,7 +1,7 @@
 package be.hans.cmdb;
 
 import be.cmdb.dao.AccountDAO;
-import be.cmdb.helpers.AccountTypeHelper;
+import be.cmdb.helpers.IdentityTypeHelper;
 import be.cmdb.model.Account;
 import be.cmdb.model.Type;
 import be.cmdb.pages.LoginPage;
@@ -14,13 +14,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AccountTypeTest extends BaseTest{
+public class IdentityTypeTest extends BaseTest {
 
     @Test
-    void canCreateNewAccountType() {
-        Type type = AccountTypeHelper.createRandomAccountType();
+    void canCreateNewIdentityType(){
+        Type type = IdentityTypeHelper.createRandomIdentityType();
         MainPage mainPage = doLogin();
-        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
+        //Create new Identity Type
+        TypeOverviewPage typeOverviewPage = mainPage.openIdentityTypeOverviewPage();
         CreateTypePage createTypePage = typeOverviewPage.openCreateTypePage();
         createTypePage.setType(type.getType());
         createTypePage.setDescription(type.getDescription());
@@ -28,62 +29,68 @@ public class AccountTypeTest extends BaseTest{
         // Verify that the type was created successfully
         typeOverviewPage.search(type.getType());
         TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-        String logline = detailPage.getLastLogline("accounttype");
-        assertThat(logline).contains("table accounttype")
+        String logline = detailPage.getLastLogline("identitytype");
+        assertThat(logline).contains("table identitytype")
             .contains(type.getType())
             .contains(type.getDescription())
             .contains("by "+getAccount().getUserId());
     }
 
     @Test
-    void canDeactivateAccountType(){
-        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), true);
+    void canDeactivateIdentityType(){
+        //First create a new type in the Db
+        Type type = IdentityTypeHelper.createIdentityType(getSession(),getAdmin(), true);
         MainPage mainPage = doLogin();
-        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
+        TypeOverviewPage typeOverviewPage = mainPage.openIdentityTypeOverviewPage();
         typeOverviewPage.search(type.getType());
+        //Delete Identity Type
         DeleteTypePage deleteTypePage = typeOverviewPage.openDeleteTypePage();
         deleteTypePage.setReason("test");
         deleteTypePage.deActivate();
         // Verify that the type was deactivated successfully
         typeOverviewPage.search(type.getType());
         TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-        String logline = detailPage.getLastLogline("accounttype");
-        assertThat(logline).contains("table accounttype")
+        String logline = detailPage.getLastLogline("identitytype");
+        assertThat(logline).contains("table identitytype")
             .contains("test")
             .contains("by "+getAccount().getUserId());
     }
 
     @Test
-    void canActivateAnInactiveAccountType(){
-        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), false);
+    void canActivateAnInactiveIdentityType(){
+        //First create a new type in the Db
+        Type type = IdentityTypeHelper.createIdentityType(getSession(),getAdmin(), false);
         MainPage mainPage = doLogin();
-        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
+        TypeOverviewPage typeOverviewPage = mainPage.openIdentityTypeOverviewPage();
         typeOverviewPage.search(type.getType());
+        //Activate Identity Type
         typeOverviewPage.activate();
         // Verify that the type was activated successfully
         typeOverviewPage.search(type.getType());
         TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-        String logline = detailPage.getLastLogline("accounttype");
-        assertThat(logline).contains("table accounttype")
-            .contains("activated")
-            .contains("by "+getAccount().getUserId());
+        String logline = detailPage.getLastLogline("identitytype");
+        assertThat(logline).contains("table identitytype")
+            .contains("activated by "+getAccount().getUserId());
     }
 
-    @DisplayName("Can update an accounttype for")
+    @DisplayName("Can update an identitytype for")
     @ParameterizedTest(name = "field:{0}, newValue:{1}")
     @CsvSource({
         "type, Alien",
         "description, Person from another planet"
     })
-    void canUpdateAccountType(String field, String newValue) {
-        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), true);
+    void canEditIdentityType(String field, String newValue){
+        //First create a new type in the Db
+        Type type = IdentityTypeHelper.createIdentityType(getSession(),getAdmin(), true);
         String oldValue;
+        newValue += getRandomInt();
+        //Find it in the app and activate it
         MainPage mainPage = doLogin();
-        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
+        TypeOverviewPage typeOverviewPage = mainPage.openIdentityTypeOverviewPage();
         typeOverviewPage.search(type.getType());
+        //Update
         EditTypePage editTypePage = typeOverviewPage.openEditTypePage();
-        // Update the specified field
-        switch (field) {
+        switch (field){
             case "type":
                 oldValue = type.getType();
                 editTypePage.setType(newValue);
@@ -93,14 +100,14 @@ public class AccountTypeTest extends BaseTest{
                 editTypePage.setDescription(newValue);
                 break;
             default:
-                throw new IllegalArgumentException("Unknown field: " + field);
+                throw new IllegalArgumentException("Invalid field: " + field);
         }
         editTypePage.edit();
         // Verify that the update was successful
         typeOverviewPage.search(newValue);
         TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-        String logline = detailPage.getLastLogline("accounttype");
-        assertThat(logline).contains("table accounttype")
+        String logline = detailPage.getLastLogline("identitytype");
+        assertThat(logline).contains("table identitytype")
             .contains(field)
             .contains(newValue)
             .contains(oldValue)

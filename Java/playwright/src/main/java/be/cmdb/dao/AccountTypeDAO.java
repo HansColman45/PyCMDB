@@ -14,7 +14,6 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
 
     @Override
     public Type save(Session session, Type entity) {
-        entity.setDiscriminator("accounttype");
         session.persist(entity);
         return entity;
     }
@@ -32,7 +31,7 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
 
     @Override
     public List<Type> findAll(Session session) {
-        String hql = "FROM Type WHERE discriminator = 'accounttype'";
+        String hql = "FROM Type WHERE discriminator = 'AccountType'";
         Query<Type> query = session.createQuery(hql, Type.class);
         return query.getResultList();
     }
@@ -49,7 +48,7 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
 
     @Override
     public long count(Session session) {
-        String hql = "select count(*) from Type where discriminator = 'accounttype'";
+        String hql = "select count(*) from Type where discriminator = 'AccountType'";
         Query<Long> query = session.createQuery(hql, Long.class);
         return query.getSingleResult();
     }
@@ -61,7 +60,7 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
      * @return the IdentityType matching the type, or null if not found
      */
     public Type findByType(Session session, String type) {
-        String hql = "FROM Type WHERE discriminator = 'accounttype' and type = :type";
+        String hql = "FROM Type WHERE discriminator = 'AccountType' and type = :type";
         Query<Type> query = session.createQuery(hql, Type.class);
         query.setParameter("type", type);
         List<Type> results = query.getResultList();
@@ -75,7 +74,7 @@ public class AccountTypeDAO implements BaseDAO<Type, Integer> {
      * @return a list of account types modified by the specified admin
      */
     public List<Type> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
-        String hql = "FROM Type WHERE discriminator = 'accounttype' and lastModifiedAdminId = :lastModifiedAdminId";
+        String hql = "FROM Type WHERE discriminator = 'AccountType' and lastModifiedAdminId = :lastModifiedAdminId";
         Query<Type> query = session.createQuery(hql, Type.class);
         query.setParameter("lastModifiedAdminId", lastModifiedAdminId);
         return query.getResultList();

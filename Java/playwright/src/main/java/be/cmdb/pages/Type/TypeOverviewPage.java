@@ -20,13 +20,39 @@ public class TypeOverviewPage extends CMDBPage {
         this.activateButton().click();
     }
 
+    /**
+     * Opens the create new Type page.
+     * @return a new instance of the CreateTypePage
+     */
     public CreateTypePage openCreateTypePage() {
         this.newButton().click();
         return new CreateTypePage(getPage());
     }
 
+    /**
+     * Opens the detail page for the selected Type.
+     * @return a new instance of the TypeDetailPage
+     */
     public TypeDetailPage openTypeDetailPage() {
         this.detailsButton().click();
         return new TypeDetailPage(getPage());
+    }
+
+    /**
+     * Opens the delete page for the selected Type.
+     * @return a new instance of the DeleteTypePage
+     */
+    public DeleteTypePage openDeleteTypePage(){
+        this.deleteButton().click();
+        return new DeleteTypePage(getPage());
+    }
+
+    /**
+     * Opens the edit page for the selected Type.
+     * @return a new instance of the EditTypePage
+     */
+    public EditTypePage openEditTypePage(){
+        this.editButton().click();
+        return new EditTypePage(getPage());
     }
 }

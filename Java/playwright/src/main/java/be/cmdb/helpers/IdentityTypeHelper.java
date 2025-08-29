@@ -32,7 +32,9 @@ public class IdentityTypeHelper {
 
         Log log = new LogBuilder()
             .withType(type)
-            .withLogText("IdentityType with ID: " + type.getTypeId() + " created by Admin ID: " + admin.getAdminId())
+            .withLogText("IdentityType with type: " + type.getTypeId()
+                + " and description: " + type.getDescription()
+                +" is created by Automation in table identitytype")
             .build();
         LogDAO logDAO = new LogDAO();
         logDAO.save(session, log);
@@ -41,6 +43,13 @@ public class IdentityTypeHelper {
         return type;
     }
 
+    /***
+     * Creates a random IdentityType object for testing purposes.
+     * @return a new Type entity with random values
+     */
+    public static Type createRandomIdentityType() {
+        return new IdentityTypeBuilder().build();
+    }
     /**
      * Deletes an IdentityType and all associated logs from the database.
      * @param session the Hibernate session to use for the transaction

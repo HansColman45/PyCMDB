@@ -7,7 +7,7 @@ public class IdentityTypeBuilder extends GenericBuilder<Type> {
 
     public IdentityTypeBuilder() {
         this.type = new Type();
-        type.setDiscriminator("identitytype");
+        type.setDiscriminator("IdentityType");
         type.setActive(1); // Default to active
         type.setType(getFaker().commerce().productName());
         type.setDescription(getFaker().lorem().sentence());

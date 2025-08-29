@@ -1,4 +1,4 @@
-package be.cmdb.pages.identity;
+package be.cmdb.pages.Identity;
 
 import be.cmdb.pages.CMDBPage;
 import com.microsoft.playwright.Page;

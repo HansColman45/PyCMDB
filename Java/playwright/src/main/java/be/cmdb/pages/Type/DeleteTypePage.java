@@ -1,11 +1,11 @@
-package be.cmdb.pages.Identity;
+package be.cmdb.pages.Type;
 
 import be.cmdb.pages.CMDBPage;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
-public class DeleteIdentityPage extends CMDBPage {
+public class DeleteTypePage extends CMDBPage {
     private final Locator deactivateReason;
     private final Locator deleteButton;
 
@@ -13,7 +13,7 @@ public class DeleteIdentityPage extends CMDBPage {
      * The constructor for the CMDBPage class.
      * @param page the Playwright Page object
      */
-    public DeleteIdentityPage(Page page) {
+    public DeleteTypePage(Page page) {
         super(page);
         this.deactivateReason = page.locator("//input[@id='reason']");
         this.deleteButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Delete"));

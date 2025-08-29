@@ -1,6 +1,7 @@
 package be.cmdb.helpers;
 
 import be.cmdb.builders.AccountTypeBuilder;
+import be.cmdb.builders.LogBuilder;
 import be.cmdb.dao.AccountTypeDAO;
 import be.cmdb.dao.LogDAO;
 import be.cmdb.model.Admin;
@@ -20,7 +21,7 @@ public class AccountTypeHelper {
      * @param active Whether the AccountType should be active (1) or not (0)
      * @return Type object that has been persisted to the database
      */
-    public Type createDefaultAccountType(Session session, Admin admin, boolean active) {
+    public static Type createDefaultAccountType(Session session, Admin admin, boolean active) {
         Transaction transaction = session.beginTransaction();
         AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
         Type type = new AccountTypeBuilder()
@@ -28,7 +29,19 @@ public class AccountTypeHelper {
             .withActive(active ? 1 : 0)
             .build();
 
-        accountTypeDAO.save(session, type);
+        type = accountTypeDAO.save(session, type);
+        // Log the creation of the AccountType
+        String LogText = "The AccountType with Type: " + type.getType()
+            + " and Description: " + type.getDescription()
+            + " is created by Automation in table accounttype";
+        Log log = new LogBuilder()
+            .withType(type)
+            .withLogText(LogText)
+            .build();
+        LogDAO logDAO = new LogDAO();
+        logDAO.save(session, log);
+
+        transaction.commit();
         return type;
     }
 

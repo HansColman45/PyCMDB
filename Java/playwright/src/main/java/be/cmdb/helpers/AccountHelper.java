@@ -59,6 +59,14 @@ public final class AccountHelper {
     }
 
     /**
+     * Creates a random Account without persisting it.
+     * @return the Account entity
+     */
+    public static Account createRandomAccount() {
+        return new AccountBuilder().build();
+    }
+
+    /**
      * Deletes an Account and all associated logs.
      * @param session the Hibernate session
      * @param account the account to be deleted

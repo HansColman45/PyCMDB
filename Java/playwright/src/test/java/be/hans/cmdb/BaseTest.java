@@ -5,6 +5,7 @@ import be.cmdb.helpers.AdminHelper;
 import be.cmdb.model.Account;
 import be.cmdb.model.Admin;
 import be.cmdb.pages.LoginPage;
+import be.cmdb.pages.MainPage;
 import com.microsoft.playwright.Browser;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.BrowserType;
@@ -35,6 +36,7 @@ class BaseTest {
     private Session session;
     private final Random random = new Random();
     private Admin admin;
+    private Account account;
 
     /**
      * Launches the browser before all tests.
@@ -80,17 +82,18 @@ class BaseTest {
     }
 
     /**
-     * Test to verify that the login functionality works correctly.
+     * Logins to the application using the admin account created for the test.
+     * @return LoginPage object after successful login
      */
-    @Test
-    void canLogin() {
+    public MainPage doLogin() {
         AccountDAO accountDAO = new AccountDAO();
-        Account account = accountDAO.findById(session, admin.getAccountId());
+        account = accountDAO.findById(session, admin.getAccountId());
         LoginPage loginPage = new LoginPage(page);
         loginPage.navigate();
-        loginPage.login(account.getUserId(), defaultPassword());
+        MainPage main = loginPage.login(account.getUserId(), defaultPassword());
         boolean isLoggedIn = loginPage.isUserLogedIn();
         assertThat(isLoggedIn).isTrue();
+        return main;
     }
 
     /**
@@ -128,5 +131,9 @@ class BaseTest {
 
     protected String defaultPassword() {
         return "1234";
+    }
+
+    protected Account getAccount(){
+        return this.account;
     }
 }
