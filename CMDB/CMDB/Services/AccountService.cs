@@ -74,25 +74,14 @@ namespace CMDB.Services
         /// <summary>
         /// This will create a new account
         /// </summary>
-        /// <param name="UserID">The userId of the account</param>
-        /// <param name="type">The TypeId of that account</param>
-        /// <param name="application">The applicationId of the account</param>
+        /// <param name="dTO">The new Account <see cref="AccountDTO"/></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public async Task CreateNew(string UserID, int type, int application)
+        public async Task CreateNew(AccountDTO dTO)
         {
-            AccountDTO dto = new()
-            {
-                Active = 1,
-                UserID = UserID,
-                ApplicationId = application,
-                TypeId = type,
-                Application = await GetApplicationByID(application),
-                Type = await GetAccountTypeByID(type),
-            };
             BaseUrl = Url + "api/Account";
             _Client.SetBearerToken(TokenStore.Token);
-            var response = await _Client.PostAsJsonAsync(BaseUrl, dto);
+            var response = await _Client.PostAsJsonAsync(BaseUrl, dTO);
             if (!response.IsSuccessStatusCode)
                 throw new Exception($"Error: {response.StatusCode}");
         }
@@ -170,9 +159,9 @@ namespace CMDB.Services
         public async Task<bool> IsAccountExisting(AccountDTO account, string userID = "", int application = 0, int type = 0)
         {
             bool result = false;
-            BaseUrl = Url + $"api/Account/IsExisting";
             _Client.SetBearerToken(TokenStore.Token);
             var dto = await SetDTO(account, userID, application, type);
+            BaseUrl = Url + $"api/Account/IsExisting";
             var response = await _Client.PostAsJsonAsync(BaseUrl,dto);
             if (response.IsSuccessStatusCode)
             {

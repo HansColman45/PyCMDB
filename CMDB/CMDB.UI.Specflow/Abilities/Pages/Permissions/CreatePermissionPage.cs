@@ -2,16 +2,17 @@
 
 namespace CMDB.UI.Specflow.Abilities.Pages.Permissions
 {
-    public class EditPermissionPage : MainPage
+    public class CreatePermissionPage: MainPage
     {
-        public EditPermissionPage(IWebDriver web) : base(web)
+        public CreatePermissionPage(IWebDriver webDriver): base(webDriver)
         {
         }
-        public string Type
+
+        public string Right
         {
             set
             {
-                EnterInTextboxByXPath("//input[@id='Type']", value);
+                EnterInTextboxByXPath("//input[@id='Right']", value);
             }
         }
         public string Description
@@ -21,9 +22,9 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Permissions
                 EnterInTextboxByXPath("//input[@id='Description']", value);
             }
         }
-        public void Edit()
+        public void Create()
         {
-            ClickElementByXpath("//button[.='Edit']");
+            ClickElementByXpath("//button[.='Create']");
         }
     }
 }

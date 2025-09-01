@@ -156,20 +156,7 @@ namespace CMDB.API.Services
             }
             else
             {
-                if (string.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID == oldAccount.Application.AppID)
-                {
-                    var accounts = _context.Accounts
-                        .Include(x => x.Application).AsNoTracking()
-                        .Where(x => x.UserID == account.UserID && x.Application.AppID == account.Application.AppID).AsNoTracking()
-                        .ToList();
-                    if (accounts.Count > 0)
-                        result = true;
-                }
-                else if (string.Compare(account.UserID, oldAccount.UserID) == 0 && account.Application.AppID == oldAccount.Application.AppID)
-                {
-                    result = false;
-                }
-                else if (string.Compare(account.UserID, oldAccount.UserID) != 0 && account.Application.AppID != oldAccount.Application.AppID)
+                if(string.Compare(account.UserID, oldAccount.UserID) != 0 || account.Application.AppID != oldAccount.Application.AppID)
                 {
                     var accounts = _context.Accounts
                         .Include(x => x.Application).AsNoTracking()

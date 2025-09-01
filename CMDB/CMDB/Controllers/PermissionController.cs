@@ -105,7 +105,7 @@ namespace CMDB.Controllers
             ViewData["RorePermOverview"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "RorePermOverview");
             ViewData["LogDateFormat"] = service.LogDateFormat;
             ViewData["DateFormat"] = service.DateFormat;
-            ViewData["Controller"] = @"\RolePermission\Create";
+            ViewData["Controller"] = @"\Permission\Create";
             ViewBag.rolePerms = await service.GetRolePermissionInfo((int)id);
             return View(roleper);
         }

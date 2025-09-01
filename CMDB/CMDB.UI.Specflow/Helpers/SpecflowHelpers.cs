@@ -96,4 +96,9 @@
         public string Permission { get; set; }
         public string Level { get; set; }
     }
+    public class Permission
+    {
+        public string Right { get; set; }
+        public string Description { get; set; }
+    }
 }

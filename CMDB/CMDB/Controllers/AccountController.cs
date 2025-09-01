@@ -110,6 +110,7 @@ namespace CMDB.Controllers
             ViewBag.Types = await service.ListActiveAccountTypes();
             ViewBag.Applications = await service.ListActiveApplications();
             string FormSubmit = values["form-submitted"];
+            AccountDTO accountDTO = new();
             if (!string.IsNullOrEmpty(FormSubmit))
             {
                 try
@@ -118,17 +119,23 @@ namespace CMDB.Controllers
                     ViewData["UserID"] = UserID;
                     string Type = values["type"];
                     string Application = values["Application"];
-                    try
+                    var app = await service.GetApplicationByID(Convert.ToInt32(Application));
+                    var type = await service.GetAccountTypeByID(Convert.ToInt32(Type));
+                    accountDTO = new()
                     {
-                        await service.CreateNew(UserID, Convert.ToInt32(Type), Convert.ToInt32(Application));
-                    }
-                    catch (Exception e)
-                    {
-                        ModelState.AddModelError("API Error", e.Message);
-                        throw;
-                    }
-                    if (ModelState.IsValid)
+                        Active = 1,
+                        UserID = UserID,
+                        ApplicationId = Convert.ToInt32(Application),
+                        TypeId = Convert.ToInt32(Type),
+                        Type = type,
+                        Application = app
+                    };
+                    if (await service.IsAccountExisting(accountDTO))
+                        ModelState.AddModelError("", "Account alreaday exist");
+                    if (ModelState.IsValid) { 
+                        await service.CreateNew(accountDTO);
                         return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -137,7 +144,7 @@ namespace CMDB.Controllers
                         "see your system administrator.");
                 }
             }
-            return View();
+            return View(accountDTO);
         }
         /// <summary>
         /// This will return the view to edit an account
@@ -174,7 +181,7 @@ namespace CMDB.Controllers
                     string NewUserID = values["UserID"];
                     string Type = values["Type.TypeId"];
                     string Application = values["Application.AppID"];
-                    if (await service.IsAccountExisting(account, NewUserID, Convert.ToInt32(Type)))
+                    if (await service.IsAccountExisting(account, NewUserID,Convert.ToInt32(Application), Convert.ToInt32(Type)))
                         ModelState.AddModelError("", "Account alreaday exist");
                     if (ModelState.IsValid)
                     {

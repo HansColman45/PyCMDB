@@ -1,10 +1,7 @@
 package be.hans.cmdb;
 
-import be.cmdb.dao.AccountDAO;
 import be.cmdb.helpers.IdentityTypeHelper;
-import be.cmdb.model.Account;
 import be.cmdb.model.Type;
-import be.cmdb.pages.LoginPage;
 import be.cmdb.pages.MainPage;
 import be.cmdb.pages.Type.*;
 import org.junit.jupiter.api.DisplayName;

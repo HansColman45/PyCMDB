@@ -24,15 +24,15 @@ namespace CMDB.Domain.DTOs
         /// The UserID of the account
         /// </summary>
         [Required(ErrorMessage = "Please fill in a UserID")]
-        public required string UserID { get; set; }
+        public string UserID { get; set; }
         /// <summary>
         /// The linked Application of the account
         /// </summary>
-        public required ApplicationDTO Application { get; set; }
+        public ApplicationDTO Application { get; set; }
         /// <summary>
         /// The linked AccountType of the account
         /// </summary>
-        public required TypeDTO Type { get; set; }
+        public TypeDTO Type { get; set; }
         /// <summary>
         /// The linked Identities of the account
         /// </summary>
