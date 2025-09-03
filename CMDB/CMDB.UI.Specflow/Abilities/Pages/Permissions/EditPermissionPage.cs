@@ -7,11 +7,11 @@ namespace CMDB.UI.Specflow.Abilities.Pages.Permissions
         public EditPermissionPage(IWebDriver web) : base(web)
         {
         }
-        public string Type
+        public string Right
         {
             set
             {
-                EnterInTextboxByXPath("//input[@id='Type']", value);
+                EnterInTextboxByXPath("//input[@id='Right']", value);
             }
         }
         public string Description

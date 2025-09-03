@@ -188,5 +188,34 @@ namespace CMDB.API.Controllers
                 return Unauthorized();
             return Ok(await _uow.PermissionRepository.GetRolePermissionInfo(id));
         }
+        /// <summary>
+        /// Deletes a resource identified by the specified ID.
+        /// </summary>
+        /// <remarks>This action requires the user to be authorized and have the appropriate
+        /// administrative permissions.</remarks>
+        /// <param name="permission">The unique identifier of the resource to delete. Must be a positive integer.</param>
+        /// <returns>An <see cref="IActionResult"/> indicating the result of the operation.  Returns <see
+        /// cref="UnauthorizedResult"/> if the user is not authorized, or <see cref="OkResult"/> if the deletion is
+        /// successful.</returns>
+        [HttpDelete, Authorize]
+        public async Task<IActionResult> Delete(PermissionDTO permission)
+        {
+            // Retrieve userId from the claims
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value;
+            if (userIdClaim == null)
+                return Unauthorized();
+            request = new()
+            {
+                AdminId = Int32.Parse(userIdClaim),
+                Site = site,
+                Permission = Permission.Delete
+            };
+            var hasAdminAcces = await _uow.AdminRepository.HasAdminAccess(request);
+            if (!hasAdminAcces)
+                return Unauthorized();
+            _uow.PermissionRepository.Delete(permission);
+            await _uow.SaveChangesAsync();
+            return Ok();
+        }
     }
 }

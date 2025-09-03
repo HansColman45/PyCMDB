@@ -46,5 +46,11 @@ namespace CMDB.API.Interfaces
         /// <param name="id">The Id of the permission</param>
         /// <returns>List of <see cref="RolePermissionDTO"/></returns>
         Task<List<RolePermissionDTO>> GetRolePermissionInfo(int id);
+        /// <summary>
+        /// Deletes the specified permission.
+        /// </summary>
+        /// <param name="permission">The permission to delete. This parameter cannot be null.</param>
+        /// <returns>A task that represents the asynchronous delete operation.</returns>
+        void Delete(PermissionDTO permission);
     }
 }

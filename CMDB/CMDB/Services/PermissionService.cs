@@ -109,5 +109,19 @@ namespace CMDB.Services
             if (!response.IsSuccessStatusCode)
                 throw new NotAValidSuccessCode(Url, response.StatusCode);
         }
+        /// <summary>
+        /// Deletes the specified permission by sending a request to the API.
+        /// </summary>
+        /// <param name="permission">The <see cref="PermissionDTO"/> object representing the permission to be deleted.</param>
+        /// <returns></returns>
+        /// <exception cref="NotAValidSuccessCode">Thrown if the API response indicates a failure, such as an unsuccessful HTTP status code.</exception>
+        public async Task DeletePermission(PermissionDTO permission)
+        {
+            BaseUrl = Url + $"api/Permission";
+            _Client.SetBearerToken(TokenStore.Token);
+            var response = await _Client.DeleteAsJsonAsync(BaseUrl, permission);
+            if (!response.IsSuccessStatusCode)
+                throw new NotAValidSuccessCode(Url, response.StatusCode);
+        }
     }
 }

@@ -301,6 +301,16 @@ namespace CMDB.Testing.Helpers
                     await RolePermissionHelper.Delete(context,rolePerm);
                 }
                 int accId = a.Account.AccID;
+                //permissions
+                var perms = context.Permissions
+                    .Include(x => x.Logs)
+                    .Where(x => x.LastModifiedAdminId == a.AdminId)
+                    .ToList();
+                foreach (var perm in perms)
+                {
+                    Data.Add($"Permission{perm.Id}", perm);
+                    await PermissionHelper.Delete(context, perm);
+                }
                 //Admin
                 context.Entry(a).Reload();
                 context.RemoveRange(a.Logs);

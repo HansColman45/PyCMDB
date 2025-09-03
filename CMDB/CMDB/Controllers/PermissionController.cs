@@ -199,5 +199,48 @@ namespace CMDB.Controllers
             }
             return View(permission);
         }
+        /// <summary>
+        /// Deletes a permission entity identified by the specified ID, if confirmed via form submission.
+        /// </summary></remarks>
+        /// <param name="id">The ID of the permission entity to delete. Must not be null.</param>
+        /// <param name="values">The form collection containing the submitted data, including the confirmation flag.</param>
+        /// <returns>The view to delete the permission<returns
+        public async Task<IActionResult> Delete(int? id, IFormCollection values)
+        {
+            log.Debug("Using Delete in {0} with id {1}", SitePart, id);
+            if (string.IsNullOrEmpty(TokenStore.Token))
+            {
+                log.Error("Unauthourized acces");
+                string stringFullUrl = @"\Login";
+                return Redirect(stringFullUrl);
+            }
+            if (id is null)
+                return NotFound();
+            var permission = await service.GetById((int)id);
+            if (permission is null)
+                return NotFound();
+            await BuildMenu();
+            ViewData["Title"] = "Delete Permission";
+            ViewData["DeleteAccess"] = await service.HasAdminAccess(TokenStore.AdminId, SitePart, "Delete");
+            ViewData["Controller"] = @$"\Permission\Delete\{id}";
+            ViewData["backUrl"] = "Permission";
+            string FormSubmit = values["form-submitted"];
+            if (!string.IsNullOrEmpty(FormSubmit)) { 
+                try
+                {
+                    if (ModelState.IsValid) { 
+                        await service.DeletePermission(permission);
+                        return RedirectToAction(nameof(Index));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    log.Error("Database exception {0}", ex.ToString());
+                    ModelState.AddModelError("", "Unable to delete. " + "Try again, and if the problem persists " +
+                        "see your system administrator.");
+                }
+            }
+            return View(permission);
+        }
     }
 }

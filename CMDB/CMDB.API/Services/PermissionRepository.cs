@@ -104,6 +104,17 @@ namespace CMDB.API.Services
                 .ToListAsync();
 
         }
+        /// inheritdoc/>
+        public void Delete(PermissionDTO permission)
+        {
+            var perm = TrackedPermission(permission.Id);
+            if (perm is not null)
+            {   
+                var logs = _context.Logs.Where(x => x.Permission.Id == perm.Id).ToList();
+                _context.RemoveRange(logs);
+                _context.Permissions.Remove(perm);
+            }
+        }
         /// <summary>
         /// Converts a <see cref="Permission"/> to a <see cref="PermissionDTO"/>.
         /// </summary>
