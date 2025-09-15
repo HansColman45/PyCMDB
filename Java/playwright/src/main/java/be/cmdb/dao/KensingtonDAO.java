@@ -52,6 +52,12 @@ public class KensingtonDAO implements BaseDAO<Kensington, Integer> {
         return query.getSingleResult();
     }
 
+    /**
+     * Finds all Kensington keys last modified by a specific admin.
+     * @param session the Hibernate session
+     * @param adminId the ID of the admin
+     * @return a list of Kensington keys last modified by the specified admin
+     */
     public List<Kensington> findByLastModifiedAdminId(Session session, Integer adminId) {
         Query<Kensington> query = session.createQuery("Select k FROM Kensington k WHERE k.lastModifiedAdminId = :adminId", Kensington.class);
         query.setParameter("adminId", adminId);

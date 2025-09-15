@@ -43,11 +43,18 @@ public class IdentityOverviewPage extends CMDBPage {
         return new EditIdentityPage(getPage());
     }
 
+    /**
+     * Opens the Delete Identity page from the Identity Details page.
+     * @return DeleteIdentityPage
+     */
     public DeleteIdentityPage openDeleteIdentity() {
         this.deleteButton().click();
         return new DeleteIdentityPage(getPage());
     }
 
+    /**
+     * Activates the selected identity.
+     */
     public void activate(){
         this.activateButton().click();
     }

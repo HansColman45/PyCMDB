@@ -1,5 +1,6 @@
 package be.cmdb.helpers;
 
+import java.sql.Connection;
 import java.util.List;
 
 import be.cmdb.dao.AccountDAO;
@@ -59,7 +60,7 @@ public final class AdminHelper {
         //First create the account
         Account account = new AccountBuilder()
             .withLastModifiedAdminId(1)
-            .withTypeId(accountType.getTypeId())
+            .withTypeId(accountType)
             .withApplicationId(application.getAppId())
             .build();
         AccountDAO accountDAO = new AccountDAO();
@@ -91,7 +92,7 @@ public final class AdminHelper {
 
         //Create the identity for the account
         Identity identity = new IdentityBuilder()
-            .withTypeId(identityType.getTypeId())
+            .withTypeId(identityType)
             .withUserId(account.getUserId())
             .withLastModifiedAdminId(admin.getAdminId())
             .build();
@@ -141,6 +142,11 @@ public final class AdminHelper {
         return newAdmin;
     }
 
+    /**
+     * Deletes all objects created by the specified Admin, including associated logs and the Admin itself.
+     * @param session the Hibernate session
+     * @param admin the Admin whose created objects are to be deleted
+     */
     public static void deleteAllObjectsCreatedByAdmin(Session session, Admin admin) {
         //Keys
         KensingtonDAO kensingtonDAO = new KensingtonDAO();

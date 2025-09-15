@@ -19,6 +19,16 @@ import java.util.List;
 public class AssetTypeHelper {
 
     /**
+     * Creates a random AssetType with default values for testing purposes.
+     * @param category the Category to which the AssetType belongs
+     * @return a new AssetType entity with random values
+     */
+    public static AssetType createRandomAssetType(Category category) {
+        return new AssetTypeBuilder()
+            .withCategoryId(category.getId())
+            .build();
+    }
+    /**
      * Creates a simple AssetType with default values for testing purposes.
      *
      * @param session the Hibernate session to use

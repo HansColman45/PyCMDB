@@ -11,6 +11,11 @@ import java.util.List;
 
 public class KeyHelper {
 
+    /**
+     * Deletes a Kensington key and all associated logs from the database.
+     * @param session the Hibernate session
+     * @param kensington the Kensington entity to be deleted
+     */
     public static void deleteKey(Session session, Kensington kensington){
         Transaction transaction = session.beginTransaction();
         KensingtonDAO kensingtonDAO = new KensingtonDAO();

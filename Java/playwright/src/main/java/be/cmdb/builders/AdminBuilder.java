@@ -82,6 +82,7 @@ public class AdminBuilder extends GenericBuilder<Admin> {
      * Builds the Admin object with the specified properties.
      * @return Admin instance with the configured properties
      */
+    @Override
     public Admin build() {
         return admin;
     }

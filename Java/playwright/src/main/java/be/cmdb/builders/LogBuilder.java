@@ -180,7 +180,7 @@ public class LogBuilder extends GenericBuilder<Log> {
      * @return LogBuilder instance for method chaining
      */
     public LogBuilder withSubscription(Subscription subscription) {
-        log.setSubsriptionId(subscription);
+        log.setSubscriptionId(subscription);
         return this;
     }
 

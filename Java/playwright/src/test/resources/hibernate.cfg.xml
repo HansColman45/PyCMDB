@@ -2,28 +2,29 @@
 <!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate Configuration DTD 3.0//EN" "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
-        <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=CMDB</property>
-        <property name="hibernate.connection.username">sa</property>
-        <property name="hibernate.connection.password">Gr7k6VKW92dteZ5n</property>
-        <property name="show_sql">true</property>
-        <mapping class="be.cmdb.model.Account"/>
-        <mapping class="be.cmdb.model.Admin"/>
-        <mapping class="be.cmdb.model.Application"/>
-        <mapping class="be.cmdb.model.AssetType"/>
-        <mapping class="be.cmdb.model.Category"/>
-        <mapping class="be.cmdb.model.Device"/>
-        <mapping class="be.cmdb.model.Identity"/>
-        <mapping class="be.cmdb.model.Kensington"/>
-        <mapping class="be.cmdb.model.Language"/>
-        <mapping class="be.cmdb.model.Log"/>
-        <mapping class="be.cmdb.model.Menu"/>
-        <mapping class="be.cmdb.model.Mobile"/>
-        <mapping class="be.cmdb.model.Permission"/>
-        <mapping class="be.cmdb.model.Role"/>
-        <mapping class="be.cmdb.model.RolePermission"/>
-        <mapping class="be.cmdb.model.Subscription"/>
-        <mapping class="be.cmdb.model.SubscriptionType"/>
-        <mapping class="be.cmdb.model.Type"/>
+        <property name = "hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
+        <property name = "hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=CMDB</property>
+        <property name = "hibernate.connection.username">sa</property>
+        <property name = "hibernate.connection.password">Gr7k6VKW92dteZ5n</property>
+        <property name = "show_sql">true</property>
+        <property name = "hibernate.show_sql">true</property>
+        <mapping class = "be.cmdb.model.Account"/>
+        <mapping class = "be.cmdb.model.Admin"/>
+        <mapping class = "be.cmdb.model.Application"/>
+        <mapping class = "be.cmdb.model.AssetType"/>
+        <mapping class = "be.cmdb.model.Category"/>
+        <mapping class = "be.cmdb.model.Device"/>
+        <mapping class = "be.cmdb.model.Identity"/>
+        <mapping class = "be.cmdb.model.Kensington"/>
+        <mapping class = "be.cmdb.model.Language"/>
+        <mapping class = "be.cmdb.model.Log"/>
+        <mapping class = "be.cmdb.model.Menu"/>
+        <mapping class = "be.cmdb.model.Mobile"/>
+        <mapping class = "be.cmdb.model.Permission"/>
+        <mapping class = "be.cmdb.model.Role"/>
+        <mapping class = "be.cmdb.model.RolePermission"/>
+        <mapping class = "be.cmdb.model.Subscription"/>
+        <mapping class = "be.cmdb.model.SubscriptionType"/>
+        <mapping class = "be.cmdb.model.Type"/>
     </session-factory>
 </hibernate-configuration>

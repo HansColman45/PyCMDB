@@ -2,14 +2,7 @@ package be.cmdb.model;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -34,12 +27,15 @@ public class Identity extends CMDBModel {
     @NotNull
     private String name;
     @NotNull
-    private Integer typeId;
-    @NotNull
     private String languageCode;
+
     @OneToMany
     @JoinColumn(name = "identityId", nullable = true)
     private List<Log> logs;
+
+    @JoinColumn(name = "TypeId", referencedColumnName = "TypeId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    private Type type;
 
     /**
      * Gets the identifier for the identity.
@@ -164,22 +160,6 @@ public class Identity extends CMDBModel {
     }
 
     /**
-     * Gets the type ID of the identity.
-     * @return The type ID of the identity
-     */
-    public Integer getTypeId() {
-        return typeId;
-    }
-
-    /**
-     * Sets the type ID of the identity.
-     * @param typeId the type ID of the identity
-     */
-    public void setTypeId(Integer typeId) {
-        this.typeId = typeId;
-    }
-
-    /**
      * Gets the language code of the identity.
      * @return the language code of the identity
      */
@@ -195,11 +175,36 @@ public class Identity extends CMDBModel {
         this.languageCode = languageCode;
     }
 
+    /**
+     * Gets the list of logs associated with this identity.
+     * @return the list of logs
+     */
     public List<Log> getLogs() {
         return logs;
     }
 
+    /**
+     * Sets the list of logs associated with this identity.
+     * @param logs the list of logs to set
+     */
     public void setLogs(List<Log> logs) {
         this.logs = logs;
     }
+
+    /**
+     * Gets the type associated with this identity.
+     * @return the type
+     */
+    public Type getType(){
+        return type;
+    }
+
+    /**
+     * Sets the type associated with this identity.
+     * @param type the type to set
+     */
+    public void setType(Type type){
+        this.type = type;
+    }
+
 }

@@ -1,6 +1,7 @@
 package be.cmdb.pages;
 
 import be.cmdb.pages.Account.AccountOverviewPage;
+import be.cmdb.pages.AssetType.AssetTypeOverviewPage;
 import be.cmdb.pages.Type.TypeOverviewPage;
 import be.cmdb.pages.Identity.IdentityOverviewPage;
 import com.microsoft.playwright.Locator;
@@ -84,5 +85,17 @@ public class MainPage extends CMDBPage {
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
         this.newButton().waitFor();
         return new AccountOverviewPage(getPage());
+    }
+
+    /**
+     * Opens the AssetType Overview page.
+     * @return AssetTypeOverviewPage
+     */
+    public AssetTypeOverviewPage openAssetTypeOverviewPage(){
+        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Type")).click();
+        getPage().locator("xpath=//a[@id='Asset Type28']").click();
+        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
+        this.newButton().waitFor();
+        return new AssetTypeOverviewPage(getPage());
     }
 }

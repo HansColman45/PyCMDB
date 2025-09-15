@@ -3,6 +3,7 @@ package be.cmdb.helpers;
 import java.util.List;
 
 import be.cmdb.model.Admin;
+import be.cmdb.pages.Type.TypeDetailPage;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 
@@ -27,8 +28,10 @@ public final class IdentityHelper {
      * @return The persisted Identity
      */
     public static Identity createRandomIdentity(Session session, Integer typeId) {
+        IdentityTypeDAO dao = new IdentityTypeDAO();
+        Type type = dao.findById(session, typeId);
         Identity identity = new IdentityBuilder()
-            .withTypeId(typeId)
+            .withTypeId(type)
             .build();
         IdentityDAO identityDAO = new IdentityDAO();
         Transaction transaction = session.beginTransaction();
@@ -67,7 +70,7 @@ public final class IdentityHelper {
             .build();
         IdentityTypeDAO identityTypeDAO = new IdentityTypeDAO();
         Type identityType = identityTypeDAO.findByType(session, "Werknemer");
-        identity.setTypeId(identityType.getTypeId());
+        identity.setType(identityType);
         IdentityDAO identityDAO = new IdentityDAO();
         Transaction transaction = session.beginTransaction();
         identity = identityDAO.save(session, identity);

@@ -18,18 +18,34 @@ public class Role extends CMDBModel {
     @JoinColumn(name = "roleId", nullable = true)
     private List<Log> logs;
 
+    /**
+     * Gets the role ID.
+     * @return the role ID
+     */
     public int getRoleId() {
         return roleId;
     }
 
+    /**
+     * Sets the role ID.
+     * @param roleId the role ID to set
+     */
     public void setRoleId(int roleId) {
         this.roleId = roleId;
     }
 
+    /**
+     * Gets the list of logs associated with this role.
+     * @return the list of logs
+     */
     public List<Log> getLogs() {
         return logs;
     }
 
+    /**
+     * Sets the list of logs associated with this role.
+     * @param logs the list of logs to set
+     */
     public void setLogs(List<Log> logs) {
         this.logs = logs;
     }

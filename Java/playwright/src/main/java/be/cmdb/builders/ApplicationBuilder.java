@@ -36,6 +36,11 @@ public class ApplicationBuilder extends GenericBuilder<Application> {
         return this;
     }
 
+    /**
+     * Sets the last modified admin ID for the {@link Application}.
+     * @param lastModifiedAdminId the ID of the admin who last modified the application
+     * @return this builder instance
+     */
     public ApplicationBuilder withLastModifiedAdminId(int lastModifiedAdminId){
         application.setLastModifiedAdminId(lastModifiedAdminId);
         return this;

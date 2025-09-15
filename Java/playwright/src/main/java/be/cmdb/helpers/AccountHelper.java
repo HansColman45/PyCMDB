@@ -39,7 +39,7 @@ public final class AccountHelper {
         Account account = new AccountBuilder()
             .withActive(active ? 1 : 0)
             .withLastModifiedAdminId(admin.getAdminId())
-            .withTypeId(accountType.getTypeId())
+            .withTypeId(accountType)
             .withApplicationId(application.getAppId())
             .build();
         AccountDAO accountDAO = new AccountDAO();
@@ -60,10 +60,20 @@ public final class AccountHelper {
 
     /**
      * Creates a random Account without persisting it.
+     * @param session the Hibernate session
      * @return the Account entity
      */
-    public static Account createRandomAccount() {
-        return new AccountBuilder().build();
+    public static Account createRandomAccount(Session session) {
+        AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
+        Type accountType = accountTypeDAO.findByType(session,"Normal User");
+
+        ApplicationDAO applicationDAO = new ApplicationDAO();
+        Application application = applicationDAO.findByName(session, "CMDB").get(0);
+
+        return new AccountBuilder()
+            .withApplicationId(application.getAppId())
+            .withTypeId(accountType)
+            .build();
     }
 
     /**

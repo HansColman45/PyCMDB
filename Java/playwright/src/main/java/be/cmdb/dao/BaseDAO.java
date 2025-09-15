@@ -1,5 +1,6 @@
 package be.cmdb.dao;
 
+import java.sql.Connection;
 import java.util.List;
 import org.hibernate.Session;
 

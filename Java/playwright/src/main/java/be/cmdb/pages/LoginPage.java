@@ -19,8 +19,8 @@ public class LoginPage extends CMDBPage {
 
     /**
      * Navigates to the login page.
-     * @param username
-     * @param password
+     * @param username the username to log in with
+     * @param password the password to log in with
      * @return MainPage
      */
     public MainPage login(String username, String password) {
@@ -29,6 +29,22 @@ public class LoginPage extends CMDBPage {
         getPage().getByRole(AriaRole.BUTTON).click();
         getPage().waitForLoadState();
         return new MainPage(getPage());
+    }
+
+    /**
+     * Sets the user ID in the login form.
+     * @param userId the user ID to set
+     */
+    public void setUserId(String userId) {
+        getPage().locator("xpath=//input[@type='text']").fill(userId);
+    }
+
+    /**
+     * Sets the password in the login form.
+     * @param password the password to set
+     */
+    public void setPassword(String password) {
+        getPage().locator("xpath=//input[@type='password']").fill(password);
     }
 
     /**

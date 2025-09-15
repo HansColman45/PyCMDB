@@ -52,6 +52,12 @@ public class SubscriptionDAO implements BaseDAO<Subscription, Integer> {
         return query.getSingleResult();
     }
 
+    /**
+     * Finds all Subscriptions last modified by a specific admin.
+     * @param session the Hibernate session
+     * @param adminId the ID of the admin
+     * @return a list of Subscriptions last modified by the specified admin
+     */
     public List<Subscription> findByLastModifiedAdminId(Session session, Integer adminId) {
         Query<Subscription> query = session.createQuery("FROM Subscription s WHERE s.lastModifiedAdmin.id = :adminId", Subscription.class);
         query.setParameter("adminId", adminId);

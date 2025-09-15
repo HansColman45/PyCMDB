@@ -56,8 +56,8 @@ public class CategoryDAO implements BaseDAO<Category, Integer> {
      * @return a list of Category entities matching the given name
      */
     public List<Category> findByCategory(Session session, String category) {
-        Query<Category> query = session.createQuery("FROM Category WHERE name = :categoryName", Category.class);
-        query.setParameter("categoryName", category);
+        Query<Category> query = session.createNativeQuery("select * FROM Category WHERE Category = :Name", Category.class);
+        query.setParameter("Name", category);
         return query.getResultList();
     }
 

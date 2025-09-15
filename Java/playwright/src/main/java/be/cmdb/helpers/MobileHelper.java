@@ -11,6 +11,11 @@ import java.util.List;
 
 public class MobileHelper {
 
+    /**
+     * Deletes a Mobile device and all associated logs from the database.
+     * @param session the Hibernate session
+     * @param mobile the Mobile entity to be deleted
+     */
     public static void deleteMobile(Session session, Mobile mobile) {
         Transaction transaction = session.beginTransaction();
         MobileDAO mobileDAO = new MobileDAO();

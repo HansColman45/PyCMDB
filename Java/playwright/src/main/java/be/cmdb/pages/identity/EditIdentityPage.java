@@ -34,34 +34,65 @@ public class EditIdentityPage extends CMDBPage {
         this.updateButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Update"));
     }
 
+    /**
+     * Sets the first name in the FirstName input field.
+     * @param firstName the first name to set
+     */
     public void setFirstName(String firstName) {
         this.firstName.fill(firstName);
     }
 
+    /**
+     * Sets the last name in the LastName input field.
+     * @param lastName the last name to set
+     */
     public void setLastName(String lastName) {
         this.lastName.fill(lastName);
     }
 
+    /**
+     * Sets the email in the EMail input field.
+     * @param email the email to set
+     */
     public void setEmail(String email) {
         this.email.fill(email);
     }
 
+    /**
+     * Sets the company in the Company input field.
+     * @param company the company to set
+     */
     public void setCompany(String company) {
         this.company.fill(company);
     }
 
+    /**
+     * Sets the user ID in the UserID input field.
+     * @param userId the user ID to set
+     */
     public void setUserId(String userId) {
         this.userId.fill(userId);
     }
 
+    /**
+     * Selects the type from the Type dropdown.
+     * @param type the type to select
+     */
     public void selectType(String type) {
         this.selectType.selectOption(type);
     }
 
+    /**
+     * Selects the language from the Language dropdown.
+     * @param language the language to select
+     */
     public void selectLanguage(String language) {
         this.languageLocator.selectOption(language);
     }
 
+    /**
+     * Clicks the Update button to submit the form.
+     */
     public void update() {
         this.updateButton.click();
     }

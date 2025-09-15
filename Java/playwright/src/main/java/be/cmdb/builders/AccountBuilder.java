@@ -1,6 +1,7 @@
 package be.cmdb.builders;
 
 import be.cmdb.model.Account;
+import be.cmdb.model.Type;
 
 /**
  * Builder for creating Account entities with default values.
@@ -19,12 +20,12 @@ public class AccountBuilder extends GenericBuilder<Account> {
     }
 
     /**
-     * Sets the userId for the account.
-     * @param typeId string representing the user ID
+     * Sets the Type for the account.
+     * @param type The type of the account
      * @return AccountBuilder instance for method chaining
      */
-    public AccountBuilder withTypeId(int typeId) {
-        account.setTypeId(typeId);
+    public AccountBuilder withTypeId(Type type) {
+        account.setType(type);
         return this;
     }
 

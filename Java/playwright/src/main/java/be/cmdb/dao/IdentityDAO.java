@@ -267,6 +267,12 @@ public class IdentityDAO implements BaseDAO<Identity, Integer> {
         return query.getSingleResult() > 0;
     }
 
+    /**
+     * Finds identities modified by a specific admin using the provided session.
+     * @param session the Hibernate session to use
+     * @param adminId the admin ID to search for
+     * @return list of Identity entities modified by the specified admin
+     */
     public List<Identity> findByLastModifiedAdminId(Session session, int adminId) {
         Query<Identity> query = session.createQuery(
             "FROM Identity WHERE lastModifiedAdminId = :adminId", Identity.class);

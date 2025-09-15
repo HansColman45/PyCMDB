@@ -67,6 +67,12 @@ public class IdentityTypeDAO implements BaseDAO<Type, Integer> {
         return results.isEmpty() ? null : results.get(0);
     }
 
+    /**
+     * Finds all IdentityTypes modified by a specific admin.
+     * @param session the Hibernate session
+     * @param lastModifiedAdminId the admin ID to filter by
+     * @return list of IdentityTypes modified by the specified admin
+     */
     public List<Type> findByLastModifiedAdminId(Session session, int lastModifiedAdminId) {
         String hql = "FROM Type WHERE discriminator = 'IdentityType' and lastModifiedAdminId = :lastModifiedAdminId";
         Query<Type> query = session.createQuery(hql, Type.class);

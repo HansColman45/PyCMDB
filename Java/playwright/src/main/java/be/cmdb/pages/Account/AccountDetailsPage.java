@@ -16,6 +16,10 @@ public class AccountDetailsPage extends CMDBPage {
         lastLogline = page.locator("//td[contains(text(),'account')]").first();
     }
 
+    /**
+     * Gets the text content of the last log line.
+     * @return the text content of the last log line
+     */
     public String getLastLogline() {
         return lastLogline.textContent();
     }

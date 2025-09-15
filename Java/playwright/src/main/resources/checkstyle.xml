@@ -4,11 +4,11 @@
   "http://www.puppycrawl.com/dtds/configuration_1_3.dtd">
 <module name="Checker">
   <module name="TreeWalker">
-    <!-- Import Checks
-    http://checkstyle.sourceforge.net/config_imports.html -->
+    <module name="MissingJavadocMethod"/>
+    <module name="JavadocMethod"/>
+    <module name="JavadocStyle"/>
     <module name="UnusedImports"/>
     <module name="VisibilityModifier"/>
-    <module name="JavadocMethod"/>
     <module name="MethodName"/>
     <module name="AvoidStarImport"/>
     <module name="WhitespaceAround">

@@ -1,5 +1,6 @@
 package be.cmdb.pages;
 
+import be.brightest.ScreenPlay.Abilities.OpenAWebSite;
 import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
@@ -7,21 +8,20 @@ import com.microsoft.playwright.options.AriaRole;
 /**
  * The Main Page object.
  */
-public class CMDBPage {
+public class CMDBPage extends OpenAWebSite {
     private final Locator newButton;
     private final Locator editButton;
     private final Locator deleteButton;
     private final Locator detailsButton;
     private final Locator searchInput;
     private final Locator activateButton;
-    private final Page page;
 
     /**
      * The constructor for the CMDBPage class.
      * @param page the Playwright Page object
      */
     public CMDBPage(Page page) {
-        this.page = page;
+        super(page);
         newButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Add"));
         editButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Edit"));
         detailsButton = page.getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Info"));
@@ -34,7 +34,7 @@ public class CMDBPage {
      * This method navigates to the main page of the CMDB application.
      */
     public void navigate() {
-        page.navigate("http://localhost:44313/");
+        getPage().navigate("http://localhost:44313/");
     }
 
     /**
@@ -50,7 +50,7 @@ public class CMDBPage {
      * Gets the Locator for the new button.
      * @return Locator for the new button
      */
-    protected Locator newButton() {
+    public Locator newButton() {
         return newButton;
     }
 
@@ -58,7 +58,7 @@ public class CMDBPage {
      * Gets the Locator for the edit button.
      * @return Locator for the edit button
      */
-    protected Locator editButton() {
+    public Locator editButton() {
         return editButton;
     }
 
@@ -66,7 +66,7 @@ public class CMDBPage {
      * Gets the Locator for the delete button.
      * @return Locator for the delete button
      */
-    protected Locator deleteButton() {
+    public Locator deleteButton() {
         return deleteButton;
     }
 
@@ -74,23 +74,15 @@ public class CMDBPage {
      * Gets the Locator for the details button.
      * @return Locator for the details button
      */
-    protected Locator detailsButton() {
+    public Locator detailsButton() {
         return detailsButton;
-    }
-
-    /**
-     * Gets the Playwright Page object associated with this CMDBPage.
-     * @return Playwright Page object
-     */
-    protected Page getPage() {
-        return page;
     }
 
     /**
      * Gets the Locator for the activate button.
      * @return Locator for the activate button
      */
-    protected Locator activateButton(){
+    public Locator activateButton(){
         return activateButton;
     }
 }

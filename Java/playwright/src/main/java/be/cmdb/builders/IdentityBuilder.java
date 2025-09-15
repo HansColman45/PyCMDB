@@ -1,6 +1,7 @@
 package be.cmdb.builders;
 
 import be.cmdb.model.Identity;
+import be.cmdb.model.Type;
 
 /**
  * Builder class for creating and configuring {@link Identity} objects.
@@ -24,12 +25,12 @@ public class IdentityBuilder extends GenericBuilder<Identity> {
     }
 
     /**
-     * Sets the type ID for the {@link Identity}.
-     * @param typeId the type ID to set
+     * Sets the type for the {@link Identity}.
+     * @param Type the type to set
      * @return this builder instance
      */
-    public IdentityBuilder withTypeId(Integer typeId) {
-        identity.setTypeId(typeId);
+    public IdentityBuilder withTypeId(Type type) {
+        identity.setType(type);
         return this;
     }
 
