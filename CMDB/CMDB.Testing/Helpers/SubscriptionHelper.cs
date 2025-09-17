@@ -11,7 +11,7 @@ namespace CMDB.Testing.Helpers
         {
 
             Subscription subscription = new SubscriptionBuilder()
-                .With(x => x.SubsctiptionTypeId, subscriptionType.Id)
+                .With(x => x.SubscriptionTypeId, subscriptionType.Id)
                 .With(x => x.active,1)
                 .With(x => x.AssetCategoryId,subscriptionType.AssetCategoryId)
                 .With(x => x.LastModifiedAdminId, admin.AdminId)

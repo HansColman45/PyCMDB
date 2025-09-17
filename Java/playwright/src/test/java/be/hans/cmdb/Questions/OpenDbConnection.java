@@ -1,4 +1,4 @@
-package be.hans.cmdb;
+package be.hans.cmdb.Questions;
 
 import be.brightest.ScreenPlay.Actors.IActor;
 import be.brightest.ScreenPlay.Question.Question;
@@ -13,7 +13,7 @@ public class OpenDbConnection extends Question<Session> {
     public Session performAs(IActor actor) {
         try {
             SessionFactory sessionFactory = new Configuration()
-                .configure("hibernate.cfg.xml")
+                .configure()
                 .buildSessionFactory();
             return sessionFactory.openSession();
         } catch (HibernateException e) {

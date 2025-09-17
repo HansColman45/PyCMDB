@@ -26,7 +26,7 @@ public class IdentityBuilder extends GenericBuilder<Identity> {
 
     /**
      * Sets the type for the {@link Identity}.
-     * @param Type the type to set
+     * @param type the type to set
      * @return this builder instance
      */
     public IdentityBuilder withTypeId(Type type) {

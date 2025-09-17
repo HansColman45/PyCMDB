@@ -170,12 +170,18 @@ namespace CMDB.API.Controllers
         [HttpPost("Login"), AllowAnonymous]
         public async Task<IActionResult> Login(AuthenticateRequest model)
         {
-            var response = await _uow.AdminRepository.Authenticate(model);
+            try
+            {
+                var response = await _uow.AdminRepository.Authenticate(model);
+                if (response == null)
+                    return BadRequest(new { message = "Username or password is incorrect" });
 
-            if (response == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
-
-            return Ok(response);
+                return Ok(response);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
         /// <summary>
         /// Logs out the user by invalidating their authentication session.

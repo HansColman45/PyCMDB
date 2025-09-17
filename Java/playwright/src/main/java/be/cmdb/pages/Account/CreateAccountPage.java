@@ -16,9 +16,9 @@ public class CreateAccountPage extends CMDBPage {
      */
     public CreateAccountPage(Page page) {
         super(page);
-        userIdInput = page.locator("#userId");
-        typeSelect = page.locator("#type");
-        applicationSelect = page.locator("#application");
+        userIdInput = page.locator("xpath=//input[@id='UserID']");
+        typeSelect = page.locator("xpath=//select[@id='Type']");
+        applicationSelect = page.locator("xpath=//select[@id='Application']");
         createButton = page.getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Create"));
     }
 

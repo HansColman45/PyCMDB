@@ -2,6 +2,7 @@ package be.brightest.ScreenPlay.Actors;
 
 import be.brightest.ScreenPlay.Abilities.IAbility;
 import be.brightest.ScreenPlay.Question.IQuestion;
+import be.brightest.ScreenPlay.Tasks.ITasks;
 
 import java.util.List;
 
@@ -45,4 +46,6 @@ public interface IActor {
      * @return the answer to the question
      */
     <T> T asksFor(IQuestion<T> question);
+
+    void asksFor(ITasks task);
 }

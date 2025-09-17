@@ -1,17 +1,17 @@
-package be.hans.cmdb.Questions;
+package be.hans.cmdb.Questions.Identity;
 
 import be.brightest.ScreenPlay.Abilities.WebPageFactory;
 import be.brightest.ScreenPlay.Actors.IActor;
 import be.brightest.ScreenPlay.Question.Question;
-import be.cmdb.pages.Identity.IdentityDetailsPage;
+import be.cmdb.pages.Identity.DeleteIdentityPage;
 import be.cmdb.pages.Identity.IdentityOverviewPage;
 
-public class OpenTheIdentityDetailsPage extends Question<IdentityDetailsPage> {
+public class OpenDeleteIdentityPage extends Question<DeleteIdentityPage> {
     @Override
-    public IdentityDetailsPage performAs(IActor actor) {
+    public DeleteIdentityPage performAs(IActor actor) {
         IdentityOverviewPage ability = (IdentityOverviewPage) actor.getAbility(IdentityOverviewPage.class);
-        ability.detailsButton().click();
+        ability.deleteButton().click();
         ability.getPage().waitForLoadState();
-        return WebPageFactory.create(IdentityDetailsPage.class, ability.getPage());
+        return WebPageFactory.create(DeleteIdentityPage.class, ability.getPage());
     }
 }

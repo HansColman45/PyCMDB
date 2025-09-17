@@ -89,7 +89,7 @@ namespace CMDB.API.Services
                 active = 1,
                 AssetCategoryId = subscription.SubscriptionType.AssetCategory.Id,
                 PhoneNumber = subscription.PhoneNumber,
-                SubsctiptionTypeId = subscription.SubscriptionType.Id,
+                SubscriptionTypeId = subscription.SubscriptionType.Id,
                 LastModifiedAdminId = TokenStore.AdminId,
             };
             if (subscription.SubscriptionType.AssetCategory.Category == "Internet Subscription")
@@ -202,7 +202,7 @@ namespace CMDB.API.Services
         public async Task AssignIdentity(AssignInternetSubscriptionRequest subscriptionRequest)
         {
             var subscription = await TrackedSubscription(subscriptionRequest.SubscriptionIds.First());
-            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubsctiptionTypeId).AsNoTracking().First();
+            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubscriptionTypeId).AsNoTracking().First();
             subscription.IdentityId = subscriptionRequest.IdentityId;
             subscription.LastModifiedAdminId = TokenStore.AdminId;
             var identity = await _context.Identities.Where(x => x.IdenId == subscriptionRequest.IdentityId).FirstAsync();
@@ -226,7 +226,7 @@ namespace CMDB.API.Services
         public async Task ReleaseIdentity(AssignInternetSubscriptionRequest subscriptionRequest)
         {
             var subscription = await TrackedSubscription(subscriptionRequest.SubscriptionIds.First());
-            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubsctiptionTypeId).AsNoTracking().First();
+            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubscriptionTypeId).AsNoTracking().First();
             subscription.IdentityId = 1;
             subscription.LastModifiedAdminId = TokenStore.AdminId;
             var identity = await _context.Identities.Where(x => x.IdenId == subscriptionRequest.IdentityId).FirstAsync();
@@ -250,7 +250,7 @@ namespace CMDB.API.Services
         public async Task AssignMobile(AssignMobileSubscriptionRequest assignMobileRequest)
         {
             var subscription = await TrackedSubscription(assignMobileRequest.SubscriptionId);
-            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubsctiptionTypeId).AsNoTracking().First();
+            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubscriptionTypeId).AsNoTracking().First();
             subscription.LastModifiedAdminId = TokenStore.AdminId;
             subscription.MobileId = assignMobileRequest.MobileId;
             string subscriptionInfo = $"Subscription: {type} on {subscription.PhoneNumber}";
@@ -276,7 +276,7 @@ namespace CMDB.API.Services
         public async Task ReleaseMobile(AssignMobileSubscriptionRequest assignMobileRequest)
         {
             var subscription = await TrackedSubscription(assignMobileRequest.SubscriptionId);
-            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubsctiptionTypeId).AsNoTracking().First();
+            var type = _context.SubscriptionTypes.Where(x => x.Id == subscription.SubscriptionTypeId).AsNoTracking().First();
             string subscriptionInfo = $"Subscription: {type} on {subscription.PhoneNumber}";
             subscription.LastModifiedAdminId = TokenStore.AdminId;
             subscription.MobileId = null;

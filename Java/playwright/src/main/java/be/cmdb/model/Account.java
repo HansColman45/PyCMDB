@@ -2,11 +2,9 @@ package be.cmdb.model;
 
 import java.util.List;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
+
+import javax.naming.Name;
 
 /**
  * Represents an Account in the CMDB application.
@@ -16,9 +14,11 @@ public class Account extends CMDBModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer accId;
-    private Integer typeId;
     private Integer applicationId;
     private String userId;
+
+    @JoinColumn(name = "TypeId", referencedColumnName = "TypeId")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Type type;
 
     @OneToMany(mappedBy = "accountId")
@@ -38,22 +38,6 @@ public class Account extends CMDBModel {
      */
     public void setAccId(int accId) {
         this.accId = accId;
-    }
-
-    /**
-     * Gets the type ID of the account.
-     * @return the type ID
-     */
-    public int getTypeId() {
-        return typeId;
-    }
-
-    /**
-     * Sets the type ID of the account.
-     * @param typeId the type ID to set
-     */
-    public void setTypeId(int typeId) {
-        this.typeId = typeId;
     }
 
     /**

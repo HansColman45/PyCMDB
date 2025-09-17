@@ -1,8 +1,8 @@
 package be.hans.cmdb.Actors;
 
 import be.brightest.ScreenPlay.Actors.Actor;
-import be.hans.cmdb.OpenDbConnection;
-import be.hans.cmdb.Questions.OpenTheIdentityOverviewPage;
+import be.hans.cmdb.Questions.OpenDbConnection;
+import be.hans.cmdb.Questions.Identity.OpenTheIdentityOverviewPage;
 import be.hans.cmdb.Questions.OpenTheLoginPage;
 import be.hans.cmdb.Questions.OpenTheMainPage;
 import be.cmdb.dao.AccountDAO;
@@ -84,9 +84,8 @@ public class CMDBActor extends Actor {
     /**
      * Delete all objects created by the admin.
      * @param session the current hibernate session
-     * @param admin the admin
      */
-    public void deleteAllObjectsCreatedByAdmin(Session session, Admin admin) {
+    public void deleteAllObjectsCreatedByAdmin(Session session) {
         AdminHelper.deleteAllObjectsCreatedByAdmin(session, admin);
     }
 

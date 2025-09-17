@@ -1,8 +1,8 @@
 package be.hans.cmdb.Actors;
 
-import be.hans.cmdb.Questions.OpenDeleteIdentityPage;
-import be.hans.cmdb.Questions.OpenTheCreateIdentityPage;
-import be.hans.cmdb.Questions.OpenTheEditIdentityPage;
+import be.hans.cmdb.Questions.Identity.OpenDeleteIdentityPage;
+import be.hans.cmdb.Questions.Identity.OpenTheCreateIdentityPage;
+import be.hans.cmdb.Questions.Identity.OpenTheEditIdentityPage;
 import be.cmdb.helpers.IdentityHelper;
 import be.cmdb.helpers.LogLineHelper;
 import be.cmdb.model.Admin;
@@ -10,6 +10,7 @@ import be.cmdb.model.Identity;
 import be.cmdb.pages.Identity.CreateIdentityPage;
 import be.cmdb.pages.Identity.DeleteIdentityPage;
 import be.cmdb.pages.Identity.EditIdentityPage;
+import be.hans.cmdb.Tasks.ActivateIdentity;
 import org.hibernate.Session;
 
 /**
@@ -61,7 +62,8 @@ public class IdentityActor extends CMDBActor {
         createPage.selectType("4");
         createPage.selectLanguage("English");
         createPage.create();
-        String logLine = LogLineHelper.createLogLine("Identity "+ identity.getName()+", "+identity.getLastName(),getAccount().getUserId(), "identity");
+        String Value = "Identity with name: "+ identity.getName();
+        String logLine = LogLineHelper.createLogLine(Value,getAccount().getUserId(), "identity");
         setExpectedLogLine(logLine);
     }
 
@@ -120,8 +122,20 @@ public class IdentityActor extends CMDBActor {
         DeleteIdentityPage deletePage = asksFor(new OpenDeleteIdentityPage());
         deletePage.setReason(reason);
         deletePage.deActivate();
-        String value = "Identity "+ identity.getName()+", "+identity.getLastName();
+        String value = "Identity with name: "+ identity.getName()+", "+identity.getLastName();
         String logLine = LogLineHelper.deleteLogLine(value, getAccount().getUserId(), reason, "identity");
         setExpectedLogLine(logLine);
+    }
+
+    /**
+     * Automates the process of activating an existing identity in the CMDB application.
+     * Uses a task to perform the activation.
+     * Also sets the expected log line for verification.
+     * @param identity The Identity object to be activated
+     */
+    public void doActivateIdentity(Identity identity){
+        String value = "Identity "+ identity.getName()+", "+identity.getLastName();
+        setExpectedLogLine(LogLineHelper.activeLogLine(value, getAccount().getUserId(), "identity"));
+        asksFor(new ActivateIdentity());
     }
 }

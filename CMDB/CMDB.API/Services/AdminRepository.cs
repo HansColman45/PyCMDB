@@ -91,6 +91,22 @@ namespace CMDB.API.Services
                 .FirstOrDefaultAsync();
             if (admin == null)
                 return null;
+            var idenAccounts = await _context.IdenAccounts
+                .Where(x => x.AccountId == admin.Account.AccID).AsNoTracking().ToListAsync();
+            bool validAccount = false;
+            foreach (var idenacc in idenAccounts)
+            {
+                _logger.LogInformation($"Found IdenAccount with Id: {idenacc.ID} and valid from: {idenacc.ValidFrom} unti: {idenacc.ValidUntil} " +
+                    $"for Identity:{idenacc.IdentityId}");
+                if (idenacc.ValidUntil.ToUniversalTime() >= DateTime.UtcNow && idenacc.ValidFrom.ToUniversalTime() < DateTime.UtcNow)
+                {
+                    _logger.LogInformation("Valid Account");
+                    validAccount = true;
+                }
+            }
+            if (!validAccount) {
+                throw new Exception("Not a valid account");
+            }
             TokenStore.AdminId = admin.AdminId;
             TokenStore.Admin = admin;
             PasswordHasher passwordHasher = new();

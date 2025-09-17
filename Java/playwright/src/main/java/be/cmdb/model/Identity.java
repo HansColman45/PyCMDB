@@ -2,7 +2,16 @@ package be.cmdb.model;
 
 import java.util.List;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Transient;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.CascadeType;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -195,7 +204,7 @@ public class Identity extends CMDBModel {
      * Gets the type associated with this identity.
      * @return the type
      */
-    public Type getType(){
+    public Type getType() {
         return type;
     }
 
@@ -203,7 +212,7 @@ public class Identity extends CMDBModel {
      * Sets the type associated with this identity.
      * @param type the type to set
      */
-    public void setType(Type type){
+    public void setType(Type type) {
         this.type = type;
     }
 

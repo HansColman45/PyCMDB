@@ -134,13 +134,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the identity
      */
     public List<Log> findByIdentityId(Session session, Integer identityId) {
-        String hql = "select {l.*}, {i.*} FROM Log l join \"Identity\" i on i.idenId = l.identityId " +
-            " where l.identityId = :identityId";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("identityId", identityId)
-            .addEntity("l",Log.class)
-            .addJoin("i", "l.identityId");
-
+        String hql = "FROM Log l WHERE l.identityId.idenId = :identityId";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("identityId", identityId);
         return query.getResultList();
     }
 
@@ -151,12 +147,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the account
      */
     public List<Log> findByAccountId(Session session, int accountId) {
-        String hql = "select {l.*}, {a.*} FROM Log l join Account a on a.accId = l.accountId " +
-            " where l.accountId = :accountId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("accountId", accountId)
-            .addEntity("l", Log.class)
-            .addJoin("a", "l.accountId");
+        String hql = "FROM Log l WHERE l.accountId.accId = :accountId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("accountId", accountId);
         return query.getResultList();
     }
 
@@ -167,12 +160,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the key
      */
     public List<Log> findByKensingtonId(Session session, int keyId) {
-        String hql = "select {l.*}, {k.*} FROM Log l join Kensington k on k.keyId = l.kensingtonId " +
-            " where l.kensingtonId = :keyId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("keyId", keyId)
-            .addEntity("l", Log.class)
-            .addJoin("k", "l.kensingtonId");
+        String hql = "FROM Log l WHERE l.kensingtonId.keyId = :keyId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("keyId", keyId);
         return query.getResultList();
     }
 
@@ -183,12 +173,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the mobile
      */
     public List<Log> findByMobileId(Session session, int mobileId) {
-        String hql = "select {l.*}, {m.*} FROM Log l join Mobile m on m.mobileId = l.mobileId " +
-            " where l.mobileId = :mobileId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("mobileId", mobileId)
-            .addEntity("l", Log.class)
-            .addJoin("m", "l.mobileId");
+        String hql = "FROM Log l WHERE l.mobileId.mobileId = :mobileId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("mobileId", mobileId);
         return query.getResultList();
     }
 
@@ -199,12 +186,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the type
      */
     public List<Log> findByTypeId(Session session, int typeId) {
-        String hql = "select {l.*}, {a.*} FROM Log l join Type a on a.typeId = l.typeId " +
-            " where l.typeId = :typeId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("typeId", typeId)
-            .addEntity("l", Log.class)
-            .addJoin("a", "l.typeId");
+        String hql = "FROM Log l WHERE l.type.typeId = :typeId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("typeId", typeId);
         return query.getResultList();
     }
 
@@ -215,12 +199,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the asset type
      */
     public List<Log> findByAssetTypeId(Session session, int typeId) {
-        String hql = "select {l.*}, {a.*} FROM Log l join AssetType a on a.TypeId = l.assetTypeId " +
-            " where l.assetTypeId = :typeId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("typeId", typeId)
-            .addEntity("l", Log.class)
-            .addJoin("a", "l.assetTypeId");
+        String hql = "FROM Log l WHERE l.assetTypeId.typeId = :typeId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("typeId", typeId);
         return query.getResultList();
     }
 
@@ -231,12 +212,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the asset tag
      */
     public List<Log> findByAssetTag(Session session, String assetTag) {
-        String hql = "select {l.*}, {a.*} FROM Log l join Asset a on a.assetTag = l.assetTag " +
-            " where l.assetTag = :assetTag ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("assetTag", assetTag)
-            .addEntity("l", Log.class)
-            .addJoin("a", "l.assetTag");
+        String hql = "FROM Log l WHERE l.assetTag.assetTag = :assetTag ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("assetTag", assetTag);
         return query.getResultList();
     }
 
@@ -247,12 +225,9 @@ public class LogDAO implements BaseDAO<Log, Integer> {
      * @return list of Log entities associated with the admin
      */
     public List<Log> findByAdminId(Session session, int adminId) {
-        String hql = "select {l.*}, {a.*} FROM Log l join Admin a on l.adminId = a.admin_Id " +
-            " where l.adminId = :adminId ORDER BY l.logDate DESC";
-        Query<Log> query = session.createNativeQuery(hql, Log.class)
-            .setParameter("adminId", adminId)
-            .addEntity("l", Log.class)
-            .addJoin("a", "l.adminId");
+        String hql = "FROM Log l WHERE l.adminId.adminId = :adminId ORDER BY l.logDate DESC";
+        Query<Log> query = session.createQuery(hql, Log.class)
+            .setParameter("adminId", adminId);
         return query.getResultList();
     }
 }

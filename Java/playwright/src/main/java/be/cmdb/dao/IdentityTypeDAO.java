@@ -60,7 +60,7 @@ public class IdentityTypeDAO implements BaseDAO<Type, Integer> {
      * @return the IdentityType matching the type, or null if not found
      */
     public Type findByType(Session session, String type) {
-        String hql = "from Type where discriminator = 'IdentityType' and type = :type";
+        String hql = "FROM Type WHERE discriminator = 'IdentityType' AND type = :type";
         Query<Type> query = session.createQuery(hql, Type.class);
         query.setParameter("type", type);
         List<Type> results = query.getResultList();

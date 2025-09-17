@@ -1,4 +1,4 @@
-package be.hans.cmdb.Questions;
+package be.hans.cmdb.Questions.Identity;
 
 import be.brightest.ScreenPlay.Abilities.WebPageFactory;
 import be.brightest.ScreenPlay.Actors.IActor;

@@ -2,37 +2,40 @@ package be.cmdb.model;
 
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.validation.constraints.NotNull;
 
 /**
  * Represents a general type in the CMDB system.
  */
 @Entity(name = "Type")
 public class Type extends CMDBModel {
+    @Column(name = "TypeId")
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int typeId;
-    @NotNull
-    private String discriminator;
+
+    @Column(name = "Type", nullable = false)
     private String type;
+
+    @Column(name = "Description", nullable = false)
     private String description;
+
+    @Column(name = "Discriminator", nullable = false)
+    private String discriminator;
 
     @OneToMany(mappedBy = "type")
     private List<Log> logs;
 
-    @OneToMany(mappedBy = "parentType")
-    private List<Type> childTypes;
+    @OneToMany(mappedBy = "type")
+    private List<Identity> identities;
 
-    @ManyToOne
-    @JoinColumn(name = "parentTypeId")
-    private Type parentType;
+    @OneToMany(mappedBy = "type")
+    private List<Account> accounts;
     /**
      * Gets the type ID.
      * @return the type ID
@@ -47,22 +50,6 @@ public class Type extends CMDBModel {
      */
     public void setTypeId(int typeId) {
         this.typeId = typeId;
-    }
-
-    /**
-     * Gets the discriminator value.
-     * @return the discriminator
-     */
-    public String getDiscriminator() {
-        return discriminator;
-    }
-
-    /**
-     * Sets the discriminator value.
-     * @param discriminator the discriminator to set
-     */
-    public void setDiscriminator(String discriminator) {
-        this.discriminator = discriminator;
     }
 
     /**
@@ -98,6 +85,22 @@ public class Type extends CMDBModel {
     }
 
     /**
+     * Gets the discriminator value.
+     * @return the discriminator
+     */
+    public String getDiscriminator() {
+        return discriminator;
+    }
+
+    /**
+     * Sets the discriminator value.
+     * @param discriminator the discriminator to set
+     */
+    public void setDiscriminator(String discriminator) {
+        this.discriminator = discriminator;
+    }
+
+    /**
      * Gets the list of logs associated with this type.
      * @return the list of logs
      */
@@ -114,34 +117,34 @@ public class Type extends CMDBModel {
     }
 
     /**
-     * Gets the list of child types associated with this type.
-     * @return the list of child types
+     * Gets the list of Identities associated with this type.
+     * @return the list of identities
      */
-    public List<Type> getChildTypes() {
-        return childTypes;
+    public List<Identity> getIdentities(){
+        return identities;
     }
 
     /**
-     * Sets the list of child types associated with this type.
-     * @param childTypes the list of child types to set
+     * Sets the list of Identities associated with this type.
+     * @param identities the list of identities to set
      */
-    public void setChildTypes(List<Type> childTypes) {
-        this.childTypes = childTypes;
+    public void setIdentities(List<Identity> identities){
+        this.identities = identities;
     }
 
     /**
-     * Gets the parent type of this type.
-     * @return the parent type
+     * Gets the list of Accounts associated with this type.
+     * @return the list of accounts
      */
-    public Type getParentType() {
-        return parentType;
+    public List<Account> getAccounts(){
+        return accounts;
     }
 
     /**
-     * Sets the parent type of this type.
-     * @param parentType the parent type to set
+     * Sets the list of Accounts associated with this type.
+     * @param accounts
      */
-    public void setParentType(Type parentType) {
-        this.parentType = parentType;
+    public void setAccounts(List<Account> accounts){
+        this.accounts = accounts;
     }
 }

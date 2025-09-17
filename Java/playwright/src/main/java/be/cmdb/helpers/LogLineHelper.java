@@ -3,7 +3,7 @@ package be.cmdb.helpers;
 public class LogLineHelper {
 
     /**
-     * Create the logline when a objet is created in the application.
+     * Create the logline when an objet is created in the application.
      * @param value the info of the created object
      * @param creator the user who created the object
      * @param table the table where the object is created
@@ -23,7 +23,7 @@ public class LogLineHelper {
      * @return String the logline
      */
     public static String updateLogLine(String field, String oldValue, String newValue, String editor, String table) {
-        return String.format("The %s is changed from %s to %s by %s in table %s", field, oldValue, newValue, editor, table);
+        return String.format("The %s has been changed from %s to %s by %s in table %s", field, oldValue, newValue, editor, table);
     }
 
     /**
@@ -36,5 +36,16 @@ public class LogLineHelper {
      */
     public static String deleteLogLine(String value, String deleter, String reason, String table) {
         return String.format("The %s is deleted due to %s by %s in table %s.", value, reason, deleter, table);
+    }
+
+    /**
+     * Create the logline when an objet is activated in the application.
+     * @param value the info of the deactivated object
+     * @param activator the user who activated the object
+     * @param table the table where the object is deactivated
+     * @return String the logline
+     */
+    public static String activeLogLine(String value, String activator, String table) {
+        return String.format("The %s is activated by %s in table %s", value, activator, table);
     }
 }

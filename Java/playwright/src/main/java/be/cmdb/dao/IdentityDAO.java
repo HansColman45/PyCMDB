@@ -134,7 +134,7 @@ public class IdentityDAO implements BaseDAO<Identity, Integer> {
      */
     public List<Identity> findByTypeId(Session session, int typeId) {
         Query<Identity> query = session.createQuery(
-            "FROM Identity WHERE typeId = :typeId ORDER BY name", Identity.class);
+            "FROM Identity WHERE type.typeId = :typeId ORDER BY name", Identity.class);
         query.setParameter("typeId", typeId);
         return query.getResultList();
     }
@@ -236,7 +236,7 @@ public class IdentityDAO implements BaseDAO<Identity, Integer> {
      */
     public long countByTypeId(Session session, int typeId) {
         Query<Long> query = session.createQuery(
-            "SELECT COUNT(*) FROM Identity WHERE typeId = :typeId", Long.class);
+            "SELECT COUNT(*) FROM Identity WHERE type.typeId = :typeId", Long.class);
         query.setParameter("typeId", typeId);
         return query.getSingleResult();
     }

@@ -2,11 +2,10 @@ package be.hans.cmdb;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import be.hans.cmdb.Questions.OpenTheIdentityDetailsPage;
-import be.hans.cmdb.Questions.OpenTheIdentityOverviewPage;
+import be.hans.cmdb.Questions.Identity.OpenTheIdentityDetailsPage;
+import be.hans.cmdb.Questions.Identity.OpenTheIdentityOverviewPage;
 import be.cmdb.model.Account;
 import be.cmdb.model.Admin;
-import be.cmdb.pages.Identity.DeleteIdentityPage;
 import be.cmdb.pages.Identity.IdentityDetailsPage;
 import be.cmdb.pages.Identity.IdentityOverviewPage;
 import be.hans.cmdb.Actors.IdentityActor;
@@ -29,6 +28,7 @@ class IdentityTest extends BaseTest {
     @Test
     void canCreateNewIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityCreator");
+        registerActor(identityActor);
         Admin admin = identityActor.createNewAdmin(identityActor.getSession());
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity();
@@ -55,6 +55,7 @@ class IdentityTest extends BaseTest {
         String oldValue;
         newValue += getRandomInt(); // Ensure newValue is unique for the test
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
+        registerActor(identityActor);
         Admin admin = identityActor.createNewAdmin(identityActor.getSession());
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, true);
@@ -73,15 +74,14 @@ class IdentityTest extends BaseTest {
     @Test
     void canDeactivateIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
+        registerActor(identityActor);
         Admin admin = identityActor.createNewAdmin(identityActor.getSession());
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, true);
         identityActor.doLogin(account.getUserId(), defaultPassword());
         IdentityOverviewPage overviewPage = identityActor.asksFor(new OpenTheIdentityOverviewPage());
         overviewPage.search(identity.getUserId());
-        DeleteIdentityPage deletePage = overviewPage.openDeleteIdentity();
-        deletePage.setReason("Test");
-        deletePage.deActivate();
+        identityActor.doDeactivateIdentity(identity, "Test");
         // Verify that the identity is deactivated
         overviewPage.search(identity.getUserId());
         IdentityDetailsPage detailsPage = identityActor.asksFor(new OpenTheIdentityDetailsPage());
@@ -93,13 +93,14 @@ class IdentityTest extends BaseTest {
     @Test
     void canActivateIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
+        registerActor(identityActor);
         Admin admin = identityActor.createNewAdmin(identityActor.getSession());
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, false);
         identityActor.doLogin(account.getUserId(), defaultPassword());
         IdentityOverviewPage overviewPage = identityActor.asksFor(new OpenTheIdentityOverviewPage());
         overviewPage.search(identity.getUserId());
-        overviewPage.activate();
+        identityActor.doActivateIdentity(identity);
         // Verify that the identity is activated
         overviewPage.search(identity.getUserId());
         IdentityDetailsPage detailsPage = overviewPage.openIdentityDetails();

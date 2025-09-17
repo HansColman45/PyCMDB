@@ -26,5 +26,6 @@
         <mapping class = "be.cmdb.model.Subscription"/>
         <mapping class = "be.cmdb.model.SubscriptionType"/>
         <mapping class = "be.cmdb.model.Type"/>
+        <mapping class = "be.cmdb.model.IdenAccount"/>
     </session-factory>
 </hibernate-configuration>

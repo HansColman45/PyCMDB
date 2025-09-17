@@ -29,7 +29,7 @@ public final class AccountHelper {
      * @param active boolean indicating if the account is active
      * @return the persisted Account entity
      */
-    public Account createSimpleAccount(Session session, Admin admin, boolean active) {
+    public static Account createSimpleAccount(Session session, Admin admin, boolean active) {
         AccountTypeDAO accountTypeDAO = new AccountTypeDAO();
         Type accountType = accountTypeDAO.findByType(session,"Normal User");
 

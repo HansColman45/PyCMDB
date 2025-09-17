@@ -15,7 +15,7 @@ namespace CMDB.Infrastructure.Configurations
 
             builder.HasOne(e => e.SubscriptionType)
                 .WithMany(e => e.Subscriptions)
-                .HasForeignKey(e => e.SubsctiptionTypeId)
+                .HasForeignKey(e => e.SubscriptionTypeId)
                 .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_Subscription_Type")
                 .IsRequired();

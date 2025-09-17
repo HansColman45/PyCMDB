@@ -3,6 +3,8 @@ package be.brightest.ScreenPlay.Actors;
 import be.brightest.ScreenPlay.Abilities.IAbility;
 import be.brightest.ScreenPlay.Question.IQuestion;
 import be.brightest.ScreenPlay.Question.Question;
+import be.brightest.ScreenPlay.Tasks.ITasks;
+import be.brightest.ScreenPlay.Tasks.Tasks;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,5 +75,14 @@ public class Actor implements IActor{
             return result;
         }
         throw new IllegalArgumentException("Unknown question type: " + question.getClass().getName());
+    }
+
+    @Override
+    public void asksFor(ITasks task){
+        if (task instanceof Tasks) {
+            ((Tasks) task).performAs(this);
+        } else {
+            throw new IllegalArgumentException("Unknown task type: " + task.getClass().getName());
+        }
     }
 }

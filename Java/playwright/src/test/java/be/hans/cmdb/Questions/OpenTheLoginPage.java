@@ -26,7 +26,7 @@ public class OpenTheLoginPage extends Question<LoginPage> {
             .setHeadless(false)
             .setArgs(Arrays.asList("--start-maximized"))
         );
-        BrowserContext context = browser.newContext();
+        BrowserContext context = browser.newContext(new Browser.NewContextOptions().setViewportSize(null));
         Page page = context.newPage();
         LoginPage loginPage = WebPageFactory.create(LoginPage.class, page);
         loginPage.navigate();
