@@ -10,7 +10,7 @@ import be.cmdb.model.Identity;
 import be.cmdb.pages.Identity.CreateIdentityPage;
 import be.cmdb.pages.Identity.DeleteIdentityPage;
 import be.cmdb.pages.Identity.EditIdentityPage;
-import be.hans.cmdb.Tasks.ActivateIdentity;
+import be.hans.cmdb.Tasks.ActivateTheIdentity;
 import org.hibernate.Session;
 
 /**
@@ -122,7 +122,7 @@ public class IdentityActor extends CMDBActor {
         DeleteIdentityPage deletePage = asksFor(new OpenDeleteIdentityPage());
         deletePage.setReason(reason);
         deletePage.deActivate();
-        String value = "Identity with name: "+ identity.getName()+", "+identity.getLastName();
+        String value = "Identity with name: "+ identity.getName();
         String logLine = LogLineHelper.deleteLogLine(value, getAccount().getUserId(), reason, "identity");
         setExpectedLogLine(logLine);
     }
@@ -136,6 +136,6 @@ public class IdentityActor extends CMDBActor {
     public void doActivateIdentity(Identity identity){
         String value = "Identity "+ identity.getName()+", "+identity.getLastName();
         setExpectedLogLine(LogLineHelper.activeLogLine(value, getAccount().getUserId(), "identity"));
-        asksFor(new ActivateIdentity());
+        asksFor(new ActivateTheIdentity());
     }
 }

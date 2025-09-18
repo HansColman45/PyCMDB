@@ -1,10 +1,7 @@
 package be.cmdb.pages;
 
-import be.cmdb.pages.Account.AccountOverviewPage;
 import be.cmdb.pages.AssetType.AssetTypeOverviewPage;
 import be.cmdb.pages.Type.TypeOverviewPage;
-import be.cmdb.pages.Identity.IdentityOverviewPage;
-import com.microsoft.playwright.Locator;
 import com.microsoft.playwright.Page;
 import com.microsoft.playwright.options.AriaRole;
 
@@ -22,30 +19,6 @@ public class MainPage extends CMDBPage {
     }
 
     /**
-     * Opens the AccountType Overview page.
-     * @return TypeOverviewPage
-     */
-    public TypeOverviewPage openAccountTypeOverview(){
-        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
-        getPage().locator("xpath=//a[@id='Account Type34']").click();
-        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
-        this.newButton().waitFor();
-        return new TypeOverviewPage(getPage());
-    }
-
-    /**
-     * Opens the IdentityType Overview page.
-     * @return TypeOverviewPage
-     */
-    public TypeOverviewPage openIdentityTypeOverviewPage(){
-        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Types")).click();
-        getPage().locator("xpath=//a[@id='Identity Type32']").click();
-        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
-        this.newButton().waitFor();
-        return new TypeOverviewPage(getPage());
-    }
-
-    /**
      * Opens the RoleType Overview page.
      * @return TypeOverviewPage
      */
@@ -55,18 +28,6 @@ public class MainPage extends CMDBPage {
         getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
         this.newButton().waitFor();
         return new TypeOverviewPage(getPage());
-    }
-
-    /**
-     * Opens the Account Overview page.
-     * @return AccountOverviewPage
-     */
-    public AccountOverviewPage openAccountOverview(){
-        getPage().getByRole(AriaRole.BUTTON, new Page.GetByRoleOptions().setName("Account")).click();
-        getPage().locator("xpath://a[@id='Account5']").click();
-        getPage().getByRole(AriaRole.LINK, new Page.GetByRoleOptions().setName("Overview")).click();
-        this.newButton().waitFor();
-        return new AccountOverviewPage(getPage());
     }
 
     /**

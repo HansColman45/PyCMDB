@@ -29,7 +29,7 @@ class IdentityTest extends BaseTest {
     void canCreateNewIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityCreator");
         registerActor(identityActor);
-        Admin admin = identityActor.createNewAdmin(identityActor.getSession());
+        Admin admin = identityActor.createNewAdmin();
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity();
         identityActor.doLogin(account.getUserId(), defaultPassword());
@@ -56,7 +56,7 @@ class IdentityTest extends BaseTest {
         newValue += getRandomInt(); // Ensure newValue is unique for the test
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
         registerActor(identityActor);
-        Admin admin = identityActor.createNewAdmin(identityActor.getSession());
+        Admin admin = identityActor.createNewAdmin();
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, true);
         identityActor.doLogin(account.getUserId(), defaultPassword());
@@ -75,7 +75,7 @@ class IdentityTest extends BaseTest {
     void canDeactivateIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
         registerActor(identityActor);
-        Admin admin = identityActor.createNewAdmin(identityActor.getSession());
+        Admin admin = identityActor.createNewAdmin();
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, true);
         identityActor.doLogin(account.getUserId(), defaultPassword());
@@ -94,7 +94,7 @@ class IdentityTest extends BaseTest {
     void canActivateIdentity() {
         IdentityActor identityActor = new IdentityActor("IdentityEditor");
         registerActor(identityActor);
-        Admin admin = identityActor.createNewAdmin(identityActor.getSession());
+        Admin admin = identityActor.createNewAdmin();
         Account account = identityActor.getAccount();
         Identity identity = identityActor.getIdentity(identityActor.getSession(), admin, false);
         identityActor.doLogin(account.getUserId(), defaultPassword());

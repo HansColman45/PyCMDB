@@ -7,9 +7,15 @@ import be.cmdb.pages.Account.AccountOverviewPage;
 import be.cmdb.pages.Account.CreateAccountPage;
 
 /**
- * Question to open the Create Account Page from the Account Overview Page
+ * Question to open the Create Account Page from the Account Overview Page.
  */
 public class OpenTheCreateAccountPage extends Question<CreateAccountPage> {
+
+    /**
+     * Opens the Create Account Page from the Account Overview Page.
+     * @param actor The actor performing the action.
+     * @return The Create Account Page.
+     */
     @Override
     public CreateAccountPage performAs(IActor actor) {
         AccountOverviewPage ability = (AccountOverviewPage) actor.getAbility(AccountOverviewPage.class);

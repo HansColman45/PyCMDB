@@ -47,5 +47,9 @@ public interface IActor {
      */
     <T> T asksFor(IQuestion<T> question);
 
+    /**
+     * Ask the actor to perform a task.
+     * @param task the task to perform
+     */
     void asksFor(ITasks task);
 }

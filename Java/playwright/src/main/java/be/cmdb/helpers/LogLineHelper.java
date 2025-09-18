@@ -35,7 +35,7 @@ public class LogLineHelper {
      * @return String the logline
      */
     public static String deleteLogLine(String value, String deleter, String reason, String table) {
-        return String.format("The %s is deleted due to %s by %s in table %s.", value, reason, deleter, table);
+        return String.format("The %s is deleted due to %s by %s in table %s", value, reason, deleter, table);
     }
 
     /**

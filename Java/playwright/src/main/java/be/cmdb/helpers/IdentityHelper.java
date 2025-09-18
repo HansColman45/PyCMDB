@@ -3,7 +3,6 @@ package be.cmdb.helpers;
 import java.util.List;
 
 import be.cmdb.model.Admin;
-import be.cmdb.pages.Type.TypeDetailPage;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 

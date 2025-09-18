@@ -7,7 +7,7 @@ import be.cmdb.pages.Identity.IdentityOverviewPage;
 /**
  * Task to activate an identity in the CMDB application.
  */
-public class ActivateIdentity extends Tasks {
+public class ActivateTheIdentity extends Tasks {
 
     @Override
     public void performAs(IActor actor) {

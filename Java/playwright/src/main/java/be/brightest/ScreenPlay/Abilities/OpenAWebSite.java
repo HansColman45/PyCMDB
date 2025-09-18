@@ -33,7 +33,7 @@ public class OpenAWebSite extends Ability{
     }
 
     @Override
-    public void close() throws Exception {
+    public void close() {
         page.close();
     }
 }

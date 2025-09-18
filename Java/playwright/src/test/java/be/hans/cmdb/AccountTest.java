@@ -16,7 +16,7 @@ public class AccountTest extends BaseTest{
     void canCreateNewAccount(){
         AccountActor accountActor = new AccountActor("AccountCreator");
         registerActor(accountActor);
-        accountActor.createNewAdmin(accountActor.getSession());
+        accountActor.createNewAdmin();
         accountActor.doLogin(accountActor.getAccount().getUserId(), defaultPassword());
         AccountOverviewPage overviewPage = accountActor.asksFor(new OpenTheAccountOverviewPage());
         Account newaccount = accountActor.createAccount();

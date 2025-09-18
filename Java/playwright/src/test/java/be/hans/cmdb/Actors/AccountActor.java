@@ -20,7 +20,7 @@ public class AccountActor extends CMDBActor{
     }
 
     /**
-     * Create a random account
+     * Create a random account.
      * @return the created Account entity
      */
     public Account createAccount(){
@@ -28,7 +28,7 @@ public class AccountActor extends CMDBActor{
     }
 
     /**
-     * Create a simple account with specified admin
+     * Create a simple account with specified admin.
      * @param admin the Admin who is creating the account
      * @param active boolean indicating if the account is active
      * @return the created Account entity
@@ -38,7 +38,8 @@ public class AccountActor extends CMDBActor{
     }
 
     /**
-     * automated creation of an account
+     * automated creation of an account.
+     * @param account the account to be created
      */
     public void doCreateAccount(Account account){
         Application app = new ApplicationDAO().findById(getSession(),account.getApplicationId());

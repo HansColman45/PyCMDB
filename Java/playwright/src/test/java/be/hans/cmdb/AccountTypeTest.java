@@ -1,73 +1,74 @@
 package be.hans.cmdb;
 
-//import be.cmdb.helpers.AccountTypeHelper;
-//import be.cmdb.model.Type;
-//import be.cmdb.pages.MainPage;
-//import be.cmdb.pages.Type.CreateTypePage;
-//import be.cmdb.pages.Type.DeleteTypePage;
-//import be.cmdb.pages.Type.EditTypePage;
-//import be.cmdb.pages.Type.TypeDetailPage;
-//import be.cmdb.pages.Type.TypeOverviewPage;
+import be.cmdb.model.Admin;
+import be.cmdb.model.Type;
+import be.cmdb.pages.Type.TypeDetailPage;
+import be.cmdb.pages.Type.TypeOverviewPage;
+import be.hans.cmdb.Actors.AccountTypeActor;
+import be.hans.cmdb.Questions.AccountType.OpenTheAccountTypeDetailPage;
+import be.hans.cmdb.Questions.AccountType.OpenTheAccountTypeOverviewPage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-//import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AccountTypeTest extends BaseTest{
 
     @Test
     void canCreateNewAccountType() {
-//        Type type = AccountTypeHelper.createRandomAccountType();
-//        MainPage mainPage = doLogin();
-//        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
-//        CreateTypePage createTypePage = typeOverviewPage.openCreateTypePage();
-//        createTypePage.setType(type.getType());
-//        createTypePage.setDescription(type.getDescription());
-//        createTypePage.clickCreateButton();
-//        // Verify that the type was created successfully
-//        typeOverviewPage.search(type.getType());
-//        TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-//        String logline = detailPage.getLastLogline("accounttype");
-//        assertThat(logline).contains("table accounttype")
-//            .contains(type.getType())
-//            .contains(type.getDescription())
-//            .contains("by "+getAccount().getUserId());
+        AccountTypeActor typeActor = new AccountTypeActor("AccountTypeCreator");
+        registerActor(typeActor);
+        typeActor.createNewAdmin();
+        Type type = typeActor.createAccountType();
+        typeActor.doLogin(typeActor.getAccount().getUserId(), defaultPassword());
+        TypeOverviewPage typeOverviewPage = typeActor.asksFor(new OpenTheAccountTypeOverviewPage());
+        typeActor.doCreateAccountType(typeActor.createAccountType());
+        // Verify that the type was created successfully
+        typeOverviewPage.search(type.getType());
+        TypeDetailPage detailPage = typeActor.asksFor(new OpenTheAccountTypeDetailPage());
+        String logLine = detailPage.getLastLogline("accounttype");
+        assertThat(logLine).isNotEmpty()
+            .isEqualToIgnoringCase(typeActor.getExpectedLogLine());
     }
 
     @Test
     void canDeactivateAccountType(){
-//        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), true);
-//        MainPage mainPage = doLogin();
-//        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
-//        typeOverviewPage.search(type.getType());
-//        DeleteTypePage deleteTypePage = typeOverviewPage.openDeleteTypePage();
-//        deleteTypePage.setReason("test");
-//        deleteTypePage.deActivate();
-//        // Verify that the type was deactivated successfully
-//        typeOverviewPage.search(type.getType());
-//        TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-//        String logline = detailPage.getLastLogline("accounttype");
-//        assertThat(logline).contains("table accounttype")
-//            .contains("test")
-//            .contains("by "+getAccount().getUserId());
+        AccountTypeActor typeActor = new AccountTypeActor("AccountTypeDeactivator");
+        registerActor(typeActor);
+        Admin admin = typeActor.createNewAdmin();
+        Type type = typeActor.createAccountType(admin, true);
+        typeActor.doLogin(typeActor.getAccount().getUserId(), defaultPassword());
+        TypeOverviewPage typeOverviewPage = typeActor.asksFor(new OpenTheAccountTypeOverviewPage());
+        typeOverviewPage.search(type.getType());
+        typeActor.doDeleteAccountType(type,"Test");
+        // Verify that the type was deactivated successfully
+        typeOverviewPage.search(type.getType());
+        TypeDetailPage detailPage = typeActor.asksFor(new OpenTheAccountTypeDetailPage());
+        String logline = detailPage.getLastLogline("accounttype");
+        assertThat(logline)
+            .isNotEmpty()
+            .isEqualToIgnoringCase(typeActor.getExpectedLogLine());
     }
 
     @Test
     void canActivateAnInactiveAccountType(){
-//        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), false);
-//        MainPage mainPage = doLogin();
-//        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
-//        typeOverviewPage.search(type.getType());
-//        typeOverviewPage.activate();
-//        // Verify that the type was activated successfully
-//        typeOverviewPage.search(type.getType());
-//        TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-//        String logline = detailPage.getLastLogline("accounttype");
-//        assertThat(logline).contains("table accounttype")
-//            .contains("activated")
-//            .contains("by "+getAccount().getUserId());
+        AccountTypeActor typeActor = new AccountTypeActor("AccountTypeDeactivator");
+        registerActor(typeActor);
+        Admin admin = typeActor.createNewAdmin();
+        Type type = typeActor.createAccountType(admin, false);
+        typeActor.doLogin(typeActor.getAccount().getUserId(), defaultPassword());
+        TypeOverviewPage typeOverviewPage = typeActor.asksFor(new OpenTheAccountTypeOverviewPage());
+        typeOverviewPage.search(type.getType());
+        typeActor.doActivateAccountType(type);
+        // Verify that the type was activated successfully
+        typeOverviewPage.search(type.getType());
+        TypeDetailPage detailPage = typeActor.asksFor(new OpenTheAccountTypeDetailPage());
+        String logline = detailPage.getLastLogline("accounttype");
+        assertThat(logline)
+            .isNotEmpty()
+            .isEqualToIgnoringCase(typeActor.getExpectedLogLine());
     }
 
     @DisplayName("Can update an accounttype for")
@@ -77,34 +78,20 @@ public class AccountTypeTest extends BaseTest{
         "description, Person from another planet"
     })
     void canUpdateAccountType(String field, String newValue) {
-//        Type type = AccountTypeHelper.createDefaultAccountType(getSession(),getAdmin(), true);
-//        String oldValue;
-//        MainPage mainPage = doLogin();
-//        TypeOverviewPage typeOverviewPage = mainPage.openAccountTypeOverview();
-//        typeOverviewPage.search(type.getType());
-//        EditTypePage editTypePage = typeOverviewPage.openEditTypePage();
-//        // Update the specified field
-//        switch (field) {
-//            case "type":
-//                oldValue = type.getType();
-//                editTypePage.setType(newValue);
-//                break;
-//            case "description":
-//                oldValue = type.getDescription();
-//                editTypePage.setDescription(newValue);
-//                break;
-//            default:
-//                throw new IllegalArgumentException("Unknown field: " + field);
-//        }
-//        editTypePage.edit();
-//        // Verify that the update was successful
-//        typeOverviewPage.search(newValue);
-//        TypeDetailPage detailPage = typeOverviewPage.openTypeDetailPage();
-//        String logline = detailPage.getLastLogline("accounttype");
-//        assertThat(logline).contains("table accounttype")
-//            .contains(field)
-//            .contains(newValue)
-//            .contains(oldValue)
-//            .contains("by "+getAccount().getUserId());
+        AccountTypeActor typeActor = new AccountTypeActor("AccountTypeUpdater");
+        registerActor(typeActor);
+        Admin admin = typeActor.createNewAdmin();
+        Type type = typeActor.createAccountType(admin, true);
+        typeActor.doLogin(typeActor.getAccount().getUserId(), defaultPassword());
+        TypeOverviewPage typeOverviewPage = typeActor.asksFor(new OpenTheAccountTypeOverviewPage());
+        typeOverviewPage.search(type.getType());
+        type = typeActor.doUpdateAccountType(type, field, newValue);
+        // Verify that the type was updated successfully
+        typeOverviewPage.search(newValue);
+        TypeDetailPage detailPage = typeActor.asksFor(new OpenTheAccountTypeDetailPage());
+        String logline = detailPage.getLastLogline("accounttype");
+        assertThat(logline)
+            .isNotEmpty()
+            .isEqualToIgnoringCase(typeActor.getExpectedLogLine());
     }
 }

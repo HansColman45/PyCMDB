@@ -14,6 +14,8 @@ import be.cmdb.pages.LoginPage;
 import be.cmdb.pages.MainPage;
 import org.hibernate.Session;
 
+import java.util.Random;
+
 /**
  * CMDB Actor with specific abilities.
  */
@@ -21,6 +23,7 @@ public class CMDBActor extends Actor {
     private Admin admin;
     private final Session session;
     private String expectedLogLine = "";
+    private final Random random = new Random();
 
     /**
      * Constructor for CMDBActor.
@@ -54,10 +57,9 @@ public class CMDBActor extends Actor {
 
     /**
      * Create a new admin in the CMDB.
-     * @param session the current hibernate session
      * @return Admin the created admin
      */
-    public Admin createNewAdmin(Session session) {
+    public Admin createNewAdmin() {
         admin = AdminHelper.createNewCMDBAdmin(session);
         return admin;
     }
@@ -103,5 +105,14 @@ public class CMDBActor extends Actor {
      */
     protected void setExpectedLogLine(String logLine){
         this.expectedLogLine = logLine;
+    }
+
+    /**
+     * This will return a random integer.
+     * @return String representation of a random integer
+     */
+    protected String getRandomInt() {
+        int rnd = random.nextInt(1000);
+        return String.valueOf(rnd);
     }
 }
